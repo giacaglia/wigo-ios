@@ -20,6 +20,4 @@ static WGGetter *getter;
 }
 
 
-
-
 @end

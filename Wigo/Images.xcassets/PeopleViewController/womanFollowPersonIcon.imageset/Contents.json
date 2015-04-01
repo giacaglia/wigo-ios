@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "manFollowPersonIcon.png"
+      "filename" : "womanFollowPersonIcon.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "manFollowPersonIcon@2x.png"
+      "filename" : "womanFollowPersonIcon@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "manFollowPersonIcon@3x.png"
+      "filename" : "womanFollowPersonIcon@3x.png"
     }
   ],
   "info" : {

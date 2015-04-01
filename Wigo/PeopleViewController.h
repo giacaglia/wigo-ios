@@ -39,11 +39,10 @@
 @property (nonatomic, strong) UIButton *profileButton;
 @property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UILabel *goingOutLabel;
-@property (nonatomic, strong) UILabel *timeLabel;
+@property (nonatomic, strong) UILabel *mutualFriendsLabel;
 @property (nonatomic, strong) UIButton *followPersonButton;
 @property (nonatomic, strong) UIActivityIndicatorView *spinnerView;
-- (void)setStateForUser:(WGUser *)user;
+@property (nonatomic, strong) WGUser *user;
 @end
 
 #define kSuggestedFriendsCellName @"SuggestedFriendsCellName"
