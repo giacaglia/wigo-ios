@@ -141,7 +141,7 @@ BOOL firstTimeLoading;
         self.shouldReloadEvents = YES;
     }
     [self fetchUserInfo];
-    NSLog(@"%@", [self deviceLocation]);
+//    NSLog(@"%@", [self deviceLocation]);
 }
 
 - (void)showReferral {
