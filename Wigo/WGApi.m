@@ -11,6 +11,7 @@ dispatch_queue_t postQueue;
 #import "WGApi.h"
 #import "WGProfile.h"
 #import <dispatch/dispatch.h>
+#import <CoreLocation/CoreLocation.h>
 
 #define kWigoApiKeyKey @"X-Wigo-API-Key"
 #define kWigoClientEnterpriseKey @"X-Wigo-Client-Enterprise"
@@ -18,6 +19,7 @@ dispatch_queue_t postQueue;
 #define kWigoApiVersionKey @"X-Wigo-API-Version"
 #define kWigoDeviceKey @"X-Wigo-Device"
 #define kWigoUserKey @"X-Wigo-User-Key"
+#define kGeoLocationKey @"Geolocation"
 
 #define kContentLengthKey @"Content-Length"
 #define kContentTypeKey @"Content-Type"
@@ -41,9 +43,9 @@ dispatch_queue_t postQueue;
 #define kReferenceKey @"$ref"
 
 //#ifdef DEBUG
-static NSString *baseURLString = @"https://dev-api.wigo.us/api/%@";
+//static NSString *baseURLString = @"https://dev-api.wigo.us/api/%@";
 //#else
-//static NSString *baseURLString = @"https://api.wigo.us/api/%@";
+static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 //#endif
 
 
@@ -62,6 +64,14 @@ static NSString *baseURLString = @"https://dev-api.wigo.us/api/%@";
 +(void) getURL:(NSString *)url withSerializedHandler:(SerializedApiResultBlock)handler {
     NSLog(@"GET %@", url);
     
+//    self.locationManager = [[CLLocationManager alloc] init];
+//    self.locationManager.delegate = self;
+//    self.locationManager.distanceFilter = 500;
+//    self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters; // 100 m
+//    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+//        [self.locationManager requestWhenInUseAuthorization];
+//    }
+//    [self.locationManager startUpdatingLocation];
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];

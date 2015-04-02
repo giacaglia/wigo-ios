@@ -28,7 +28,6 @@
 #import "EventConversationViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "WGNavigateParser.h"
-#import <CoreLocation/CoreLocation.h>
 
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCell @"HighlightOldEventCell"
@@ -94,15 +93,6 @@ BOOL firstTimeLoading;
     ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:3];
     profileVc.user = [WGUser new];
 
-    
-    self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.delegate = self;
-    self.locationManager.distanceFilter = 500;
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters; // 100 m
-    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-        [self.locationManager requestWhenInUseAuthorization];
-    }
-    [self.locationManager startUpdatingLocation];
     self.spinnerAtCenter = YES;
     [self initializeWhereView];
     [NetworkFetcher.defaultGetter fetchMessages];
@@ -1654,11 +1644,11 @@ BOOL firstTimeLoading;
    
 }
 
-- (NSString *)deviceLocation
-{
-    NSString *theLocation = [NSString stringWithFormat:@"latitude: %f longitude: %f", self.locationManager.location.coordinate.latitude, self.locationManager.location.coordinate.longitude];
-    return theLocation;
-}
+//- (NSString *)deviceLocation
+//{
+//    NSString *theLocation = [NSString stringWithFormat:@"latitude: %f longitude: %f", self.locationManager.location.coordinate.latitude, self.locationManager.location.coordinate.longitude];
+//    return theLocation;
+//}
 
 
 #pragma mark - Refresh Control
@@ -1700,12 +1690,6 @@ BOOL firstTimeLoading;
     UIAlertView *errorAlert = [[UIAlertView alloc]
                                initWithTitle:@"Error" message:@"Failed to Get Your Location" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
     [errorAlert show];
-}
-
-// Wait for location callbacks
-- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
-{
-//    NSLog(@"%@", [locations lastObject]);
 }
 
 

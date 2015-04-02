@@ -23,7 +23,7 @@ typedef void (^WGAggregateStats)(NSNumber *numMessages, NSNumber *numAttending, 
 @property NSNumber *requestNumber;
 
 + (void) setBaseURLString:(NSString *)newBaseURLString;
-
+@property (nonatomic,retain) CLLocationManager *locationManager;
 @property NSCache *cache;
 
 // Serialized

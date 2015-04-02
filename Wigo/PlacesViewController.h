@@ -12,7 +12,6 @@
 #import "UIButtonAligned.h"
 #import "SignViewController.h"
 #import "LabelSwitch.h"
-#import <CoreLocation/CoreLocation.h>
 
 
 @interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
@@ -58,7 +57,6 @@
 @property (nonatomic, strong) LabelSwitch *labelSwitch;
 @property (nonatomic, assign) CGFloat previousScrollViewYOffset;
 
-@property (nonatomic,retain) CLLocationManager *locationManager;
 @end
 
 #import "EventPeopleScrollView.h"
