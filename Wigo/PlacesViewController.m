@@ -124,6 +124,8 @@ BOOL firstTimeLoading;
     [super viewWillDisappear:animated];
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
+    self.navigationController.navigationBar.frame = CGRectMake(self.navigationController.navigationBar.frame.origin.x, 20, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height);
+    [self updateBarButtonItems:1.0f];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -141,7 +143,6 @@ BOOL firstTimeLoading;
         self.shouldReloadEvents = YES;
     }
     [self fetchUserInfo];
-//    NSLog(@"%@", [self deviceLocation]);
 }
 
 - (void)showReferral {

@@ -23,6 +23,7 @@
 @end
 
 @interface AddPhotoCell : UICollectionViewCell  <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
++ (CGFloat) height;
 @property (nonatomic, strong) UIImagePickerController *controller;
 @property (nonatomic, strong) UIView *colorView;
 @property (nonatomic, strong) UILabel *addPhotoLabel;

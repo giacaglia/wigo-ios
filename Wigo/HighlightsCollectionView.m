@@ -111,7 +111,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     cell.faceImageView.alpha = 1.0f;
     cell.orangeDotView.hidden = YES;
 
-    if (indexPath.row == self.eventMessages.count) {
+    if (indexPath.item == self.eventMessages.count - 1) {
         [self fetchEventMessages];
     }
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
@@ -167,10 +167,24 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     return CGSizeMake(5, 1);
 }
 
+#pragma mark - UICollectionViewDelegateFlowLayout
+
+- (CGSize)collectionView:(UICollectionView *)collectionView
+                  layout:(UICollectionViewLayout *)collectionViewLayout
+  sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == kAddPhotoSection) return CGSizeMake([AddPhotoCell height], [HighlightCell height]);
+    return CGSizeMake([HighlightCell height], [HighlightCell height]);
+}
+
+
 
 @end
 
 @implementation AddPhotoCell
+
++ (CGFloat) height {
+    return 55 + 5;
+}
 
 - (id)init {
     self = [super init];
@@ -199,20 +213,18 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void) setup {
     self.backgroundColor = UIColor.clearColor;
-    self.frame = CGRectMake(0, 0, [HighlightCell height], [HighlightCell height]);
+    self.frame = CGRectMake(0, 0, [AddPhotoCell height], [HighlightCell height]);
     self.contentView.frame = self.frame;
     
-    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 62, 62)];
+    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, self.contentView.frame.size.height/2 - 5 - 31, 55, 55)];
     cameraImageView.image = [UIImage imageNamed:@"addPhoto"];
-    cameraImageView.center = CGPointMake(self.contentView.center.x, self.contentView.center.y - 10);
     [self.contentView addSubview:cameraImageView];
     
-    UILabel *addBuzzLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, 15)];
-    addBuzzLabel.center = CGPointMake(self.contentView.center.x, self.contentView.center.y + 33);
+    UILabel *addBuzzLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, self.contentView.frame.size.height/2 - 7 + 35, 55, 15)];
     addBuzzLabel.text = @"Add Buzz";
     addBuzzLabel.textAlignment = NSTextAlignmentCenter;
-    addBuzzLabel.textColor = RGB(90, 90, 90);
-    addBuzzLabel.font = [FontProperties lightFont:13.0f];
+    addBuzzLabel.textColor = [FontProperties getBlueColor];
+    addBuzzLabel.font = [FontProperties mediumFont:13.0f];
     [self.contentView addSubview:addBuzzLabel];
 }
 
