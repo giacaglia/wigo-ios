@@ -48,8 +48,24 @@ dispatch_queue_t postQueue;
 static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 //#endif
 
+static CLLocationManager *locationManager;
+
 
 @implementation WGApi
+
++ (CLLocationManager *)defaultLocationManager {
+    if (!locationManager) {
+        locationManager = [[CLLocationManager alloc] init];
+        locationManager.distanceFilter = 500;
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters; // 100 m
+        if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+            [locationManager requestWhenInUseAuthorization];
+        }
+        [locationManager startUpdatingLocation];
+    }
+    return locationManager;
+  
+}
 
 +(void) get:(NSString *)endpoint withSerializedHandler:(SerializedApiResultBlock)handler {
     [WGApi getURL:[WGApi getUrlStringForEndpoint:endpoint] withSerializedHandler:handler];
@@ -64,14 +80,7 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 +(void) getURL:(NSString *)url withSerializedHandler:(SerializedApiResultBlock)handler {
     NSLog(@"GET %@", url);
     
-//    self.locationManager = [[CLLocationManager alloc] init];
-//    self.locationManager.delegate = self;
-//    self.locationManager.distanceFilter = 500;
-//    self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters; // 100 m
-//    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-//        [self.locationManager requestWhenInUseAuthorization];
-//    }
-//    [self.locationManager startUpdatingLocation];
+
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
@@ -309,10 +318,15 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [serializer setValue:kWigoApiVersion forHTTPHeaderField:kWigoApiVersionKey];
     [serializer setValue:kDeviceType forHTTPHeaderField:kWigoDeviceKey];
     [serializer setValue:kContentType forHTTPHeaderField:kContentTypeKey];
+    [serializer setValue:WGApi.getGeoVal forHTTPHeaderField:kGeoLocationKey];
     if (!shouldPassKey) {
         [serializer setValue:kWigoApiKey forHTTPHeaderField:kWigoApiKeyKey];
-        [serializer setValue:[WGProfile currentUser].key forHTTPHeaderField:kWigoUserKey];
+        [serializer setValue:WGProfile.currentUser.key forHTTPHeaderField:kWigoUserKey];
     }
+}
+
++ (NSString *)getGeoVal {
+    return [NSString stringWithFormat:@"geo: %f,%f", WGApi.defaultLocationManager.location.coordinate.latitude, WGApi.defaultLocationManager.location.coordinate.longitude];
 }
 
 #pragma mark AWS Uploader
