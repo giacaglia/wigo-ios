@@ -492,12 +492,15 @@ heightForHeaderInSection:(NSInteger)section
 }
 
 - (void) getNextPage {
+    if (self.isFetching) return;
     if (!self.presentedUsers.hasNextPage.boolValue) return;
 
+    self.isFetching = YES;
     __weak typeof(self) weakSelf = self;
     [self.presentedUsers addNextPage:^(BOOL success, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
+            strongSelf.isFetching = NO;
             if (error) {
                 [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];

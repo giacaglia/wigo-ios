@@ -960,7 +960,6 @@ viewForHeaderInSection:(NSInteger)section
 
 @implementation FollowPeopleCell
 
-
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -975,12 +974,30 @@ viewForHeaderInSection:(NSInteger)section
     self.acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 74 - 20, 0, 37, 37)];
     [self.acceptButton setImage:[UIImage imageNamed:@"acceptButton"] forState:UIControlStateNormal];
     self.acceptButton.center = CGPointMake(self.acceptButton.center.x, self.contentView.center.y);
+    [self.acceptButton addTarget:self action:@selector(acceptPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.acceptButton];
     
     self.rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 37 - 10, 0, 37, 37)];
     [self.rejectButton setImage:[UIImage imageNamed:@"rejectButton"] forState:UIControlStateNormal];
     self.rejectButton.center = CGPointMake(self.rejectButton.center.x, self.contentView.center.y);
+    [self.rejectButton addTarget:self action:@selector(rejectPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.rejectButton];
+}
+
+- (void)acceptPressed {
+//    [WGProfile.currentUser acceptFollowRequestForUser:self.user withHandler:^(BOOL success, NSError *error) {
+//        if (error) {
+//            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+//        }
+//    }];
+}
+
+- (void)rejectPressed {
+    [WGProfile.currentUser rejectFollowRequestForUser:self.user withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+        }
+    }];
 }
 
 - (void)setUser:(WGUser *)user {
