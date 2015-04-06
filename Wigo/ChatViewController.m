@@ -169,10 +169,6 @@
     return cell;
 }
 
-- (void) followedPerson:(id)sender {
-    UIButton *senderButton = (UIButton*)sender;
-    [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-}
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return [ChatCell height];
