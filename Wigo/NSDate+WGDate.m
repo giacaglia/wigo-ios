@@ -43,21 +43,21 @@
         NSDateComponents *differenceDateComponents = [self differenceBetweenDates:nowDate];
         if ([differenceDateComponents weekOfYear] == 0 && [differenceDateComponents month] == 0) {
             if ([differenceDateComponents day] == 0 || [differenceDateComponents day] == 1) {
-                return @"1 day ago";
+                return @"1 d";
             }
-            return [NSString stringWithFormat:@"%ld days ago", (long)[differenceDateComponents day]];
+            return [NSString stringWithFormat:@"%ld d", (long)[differenceDateComponents day]];
         } else {
             if ([differenceDateComponents month] == 0) {
                 if ([differenceDateComponents weekOfYear] == 1) {
-                    return @"1 week ago";
+                    return @"1 w";
                 }
-                return [NSString stringWithFormat:@"%ld weeks ago", (long)[differenceDateComponents weekOfYear]];
+                return [NSString stringWithFormat:@"%ld w", (long)[differenceDateComponents weekOfYear]];
             }
             else {
                 if ([differenceDateComponents month] == 1) {
-                    return @"1 month ago";
+                    return @"1 mo";
                 }
-                return [NSString stringWithFormat:@"%ld months ago", (long)[differenceDateComponents month]];
+                return [NSString stringWithFormat:@"%ld mo", (long)[differenceDateComponents month]];
             }
             
         }
