@@ -27,6 +27,7 @@
 @property (nonatomic, strong) WGCollection *followers;
 @property (nonatomic, strong) WGCollection *filteredUsers;
 @property (nonatomic, assign) BOOL fetching;
+@property (nonatomic, assign) BOOL isSearching;
 @end
 
 @interface TablePersonCell : UITableViewCell

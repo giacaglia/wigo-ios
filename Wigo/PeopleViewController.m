@@ -194,6 +194,11 @@ NSIndexPath *userIndex;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableViewOfPeople.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableViewOfPeople.showsVerticalScrollIndicator = NO;
+    _searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(40, 0, self.view.frame.size.width - 80, 50)];
+    _searchBar.delegate = self;
+    _searchBar.placeholder = @"Search by Name";
+    self.tableViewOfPeople.tableHeaderView = _searchBar;
+    self.tableViewOfPeople.contentOffset = CGPointMake(0, 50);
     [self.view addSubview:self.tableViewOfPeople];
 }
 
@@ -285,6 +290,7 @@ NSIndexPath *userIndex;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kSectionFollowPeople && [self.currentTab isEqual:@2]) {
+        if (self.isSearching) return 0;
         return 2;
     }
     else return (int)self.users.count + self.users.hasNextPage.intValue;
@@ -358,6 +364,7 @@ NSIndexPath *userIndex;
 -(CGFloat) tableView:(UITableView *)tableView
 heightForHeaderInSection:(NSInteger)section
 {
+    if (self.isSearching) return 0;
     if ([self.currentTab isEqual:@2]) return 30.0f;
     return 0;
 }
@@ -622,32 +629,14 @@ viewForHeaderInSection:(NSInteger)section
 
 #pragma mark - UISearchBarDelegate 
 
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    _searchIconImageView.hidden = YES;
-}
-
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    if (![searchBar.text isEqualToString:@""]) {
-        [UIView animateWithDuration:0.01 animations:^{
-            _searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
-        }  completion:^(BOOL finished){
-            _searchIconImageView.hidden = NO;
-        }];
-    } else {
-        [UIView animateWithDuration:0.01 animations:^{
-            _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
-        }  completion:^(BOOL finished){
-            _searchIconImageView.hidden = NO;
-        }];
-    }
-}
-
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if(searchText.length != 0) {
         [self performBlock:^(void){[self searchTableList];}
                 afterDelay:0.3
      cancelPreviousRequest:YES];
     } else {
+        self.isSearching = NO;
+        self.users = NetworkFetcher.defaultGetter.suggestions;
         [self.tableViewOfPeople reloadData];
     }
 }
@@ -674,6 +663,7 @@ viewForHeaderInSection:(NSInteger)section
                     [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                     return;
                 }
+                strongSelf.isSearching = YES;
                 strongSelf.users = collection;
                 [strongSelf.tableViewOfPeople reloadData];
             });
