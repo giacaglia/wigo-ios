@@ -282,6 +282,14 @@
     self.lastMessageLabel.numberOfLines = 2;
     self.lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.lastMessageImageView addSubview:self.lastMessageLabel];
+    
+    self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(6, 6, 12, 12)];
+    self.orangeNewView.backgroundColor = [FontProperties getOrangeColor];
+    self.orangeNewView.layer.cornerRadius = self.orangeNewView.frame.size.width/2;
+    self.orangeNewView.layer.borderColor = UIColor.clearColor.CGColor;
+    self.orangeNewView.layer.borderWidth = 1.0f;
+    self.orangeNewView.hidden = YES;
+    [self.contentView addSubview:self.orangeNewView];
 }
 
 - (void)setMessage:(WGMessage *)message {
@@ -291,24 +299,11 @@
     self.nameLabel.text = user.fullName;
     self.timeLabel.text = [message.created getUTCTimeStringToLocalTimeString];
     self.lastMessageLabel.text = message.message;
-    
-    if (message.expired) {
-        self.lastMessageLabel.textColor = RGB(150, 150, 150);
-//        UIImage *blurredImage = [[[SDWebImageManager sharedManager] imageCache] imageFromMemoryCacheForKey:[message message]];
-//        if (!blurredImage) {
-//            blurredImage = [UIImageCrop blurredImageFromImageView:self.lastMessageImageView withRadius:3.0f];
-//            [[[SDWebImageManager sharedManager] imageCache] storeImage:blurredImage forKey:[message message]];
-//        }
-//        self.lastMessageImageView.image = blurredImage;
-        self.lastMessageLabel.hidden = YES;
-    } else {
-        self.lastMessageImageView.image = nil;
-        self.lastMessageLabel.textColor = UIColor.blackColor;
-        self.lastMessageLabel.hidden = NO;
-    }
-    
-    if (![message.isRead boolValue]) self.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
-    else self.contentView.backgroundColor = UIColor.whiteColor;
+ 
+    self.lastMessageImageView.image = nil;
+    self.lastMessageLabel.textColor = UIColor.blackColor;
+    self.lastMessageLabel.hidden = NO;
+    self.orangeNewView.hidden = message.isRead.boolValue;
 }
 
 @end
