@@ -309,7 +309,6 @@ NSIndexPath *userIndex;
     cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, [self tableView:tableView heightForRowAtIndexPath:indexPath]);
 
     int tag = (int)[indexPath row];
-    if (self.users.count == 0) return cell;
     if (self.users.count > 5) {
         if ([self isThereANextPage] && tag == self.users.count - 5) {
             [self loadNextPage];
@@ -440,31 +439,25 @@ viewForHeaderInSection:(NSInteger)section
 }
 
 - (void)fetchFirstPageSuggestions {
-    self.suggestions = NetworkFetcher.defaultGetter.suggestions;
-    self.users = self.suggestions;
+    self.users = NetworkFetcher.defaultGetter.suggestions;
     [self.tableViewOfPeople reloadData];
 }
 
 - (void)fetchNextPageSuggestions {
     if (self.fetching) return;
-    if (!self.suggestions.hasNextPage.boolValue) return;
+    if (!self.users.hasNextPage.boolValue) return;
     self.fetching = YES;
     __weak typeof(self) weakSelf = self;
-    [self.suggestions getNextPage:^(WGCollection *collection, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            strongSelf.fetching = NO;
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            if (strongSelf.suggestions) {
-                [strongSelf.users addObjectsFromCollection:collection notInCollection:strongSelf.suggestions];
-            }
-            strongSelf.suggestions = collection;
-            [strongSelf.tableViewOfPeople reloadData];
-        });
+    [self.users addNextPage:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.fetching = NO;
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        [strongSelf.tableViewOfPeople reloadData];
+
     }];
 }
 
