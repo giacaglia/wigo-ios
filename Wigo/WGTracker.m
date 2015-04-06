@@ -177,14 +177,14 @@ static NSString *previousViewName;
 }
 
 - (void)sendInfo {
-    if (self.batchedInfo.count == 0) return;
-    [WGApi postURL:analyticsString
-    withParameters:self.batchedInfo
-        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            
-        }];
-    // RESET SETTINGS
-    self.batchedInfo = [NSMutableArray new];
+//    if (self.batchedInfo.count == 0) return;
+//    [WGApi postURL:analyticsString
+//    withParameters:self.batchedInfo
+//        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//            
+//        }];
+//    // RESET SETTINGS
+//    self.batchedInfo = [NSMutableArray new];
 }
 
 

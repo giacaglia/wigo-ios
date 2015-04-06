@@ -420,6 +420,8 @@
 		E9D039C51A0986BA00DEF094 /* EventStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */; };
 		E9D039C81A09886A00DEF094 /* MediaScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* MediaScrollView.m */; };
 		E9D039C91A09886A00DEF094 /* MediaScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* MediaScrollView.m */; };
+		E9D4F1681AD31EAA00478C78 /* GroupConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D4F1671AD31EAA00478C78 /* GroupConversationViewController.m */; };
+		E9D4F1691AD31EAA00478C78 /* GroupConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D4F1671AD31EAA00478C78 /* GroupConversationViewController.m */; };
 		E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E9D7D5321926539C00E1ED10 /* Main.storyboard */; };
 		E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906BD19252DA900E39FC8 /* PeopleViewController.m */; };
 		E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906C419253A1D00E39FC8 /* ChatViewController.m */; };
@@ -867,6 +869,8 @@
 		E9CDC46C1AA51EB300CD0336 /* OpenSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "OpenSans-Regular.ttf"; sourceTree = "<group>"; };
 		E9D039C61A09886A00DEF094 /* MediaScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaScrollView.h; sourceTree = "<group>"; };
 		E9D039C71A09886A00DEF094 /* MediaScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaScrollView.m; sourceTree = "<group>"; };
+		E9D4F1661AD31EAA00478C78 /* GroupConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GroupConversationViewController.h; sourceTree = "<group>"; };
+		E9D4F1671AD31EAA00478C78 /* GroupConversationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GroupConversationViewController.m; sourceTree = "<group>"; };
 		E9D7D5331926539C00E1ED10 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = Wigo/en.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E9D906BC19252DA900E39FC8 /* PeopleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeopleViewController.h; sourceTree = "<group>"; };
 		E9D906BD19252DA900E39FC8 /* PeopleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PeopleViewController.m; sourceTree = "<group>"; };
@@ -1872,6 +1876,8 @@
 				E9D039C71A09886A00DEF094 /* MediaScrollView.m */,
 				E957CD681A928EBD00D0FF7C /* PrivateSwitchView.h */,
 				E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */,
+				E9D4F1661AD31EAA00478C78 /* GroupConversationViewController.h */,
+				E9D4F1671AD31EAA00478C78 /* GroupConversationViewController.m */,
 			);
 			name = EventStory;
 			sourceTree = "<group>";
@@ -2344,6 +2350,7 @@
 				C12A111519787BE700D53B1C /* MessageViewController.m in Sources */,
 				45D9FAA31A781AFD00D08577 /* UIView+JSQMessages.m in Sources */,
 				45D9FACD1A781AFD00D08577 /* JSQMessagesCollectionViewCell.m in Sources */,
+				E9D4F1691AD31EAA00478C78 /* GroupConversationViewController.m in Sources */,
 				C12A111619787BE700D53B1C /* UIImage+WebP.m in Sources */,
 				E9F406031A8436570043F07F /* ReferalViewController.m in Sources */,
 				C12A111719787BE700D53B1C /* SignViewController.m in Sources */,
@@ -2460,6 +2467,7 @@
 				E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */,
 				FA55261A1A1FDB4000101AE7 /* JBBarChartView.m in Sources */,
 				45DF86AD1A5C5DEB00DB85AE /* AFHTTPRequestOperationManager.m in Sources */,
+				E9D4F1681AD31EAA00478C78 /* GroupConversationViewController.m in Sources */,
 				E9C340291A97986500AB069F /* HighlightsCollectionView.m in Sources */,
 				E900C2C01961EADE00A01F50 /* UIImage+MultiFormat.m in Sources */,
 				45DF86B31A5C5DEB00DB85AE /* AFURLResponseSerialization.m in Sources */,

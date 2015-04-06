@@ -1,11 +1,12 @@
 //
-//  ConversationViewController.m
+//  NSObject+GroupConversationViewController.m
 //  Wigo
 //
-//  Created by Giuliano Giacaglia on 5/27/14.
-//  Copyright (c) 2014 Giuliano Giacaglia. All rights reserved.
+//  Created by Giuliano Giacaglia on 4/6/15.
+//  Copyright (c) 2015 Giuliano Giacaglia. All rights reserved.
 //
 
+#import "GroupConversationViewController.h"
 #import "ConversationViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
@@ -13,28 +14,12 @@
 
 #define kTimeDifferenceToShowDate 1800 // 30 minutes
 
-@interface ConversationViewController ()
-
-@property WGUser *user;
-
-@end
-
 JSQMessagesBubbleImageFactory *bubbleFactory;
 JSQMessagesBubbleImage *orangeBubble;
 JSQMessagesBubbleImage *grayBubble;
 ProfileViewController *profileViewController;
 
-@implementation ConversationViewController
-
-- (id)initWithUser: (WGUser *)user
-{
-    self = [super init];
-    if (self) {
-        self.user = user;
-        self.view.backgroundColor = [UIColor whiteColor];
-    }
-    return self;
-}
+@implementation GroupConversationViewController
 
 - (id)init
 {
@@ -56,7 +41,6 @@ ProfileViewController *profileViewController;
     grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
     
     [self initializeLeftBarButton];
-    [self initializeRightBarButton];
     
     self.showLoadEarlierMessagesHeader = NO;
     self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeZero;
@@ -94,7 +78,7 @@ ProfileViewController *profileViewController;
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:UIColor.whiteColor}];
     self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:UIColor.whiteColor forKey:NSForegroundColorAttributeName];
     
-    self.title = self.user.fullName;
+    self.title = self.event.name;
     
     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.translucent = NO;
@@ -105,11 +89,6 @@ ProfileViewController *profileViewController;
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [WGAnalytics tagView:@"conversation"];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
 }
 
 -(void) textChanged:(id)sender {
@@ -160,21 +139,6 @@ ProfileViewController *profileViewController;
     self.inputToolbar.contentView.leftBarButtonItem = nil;
 }
 
-- (void) initializeRightBarButton {
-    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 30, 30) andType:@3];
-    [profileButton addTarget:self action:@selector(showUser) forControlEvents:UIControlEventTouchUpInside];
-    UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
-    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    profileImageView.clipsToBounds = YES;
-    profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
-    profileImageView.layer.borderWidth = 1.0f;
-    profileImageView.layer.cornerRadius = profileImageView.frame.size.width/2;
-    [profileImageView setSmallImageForUser:self.user completed:nil];
-    [profileButton addSubview:profileImageView];
-    [profileButton setShowsTouchWhenHighlighted:NO];
-    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
-    self.navigationItem.rightBarButtonItem = profileBarButton;
-}
 
 - (id<JSQMessageData>)collectionView:(JSQMessagesCollectionView *)collectionView messageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
     return (WGMessage *)[self.messages objectAtIndex:indexPath.item];
@@ -276,33 +240,19 @@ ProfileViewController *profileViewController;
 }
 
 - (void) goBack {
-    [self.user readConversation:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionSave];
-        }
-    }];
-    
+
     self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
     self.navigationController.navigationBar.translucent = YES;
     
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)showUser {
-    ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    profileViewController.user = self.user;
-    
-    self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
-    self.navigationController.navigationBar.translucent = YES;
-    
-    [self.navigationController pushViewController:profileViewController animated:YES];
-}
 
 -(void) didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
     WGMessage *message = [[WGMessage alloc] init];
     message.message = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     message.created = date;
-    message.toUser = self.user;
+//    message.toUser = self.user;
     message.user = [WGProfile currentUser];
     __weak typeof(self) weakSelf = self;
     [message create:^(BOOL success, NSError *error) {
@@ -358,19 +308,19 @@ ProfileViewController *profileViewController;
     }
     NSNumber *fromUserID = [fromUser objectForKey:@"id"];
     
-    if (fromUserID && self.user.id && [fromUserID isEqualToNumber:self.user.id]) {
-        WGMessage *message = [[WGMessage alloc] init];
-        
-        message.id = messageID;
-        message.message = messageString;
-        message.created = [NSDate dateInLocalTimezone];
-        message.user = self.user;
-        message.toUser = [WGProfile currentUser];
-        
-        [self.messages addObject:message];
-        
-        [self finishReceivingMessageAnimated:YES];
-    }
+//    if (fromUserID && self.user.id && [fromUserID isEqualToNumber:self.user.id]) {
+//        WGMessage *message = [[WGMessage alloc] init];
+//        
+//        message.id = messageID;
+//        message.message = messageString;
+//        message.created = [NSDate dateInLocalTimezone];
+//        message.user = self.user;
+//        message.toUser = [WGProfile currentUser];
+//        
+//        [self.messages addObject:message];
+//        
+//        [self finishReceivingMessageAnimated:YES];
+//    }
 }
 
 - (void)initializeMessageForEmptyConversation {
@@ -391,65 +341,15 @@ ProfileViewController *profileViewController;
 
 - (void)fetchFirstPageMessages {
     self.isFetching = NO;
-
+    
     [WGSpinnerView addDancingGToCenterView:self.view];
     __weak typeof(self) weakSelf = self;
-    [self.user getConversation:^(WGCollection *collection, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-        strongSelf.isFetching = NO;
-
-        if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-            return;
-        }
-        [collection reverse];
-        strongSelf.messages = collection;
-        if (strongSelf.messages.count == 0) {
-            [strongSelf initializeMessageForEmptyConversation];
-        } else {
-            strongSelf.viewForEmptyConversation.alpha = 0.0f;
-        }
-        
-        strongSelf.showLoadEarlierMessagesHeader = strongSelf.messages.hasNextPage.boolValue;
-        [strongSelf.collectionView reloadData];
-        [strongSelf scrollToBottomAnimated:YES];
-    }];
 }
 
 - (void)fetchMessages:(BOOL)scrollToBottom {
     if (!self.messages.hasNextPage.boolValue) return;
     if (self.isFetching) return;
     self.isFetching = YES;
-    
-    __weak typeof(self) weakSelf = self;
-    [self.messages getNextPage:^(WGCollection *collection, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        strongSelf.isFetching = NO;
-
-        if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-            return;
-        }
-        [collection reverse];
-        [strongSelf.messages addObjectsFromCollectionToBeginning:collection notInCollection:self.messages];
-        strongSelf.messages.hasNextPage = collection.hasNextPage;
-        strongSelf.messages.nextPage = collection.nextPage;
-        strongSelf.showLoadEarlierMessagesHeader = strongSelf.messages.hasNextPage.boolValue;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [strongSelf.collectionView reloadData];
-        });
-    }];
-   
-    
-}
-
-- (void)updateLastMessagesRead:(WGMessage *)message {
-    if ([message.id intValue] > [[WGProfile currentUser].lastMessageRead intValue]) {
-        WGProfile.currentUser.lastMessageRead = message.id;
-    }
 }
 
 @end
