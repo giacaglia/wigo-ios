@@ -91,12 +91,12 @@
 
 
 - (void)fetchMessages {
+    if (self.isFetching) return;
+    self.isFetching = YES;
     __weak typeof(self) weakSelf = self;
-    if (self.fetchingFirstPage) return;
-
-    self.fetchingFirstPage = YES;
     [WGMessage getConversations:^(WGCollection *collection, NSError *error) {
         __strong typeof(self) strongSelf = weakSelf;
+        strongSelf.isFetching = NO;
         [WGSpinnerView removeDancingGFromCenterView:self.view];
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
@@ -111,7 +111,6 @@
             strongSelf.tableViewOfPeople.hidden = NO;
             strongSelf.chatButton.hidden = YES;
         }
-        strongSelf.fetchingFirstPage = NO;
         [strongSelf.tableViewOfPeople reloadData];
         [strongSelf.tableViewOfPeople didFinishPullToRefresh];
     }];
@@ -119,11 +118,14 @@
 }
 
 - (void)fetchNextPage {
-    __weak typeof(self) weakSelf = self;
     if (!self.messages.hasNextPage.boolValue) return;
+    if (self.isFetching) return;
+    self.isFetching = YES;
+    __weak typeof(self) weakSelf = self;
     
     [self.messages addNextPage:^(BOOL success, NSError *error) {
         __strong typeof(self) strongSelf = weakSelf;
+        strongSelf.isFetching = NO;
         [strongSelf.tableViewOfPeople reloadData];
     }];
     
@@ -199,38 +201,6 @@
         [self.messages removeObjectAtIndex:[indexPath row]];
         [tableView reloadData];
     }
-}
-
-#pragma mark - acessory methods
-
-
-- (UIImage *)imageFromView:(UIView *)v
-{
-    CGSize size = v.bounds.size;
-    
-    CGFloat scale = [UIScreen mainScreen].scale;
-    size.width *= scale;
-    size.height *= scale;
-    
-    UIGraphicsBeginImageContextWithOptions(size, NO, [UIScreen mainScreen].scale);
-    
-    if ([v respondsToSelector:@selector(drawViewHierarchyInRect:afterScreenUpdates:)])
-    {
-        [v drawViewHierarchyInRect:(CGRect){.origin = CGPointZero, .size = size} afterScreenUpdates:YES];
-    }
-    else
-    {
-        CGContextRef ctx = UIGraphicsGetCurrentContext();
-        
-        CGContextScaleCTM(ctx, scale, scale);
-        
-        [v.layer renderInContext:ctx];
-    }
-    
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
 }
 
 @end
