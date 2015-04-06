@@ -15,7 +15,6 @@
 - (id)initWithUser:(WGUser *)user andTab:(NSNumber *)tab;
 - (id)initWithUser:(WGUser *)user;
 - (void)presentUser:(WGUser *)user;
-- (void)updateButton:(id)sender withUser:(WGUser *)user;
 @property (nonatomic, strong) WGUser *user;
 @property (nonatomic, strong) NSNumber *currentTab;
 @property (nonatomic, strong) UITableView *tableViewOfPeople;

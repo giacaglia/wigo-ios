@@ -80,7 +80,6 @@ typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
 
 @protocol PeopleViewDelegate <NSObject>
 - (void)presentUser:(WGUser *)user;
-- (void)updateButton:(id)sender withUser:(WGUser *)user;
 @end
 
 @protocol CameraDelegate <NSObject>
