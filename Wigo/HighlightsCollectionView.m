@@ -57,8 +57,7 @@
 
 - (void)setEvent:(WGEvent *)event {
     _event = event;
-    self.eventMessages = [WGCollection serializeResponse:event.messages andClass:[WGEventMessage class]];
-    self.contentSize = CGSizeMake(self.eventMessages.count *[HighlightCell height], [HighlightCell height]);
+    self.contentSize = CGSizeMake(_event.messages.count *[HighlightCell height], [HighlightCell height]);
     [self reloadData];
 }
 
@@ -66,7 +65,7 @@
 
 - (void)collectionView:(UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (![self.event isEqual:WGProfile.currentUser.eventAttending] && self.eventMessages.count == 0 && !WGProfile.currentUser.crossEventPhotosEnabled) return;
+    if (![self.event isEqual:WGProfile.currentUser.eventAttending] && _event.messages.count == 0 && !WGProfile.currentUser.crossEventPhotosEnabled) return;
     if (indexPath.section == kAddPhotoSection && self.isPeeking) return;
     if (self.isPeeking){
         indexPath = [NSIndexPath indexPathForItem:indexPath.item inSection:indexPath.section];
@@ -75,7 +74,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         int index = indexPath.item + 1;
         if (indexPath.section == kAddPhotoSection) index -= 1;
         [self.placesDelegate showConversationForEvent:self.event
-                                    withEventMessages:self.eventMessages
+                                    withEventMessages:self.event.messages
                                               atIndex:index];
     }
 }
@@ -94,7 +93,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         if (self.event.isExpired.boolValue) return 0;
        return 1;
     }
-    if (section == kHighlightSection) return self.eventMessages.count;
+    if (section == kHighlightSection) return self.event.messages.count;
     return 0;
 }
 
@@ -111,10 +110,10 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     cell.faceImageView.alpha = 1.0f;
     cell.orangeDotView.hidden = YES;
 
-    if (indexPath.item == self.eventMessages.count - 1) {
+    if (indexPath.item == self.event.messages.count - 1) {
         [self fetchEventMessages];
     }
-    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.event.messages objectAtIndex:[indexPath row]];
     
     NSString *contentURL;
     if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
@@ -137,9 +136,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (void)fetchEventMessages {
     self.cancelFetchMessages = YES;
     __weak typeof(self) weakSelf = self;
-    if (!self.eventMessages.hasNextPage.boolValue) return;
+    if (!self.event.messages.hasNextPage.boolValue) return;
     
-    [self.eventMessages addNextPage:^(BOOL success, NSError *error) {
+    [self.event.messages addNextPage:^(BOOL success, NSError *error) {
         __strong typeof(self) strongSelf = weakSelf;
         strongSelf.cancelFetchMessages = NO;
         if (error) {
@@ -147,7 +146,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
-        strongSelf.contentSize = CGSizeMake(strongSelf.eventMessages.count *[HighlightCell height], [HighlightCell height]);
+        strongSelf.contentSize = CGSizeMake(strongSelf.event.messages.count *[HighlightCell height], [HighlightCell height]);
         [strongSelf reloadData];
     }];
 }

@@ -51,6 +51,9 @@
     if ([self objectForKey:kHighlightKey]  && [[self objectForKey:kHighlightKey] isKindOfClass:[NSDictionary class]]) {
         [self.parameters setObject:[WGEventMessage serialize:[self objectForKey:kHighlightKey]] forKey:kHighlightKey];
     }
+    if ([self objectForKey:kMessagesKey] && [[self objectForKey:kMessagesKey] isKindOfClass:[NSDictionary class]]) {
+        [self.parameters setObject:[WGCollection serializeResponse:[self objectForKey:kMessagesKey] andClass:[WGEventMessage class]] forKey:kMessagesKey];
+    }
 }
 
 +(WGEvent *)serialize:(NSDictionary *)json {
