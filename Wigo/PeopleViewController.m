@@ -184,12 +184,16 @@ NSIndexPath *userIndex;
 - (void)initializeTableOfPeople {
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    if ([self.currentTab isEqual:@2]) {
+        self.tableViewOfPeople.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 108);
+    }
     [self.tableViewOfPeople registerClass:[PeopleCell class] forCellReuseIdentifier:kPeopleCellName];
     [self.tableViewOfPeople registerClass:[FollowPeopleCell class] forCellReuseIdentifier:kFollowPeopleCell];
     self.tableViewOfPeople.delegate = self;
     self.tableViewOfPeople.dataSource = self;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableViewOfPeople.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.tableViewOfPeople.showsVerticalScrollIndicator = NO;
     [self.view addSubview:self.tableViewOfPeople];
 }
 

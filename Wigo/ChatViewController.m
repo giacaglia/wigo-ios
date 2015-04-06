@@ -73,6 +73,7 @@
     self.tableViewOfPeople.dataSource = self;
     self.tableViewOfPeople.backgroundColor = UIColor.clearColor;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.tableViewOfPeople.showsVerticalScrollIndicator = NO;
     [self.tableViewOfPeople registerClass:[ChatCell class] forCellReuseIdentifier:kChatCellName];
     [self.view addSubview:self.tableViewOfPeople];
     [self addRefreshToTableView];

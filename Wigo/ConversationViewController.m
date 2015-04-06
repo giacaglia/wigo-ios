@@ -88,13 +88,13 @@ ProfileViewController *profileViewController;
     [super viewWillAppear:animated];
     
     // Title setup
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    self.navigationController.navigationBar.barTintColor = [FontProperties getOrangeColor];
-    self.navigationController.navigationBar.tintColor = [FontProperties getOrangeColor];
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [FontProperties getOrangeColor]}];
-    self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[FontProperties getOrangeColor] forKey:NSForegroundColorAttributeName];
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:UIColor.whiteColor, NSFontAttributeName:[FontProperties getTitleFont]};
+    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
+    self.navigationController.navigationBar.tintColor = UIColor.whiteColor;
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:UIColor.whiteColor}];
+    self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:UIColor.whiteColor forKey:NSForegroundColorAttributeName];
     
-    self.title = [self.user fullName];
+    self.title = self.user.fullName;
     
     self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.translucent = NO;
@@ -140,7 +140,7 @@ ProfileViewController *profileViewController;
 }
 
 - (NSString *)senderDisplayName {
-    return [[WGProfile currentUser] fullName];
+    return WGProfile.currentUser.fullName;
 }
 
 - (NSString *)senderId {
@@ -390,79 +390,65 @@ ProfileViewController *profileViewController;
 # pragma mark - Network functions
 
 - (void)fetchFirstPageMessages {
-    self.fetching = NO;
-    [self fetchMessages:YES];
+    self.isFetching = NO;
+
+    [WGSpinnerView addDancingGToCenterView:self.view];
+    __weak typeof(self) weakSelf = self;
+    [self.user getConversation:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+        strongSelf.isFetching = NO;
+
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        [collection reverse];
+        strongSelf.messages = collection;
+        if (strongSelf.messages.count == 0) {
+            [strongSelf initializeMessageForEmptyConversation];
+        } else {
+            strongSelf.viewForEmptyConversation.alpha = 0.0f;
+        }
+        
+        strongSelf.showLoadEarlierMessagesHeader = strongSelf.messages.hasNextPage.boolValue;
+        [strongSelf.collectionView reloadData];
+        [strongSelf scrollToBottomAnimated:YES];
+    }];
 }
 
 - (void)fetchMessages:(BOOL)scrollToBottom {
-    if (!self.fetching) {
-        self.fetching = YES;
-        if (!self.messages) {
-            UIView *loadingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 120)];
-            [self.view addSubview:loadingView];
-            [WGSpinnerView showOrangeSpinnerAddedTo:loadingView];
-            __weak typeof(self) weakSelf = self;
-            [self.user getConversation:^(WGCollection *collection, NSError *error) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    strongSelf.fetching = NO;
-                    return;
-                }
-                [collection reverse];
-                strongSelf.messages = collection;
-                [WGSpinnerView hideSpinnerForView:loadingView];
-                [loadingView removeFromSuperview];
-                strongSelf.fetching = NO;
-                
-                if (strongSelf.messages.count == 0) {
-                    [strongSelf initializeMessageForEmptyConversation];
-                } else {
-                    strongSelf.viewForEmptyConversation.alpha = 0.0f;
-                }
-                
-                strongSelf.showLoadEarlierMessagesHeader = [[strongSelf.messages hasNextPage] boolValue];
-                [strongSelf.collectionView reloadData];
-                if (scrollToBottom) {
-                    [strongSelf scrollToBottomAnimated:YES];
-                }
-            }];
-        } else if ([self.messages.hasNextPage boolValue]) {
-            __weak typeof(self) weakSelf = self;
-            [self.messages getNextPage:^(WGCollection *collection, NSError *error) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    strongSelf.fetching = NO;
-                    return;
-                }
-                [collection reverse];
-                [strongSelf.messages addObjectsFromCollectionToBeginning:collection notInCollection:self.messages];
-                strongSelf.messages.hasNextPage = collection.hasNextPage;
-                strongSelf.messages.nextPage = collection.nextPage;
-                
-                [strongSelf.viewForEmptyConversation removeFromSuperview];
-                strongSelf.fetching = NO;
-                strongSelf.showLoadEarlierMessagesHeader = [[strongSelf.messages hasNextPage] boolValue];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [strongSelf.collectionView reloadData];
-                    if (scrollToBottom) {
-                        [strongSelf scrollToBottomAnimated:YES];
-                    }
-                });
-            }];
-        } else {
-            self.fetching = NO;
+    if (!self.messages.hasNextPage.boolValue) return;
+    if (self.isFetching) return;
+    self.isFetching = YES;
+    
+    __weak typeof(self) weakSelf = self;
+    [self.messages getNextPage:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.isFetching = NO;
+
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
         }
-    }
+        [collection reverse];
+        [strongSelf.messages addObjectsFromCollectionToBeginning:collection notInCollection:self.messages];
+        strongSelf.messages.hasNextPage = collection.hasNextPage;
+        strongSelf.messages.nextPage = collection.nextPage;
+        strongSelf.showLoadEarlierMessagesHeader = strongSelf.messages.hasNextPage.boolValue;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [strongSelf.collectionView reloadData];
+        });
+    }];
+   
+    
 }
 
 - (void)updateLastMessagesRead:(WGMessage *)message {
     if ([message.id intValue] > [[WGProfile currentUser].lastMessageRead intValue]) {
-        [WGProfile currentUser].lastMessageRead = message.id;
+        WGProfile.currentUser.lastMessageRead = message.id;
     }
 }
 
