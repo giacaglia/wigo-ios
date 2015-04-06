@@ -117,6 +117,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(NSArray *) smallImagesURL;
 -(void) addImageURL:(NSString *)imageURL;
 -(void) addImageDictionary:(NSDictionary *)imageDictionary;
+-(void) followUser;
 
 -(BOOL) isCurrentUser;
 

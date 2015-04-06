@@ -734,6 +734,46 @@ static WGUser *currentUser = nil;
     return NOT_FOLLOWING_PUBLIC_USER_STATE;
 }
 
+-(void) followUser {
+    // If it's blocked
+    if (self.isBlocked.boolValue) {
+        self.isBlocked = @NO;
+        [WGProfile.currentUser unblock:self withHandler:^(BOOL success, NSError *error) {
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+            }
+        }];
+    }
+    else {
+        if (self.isFollowing.boolValue || self.isFollowingRequested.boolValue) {
+            // If it's following user
+            self.isFollowing = @NO;
+            self.isFollowingRequested = @NO;
+            [WGProfile.currentUser unfollow:self withHandler:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+                }
+            }];
+            
+        }
+        else  {
+            if (self.privacy == PRIVATE) {
+                // If it's not following and it's private
+                self.isFollowingRequested = @YES;
+            } else {
+                // If it's not following and it's public
+                self.isFollowing = @YES;
+            }
+            [WGProfile.currentUser follow:self withHandler:^(BOOL success, NSError *error) {
+                if (error) {
+                    [[WGError sharedInstance] logError:error forAction:WGActionPost];
+                }
+            }];
+        }
+    }
+    
+}
+
 +(void) get:(WGCollectionResultBlock)handler {
     [WGApi get:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {

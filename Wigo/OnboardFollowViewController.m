@@ -178,44 +178,7 @@ UIImageView *searchIconImageView;
     UIButton *buttonSender = (UIButton *)sender;
     int row = buttonSender.tag;
     WGUser *user = (WGUser *)[self.presentedUsers objectAtIndex:buttonSender.tag];
-    
-    // If it's blocked
-    if (user.isBlocked.boolValue) {
-        user.isBlocked = @NO;
-        [WGProfile.currentUser unblock:user withHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-            }
-        }];
-    }
-    else {
-        if (user.isFollowing.boolValue || user.isFollowingRequested.boolValue) {
-            // If it's following user
-            user.isFollowing = @NO;
-            user.isFollowingRequested = @NO;
-            [WGProfile.currentUser unfollow:user withHandler:^(BOOL success, NSError *error) {
-                if (error) {
-                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-                }
-            }];
-            
-        }
-        else  {
-            if (user.privacy == PRIVATE) {
-                // If it's not following and it's private
-                user.isFollowingRequested = @YES;
-            } else {
-                // If it's not following and it's public
-                user.isFollowing = @YES;
-            }
-            [WGProfile.currentUser follow:user withHandler:^(BOOL success, NSError *error) {
-                if (error) {
-                    [[WGError sharedInstance] logError:error forAction:WGActionPost];
-                }
-            }];
-        }
-    }
-    
+    [user followUser];
     [self.presentedUsers replaceObjectAtIndex:row withObject:user];
     [self.tableViewOfPeople reloadData];
 }
