@@ -39,6 +39,7 @@
 @property (nonatomic, strong) UILabel *mutualFriendsLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *spinnerView;
 @property (nonatomic, strong) WGUser *user;
+@property (nonatomic, strong) UIView *orangeNewView;
 @end
 
 #define kSectionPeople 1

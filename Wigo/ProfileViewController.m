@@ -258,7 +258,7 @@ BOOL blockShown;
 
 #pragma mark - Go Back
 - (void) goBack {
-    if (![self.user isCurrentUser]) {
+    if (!self.user.isCurrentUser) {
         NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[self.user deserialize]];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUserAtTable" object:nil userInfo:userInfo];
     }
