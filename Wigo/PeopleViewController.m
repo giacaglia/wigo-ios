@@ -52,11 +52,10 @@ NSIndexPath *userIndex;
     self.users = [[WGCollection alloc] initWithType:[WGUser class]];
     // Title setup
     [self initializeBackBarButton];
-    [self initializeRightBarButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
 
-    [self initializeSearchBar];
+//    [self initializeSearchBar];
     [self initializeTableOfPeople];
 }
 
@@ -71,6 +70,8 @@ NSIndexPath *userIndex;
     else if ([self.currentTab isEqualToNumber:@4]) {
         [WGAnalytics tagView:@"following"];
     }
+    [self initializeRightBarButton];
+
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -102,11 +103,12 @@ NSIndexPath *userIndex;
 - (void) initializeRightBarButton {
     if (self.user.isCurrentUser && [self.currentTab isEqual:@2]) {
         UIButtonAligned *searchButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 15, 16) andType:@2];
-        [searchButton setBackgroundImage:[UIImage imageNamed:@"orangeSearchIcon"] forState:UIControlStateNormal];
-        [searchButton addTarget:self action:@selector(searchPressed)
+        [searchButton setTitle:@"Invite" forState:UIControlStateNormal];
+        [searchButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        [searchButton addTarget:self action:@selector(invitePressed)
                 forControlEvents:UIControlEventTouchUpInside];
         [searchButton setShowsTouchWhenHighlighted:YES];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchButton];
+        self.tabBarController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchButton];
     }
     else {
         CGRect profileFrame = CGRectMake(0, 0, 30, 30);
@@ -130,27 +132,11 @@ NSIndexPath *userIndex;
     [_searchBar becomeFirstResponder];
     [self.navigationItem setHidesBackButton:YES animated:YES];
     [self.tableViewOfPeople setContentOffset:self.tableViewOfPeople.contentOffset animated:NO];
-    
-    UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@5];
-    [cancelButton setTitle:@"Done" forState:UIControlStateNormal];
-    [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
-    cancelButton.titleLabel.textAlignment = NSTextAlignmentRight;
-    cancelButton.titleLabel.font = [FontProperties mediumFont:17.0f];
-    [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
-    [barItem setCustomView:cancelButton];
-    self.navigationItem.rightBarButtonItem = barItem;
 
     self.filteredUsers = [[WGCollection alloc] initWithType:[WGUser class]];
     [self.tableViewOfPeople reloadData];
 }
 
-- (void)cancelPressed {
-    [self clearSearchBar];
-    [self initializeBackBarButton];
-    [self initializeRightBarButton];
-    [self loadTableView];
-}
 
 - (void) goBack {
     [[WGProfile currentUser] setLastUserReadToLatest:^(BOOL success, NSError *error) {
@@ -245,17 +231,12 @@ NSIndexPath *userIndex;
     }
 }
 
-- (void)inviteButtonPressed  {
+- (void)invitePressed  {
     [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
 }
 
 #pragma mark - Filter handlers
 
-- (void)clearSearchBar {
-    [self.view endEditing:YES];
-    _searchBar.text = @"";
-    [self searchBarTextDidEndEditing:_searchBar];
-}
 
 - (void)loadTableView {
     self.navigationItem.titleView = nil;
