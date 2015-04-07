@@ -282,10 +282,6 @@ referenceSizeForFooterInSection:(NSInteger)section {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)followPressed:(id)sender {
-    NSLog(@"followd");
-}
-
 @end
 
 @implementation AttendeesPhotoCell
@@ -357,26 +353,11 @@ referenceSizeForFooterInSection:(NSInteger)section {
     [self.chatButton addSubview:chatLabel];
     [backgroundWhiteView addSubview:self.chatButton];
     
-    self.followButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 80, 10, 160, 50)];
-    self.followButton.backgroundColor = [UIColor clearColor];
-    self.followButton.layer.cornerRadius = 15;
-    self.followButton.layer.borderWidth = 1;
-    self.followButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    self.followButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 30, 10, 60, 50)];
+    [self.followButton setImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [self.followButton addTarget:self action:@selector(followPressed:) forControlEvents:UIControlEventTouchUpInside];
     [backgroundWhiteView addSubview:self.followButton];
     [backgroundWhiteView bringSubviewToFront: self.followButton];
-    
-    UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 0, self.followButton.frame.size.width - 40, self.followButton.frame.size.height)];
-    followLabel.text = @"Follow";
-    followLabel.textAlignment = NSTextAlignmentLeft;
-    followLabel.textColor = [FontProperties getOrangeColor];
-    followLabel.font =  [FontProperties scMediumFont:24.0f];
-    [self.followButton addSubview:followLabel];
-    
-    UIImageView *plusImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"plusPerson"]];
-    plusImageView.frame = CGRectMake(self.followButton.frame.size.width - 28 - 20, self.followButton.frame.size.height/2 - 9, 28, 20);
-    plusImageView.tintColor = [FontProperties getOrangeColor];
-    [self.followButton addSubview:plusImageView];
     
     self.followRequestLabel = [[UILabel alloc] initWithFrame: backgroundWhiteView.frame];
     self.followRequestLabel.text = @"Your follow request has been sent";
