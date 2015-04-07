@@ -519,37 +519,15 @@ BOOL blockShown;
 
 
 - (void)followPressed {
-    self.user.isFollowing = @YES;
-    self.user.isFollowingRequested = @YES;
+    [self.user followUser];
     self.userState = self.user.state;
     [self reloadViewForUserState];
-    
-    [[WGProfile currentUser] follow:self.user withHandler:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
-            [[WGError sharedInstance] logError:error forAction:WGActionPost];
-            return;
-        }
-        self.userState = self.user.state;
-        [self reloadViewForUserState];
-    }];
 }
 
 - (void)unfollowPressed {
-    self.user.isFollowingRequested = @NO;
-    self.user.isFollowing = @NO;
+    [self.user followUser];
     self.userState = self.user.state;
     [self reloadViewForUserState];
-    
-    [[WGProfile currentUser] unfollow:self.user withHandler:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
-            [[WGError sharedInstance] logError:error forAction:WGActionPost];
-            return;
-        }
-        self.userState = self.user.state;
-        [self reloadViewForUserState];
-    }];
 }
 
 
