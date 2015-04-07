@@ -32,16 +32,7 @@
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, strong) ImageScrollView *imageScrollView;
 @property (nonatomic, strong) UIPageControl *pageControl;
-@property (nonatomic, strong) NSNumber *followRequestSummary;
-
 @end
-
-
-#define kSummaryCellName @"summaryCellName"
-@interface SummaryCell : UITableViewCell
-@property (nonatomic, strong) UILabel *numberOfRequestsLabel;
-@end
-
 
 #define kNotificationCellName @"notificationCellName"
 @interface NotificationCell : UITableViewCell
@@ -51,6 +42,7 @@
 @property (nonatomic, strong) UILabel *tapLabel;
 @property (nonatomic, strong) UIImageView *rightPostImageView;
 @property (nonatomic, strong) WGNotification *notification;
+@property (nonatomic, strong) UIView *orangeNewView;
 @end
 
 

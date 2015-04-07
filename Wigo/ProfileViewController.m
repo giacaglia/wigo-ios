@@ -25,6 +25,9 @@
 @property (nonatomic, strong) UIImageView *nameViewBackground;
 @property (nonatomic, strong) UIButton *rightProfileButton;
 @property (nonatomic, strong) UIButton *chatButton;
+@property (nonatomic, strong) UILabel *locationLabel;
+@property (nonatomic, strong) UILabel *workLabel;
+@property (nonatomic, strong) UILabel *schoolLabel;
 
 //UI
 @property (nonatomic, strong) UIButtonAligned *rightBarBt;
@@ -41,15 +44,6 @@ BOOL blockShown;
 
 @implementation ProfileViewController
 
-#pragma  mark - Init
-
-- (id)init {
-    self = [super init];
-    if (self) {
-        NSLog(@"here");
-    }
-    return self;
-}
 - (id)initWithUser:(WGUser *)user {
     self = [super init];
     if (self) {
@@ -139,16 +133,8 @@ BOOL blockShown;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.tabBarController.navigationItem.titleView.hidden = YES;
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
-    
-//    NSString *isCurrentUser = ([self.user isEqual:[WGProfile currentUser]]) ? @"Yes" : @"No";
-//    NSString *isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE) ? @"Yes" : @"No";
-//    self.isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE);
-//    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", isPeeking, @"isPeeking", nil];
-//    [WGAnalytics tagEvent:@"Profile View" withDetails:options];
-
-    [WGAnalytics tagView:@"profile" withTargetUser:self.user];
+//    self.tabBarController.navigationItem.titleView.hidden = YES;
+//    [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
@@ -172,10 +158,8 @@ BOOL blockShown;
     [self reloadViewForUserState];
     
     if ([self.user isEqual:WGProfile.currentUser]) {
-        self.followRequestSummary = @0;
         [self fetchFirstPageNotifications];
         [self updateBadge];
-        [self fetchSummaryOfFollowRequests];
     }
 
 }
@@ -195,7 +179,6 @@ BOOL blockShown;
     self.tableView.separatorColor = RGB(228, 228, 228);
     self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 0.0f];
     [self.tableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
-    [self.tableView registerClass:[SummaryCell class] forCellReuseIdentifier:kSummaryCellName];
     [self.tableView registerClass:[InstaCell class] forCellReuseIdentifier:kInstaCellName];
     self.tableView.showsVerticalScrollIndicator = NO;
     if (self.user) [self createImageScrollView];
@@ -343,7 +326,36 @@ BOOL blockShown;
     lowerBorder.backgroundColor = [[[UIColor lightGrayColor] colorWithAlphaComponent: 0.5f] CGColor];
     lowerBorder.frame = CGRectMake(0, _headerButtonView.frame.size.height, CGRectGetWidth(_headerButtonView.frame), 0.5f);
     [_headerButtonView.layer addSublayer: lowerBorder];
-
+    
+    UIImageView *locationImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 9, 12)];
+    locationImgView.image = [UIImage imageNamed:@"locationIcon"];
+    [_headerButtonView addSubview:locationImgView];
+    
+    _locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 10, 0.7*self.view.frame.size.width, 12)];
+    _locationLabel.text = @"Boston, MA";
+    _locationLabel.font = [FontProperties mediumFont:12.0f];
+    _locationLabel.textAlignment = NSTextAlignmentLeft;
+    [_headerButtonView addSubview:_locationLabel];
+    
+    UIImageView *workImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 22 + 5, 14, 11)];
+    workImgView.image = [UIImage imageNamed:@"workIcon"];
+    [_headerButtonView addSubview:workImgView];
+    
+    _workLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 22 + 5, 0.7*self.view.frame.size.width, 11)];
+    _workLabel.text = @"Northeastern University";
+    _workLabel.font = [FontProperties mediumFont:12.0f];
+    _workLabel.textAlignment = NSTextAlignmentLeft;
+    [_headerButtonView addSubview:_workLabel];
+    
+    UIImageView *schoolImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 38 + 5, 12, 10)];
+    schoolImgView.image = [UIImage imageNamed:@"schoolIcon"];
+    [_headerButtonView addSubview:schoolImgView];
+    
+    _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 38 + 5, 0.7*self.view.frame.size.width, 11)];
+    _schoolLabel.text = @"Citizens Bank";
+    _schoolLabel.font = [FontProperties mediumFont:12.0f];
+    _schoolLabel.textAlignment = NSTextAlignmentLeft;
+    [_headerButtonView addSubview:_schoolLabel];
     
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -355,12 +367,12 @@ BOOL blockShown;
     self.numberOfFollowingLabel.text = self.user.numFollowing.stringValue;
     [_rightProfileButton addSubview:self.numberOfFollowingLabel];
     
-    UILabel *followingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _rightProfileButton.frame.size.width, 20)];
-    followingLabel.textColor = RGB(137, 137, 137);
-    followingLabel.font = [FontProperties scMediumFont:16.0F];
-    followingLabel.textAlignment = NSTextAlignmentCenter;
-    followingLabel.text = @"Friends";
-    [_rightProfileButton addSubview:followingLabel];
+    UILabel *friendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _rightProfileButton.frame.size.width, 20)];
+    friendsLabel.textColor = RGB(137, 137, 137);
+    friendsLabel.font = [FontProperties scMediumFont:16.0F];
+    friendsLabel.textAlignment = NSTextAlignmentCenter;
+    friendsLabel.text = @"Friends";
+    [_rightProfileButton addSubview:friendsLabel];
     [_headerButtonView addSubview:_rightProfileButton];
     
 //    _chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70)];
@@ -663,23 +675,10 @@ BOOL blockShown;
     return YES;
 }
 
-- (BOOL)shouldShowFollowSummary {
-    if ((self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) &&
-        (![self.followRequestSummary isEqualToNumber:@0] && self.followRequestSummary)
-        ) {
-        return YES;
-    }
-    return NO;
-}
-
-- (BOOL) isIndexPathASummaryCell:(NSIndexPath *)indexPath {
-    return (indexPath.row == 0 && [self shouldShowFollowSummary]);
-}
 
 - (NSInteger) notificationCount {
     if (self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE) {
-        int numberOfCellsForSummary =  [self shouldShowFollowSummary] ? 1 : 0;
-        return self.unexpiredNotifications.count + numberOfCellsForSummary;
+        return self.unexpiredNotifications.count;
     }
     return [self shouldShowInviteCell] ? 1 : 0;
 }
@@ -710,11 +709,6 @@ BOOL blockShown;
         [imageCell.contentView addSubview: self.imageScrollView];
         return imageCell;
     } else if (indexPath.section == kNotificationsSection) {
-        if ([self isIndexPathASummaryCell:indexPath]) {
-            SummaryCell *summaryCell = [tableView dequeueReusableCellWithIdentifier:kSummaryCellName forIndexPath:indexPath];
-            summaryCell.numberOfRequestsLabel.text = self.followRequestSummary.stringValue;
-            return summaryCell;
-        }
         if ([self shouldShowInviteCell] && indexPath.row == 0) {
             InviteCell *inviteCell = [tableView dequeueReusableCellWithIdentifier:@"InviteCell" forIndexPath:indexPath];
             inviteCell.delegate = self;
@@ -725,9 +719,6 @@ BOOL blockShown;
              indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
         }
         NotificationCell *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName forIndexPath:indexPath];
-        if (self.followRequestSummary.intValue > 0) {
-            indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
-        }
         if (indexPath.row >= self.unexpiredNotifications.count) return notificationCell;
         WGNotification *notification = (WGNotification *)[self.unexpiredNotifications objectAtIndex:indexPath.row];
         if (!notification.fromUser.id) return notificationCell;
@@ -806,23 +797,18 @@ BOOL blockShown;
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kNotificationsSection && self.user.isCurrentUser) {
-        if ([self isIndexPathASummaryCell:indexPath]) {
-            [self.navigationController pushViewController:[FollowRequestsViewController new] animated:YES];
-        } else {
-            if (self.followRequestSummary.intValue > 0) indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
-            WGNotification *notification = (WGNotification *)[self.unexpiredNotifications objectAtIndex:indexPath.row];
-            WGUser *user = notification.fromUser;
-           
-            if ([notification.type isEqualToString:@"follow"] ||
-                [notification.type isEqualToString:@"follow.accepted"] ||
-                [notification.type isEqualToString:@"facebook.follow"]) {
-                [self presentUser:user];
-            } else if (user.state != NOT_YET_ACCEPTED_PRIVATE_USER_STATE &&
-                       user.state != NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
-                if (![user.eventAttending.id isEqual:notification.eventID]) return;
-                if (user.eventAttending) [self presentEvent:user.eventAttending];
-                else [self presentUser:user];
-            }
+        WGNotification *notification = (WGNotification *)[self.unexpiredNotifications objectAtIndex:indexPath.row];
+        WGUser *user = notification.fromUser;
+       
+        if ([notification.type isEqualToString:@"follow"] ||
+            [notification.type isEqualToString:@"follow.accepted"] ||
+            [notification.type isEqualToString:@"facebook.follow"]) {
+            [self presentUser:user];
+        } else if (user.state != NOT_YET_ACCEPTED_PRIVATE_USER_STATE &&
+                   user.state != NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
+            if (![user.eventAttending.id isEqual:notification.eventID]) return;
+            if (user.eventAttending) [self presentEvent:user.eventAttending];
+            else [self presentUser:user];
         }
     }
     else if (indexPath.section == kInstagramSection ) {
@@ -928,6 +914,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)fetchFirstPageNotifications {
     if (self.isFetchingNotifications) return;
     self.isFetchingNotifications = YES;
+    self.unexpiredNotifications = [[WGCollection alloc] initWithType:[WGNotification class]];
     
     __weak typeof(self) weakSelf = self;
     [WGNotification get:^(WGCollection *collection, NSError *error) {
@@ -939,15 +926,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             return;
         }
         strongSelf.notifications = collection;
-        if (!strongSelf.unexpiredNotifications) strongSelf.unexpiredNotifications = [[WGCollection alloc] initWithType:[WGNotification class]];
         for (WGNotification *notification in strongSelf.notifications) {
-            if (![notification isFromLastDay]) {
+            if (!notification.isFromLastDay) {
                 [strongSelf.unexpiredNotifications addObject:notification];
             }
         }
         strongSelf.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
         [strongSelf.tableView reloadData];
-        [strongSelf.tableView didFinishPullToRefresh];
     }];
 }
 
@@ -966,7 +951,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         }
         for (WGNotification *notification in collection) {
             [strongSelf.notifications addObject:notification];
-            if (![notification isFromLastDay]) {
+            if (!notification.isFromLastDay) {
                 if (![strongSelf.unexpiredNotifications containsObject:notification]) {
                     [strongSelf.unexpiredNotifications addObject:notification];
                 }
@@ -997,68 +982,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     }
     
 }
-
-
-- (void)fetchSummaryOfFollowRequests {
-    __weak typeof(self) weakSelf = self;
-    [WGNotification getFollowSummary:^(NSNumber *follow, NSNumber *followRequest, NSNumber *total, NSNumber *tap, NSNumber *facebookFollow, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-            return;
-        }
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        strongSelf.followRequestSummary = followRequest;
-        [strongSelf.tableView reloadData];
-    }];
-}
-
-
 @end
-
-@implementation SummaryCell
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self setup];
-    }
-    return self;
-}
-
-- (void)setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 65);
-   
-    self.numberOfRequestsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, 45, 45)];
-    self.numberOfRequestsLabel.layer.cornerRadius = 5;
-    self.numberOfRequestsLabel.layer.borderWidth = 0.5;
-    self.numberOfRequestsLabel.layer.borderColor = [UIColor whiteColor].CGColor;
-    self.numberOfRequestsLabel.layer.masksToBounds = YES;
-    self.numberOfRequestsLabel.backgroundColor = RGB(254, 242, 229);
-    self.numberOfRequestsLabel.textColor = [FontProperties getOrangeColor];
-    self.numberOfRequestsLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberOfRequestsLabel.text = @"";
-    self.numberOfRequestsLabel.center = CGPointMake(self.numberOfRequestsLabel.center.x, self.center.y);
-    [self.contentView addSubview:self.numberOfRequestsLabel];
-
-    UILabel *notificationLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, self.frame.size.height/2 - 22, self.frame.size.width - 70 - 80, self.contentView.frame.size.height)];
-    notificationLabel.text = @"Follow requests";
-    notificationLabel.font = [FontProperties getBioFont];
-    [self.contentView addSubview:notificationLabel];
-
-    UIImageView *rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeRightArrow"]];
-    rightArrowImageView.frame = CGRectMake(self.frame.size.width - 35, self.frame.size.height/2 - 9, 11, 18);
-    rightArrowImageView.center = CGPointMake(rightArrowImageView.center.x, self.center.y);
-    [self.contentView addSubview:rightArrowImageView];
-    
-    if ([self respondsToSelector:@selector(layoutMargins)]) {
-        self.layoutMargins = UIEdgeInsetsZero;
-    }
-}
-
-
-@end
-
 
 @implementation NotificationCell
 
@@ -1095,6 +1019,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.descriptionLabel.center = CGPointMake(self.descriptionLabel.center.x, self.center.y);
     [self.contentView addSubview:self.descriptionLabel];
     
+    self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(6, 6, 9, 9)];
+    self.orangeNewView.backgroundColor = [FontProperties getOrangeColor];
+    self.orangeNewView.layer.cornerRadius = self.orangeNewView.frame.size.width/2;
+    self.orangeNewView.layer.borderColor = UIColor.clearColor.CGColor;
+    self.orangeNewView.layer.borderWidth = 1.0f;
+    self.orangeNewView.hidden = YES;
+    [self.contentView addSubview:self.orangeNewView];
+    
     self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 32, self.frame.size.height/2 - 7, 9, 15)];
     self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
     self.rightPostImageView.center = CGPointMake(self.rightPostImageView.center.x, self.center.y);
@@ -1112,10 +1044,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)setNotification:(WGNotification *)notification {
     _notification = notification;
     WGUser *user = notification.fromUser;
-    if ([notification.id intValue] > [[WGProfile currentUser].lastNotificationRead intValue]) {
-        self.backgroundColor = [FontProperties getBackgroundLightOrange];
+    if (notification.id.intValue > WGProfile.currentUser.lastNotificationRead.intValue) {
+        self.orangeNewView.hidden = NO;
     } else {
-        self.backgroundColor = UIColor.whiteColor;
+        self.orangeNewView.hidden = NO;
     }
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, notification.message];

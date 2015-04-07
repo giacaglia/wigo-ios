@@ -81,13 +81,6 @@ BOOL firstTimeLoading;
     presentedMobileContacts = NO;
     self.shouldReloadEvents = YES;
     self.eventOffsetDictionary = [NSMutableDictionary new];
-    for (UIView *view in self.navigationController.navigationBar.subviews) {
-        for (UIView *view2 in view.subviews) {
-            if ([view2 isKindOfClass:[UIImageView class]]) {
-                [view2 removeFromSuperview];
-            }
-        }
-    }
     
     UITabBarController *tab= self.tabBarController;
     ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:3];
@@ -1433,8 +1426,8 @@ BOOL firstTimeLoading;
         [self.allEvents addNextPage:^(BOOL success, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             [strongSelf removeDancingG];
+            strongSelf.fetchingEventAttendees = NO;
             if (error) {
-                strongSelf.fetchingEventAttendees = NO;
                 strongSelf.shouldReloadEvents = YES;
                 handler(success, error);
                 return;
@@ -1470,7 +1463,6 @@ BOOL firstTimeLoading;
                 }
             }
             
-            strongSelf.fetchingEventAttendees = NO;
             strongSelf.shouldReloadEvents = YES;
             [strongSelf.placesTableView reloadData];
             handler(success, error);
@@ -1479,9 +1471,9 @@ BOOL firstTimeLoading;
     } else if (self.groupNumberID) {
         [WGEvent getWithGroupNumber:self.groupNumberID andHandler:^(WGCollection *collection, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
+            strongSelf.fetchingEventAttendees = NO;
             [strongSelf removeDancingG];
             if (error) {
-                strongSelf.fetchingEventAttendees = NO;
                 strongSelf.shouldReloadEvents = YES;
                 handler(NO, error);
                 return;
@@ -1573,7 +1565,6 @@ BOOL firstTimeLoading;
                 [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
             }
 
-            strongSelf.fetchingEventAttendees = NO;
             [strongSelf.placesTableView reloadData];
             handler(YES, error);
         }];
@@ -1603,7 +1594,7 @@ BOOL firstTimeLoading;
     self.fetchingUserInfo = YES;
     [WGProfile reload:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
-        
+        strongSelf.fetchingUserInfo = NO;
         
         if (!strongSelf.secondTimeFetchingUserInfo) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
@@ -1616,7 +1607,6 @@ BOOL firstTimeLoading;
                 
                 !strongSelf.presentingLockedView )
             {
-                strongSelf.fetchingUserInfo = NO;
                 [strongSelf showFlashScreen];
                 [strongSelf.signViewController reloadedUserInfo:success andError:error];
                 return;
@@ -1625,7 +1615,6 @@ BOOL firstTimeLoading;
         
         // Second time fetching user info... already logged in
         if (error) {
-            strongSelf.fetchingUserInfo = NO;
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
@@ -1637,7 +1626,6 @@ BOOL firstTimeLoading;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
         [strongSelf updateNavigationBar];
         [strongSelf.placesTableView reloadData];
-        strongSelf.fetchingUserInfo = NO;
         UITabBarController *tab= self.tabBarController;
         ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:3];
         profileVc.user = WGProfile.currentUser;
