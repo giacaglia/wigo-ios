@@ -34,6 +34,15 @@
 @property (nonatomic, strong) UIPageControl *pageControl;
 @end
 
+
+#define kMutualFriendsCellName @"mutualFriendsCellName"
+@interface MutualFriendsCell : UITableViewCell <UICollectionViewDataSource>
++ (CGFloat)height;
+@property (nonatomic, strong) UILabel *mutualFriendsLabel;
+@property (nonatomic, strong) UICollectionView *mutualFriendsCollection;
+@property (nonatomic, strong) WGCollection *users;
+@end
+
 #define kNotificationCellName @"notificationCellName"
 @interface NotificationCell : UITableViewCell
 @property (nonatomic, strong) UIImageView *profileImageView;
@@ -43,15 +52,6 @@
 @property (nonatomic, strong) UIImageView *rightPostImageView;
 @property (nonatomic, strong) WGNotification *notification;
 @property (nonatomic, strong) UIView *orangeNewView;
-@end
-
-
-@interface GoOutsCell: UITableViewCell
-+ (CGFloat) rowHeight;
-@property (nonatomic, strong) WGUser *user;
-@property (nonatomic, strong) NSNumber *lastCount;
-@property (nonatomic, strong) UILabel *numberLabel;
-@property (nonatomic, strong) UILabel *titleLabel;
 @end
 
 #define kInstaCellName @"instaCellName"

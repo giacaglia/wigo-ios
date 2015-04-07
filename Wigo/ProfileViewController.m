@@ -13,6 +13,7 @@
 #import "FXBlurView.h"
 #import "RWBlurPopover.h"
 #import "FollowRequestsViewController.h"
+#import "EventPeopleScrollView.h"
 
 @interface ProfileViewController()<ImageScrollViewDelegate> {
     UIImageView *_gradientImageView;
@@ -180,6 +181,7 @@ BOOL blockShown;
     self.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 0.0f];
     [self.tableView registerClass:[NotificationCell class] forCellReuseIdentifier:kNotificationCellName];
     [self.tableView registerClass:[InstaCell class] forCellReuseIdentifier:kInstaCellName];
+    [self.tableView registerClass:[MutualFriendsCell class] forCellReuseIdentifier:kMutualFriendsCellName];
     self.tableView.showsVerticalScrollIndicator = NO;
     if (self.user) [self createImageScrollView];
     [self.tableView reloadData];
@@ -636,16 +638,25 @@ BOOL blockShown;
 
 #define kImageViewSection 0
 #define kNotificationsSection 1
-#define kInstagramSection 2
+#define kMutualFriendsSection 2
+#define kInstagramSection 3
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return 4;
 }
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kNotificationsSection) {
         return [self notificationCount];
+    }
+    if (section == kMutualFriendsSection) {
+        if (self.user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
+            self.user.state == NOT_FOLLOWING_PUBLIC_USER_STATE) {
+            return 1;
+        }
+        return 0;
+        
     }
     return 1;
 }
@@ -675,11 +686,16 @@ BOOL blockShown;
         notificationCell.notification = notification;
         return notificationCell;
     }
-    else if (indexPath.section == kInstagramSection) {
-        InstaCell *instaCell = [tableView dequeueReusableCellWithIdentifier: kInstaCellName forIndexPath:indexPath];
-        instaCell.user = self.user;
-        return instaCell;
+    else if (indexPath.section == kMutualFriendsSection) {
+        MutualFriendsCell *mutualFriendsCell = [tableView dequeueReusableCellWithIdentifier:kMutualFriendsCellName forIndexPath:indexPath];
+        return mutualFriendsCell;
     }
+   else if (indexPath.section == kInstagramSection) {
+       InstaCell *instaCell = [tableView dequeueReusableCellWithIdentifier: kInstaCellName forIndexPath:indexPath];
+       instaCell.user = self.user;
+       return instaCell;
+   }
+
     
     return nil;
 
@@ -732,6 +748,11 @@ BOOL blockShown;
     else if (indexPath.section == kInstagramSection) {
         return [InstaCell rowHeight];
     }
+    else if (indexPath.section == kMutualFriendsSection) {
+        return [MutualFriendsCell height];
+    }
+
+
     return 0;
 }
 
@@ -933,6 +954,90 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 @end
 
+@implementation MutualFriendsCell
+
++ (CGFloat)height {
+    return 105.0f;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [MutualFriendsCell height]);
+    self.backgroundColor = UIColor.whiteColor;
+    self.selectionStyle = UITableViewCellSeparatorStyleNone;
+    
+    self.mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 140, 20)];
+    self.mutualFriendsLabel.textColor = RGB(159, 159, 159);
+    self.mutualFriendsLabel.textAlignment = NSTextAlignmentLeft;
+    self.mutualFriendsLabel.text = @"24 mutual friends";
+    self.mutualFriendsLabel.font = [FontProperties mediumFont:15.0f];
+    [self.contentView addSubview:self.mutualFriendsLabel];
+    
+    self.mutualFriendsCollection = [[UICollectionView alloc] initWithFrame:CGRectMake(10, 30, self.contentView.frame.size.width - 10, 60) collectionViewLayout:[[ScrollViewLayout alloc] initWithWidth:40]];
+    [self.mutualFriendsCollection registerClass:[ScrollViewCell class] forCellWithReuseIdentifier:kScrollViewCellName];
+    self.mutualFriendsCollection.backgroundColor = UIColor.whiteColor;
+    self.mutualFriendsCollection.dataSource = self;
+    self.mutualFriendsCollection.showsHorizontalScrollIndicator = NO;
+    [self.contentView addSubview:self.mutualFriendsCollection];
+}
+
+
+- (void)setUsers:(WGCollection *)users {
+    [self.mutualFriendsCollection reloadData];
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView
+     numberOfItemsInSection:(NSInteger)section {
+    return 10;
+}
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
+                  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    ScrollViewCell *scrollCell = [collectionView dequeueReusableCellWithReuseIdentifier:kScrollViewCellName forIndexPath:indexPath];
+    scrollCell.alpha = 1.0f;
+    scrollCell.imgView.image = nil;
+ 
+    scrollCell.imageButton.tag = indexPath.item;
+    [scrollCell.imageButton removeTarget:nil
+                                  action:NULL
+                        forControlEvents:UIControlEventAllEvents];
+    scrollCell.blueOverlayView.hidden = YES;
+    scrollCell.goHereLabel.hidden = YES;
+//    [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
+    scrollCell.profileNameLabel.alpha = 1.0f;
+    scrollCell.user = WGProfile.currentUser;
+    return scrollCell;
+}
+
+#pragma mark - UICollectionView Header
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
+    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        UICollectionViewCell *cell = [collectionView dequeueReusableSupplementaryViewOfKind:kind
+                                                                        withReuseIdentifier:kScrollViewHeader
+                                                                               forIndexPath:indexPath];
+        return cell;
+    }
+    return nil;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    return CGSizeMake(10, 1);
+}
+
+@end
+
 @implementation NotificationCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1023,7 +1128,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     }
     return self;
 }
-
 
 - (void) awakeFromNib {
     [self setup];

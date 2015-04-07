@@ -282,6 +282,10 @@ referenceSizeForFooterInSection:(NSInteger)section {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)followPressed:(id)sender {
+    NSLog(@"followd");
+}
+
 @end
 
 @implementation AttendeesPhotoCell
