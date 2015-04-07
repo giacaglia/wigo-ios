@@ -101,14 +101,14 @@ NSIndexPath *userIndex;
 }
 
 - (void) initializeRightBarButton {
-    if (self.user.isCurrentUser && [self.currentTab isEqual:@2]) {
-        UIButtonAligned *searchButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 15, 16) andType:@2];
-        [searchButton setTitle:@"Invite" forState:UIControlStateNormal];
-        [searchButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-        [searchButton addTarget:self action:@selector(invitePressed)
+    if ([self.currentTab isEqual:@2]) {
+        UIButtonAligned *inviteButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 60, 16) andType:@3];
+        [inviteButton setTitle:@"INVITE" forState:UIControlStateNormal];
+        [inviteButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        [inviteButton addTarget:self action:@selector(invitePressed)
                 forControlEvents:UIControlEventTouchUpInside];
-        [searchButton setShowsTouchWhenHighlighted:YES];
-        self.tabBarController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchButton];
+        inviteButton.titleLabel.font = [FontProperties mediumFont:13.0f];
+        self.tabBarController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:inviteButton];
     }
     else {
         CGRect profileFrame = CGRectMake(0, 0, 30, 30);
