@@ -67,9 +67,9 @@
 -(BOOL) isFromLastDay {
     NSDate *nowDate = [NSDate date];
     
-//    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
-//    nowDate = [nowDate dateByAddingTimeInterval:timeZoneSeconds];
-//
+    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+    nowDate = [nowDate dateByAddingTimeInterval:timeZoneSeconds];
+
     NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit fromDate:self];
     
     NSDateComponents *today = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit fromDate:nowDate];

@@ -358,7 +358,7 @@ BOOL blockShown;
     [_headerButtonView addSubview:_schoolLabel];
     
     _rightProfileButton = [[UIButton alloc] init];
-    [_rightProfileButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [_rightProfileButton addTarget:self action:@selector(friendsPressed) forControlEvents:UIControlEventTouchUpInside];
     _rightProfileButton.frame = CGRectMake(self.view.frame.size.width*0.7, 0, self.view.frame.size.width*0.3, 70);
     self.numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _rightProfileButton.frame.size.width, 25)];
     self.numberOfFollowingLabel.textColor = RGB(80, 80, 80);
@@ -520,12 +520,8 @@ BOOL blockShown;
 }
 
 
-- (void)followersButtonPressed {
+- (void)friendsPressed {
     [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:self.user andTab:@3] animated:YES];
-}
-
-- (void)followingButtonPressed {
-    [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:self.user andTab:@4] animated:YES];
 }
 
 - (void)chatPressed {

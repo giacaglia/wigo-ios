@@ -63,10 +63,7 @@ NSIndexPath *userIndex;
         [WGAnalytics tagView:@"school_people"];
     }
     else if ([self.currentTab isEqualToNumber:@3]) {
-        [WGAnalytics tagView:@"followers"];
-    }
-    else if ([self.currentTab isEqualToNumber:@4]) {
-        [WGAnalytics tagView:@"following"];
+        [WGAnalytics tagView:@"friends"];
     }
     [self initializeRightBarButton];
 
@@ -115,6 +112,9 @@ NSIndexPath *userIndex;
         UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
         profileImageView.contentMode = UIViewContentModeScaleAspectFill;
         profileImageView.clipsToBounds = YES;
+        profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
+        profileImageView.layer.borderWidth = 1.0f;
+        profileImageView.layer.cornerRadius = profileFrame.size.width/2;
         [profileImageView setSmallImageForUser:self.user completed:nil];
         [profileButton addSubview:profileImageView];
         [profileButton setShowsTouchWhenHighlighted:YES];
@@ -189,9 +189,6 @@ NSIndexPath *userIndex;
     else if ([self.currentTab isEqualToNumber:@3]) {
         [self fetchFirstPageFollowers];
     }
-    else if ([self.currentTab isEqualToNumber:@4]) {
-        [self fetchFirstPageFollowing];
-    }
 }
 
 #pragma mark - Table View Data Source
@@ -199,8 +196,7 @@ NSIndexPath *userIndex;
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         if ([self.currentTab isEqualToNumber:@2]) return 90;
-        else if ([self.currentTab isEqualToNumber:@4]) return 95;
-        else if ([self.currentTab isEqualToNumber:@3]) return 0;
+        else if ([self.currentTab isEqualToNumber:@3]) return 95;
     }
     return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
 }
@@ -228,9 +224,7 @@ NSIndexPath *userIndex;
     else if ([self.currentTab isEqual:@3]) {
        return self.followers.hasNextPage.boolValue;
     }
-    else {
-       return self.following.hasNextPage.boolValue;
-    }
+    return NO;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -366,9 +360,6 @@ viewForHeaderInSection:(NSInteger)section
     else if ([self.currentTab isEqualToNumber:@3]) {
         [self fetchFollowers];
     }
-    else if ([self.currentTab isEqualToNumber:@4]) {
-        [self fetchFollowing];
-    }
 }
 
 - (void)fetchFirstPageSuggestions {
@@ -497,56 +488,6 @@ viewForHeaderInSection:(NSInteger)section
     }];
 
 }
-
--(void) fetchFirstPageFollowing {
-    if (self.fetching) return;
-    self.fetching = YES;
-    [WGSpinnerView addDancingGToCenterView:self.view];
-    __weak typeof(self) weakSelf = self;
-    [WGFollow getFollowsForUser:self.user withHandler:^(WGCollection *collection, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            __strong typeof(self) strongSelf = weakSelf;
-            strongSelf.fetching = NO;
-            [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            strongSelf.following = collection;
-            strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
-            for (WGFollow *follow in strongSelf.following) {
-                [strongSelf.users addObject:follow.follow];
-            }
-            [strongSelf.tableViewOfPeople reloadData];
-        });
-    }];
-}
-
-
--(void) fetchFollowing {
-    if (self.fetching) return;
-    if (!self.following.hasNextPage.boolValue) return;
-    self.fetching = YES;
-    __weak typeof(self) weakSelf = self;
-    [self.following addNextPage:^(BOOL success, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            __strong typeof(self) strongSelf = weakSelf;
-            strongSelf.fetching = NO;
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
-            for (WGFollow *follow in strongSelf.following) {
-                [strongSelf.users addObject:follow.follow];
-            }
-            [strongSelf.tableViewOfPeople reloadData];
-        });
-    }];
-}
-
 
 
 #pragma mark - UISearchBarDelegate 
