@@ -15,7 +15,6 @@
 
 @interface PeopleViewController ()
 @property UISearchBar *searchBar;
-@property UIImageView *searchIconImageView;
 @end
 
 BOOL didProfileSegue;
@@ -55,7 +54,6 @@ NSIndexPath *userIndex;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
 
-//    [self initializeSearchBar];
     [self initializeTableOfPeople];
 }
 
@@ -180,7 +178,7 @@ NSIndexPath *userIndex;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableViewOfPeople.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableViewOfPeople.showsVerticalScrollIndicator = NO;
-    _searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(40, 0, self.view.frame.size.width - 80, 50)];
+    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(40, 0, self.view.frame.size.width - 80, 50)];
     _searchBar.delegate = self;
     _searchBar.placeholder = @"Search by Name";
     self.tableViewOfPeople.tableHeaderView = _searchBar;
@@ -188,48 +186,6 @@ NSIndexPath *userIndex;
     [self.view addSubview:self.tableViewOfPeople];
 }
 
-
-#pragma mark - UISearchBar 
-
-- (void)initializeSearchBar {
-    UIColor *grayColor = RGB(184, 184, 184);
-    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(10, 10, self.view.frame.size.width - 20, 30)];
-    _searchBar.barTintColor = UIColor.whiteColor;
-    _searchBar.tintColor = grayColor;
-    _searchBar.placeholder = @"Search By Name";
-    _searchBar.delegate = self;
-    _searchBar.hidden = YES;
-    UITextField *searchField = [_searchBar valueForKey:@"_searchField"];
-    [searchField setValue:grayColor forKeyPath:@"_placeholderLabel.textColor"];
-    
-    // Search Icon Clear
-    UITextField *txfSearchField = [_searchBar valueForKey:@"_searchField"];
-    [txfSearchField setLeftViewMode:UITextFieldViewModeNever];
-
-    // Add Custom Search Icon
-    _searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"graySearchIcon"]];
-    _searchIconImageView.frame = CGRectMake(40, 14, 14, 14);
-    [_searchBar addSubview:_searchIconImageView];
-    
-    // Remove Clear Button on the right
-    UITextField *textField = [_searchBar valueForKey:@"_searchField"];
-    textField.clearButtonMode = UITextFieldViewModeNever;
-    
-    // Text when editing becomes orange
-    for (UIView *subView in _searchBar.subviews) {
-        for (UIView *secondLevelSubview in subView.subviews){
-            if ([secondLevelSubview isKindOfClass:[UITextField class]])
-            {
-                UITextField *searchBarTextField = (UITextField *)secondLevelSubview;
-                searchBarTextField.textColor = [FontProperties getOrangeColor];
-                break;
-            }
-            else {
-                [secondLevelSubview removeFromSuperview];
-            }
-        }
-    }
-}
 
 - (void)invitePressed  {
     [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
@@ -300,15 +256,13 @@ NSIndexPath *userIndex;
     cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, [self tableView:tableView heightForRowAtIndexPath:indexPath]);
 
     int tag = (int)[indexPath row];
-    if (self.users.count > 5) {
-        if ([self isThereANextPage] && tag == self.users.count - 5) {
-            [self loadNextPage];
-        }
-    } else if (tag == self.users.count) {
+    if ([self isThereANextPage] && tag == self.users.count - 5) {
+        [self loadNextPage];
+    }
+     if (tag == self.users.count) {
         [self loadNextPage];
         return cell;
     }
-    
     
     WGUser *user = [self getUserAtIndex:tag];
     if (!user) {
