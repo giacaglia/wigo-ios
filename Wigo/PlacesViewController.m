@@ -1693,10 +1693,6 @@ BOOL firstTimeLoading;
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
     backgroundView.backgroundColor = UIColor.whiteColor;
-    backgroundView.layer.shadowColor = RGBAlpha(0, 0, 0, 0.1f).CGColor;
-    backgroundView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
-    backgroundView.layer.shadowRadius = 4.0f;
-    backgroundView.layer.shadowOpacity = 1.0f;
     [self.contentView addSubview:backgroundView];
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];

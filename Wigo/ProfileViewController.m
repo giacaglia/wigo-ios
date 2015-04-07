@@ -379,69 +379,22 @@ BOOL blockShown;
 //    [_chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
 //    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _chatButton.frame.size.width, 20)];
 //    chatLabel.textAlignment = NSTextAlignmentCenter;
-//    if (self.user.isCurrentUser) chatLabel.text = @"chats";
-//    else chatLabel.text = @"chat";
+//    chatLabel.text = @"chat";
 //    chatLabel.textColor = RGB(137, 137, 137);
 //    chatLabel.font = [FontProperties scMediumFont:16.0f];
 //    [_chatButton addSubview:chatLabel];
-//    
-//    _orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 - 10, 10, 20, 20)];
-//    _orangeChatBubbleImageView.center = CGPointMake(_orangeChatBubbleImageView.center.x, _chatButton.center.y - _orangeChatBubbleImageView.frame.size.height/2 + 2);
-//    [_chatButton addSubview:_orangeChatBubbleImageView];
+//    [_headerButtonView addSubview:_chatButton];
     
-//    _numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _orangeChatBubbleImageView.frame.size.width, _orangeChatBubbleImageView.frame.size.height - 8)];
-//    _numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
-//    _numberOfChatsLabel.textColor = UIColor.whiteColor;
-//    _numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
-//    [_orangeChatBubbleImageView addSubview:_numberOfChatsLabel];
- 
-    
-//    [self updateNumberOfChats];
-    
-    [_headerButtonView addSubview:_chatButton];
     [self initializeFollowRequestLabel];
     [self initializeFollowButton];
 }
 
-//- (void)updateNumberOfChats {
-//    NSNumber *unreadChats = [WGProfile currentUser].numUnreadConversations;
-//    if (![unreadChats isEqualToNumber: @0] && [self.user isCurrentUser]) {
-//        _orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
-//        _numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
-//       
-//    } else {
-//        _orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
-//    }
-//}
-
 - (void) initializeFollowButton {
-    _followButton = [[UIButton alloc] initWithFrame:CGRectMake(25, 10, self.view.frame.size.width - 50, 50)];
-    _followButton.backgroundColor = [UIColor clearColor];
-    _followButton.layer.cornerRadius = 15;
-    _followButton.layer.borderWidth = 1;
-    _followButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    _followButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 10, 65, 50)];
+    [_followButton setImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
     [_headerButtonView addSubview: _followButton];
     [_headerButtonView bringSubviewToFront: _followButton];
-    
-    NSString *followText = [NSString stringWithFormat:@"Follow %@", [self.user firstName]];
-    UIView *followLabelPlusImage = [[UIView alloc] init];
-    int sizeOfText = (int)[followText length];
-    followLabelPlusImage.frame = CGRectMake((_followButton.frame.size.width - (sizeOfText*13 + 28))/2, 15, sizeOfText*13 + 28, 20);
-    followLabelPlusImage.userInteractionEnabled = NO;
-    [_followButton addSubview:followLabelPlusImage];
-    
-    UILabel *followLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, followLabelPlusImage.frame.size.width, 20)];
-    followLabel.text = followText;
-    followLabel.textAlignment = NSTextAlignmentLeft;
-    followLabel.textColor = [FontProperties getOrangeColor];
-    followLabel.font =  [FontProperties scMediumFont:24.0f];
-    [followLabelPlusImage addSubview:followLabel];
-    
-    UIImageView *plusImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"plusPerson"]];
-    plusImageView.frame = CGRectMake(followLabelPlusImage.frame.size.width - 28, followLabelPlusImage.frame.size.height/2 - 11, 28, 20);
-    plusImageView.tintColor = [FontProperties getOrangeColor];
-    [followLabelPlusImage addSubview:plusImageView];
 }
 
 - (void)initializeFollowRequestLabel {
