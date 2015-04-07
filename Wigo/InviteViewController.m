@@ -16,10 +16,6 @@
     NSMutableArray *chosenPeople;
     WGEvent *event;
     UISearchBar *searchBar;
-    
-    UIButton *aroundInviteButton;
-    UILabel *titleLabel;
-    UIButton *cancelButton;
 }
 
 @end
@@ -47,7 +43,6 @@
     [self fetchFirstPageEveryone];
     [self fetchSuggestions];
     [self initializeTitle];
-    [self initializeSearchBar];
     [self initializeTableInvite];
 }
 
@@ -63,7 +58,7 @@
 
 
 - (void)initializeTitle {
-    titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 30, self.view.frame.size.width - 20, 30)];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 30, self.view.frame.size.width - 20, 30)];
     titleLabel.text = @"Invite";
     titleLabel.textColor = [FontProperties getBlueColor];
     titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -74,17 +69,16 @@
     lineView.backgroundColor = RGBAlpha(122, 193, 226, 0.1f);
     [self.view addSubview:lineView];
 
-    aroundInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(15 - 5, 40 - 5, 60 + 10, 15 + 10)];
-    [aroundInviteButton addTarget:self action:@selector(donePressed) forControlEvents:UIControlEventTouchUpInside];
-    [aroundInviteButton setShowsTouchWhenHighlighted:YES];
-    [self.view addSubview:aroundInviteButton];
-    
+    UIButton *aroundDoneButton = [[UIButton alloc] initWithFrame:CGRectMake(15 - 5, 40 - 5, 60 + 10, 15 + 10)];
+    [aroundDoneButton addTarget:self action:@selector(donePressed) forControlEvents:UIControlEventTouchUpInside];
+    [aroundDoneButton setShowsTouchWhenHighlighted:YES];
+    [self.view addSubview:aroundDoneButton];
     UILabel *doneLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 3, 60, 15)];
     doneLabel.text = @"Done";
     doneLabel.textColor = [FontProperties getBlueColor];
     doneLabel.textAlignment = NSTextAlignmentLeft;
     doneLabel.font = [FontProperties getTitleFont];
-    [aroundInviteButton addSubview:doneLabel];
+    [aroundDoneButton addSubview:doneLabel];
 }
 
 
@@ -107,7 +101,7 @@
 }
 
 - (void)initializeTableInvite {
-    self.invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64 + 40, self.view.frame.size.width, self.view.frame.size.height - 64 - 40)];
+    self.invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     [self.invitePeopleTableView registerClass:[TapCell class] forCellReuseIdentifier:kTapCellName];
     [self.invitePeopleTableView registerClass:[FollowCell class] forCellReuseIdentifier:kFollowCellName];
     [self.invitePeopleTableView registerClass:[TapAllCell class] forCellReuseIdentifier:kTapAllName];
@@ -115,6 +109,11 @@
     self.invitePeopleTableView.delegate = self;
     [self.invitePeopleTableView setSeparatorColor:[FontProperties getBlueColor]];
     self.invitePeopleTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
+    searchBar.placeholder = @"Search By Name";
+    searchBar.delegate = self;
+    self.invitePeopleTableView.tableHeaderView = searchBar;
+    self.invitePeopleTableView.contentOffset = CGPointMake(0, 40);
     [self.view addSubview:self.invitePeopleTableView];
 }
 
@@ -264,45 +263,7 @@
     UIButton *buttonSender = (UIButton *)sender;
     int row = buttonSender.tag;
     WGUser *user = (WGUser *)[self.presentedSuggestions objectAtIndex:buttonSender.tag];
-    
-    // If it's blocked
-    if (user.isBlocked.boolValue) {
-        user.isBlocked = @NO;
-        [WGProfile.currentUser unblock:user withHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-            }
-        }];
-    }
-    else {
-        if (user.isFollowing.boolValue || user.isFollowingRequested.boolValue) {
-            // If it's following user
-            user.isFollowing = @NO;
-            user.isFollowingRequested = @NO;
-            [WGProfile.currentUser unfollow:user withHandler:^(BOOL success, NSError *error) {
-                if (error) {
-                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-                }
-            }];
-
-        }
-        else  {
-            if (user.privacy == PRIVATE) {
-                // If it's not following and it's private
-                user.isFollowingRequested = @YES;
-            } else {
-                // If it's not following and it's public
-                user.isFollowing = @YES;
-            }
-            [WGProfile.currentUser follow:user withHandler:^(BOOL success, NSError *error) {
-                if (error) {
-                    [[WGError sharedInstance] logError:error forAction:WGActionPost];
-                }
-            }];
-        }
-    }
-    
-    
+    [user followUser];
     [self.presentedSuggestions replaceObjectAtIndex:row withObject:user];
     [self.invitePeopleTableView reloadData];
 }
@@ -371,7 +332,6 @@ heightForHeaderInSection:(NSInteger)section
             }
         }];
         user.isTapped = @YES;
-        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];
         [WGAnalytics tagAction:@"tap" atView:@"invite"];
     }
     if (tag < self.presentedUsers.count) {
@@ -385,47 +345,9 @@ heightForHeaderInSection:(NSInteger)section
 
 #pragma mark - UISearchBar
 
-- (void)searchPressed {
-    aroundInviteButton.hidden = YES;
-    titleLabel.hidden = YES;
-    [self.invitePeopleTableView setContentOffset:self.invitePeopleTableView.contentOffset animated:NO];
-    
-    cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 65 - 15, 20, 65, 44)];
-    [cancelButton setTitle:@"Done" forState:UIControlStateNormal];
-    [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
-    cancelButton.titleLabel.textAlignment = NSTextAlignmentRight;
-    cancelButton.titleLabel.font = [FontProperties getSubtitleFont];
-    [cancelButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-    [self.view addSubview:cancelButton];
-}
-
-- (void)cancelPressed {
-    aroundInviteButton.hidden = NO;
-    titleLabel.hidden = NO;
-
-    cancelButton.hidden = YES;
-    [self.view endEditing:YES];
-    self.isSearching = NO;
-    searchBar.text = @"";
-    searchBar.hidden = YES;
-    
-    [self.invitePeopleTableView reloadData];
-}
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [searchBar endEditing:YES];
-}
-
-
-- (void)initializeSearchBar {
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
-    searchBar.barTintColor = [FontProperties getBlueColor];
-    searchBar.tintColor = [FontProperties getBlueColor];
-    searchBar.placeholder = @"Search By Name";
-    searchBar.delegate = self;
-    UITextField *searchField = [searchBar valueForKey:@"_searchField"];
-    [searchField setValue:[FontProperties getBlueColor] forKeyPath:@"_placeholderLabel.textColor"];
-    [self.view addSubview:searchBar];
 }
 
 
@@ -606,6 +528,9 @@ heightForHeaderInSection:(NSInteger)section
     self.profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, [TapCell height]/2 - 30, 60, 60)];
     self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.profileImageView.clipsToBounds = YES;
+    self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width/2;
+    self.profileImageView.layer.borderWidth = 1.0f;
+    self.profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
     [self.aroundTapButton addSubview:self.profileImageView];
     
     self.fullNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
@@ -708,6 +633,9 @@ heightForHeaderInSection:(NSInteger)section
     self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
     self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.profileImageView.clipsToBounds = YES;
+    self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width/2;
+    self.profileImageView.layer.borderWidth = 1.0f;
+    self.profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
     [self.profileButton addSubview:self.profileImageView];
     [self.contentView addSubview:self.profileButton];
     
