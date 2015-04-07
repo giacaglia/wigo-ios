@@ -123,19 +123,6 @@ NSIndexPath *userIndex;
     }
 }
 
-- (void)searchPressed {
-    self.navigationItem.leftBarButtonItem = nil;
-    _searchBar.hidden = NO;
-    self.navigationItem.titleView = _searchBar;
-    [_searchBar becomeFirstResponder];
-    [self.navigationItem setHidesBackButton:YES animated:YES];
-    [self.tableViewOfPeople setContentOffset:self.tableViewOfPeople.contentOffset animated:NO];
-
-    self.filteredUsers = [[WGCollection alloc] initWithType:[WGUser class]];
-    [self.tableViewOfPeople reloadData];
-}
-
-
 - (void) goBack {
     [[WGProfile currentUser] setLastUserReadToLatest:^(BOOL success, NSError *error) {
         if (error) {
