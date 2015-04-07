@@ -339,25 +339,29 @@ BOOL blockShown;
     _locationLabel.textAlignment = NSTextAlignmentLeft;
     [_headerButtonView addSubview:_locationLabel];
     
-    UIImageView *workImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 22 + 5, 14, 11)];
+    UIImageView *schoolImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 22 + 5, 14, 11)];
+    schoolImgView.image = [UIImage imageNamed:@"schoolIcon"];
+    [_headerButtonView addSubview:schoolImgView];
+    
+    _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 22 + 5, 0.7*self.view.frame.size.width, 11)];
+    _schoolLabel.text = @"Northeastern University";
+    _schoolLabel.font = [FontProperties mediumFont:12.0f];
+    _schoolLabel.textAlignment = NSTextAlignmentLeft;
+    [_headerButtonView addSubview:_schoolLabel];
+    
+    UIImageView *workImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 38 + 5, 12, 10)];
     workImgView.image = [UIImage imageNamed:@"workIcon"];
     [_headerButtonView addSubview:workImgView];
     
-    _workLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 22 + 5, 0.7*self.view.frame.size.width, 11)];
-    _workLabel.text = @"Northeastern University";
+    _workLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 38 + 5, 0.7*self.view.frame.size.width, 11)];
+    _workLabel.text = @"Citizens Bank";
     _workLabel.font = [FontProperties mediumFont:12.0f];
     _workLabel.textAlignment = NSTextAlignmentLeft;
     [_headerButtonView addSubview:_workLabel];
     
-    UIImageView *schoolImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 38 + 5, 12, 10)];
-    schoolImgView.image = [UIImage imageNamed:@"schoolIcon"];
-    [_headerButtonView addSubview:schoolImgView];
-    
-    _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 38 + 5, 0.7*self.view.frame.size.width, 11)];
-    _schoolLabel.text = @"Citizens Bank";
-    _schoolLabel.font = [FontProperties mediumFont:12.0f];
-    _schoolLabel.textAlignment = NSTextAlignmentLeft;
-    [_headerButtonView addSubview:_schoolLabel];
+    // Center images
+    locationImgView.center = CGPointMake(schoolImgView.center.x, locationImgView.center.y);
+    workImgView.center = CGPointMake(schoolImgView.center.x, workImgView.center.y);
     
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(friendsPressed) forControlEvents:UIControlEventTouchUpInside];
