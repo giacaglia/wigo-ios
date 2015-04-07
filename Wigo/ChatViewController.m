@@ -232,12 +232,6 @@
     self.nameLabel.font = [FontProperties getSubtitleFont];
     [self.contentView addSubview:self.nameLabel];
     
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 90, 10, 80, 20)];
-    self.timeLabel.font = [FontProperties lightFont:15.0f];
-    self.timeLabel.textColor = RGB(179, 179, 179);
-    self.timeLabel.textAlignment = NSTextAlignmentRight;
-    [self.contentView addSubview:self.timeLabel];
-    
     self.lastMessageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(85, 25, 150, 40)];
     [self.contentView addSubview:self.lastMessageImageView];
 
@@ -249,12 +243,19 @@
     self.lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.lastMessageImageView addSubview:self.lastMessageLabel];
     
-    self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(6, 6, 12, 12)];
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 90, 5, 80, 20)];
+    self.timeLabel.font = [FontProperties lightFont:15.0f];
+    self.timeLabel.textColor = RGB(179, 179, 179);
+    self.timeLabel.textAlignment = NSTextAlignmentRight;
+    [self.contentView addSubview:self.timeLabel];
+    
+    self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 20, 20)];
     self.orangeNewView.backgroundColor = [FontProperties getOrangeColor];
     self.orangeNewView.layer.cornerRadius = self.orangeNewView.frame.size.width/2;
     self.orangeNewView.layer.borderColor = UIColor.clearColor.CGColor;
     self.orangeNewView.layer.borderWidth = 1.0f;
     self.orangeNewView.hidden = YES;
+    self.orangeNewView.center = CGPointMake(self.orangeNewView.center.x, self.center.y);
     [self.contentView addSubview:self.orangeNewView];
 }
 

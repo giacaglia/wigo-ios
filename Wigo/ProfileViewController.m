@@ -646,7 +646,7 @@ BOOL blockShown;
 #define kInstagramSection 3
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 4;
+    return 3;
 }
 
 
@@ -1077,12 +1077,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.descriptionLabel.center = CGPointMake(self.descriptionLabel.center.x, self.center.y);
     [self.contentView addSubview:self.descriptionLabel];
     
-    self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(6, 6, 9, 9)];
+    self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 20, 20)];
     self.orangeNewView.backgroundColor = [FontProperties getOrangeColor];
     self.orangeNewView.layer.cornerRadius = self.orangeNewView.frame.size.width/2;
     self.orangeNewView.layer.borderColor = UIColor.clearColor.CGColor;
     self.orangeNewView.layer.borderWidth = 1.0f;
     self.orangeNewView.hidden = YES;
+    self.orangeNewView.center = CGPointMake(self.orangeNewView.center.x, self.center.y);
     [self.contentView addSubview:self.orangeNewView];
     
     self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 32, self.frame.size.height/2 - 7, 9, 15)];
