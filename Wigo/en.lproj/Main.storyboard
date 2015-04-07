@@ -575,7 +575,7 @@
     </scenes>
     <resources>
         <image name="chatTabIcon" width="32" height="25"/>
-        <image name="friendsIcon" width="28" height="31"/>
+        <image name="friendsIcon" width="28" height="28"/>
         <image name="homeIcon" width="24" height="27"/>
         <image name="profileIcon" width="23" height="27"/>
     </resources>

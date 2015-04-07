@@ -23,11 +23,6 @@
 @property (nonatomic, strong) UIView *nameView;
 @property (nonatomic, strong) UIView *headerButtonView;
 @property (nonatomic, strong) UIImageView *nameViewBackground;
-
-
-//favorite
-@property UIButton *leftProfileButton;
-
 @property (nonatomic, strong) UIButton *rightProfileButton;
 @property (nonatomic, strong) UIButton *chatButton;
 
@@ -348,28 +343,11 @@ BOOL blockShown;
     lowerBorder.backgroundColor = [[[UIColor lightGrayColor] colorWithAlphaComponent: 0.5f] CGColor];
     lowerBorder.frame = CGRectMake(0, _headerButtonView.frame.size.height, CGRectGetWidth(_headerButtonView.frame), 0.5f);
     [_headerButtonView.layer addSublayer: lowerBorder];
-    
-    _leftProfileButton = [[UIButton alloc] init];
-    _leftProfileButton.frame = CGRectMake(0, 0, self.view.frame.size.width/3 + 5, 70);
-    [_leftProfileButton addTarget:self action:@selector(followersButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    self.numberOfFollowersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _leftProfileButton.frame.size.width, 25)];
-    self.numberOfFollowersLabel.textColor = RGB(80, 80, 80);
-    self.numberOfFollowersLabel.font = [FontProperties mediumFont:20.0f];
-    self.numberOfFollowersLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberOfFollowersLabel.text = [self.user.numFollowers stringValue];
-    [_leftProfileButton addSubview:self.numberOfFollowersLabel];
-    
-    UILabel *followersLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _leftProfileButton.frame.size.width, 20)];
-    followersLabel.textColor = RGB(137, 137, 137);
-    followersLabel.font = [FontProperties scMediumFont:16];
-    followersLabel.textAlignment = NSTextAlignmentCenter;
-    followersLabel.text = @"followers";
-    [_leftProfileButton addSubview:followersLabel];
-    [_headerButtonView addSubview:_leftProfileButton];
+
     
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(followingButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    _rightProfileButton.frame = CGRectMake(self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70);
+    _rightProfileButton.frame = CGRectMake(self.view.frame.size.width*0.7, 0, self.view.frame.size.width*0.3, 70);
     self.numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _rightProfileButton.frame.size.width, 25)];
     self.numberOfFollowingLabel.textColor = RGB(80, 80, 80);
     self.numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
@@ -381,49 +359,48 @@ BOOL blockShown;
     followingLabel.textColor = RGB(137, 137, 137);
     followingLabel.font = [FontProperties scMediumFont:16.0F];
     followingLabel.textAlignment = NSTextAlignmentCenter;
-    followingLabel.text = @"following";
+    followingLabel.text = @"Friends";
     [_rightProfileButton addSubview:followingLabel];
     [_headerButtonView addSubview:_rightProfileButton];
     
-    _chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70)];
-    [_chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
-    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _chatButton.frame.size.width, 20)];
-    chatLabel.textAlignment = NSTextAlignmentCenter;
-    if (self.user.isCurrentUser) chatLabel.text = @"chats";
-    else chatLabel.text = @"chat";
-    chatLabel.textColor = RGB(137, 137, 137);
-    chatLabel.font = [FontProperties scMediumFont:16.0f];
-    [_chatButton addSubview:chatLabel];
+//    _chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70)];
+//    [_chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
+//    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _chatButton.frame.size.width, 20)];
+//    chatLabel.textAlignment = NSTextAlignmentCenter;
+//    if (self.user.isCurrentUser) chatLabel.text = @"chats";
+//    else chatLabel.text = @"chat";
+//    chatLabel.textColor = RGB(137, 137, 137);
+//    chatLabel.font = [FontProperties scMediumFont:16.0f];
+//    [_chatButton addSubview:chatLabel];
+//    
+//    _orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 - 10, 10, 20, 20)];
+//    _orangeChatBubbleImageView.center = CGPointMake(_orangeChatBubbleImageView.center.x, _chatButton.center.y - _orangeChatBubbleImageView.frame.size.height/2 + 2);
+//    [_chatButton addSubview:_orangeChatBubbleImageView];
     
-    _orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(_chatButton.frame.size.width/2 - 10, 10, 20, 20)];
-    _orangeChatBubbleImageView.center = CGPointMake(_orangeChatBubbleImageView.center.x, _chatButton.center.y - _orangeChatBubbleImageView.frame.size.height/2 + 2);
-    [_chatButton addSubview:_orangeChatBubbleImageView];
-    
-    _numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _orangeChatBubbleImageView.frame.size.width, _orangeChatBubbleImageView.frame.size.height - 8)];
-    _numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
-    _numberOfChatsLabel.textColor = UIColor.whiteColor;
-    _numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
-    [_orangeChatBubbleImageView addSubview:_numberOfChatsLabel];
+//    _numberOfChatsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, _orangeChatBubbleImageView.frame.size.width, _orangeChatBubbleImageView.frame.size.height - 8)];
+//    _numberOfChatsLabel.textAlignment = NSTextAlignmentCenter;
+//    _numberOfChatsLabel.textColor = UIColor.whiteColor;
+//    _numberOfChatsLabel.font = [FontProperties scMediumFont:16.0f];
+//    [_orangeChatBubbleImageView addSubview:_numberOfChatsLabel];
  
     
-    [self updateNumberOfChats];
-
+//    [self updateNumberOfChats];
     
     [_headerButtonView addSubview:_chatButton];
     [self initializeFollowRequestLabel];
     [self initializeFollowButton];
 }
 
-- (void)updateNumberOfChats {
-    NSNumber *unreadChats = [WGProfile currentUser].numUnreadConversations;
-    if (![unreadChats isEqualToNumber: @0] && [self.user isCurrentUser]) {
-        _orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
-        _numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
-       
-    } else {
-        _orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
-    }
-}
+//- (void)updateNumberOfChats {
+//    NSNumber *unreadChats = [WGProfile currentUser].numUnreadConversations;
+//    if (![unreadChats isEqualToNumber: @0] && [self.user isCurrentUser]) {
+//        _orangeChatBubbleImageView.image = [UIImage imageNamed:@"orangeChatBubble"];
+//        _numberOfChatsLabel.text = [NSString stringWithFormat: @"%@", unreadChats];
+//       
+//    } else {
+//        _orangeChatBubbleImageView.image = [UIImage imageNamed:@"chatsIcon"];
+//    }
+//}
 
 - (void) initializeFollowButton {
     _followButton = [[UIButton alloc] initWithFrame:CGRectMake(25, 10, self.view.frame.size.width - 50, 50)];
@@ -555,7 +532,6 @@ BOOL blockShown;
 
 - (void) reloadViewForUserState {
     _rightBarBt.hidden = YES;
-    _leftProfileButton.hidden = YES;
     _rightProfileButton.hidden = YES;
     _chatButton.hidden = YES;
     _followButton.hidden = YES;
@@ -571,7 +547,6 @@ BOOL blockShown;
         self.userState == PUBLIC_STATE ||
         self.userState == PRIVATE_STATE) {
         _rightBarBt.hidden = NO;
-        _leftProfileButton.hidden = NO;
         _rightProfileButton.hidden = NO;
         _chatButton.hidden = NO;
         if (self.userState == PRIVATE_STATE) {
@@ -674,15 +649,6 @@ BOOL blockShown;
 
 #pragma mark - Table View Helpers
 
-- (BOOL) shouldShowGoOutsCell {
-    if (self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
-        self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
-        return NO;
-    }
-    
-    return YES;
-}
-
 - (BOOL) shouldShowInviteCell {
     if ([self.user isCurrentUser] ||
         self.userState == NOT_LOADED_STATE ||
@@ -722,19 +688,15 @@ BOOL blockShown;
 
 #define kImageViewSection 0
 #define kNotificationsSection 1
-#define kGoOutsSection 2
-#define kInstagramSection 3
+#define kInstagramSection 2
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 4;
+    return 3;
 }
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == kGoOutsSection) {
-        return ([self shouldShowGoOutsCell]) ? 1 : 0;
-    }
-    else if (section == kNotificationsSection) {
+    if (section == kNotificationsSection) {
         return [self notificationCount];
     }
     return 1;
@@ -747,10 +709,6 @@ BOOL blockShown;
         [self.imageScrollView removeFromSuperview];
         [imageCell.contentView addSubview: self.imageScrollView];
         return imageCell;
-    } else if (indexPath.section == kGoOutsSection) {
-        GoOutsCell *goOutsCell = [tableView dequeueReusableCellWithIdentifier: @"GoOutsCell" forIndexPath:indexPath];
-        goOutsCell.user = self.user;
-        return goOutsCell;
     } else if (indexPath.section == kNotificationsSection) {
         if ([self isIndexPathASummaryCell:indexPath]) {
             SummaryCell *summaryCell = [tableView dequeueReusableCellWithIdentifier:kSummaryCellName forIndexPath:indexPath];
@@ -828,9 +786,6 @@ BOOL blockShown;
     if (indexPath.section == kImageViewSection) {
         return self.imageScrollView.frame.size.height - _nameView.frame.size.height;
     }
-    else if (indexPath.section == kGoOutsSection) {
-        return [GoOutsCell rowHeight];
-    }
     else if (indexPath.section == kNotificationsSection) {
         return 65;
     }
@@ -841,23 +796,6 @@ BOOL blockShown;
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    if (indexPath.section != kGoOutsSection) {
-        // Remove seperator inset
-        if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
-            [cell setSeparatorInset:UIEdgeInsetsZero];
-        }
-        
-        // Prevent the cell from inheriting the Table View's margin settings
-        if ([cell respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)]) {
-            [cell setPreservesSuperviewLayoutMargins:NO];
-        }
-        
-        // Explictly set your cell's layout margins
-        if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
-            [cell setLayoutMargins:UIEdgeInsetsZero];
-        }
-    }
     
     if (indexPath.section != kNotificationsSection) {
         return;
@@ -979,9 +917,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [WGProfile reload:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.user = WGProfile.currentUser;
-        strongSelf.numberOfFollowersLabel.text = [strongSelf.user.numFollowers stringValue];
         strongSelf.numberOfFollowingLabel.text = [strongSelf.user.numFollowing stringValue];
-        [strongSelf updateNumberOfChats];
         strongSelf.imageScrollView.user = WGProfile.currentUser;
         strongSelf.pageControl.numberOfPages = strongSelf.user.images.count;
         [strongSelf reloadViewForUserState];
@@ -1143,8 +1079,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 45, 45)];
     self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.profileImageView.clipsToBounds = YES;
-    self.profileImageView.layer.cornerRadius = 7;
-    self.profileImageView.layer.borderWidth = 0.5;
+    self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width/2;
+    self.profileImageView.layer.borderWidth = 1.0f;
     self.profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
     self.profileImageView.layer.masksToBounds = YES;
     self.profileImageView.center = CGPointMake(self.profileImageView.center.x, self.center.y);
@@ -1193,70 +1129,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([self respondsToSelector:@selector(layoutMargins)]) {
         self.layoutMargins = UIEdgeInsetsZero;
     }
-}
-
-@end
-
-@implementation GoOutsCell
-
-#define kTitleTemplate @"times out this semester"
-
-- (id)initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder: aDecoder];
-    if (self ) {
-        [self setup];
-    }
-    
-    return self;
-}
-
-
-- (void)setup {
-    self.lastCount = nil;
-    self.numberLabel = [[UILabel alloc] init];
-    self.numberLabel.textAlignment = NSTextAlignmentRight;
-    self.numberLabel.font = [FontProperties lightFont: 55];
-    self.numberLabel.textColor = [FontProperties getOrangeColor];
-    [self.contentView addSubview: self.numberLabel];
-    
-    self.titleLabel = [[UILabel alloc] init];
-    self.titleLabel.text = [NSString stringWithFormat: kTitleTemplate];
-    self.titleLabel.font = [FontProperties lightFont: 24];
-    self.titleLabel.textColor = [UIColor lightGrayColor];
-    self.titleLabel.numberOfLines = 2;
-    [self.contentView addSubview: self.titleLabel];
-
-    if ([self respondsToSelector:@selector(layoutMargins)]) {
-        self.layoutMargins = UIEdgeInsetsMake(0, self.contentView.frame.size.width, 0, 0);
-    }
-
-}
-
-+ (CGFloat)rowHeight {
-    return 100.0f;
-}
-
-- (void)setUser:(WGUser *)user {
-    _user = user;
-    NSNumber *newCount = (NSNumber *)[user objectForKey:@"period_went_out"];
-    
-    if (self.lastCount && [self.lastCount isEqualToNumber: newCount]) {
-        return;
-    }
-    
-    newCount = newCount;
-    self.lastCount = newCount;
-
-    UIFont *numberLabelFont = [FontProperties lightFont: 55];
-    NSDictionary *attributes = @{NSFontAttributeName: numberLabelFont};
-    CGSize numberSize = [[newCount stringValue] sizeWithAttributes: attributes];
-    CGFloat spacerSize = 10.0f;
-    CGFloat titleWidth = 137.0f;
-    CGFloat contentWidth = numberSize.width + spacerSize + titleWidth;
-    CGFloat sideSpacing = (self.contentView.bounds.size.width - contentWidth)/2;
-    self.numberLabel.frame = CGRectMake(sideSpacing, 0, numberSize.width, self.contentView.frame.size.height);
-    self.numberLabel.text = newCount.stringValue;
-    self.titleLabel.frame = CGRectMake(sideSpacing + numberSize.width + spacerSize, 0, titleWidth, self.contentView.frame.size.height);
 }
 
 @end

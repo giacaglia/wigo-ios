@@ -1645,12 +1645,6 @@ BOOL firstTimeLoading;
    
 }
 
-//- (NSString *)deviceLocation
-//{
-//    NSString *theLocation = [NSString stringWithFormat:@"latitude: %f longitude: %f", self.locationManager.location.coordinate.latitude, self.locationManager.location.coordinate.longitude];
-//    return theLocation;
-//}
-
 
 #pragma mark - Refresh Control
 
