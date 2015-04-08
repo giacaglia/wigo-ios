@@ -10,7 +10,7 @@
 #import "UIImageCrop.h"
 #import "MessageViewController.h"
 #import "ConversationViewController.h"
-
+#import "UIButtonAligned.h"
 
 @implementation ChatViewController
 
@@ -33,6 +33,7 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [WGAnalytics tagView:@"chat_list"];
+    [self initializeRightBarButtonItem];
 }
 
 
@@ -40,17 +41,18 @@
     [self.tableViewOfPeople setContentOffset:CGPointZero animated:YES];
 }
 
-//- (void)initializeRightBarButtonItem {
-//    CGRect profileFrame = CGRectMake(0, 0, 21, 21);
-//    UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@2];
-//    [profileButton setBackgroundImage:[UIImage imageNamed:@"writeIcon"] forState:UIControlStateNormal];
-//    [profileButton addTarget:self action:@selector(writeMessage)
-//            forControlEvents:UIControlEventTouchUpInside];
-//    [profileButton setShowsTouchWhenHighlighted:YES];
-//    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
-//    self.navigationItem.rightBarButtonItem = profileBarButton;
-//
-//}
+- (void)initializeRightBarButtonItem {
+    CGRect profileFrame = CGRectMake(0, 0, 30, 21);
+    UIButtonAligned *writeButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
+    [writeButton setTitle:@"NEW" forState:UIControlStateNormal];
+    writeButton.titleLabel.font = [FontProperties mediumFont:13.0f];
+    writeButton.titleLabel.textAlignment = NSTextAlignmentRight;
+    [writeButton addTarget:self action:@selector(writeMessage)
+            forControlEvents:UIControlEventTouchUpInside];
+    [writeButton setShowsTouchWhenHighlighted:YES];
+    UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:writeButton];
+    self.tabBarController.navigationItem.rightBarButtonItem = profileBarButton;
+}
 
 - (void) writeMessage {
     [self.navigationController pushViewController:[MessageViewController new] animated:YES];
@@ -232,6 +234,12 @@
     self.nameLabel.font = [FontProperties getSubtitleFont];
     [self.contentView addSubview:self.nameLabel];
     
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 90, 10, 80, 20)];
+    self.timeLabel.font = [FontProperties lightFont:15.0f];
+    self.timeLabel.textColor = RGB(179, 179, 179);
+    self.timeLabel.textAlignment = NSTextAlignmentRight;
+    [self.contentView addSubview:self.timeLabel];
+    
     self.lastMessageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(85, 25, 150, 40)];
     [self.contentView addSubview:self.lastMessageImageView];
 
@@ -243,19 +251,12 @@
     self.lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [self.lastMessageImageView addSubview:self.lastMessageLabel];
     
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 90, 5, 80, 20)];
-    self.timeLabel.font = [FontProperties lightFont:15.0f];
-    self.timeLabel.textColor = RGB(179, 179, 179);
-    self.timeLabel.textAlignment = NSTextAlignmentRight;
-    [self.contentView addSubview:self.timeLabel];
-    
-    self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 20, 20)];
+    self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(6, 6, 12, 12)];
     self.orangeNewView.backgroundColor = [FontProperties getOrangeColor];
     self.orangeNewView.layer.cornerRadius = self.orangeNewView.frame.size.width/2;
     self.orangeNewView.layer.borderColor = UIColor.clearColor.CGColor;
     self.orangeNewView.layer.borderWidth = 1.0f;
     self.orangeNewView.hidden = YES;
-    self.orangeNewView.center = CGPointMake(self.orangeNewView.center.x, self.center.y);
     [self.contentView addSubview:self.orangeNewView];
 }
 

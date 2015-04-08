@@ -73,7 +73,11 @@ BOOL firstTimeLoading;
     [super viewDidLoad];
     [self initializeNotificationObservers];
     
-
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBarBackground"]
+                       forBarPosition:UIBarPositionAny
+                           barMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:[UIImage new]];
+    
     self.view.backgroundColor = UIColor.whiteColor;
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.fetchingUserInfo = NO;
@@ -95,7 +99,6 @@ BOOL firstTimeLoading;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.tabBarController.tabBar.selectedImageTintColor = [FontProperties getBlueColor];
-
     if ([self isPeeking] && self.groupNumberID && self.groupName) {
         [WGAnalytics tagView:@"where" withTargetGroup:[[WGGroup alloc] initWithJSON:@{@"name": self.groupName, @"id": self.groupNumberID}]];
     }
@@ -119,6 +122,12 @@ BOOL firstTimeLoading;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
     self.navigationController.navigationBar.frame = CGRectMake(self.navigationController.navigationBar.frame.origin.x, 20, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height);
     [self updateBarButtonItems:1.0f];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.tabBarController.navigationItem.leftBarButtonItem = nil;
+    self.tabBarController.navigationItem.rightBarButtonItem = nil;
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -653,7 +662,8 @@ BOOL firstTimeLoading;
     }
     else if (self.pastDays.count > 0) {
         //[Today section] [Highlighs section] (really just space for a header) + pastDays sections
-        return 1 + 1 + self.pastDays.count;
+        return 1 + 1;
+//        return 1 + 1 + self.pastDays.count;
     }
     //[Today section]
     return 1;
@@ -978,14 +988,14 @@ BOOL firstTimeLoading;
 
 - (void)updateBarButtonItems:(CGFloat)alpha
 {
-    [self.tabBarController.navigationItem.leftBarButtonItems enumerateObjectsUsingBlock:^(UIBarButtonItem* item, NSUInteger i, BOOL *stop) {
-        item.customView.alpha = alpha;
-    }];
+//    [self.tabBarController.navigationItem.leftBarButtonItems enumerateObjectsUsingBlock:^(UIBarButtonItem* item, NSUInteger i, BOOL *stop) {
+//        item.customView.alpha = alpha;
+//    }];
     [self.tabBarController.navigationItem.rightBarButtonItems enumerateObjectsUsingBlock:^(UIBarButtonItem* item, NSUInteger i, BOOL *stop) {
         item.customView.alpha = alpha;
     }];
     self.tabBarController.navigationItem.titleView.alpha = alpha;
-    self.navigationController.navigationBar.tintColor = [self.navigationController.navigationBar.tintColor colorWithAlphaComponent:alpha];
+//    self.navigationController.navigationBar.tintColor = [self.navigationController.navigationBar.tintColor colorWithAlphaComponent:alpha];
 }
 
 - (void)animateNavBarTo:(CGFloat)y
@@ -1352,8 +1362,8 @@ BOOL firstTimeLoading;
     [WGEvent get:^(WGCollection *collection, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+        strongSelf.fetchingEventAttendees = NO;
         if (error) {
-            strongSelf.fetchingEventAttendees = NO;
             handler(NO, error);
             return;
         }
@@ -1390,7 +1400,6 @@ BOOL firstTimeLoading;
             [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
         }
         
-        strongSelf.fetchingEventAttendees = NO;
         handler(YES, error);
     }];
 }
@@ -1526,9 +1535,9 @@ BOOL firstTimeLoading;
     } else {
         [WGEvent get:^(WGCollection *collection, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
+            strongSelf.fetchingEventAttendees = NO;
             [strongSelf removeDancingG];
             if (error) {
-                strongSelf.fetchingEventAttendees = NO;
                 handler(NO, error);
                 return;
             }

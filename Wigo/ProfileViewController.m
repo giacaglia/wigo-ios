@@ -33,7 +33,6 @@
 //UI
 @property (nonatomic, strong) UIButtonAligned *rightBarBt;
 @property (nonatomic, strong) UIButton *followButton;
-@property (nonatomic, strong) UILabel *followRequestLabel;
 
 @property UILabel *nameOfPersonLabel;
 @property UIImageView *privateLogoImageView;
@@ -102,6 +101,7 @@ BOOL blockShown;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    self.tabBarController.navigationItem.titleView = nil;
     
     if (self.user.state == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if (self.user.isCurrentUser) {
@@ -134,6 +134,8 @@ BOOL blockShown;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.tabBarController.navigationItem.titleView = nil;
+
 //    self.tabBarController.navigationItem.titleView.hidden = YES;
 //    [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
@@ -391,7 +393,6 @@ BOOL blockShown;
 //    [_chatButton addSubview:chatLabel];
 //    [_headerButtonView addSubview:_chatButton];
     
-    [self initializeFollowRequestLabel];
     [self initializeFollowButton];
 }
 
@@ -401,18 +402,6 @@ BOOL blockShown;
     [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
     [_headerButtonView addSubview: _followButton];
     [_headerButtonView bringSubviewToFront: _followButton];
-}
-
-- (void)initializeFollowRequestLabel {
-    _followRequestLabel = [[UILabel alloc] initWithFrame: _headerButtonView.bounds];
-    _followRequestLabel.text = @"Your follow request has been sent";
-    _followRequestLabel.textAlignment = NSTextAlignmentCenter;
-    _followRequestLabel.textColor = [FontProperties getOrangeColor];
-    _followRequestLabel.font = [FontProperties scMediumFont:16.0f];
-    if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) _followRequestLabel.hidden = NO;
-    else _followRequestLabel.hidden = YES;
-    [_headerButtonView addSubview: _followRequestLabel];
-    [_headerButtonView bringSubviewToFront: _followRequestLabel];
 }
 
 #pragma mark - Action Taps
@@ -504,6 +493,9 @@ BOOL blockShown;
     _followButton.hidden = YES;
     _followButton.hidden = YES;
     
+    [_followButton setImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+    [_followButton setTitle:nil forState:UIControlStateNormal];
+
     if (self.userState == NOT_LOADED_STATE ||
         self.userState == OTHER_SCHOOL_USER_STATE) {
         // Don't show anything
@@ -528,7 +520,10 @@ BOOL blockShown;
     }
     else if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
         _rightBarBt.hidden = NO;
-        _followRequestLabel.hidden = NO;
+        [_followButton setImage:nil forState:UIControlStateNormal];
+        [_followButton setTitle:@"Pending" forState:UIControlStateNormal];
+        [_followButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        _followButton.backgroundColor = UIColor.grayColor;
     }
     
     if (self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) {
@@ -1086,11 +1081,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.orangeNewView.center = CGPointMake(self.orangeNewView.center.x, self.center.y);
     [self.contentView addSubview:self.orangeNewView];
     
-    self.rightPostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 32, self.frame.size.height/2 - 7, 9, 15)];
-    self.rightPostImageView.image = [UIImage imageNamed:@"rightPostImage"];
-    self.rightPostImageView.center = CGPointMake(self.rightPostImageView.center.x, self.center.y);
-    [self.contentView addSubview:self.rightPostImageView];
-    
     self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 25 - 27, self.frame.size.height/2 + 13 + 3, 50, 15)];
     self.tapLabel.text = @"Tap back";
     self.tapLabel.textAlignment = NSTextAlignmentCenter;
@@ -1110,12 +1100,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     }
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, notification.message];
-    
-    if (user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE || user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
-        self.rightPostImageView.hidden = YES;
-    } else {
-        self.rightPostImageView.hidden = NO;
-    }
     
     if ([self respondsToSelector:@selector(layoutMargins)]) {
         self.layoutMargins = UIEdgeInsetsZero;

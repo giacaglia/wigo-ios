@@ -82,6 +82,11 @@ NSIndexPath *userIndex;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
 }
 
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.tabBarController.navigationItem.leftBarButtonItem = nil;
+    self.tabBarController.navigationItem.rightBarButtonItem = nil;
+}
 
 - (void)initializeBackBarButton {
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
@@ -97,9 +102,10 @@ NSIndexPath *userIndex;
 
 - (void) initializeRightBarButton {
     if ([self.currentTab isEqual:@2]) {
-        UIButtonAligned *inviteButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 60, 16) andType:@3];
+        UIButtonAligned *inviteButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 40, 16) andType:@3];
         [inviteButton setTitle:@"INVITE" forState:UIControlStateNormal];
         [inviteButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        inviteButton.titleLabel.textAlignment = NSTextAlignmentRight;
         [inviteButton addTarget:self action:@selector(invitePressed)
                 forControlEvents:UIControlEventTouchUpInside];
         inviteButton.titleLabel.font = [FontProperties mediumFont:13.0f];

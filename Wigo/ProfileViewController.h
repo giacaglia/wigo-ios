@@ -49,7 +49,6 @@
 @property (nonatomic, strong) UILabel *descriptionLabel;
 @property (nonatomic, assign) BOOL isTapped;
 @property (nonatomic, strong) UILabel *tapLabel;
-@property (nonatomic, strong) UIImageView *rightPostImageView;
 @property (nonatomic, strong) WGNotification *notification;
 @property (nonatomic, strong) UIView *orangeNewView;
 @end

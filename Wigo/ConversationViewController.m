@@ -40,7 +40,7 @@ ProfileViewController *profileViewController;
 {
     self = [super init];
     if (self) {
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -52,7 +52,7 @@ ProfileViewController *profileViewController;
     [self initializeNotificationObservers];
     
     bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
-    orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor orangeColor]];
+    orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[FontProperties getOrangeColor]];
     grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
     
     [self initializeLeftBarButton];
@@ -63,10 +63,6 @@ ProfileViewController *profileViewController;
     self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
     
     self.automaticallyScrollsToMostRecentMessage = YES;
-    
-    UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 0.5)];
-    bottomLine.backgroundColor = RGB(180, 180, 180);
-    [self.view addSubview:bottomLine];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(textChanged:)
