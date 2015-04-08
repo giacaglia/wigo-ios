@@ -42,6 +42,7 @@
 - (void) initializeNavigationItem {
     self.navigationItem.titleView = nil;
     self.title = @"New Message";
+    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
 }
 
 - (void) viewDidAppear:(BOOL)animated {

@@ -144,6 +144,7 @@ BOOL firstTimeLoading;
     } else {
         self.shouldReloadEvents = YES;
     }
+    [self updateNavigationBar];
     [self fetchUserInfo];
 }
 
@@ -599,7 +600,6 @@ BOOL firstTimeLoading;
                         object.attendees = eventAttendees;
                     }
                 }
-                [strongOfStrong updateNavigationBar];
                 [strongOfStrong fetchEventsFirstPage];
             }];
         }];
@@ -1633,7 +1633,6 @@ BOOL firstTimeLoading;
         }
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
-        [strongSelf updateNavigationBar];
         [strongSelf.placesTableView reloadData];
         UITabBarController *tab= self.tabBarController;
         ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:3];
