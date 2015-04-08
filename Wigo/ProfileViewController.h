@@ -36,7 +36,7 @@
 
 
 #define kMutualFriendsCellName @"mutualFriendsCellName"
-@interface MutualFriendsCell : UITableViewCell <UICollectionViewDataSource>
+@interface MutualFriendsCell : UITableViewCell <UICollectionViewDataSource, UICollectionViewDelegate>
 + (CGFloat)height;
 @property (nonatomic, strong) UILabel *mutualFriendsLabel;
 @property (nonatomic, strong) UICollectionView *mutualFriendsCollection;

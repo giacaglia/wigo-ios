@@ -123,6 +123,8 @@ BOOL firstTimeLoading;
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
     self.navigationController.navigationBar.frame = CGRectMake(self.navigationController.navigationBar.frame.origin.x, 20, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height);
+    self.navigationController.navigationBar.backgroundColor = UIColor.clearColor;
+
     [self updateBarButtonItems:1.0f];
 }
 

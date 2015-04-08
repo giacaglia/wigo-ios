@@ -995,10 +995,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.mutualFriendsLabel.font = [FontProperties mediumFont:15.0f];
     [self.contentView addSubview:self.mutualFriendsLabel];
     
-    self.mutualFriendsCollection = [[UICollectionView alloc] initWithFrame:CGRectMake(10, 30, self.contentView.frame.size.width - 10, 60) collectionViewLayout:[[ScrollViewLayout alloc] initWithWidth:40]];
+    self.mutualFriendsCollection = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 30, self.contentView.frame.size.width, 60) collectionViewLayout:[[ScrollViewLayout alloc] initWithWidth:40]];
     [self.mutualFriendsCollection registerClass:[ScrollViewCell class] forCellWithReuseIdentifier:kScrollViewCellName];
+    [self.mutualFriendsCollection registerClass:[UICollectionReusableView class]
+                     forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                            withReuseIdentifier:kScrollViewHeader];
     self.mutualFriendsCollection.backgroundColor = UIColor.whiteColor;
     self.mutualFriendsCollection.dataSource = self;
+    self.mutualFriendsCollection.delegate = self;
     self.mutualFriendsCollection.showsHorizontalScrollIndicator = NO;
     [self.contentView addSubview:self.mutualFriendsCollection];
 }
@@ -1029,7 +1033,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
                         forControlEvents:UIControlEventAllEvents];
     scrollCell.blueOverlayView.hidden = YES;
     scrollCell.goHereLabel.hidden = YES;
-//    [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
     scrollCell.profileNameLabel.alpha = 1.0f;
     scrollCell.user = WGProfile.currentUser;
     return scrollCell;
