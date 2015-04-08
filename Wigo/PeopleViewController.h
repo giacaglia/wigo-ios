@@ -24,6 +24,7 @@
 @property (nonatomic, strong) WGCollection *suggestions;
 @property (nonatomic, strong) WGCollection *followers;
 @property (nonatomic, strong) WGCollection *filteredUsers;
+@property (nonatomic, strong) WGCollection *friendRequestUsers;
 @property (nonatomic, assign) BOOL fetching;
 @property (nonatomic, assign) BOOL isSearching;
 @end
@@ -39,6 +40,12 @@
 @property (nonatomic, strong) UIActivityIndicatorView *spinnerView;
 @property (nonatomic, strong) WGUser *user;
 @property (nonatomic, strong) UIView *orangeNewView;
+@end
+
+
+#define kSeeMoreCellName @"SeeMoreCellName"
+@interface SeeMoreCell : UITableViewCell
++ (CGFloat) height;
 @end
 
 #define kSectionPeople 1

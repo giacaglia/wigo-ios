@@ -181,6 +181,12 @@ BOOL firstTimeLoading;
 }
 
 - (void) updateNavigationBar {
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:UIColor.whiteColor, NSFontAttributeName:[FontProperties getTitleFont]};
+    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
+    self.navigationController.navigationBar.tintColor = UIColor.whiteColor;
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:UIColor.whiteColor}];
+    self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:UIColor.whiteColor forKey:NSForegroundColorAttributeName];
+    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {

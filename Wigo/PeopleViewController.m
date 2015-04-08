@@ -155,6 +155,12 @@ NSIndexPath *userIndex;
 
 
 - (void)initializeTableOfPeople {
+    self.friendRequestUsers = [[WGCollection alloc] initWithType:[WGUser class]];
+    for (int i = 0; i < 2; i++) {
+        [self.friendRequestUsers addObject:WGProfile.currentUser];
+    }
+    self.friendRequestUsers.hasNextPage = @1;
+    
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     if ([self.currentTab isEqual:@2]) {
@@ -162,6 +168,7 @@ NSIndexPath *userIndex;
     }
     [self.tableViewOfPeople registerClass:[PeopleCell class] forCellReuseIdentifier:kPeopleCellName];
     [self.tableViewOfPeople registerClass:[FollowPeopleCell class] forCellReuseIdentifier:kFollowPeopleCell];
+    [self.tableViewOfPeople registerClass:[SeeMoreCell class] forCellReuseIdentifier:kSeeMoreCellName];
     self.tableViewOfPeople.delegate = self;
     self.tableViewOfPeople.dataSource = self;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -197,10 +204,15 @@ NSIndexPath *userIndex;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
-        if ([self.currentTab isEqualToNumber:@2]) return 90;
-        else if ([self.currentTab isEqualToNumber:@3]) return 95;
+        if ([self.currentTab isEqualToNumber:@2])  {
+            if (indexPath.row == self.friendRequestUsers.count) {
+                return [SeeMoreCell height];
+            }
+            return [TablePersonCell height];
+        }
+        else if ([self.currentTab isEqualToNumber:@3]) return [TablePersonCell height];
     }
-    return PEOPLEVIEW_HEIGHT_OF_CELLS + 10;
+    return [TablePersonCell height];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -213,7 +225,7 @@ NSIndexPath *userIndex;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kSectionFollowPeople && [self.currentTab isEqual:@2]) {
         if (self.isSearching) return 0;
-        return 2;
+        return self.friendRequestUsers.count + self.friendRequestUsers.hasNextPage.intValue;
     }
     else return (int)self.users.count + self.users.hasNextPage.intValue;
 }
@@ -231,9 +243,15 @@ NSIndexPath *userIndex;
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kSectionFollowPeople && [self.currentTab isEqual:@2]) {
-        FollowPeopleCell *followPeopleCell = [tableView dequeueReusableCellWithIdentifier:kFollowPeopleCell forIndexPath:indexPath];
-        followPeopleCell.user = WGProfile.currentUser;
-        return followPeopleCell;
+        if (indexPath.row == self.friendRequestUsers.count) {
+            SeeMoreCell *seeMoreCell = [tableView dequeueReusableCellWithIdentifier:kSeeMoreCellName forIndexPath:indexPath];
+            return seeMoreCell;
+        }
+        else {
+            FollowPeopleCell *followPeopleCell = [tableView dequeueReusableCellWithIdentifier:kFollowPeopleCell forIndexPath:indexPath];
+            followPeopleCell.user = WGProfile.currentUser;
+            return followPeopleCell;
+        }
     }
     PeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kPeopleCellName forIndexPath:indexPath];
     cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, [self tableView:tableView heightForRowAtIndexPath:indexPath]);
@@ -278,6 +296,20 @@ NSIndexPath *userIndex;
     
     return cell;
 }
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([self.currentTab isEqual:@2]
+        && indexPath.section == kSectionFollowPeople &&
+        indexPath.row == self.friendRequestUsers.count) {
+        self.friendRequestUsers.hasNextPage = @0;
+        for (int i = 0; i < 2; i++) {
+            [self.friendRequestUsers addObject:WGProfile.currentUser];
+        }
+        [self.tableViewOfPeople reloadData];
+    }
+    return;
+}
+
 
 -(CGFloat) tableView:(UITableView *)tableView
 heightForHeaderInSection:(NSInteger)section
@@ -672,6 +704,35 @@ viewForHeaderInSection:(NSInteger)section
     else {
         self.followPersonButton.hidden = YES;
     }
+}
+
+@end
+
+@implementation SeeMoreCell
+
++(CGFloat) height {
+    return 30;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+-(void) setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [SeeMoreCell height]);
+    self.contentView.frame = self.frame;
+    
+    UILabel *seeMoreLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 20)];
+    seeMoreLabel.text = @"See More";
+    seeMoreLabel.textColor = [FontProperties getBlueColor];
+    seeMoreLabel.font = [FontProperties mediumFont:16.0f];
+    seeMoreLabel.center = self.center;
+    seeMoreLabel.textAlignment = NSTextAlignmentCenter;
+    [self.contentView addSubview:seeMoreLabel];
 }
 
 @end

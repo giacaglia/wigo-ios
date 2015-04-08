@@ -40,8 +40,8 @@
 }
 
 - (void) initializeNavigationItem {
-    self.navigationItem.titleView = nil;
     self.title = @"New Message";
+
 
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 60, 44) andType:@0];
     [barBt setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];

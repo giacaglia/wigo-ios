@@ -104,9 +104,6 @@ ProfileViewController *profileViewController;
     [WGAnalytics tagView:@"conversation"];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
 
 -(void) textChanged:(id)sender {
     if ([self.inputToolbar.contentView.textView.text hasSuffix:@"\n"] && self.inputToolbar.contentView.rightBarButtonItem.enabled) {
@@ -140,12 +137,12 @@ ProfileViewController *profileViewController;
 }
 
 - (NSString *)senderId {
-    return [NSString stringWithFormat:@"%@", [WGProfile currentUser].id];
+    return [NSString stringWithFormat:@"%@", WGProfile.currentUser.id];
 }
 
 - (void) initializeLeftBarButton {
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
-    [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
+    [barBt setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
     [barBt setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     barBt.titleLabel.font = [FontProperties getSubtitleFont];
