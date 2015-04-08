@@ -106,7 +106,6 @@
     [self.invitePeopleTableView registerClass:[TapAllCell class] forCellReuseIdentifier:kTapAllName];
     self.invitePeopleTableView.dataSource = self;
     self.invitePeopleTableView.delegate = self;
-    [self.invitePeopleTableView setSeparatorColor:[FontProperties getBlueColor]];
     self.invitePeopleTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
     searchBar.placeholder = @"Search By Name";
@@ -160,12 +159,11 @@
             if (tag < self.presentedUsers.count) {
                 user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
             }
-            if (tag == self.presentedUsers.count - 5 &&
-                self.presentedUsers.hasNextPage.boolValue) {
+            if (tag == self.presentedUsers.count - 5) {
                 [self getNextPage];
             }
         if (user) {
-            [cell setUser:user];
+            cell.user = user;
             [cell.aroundTapButton removeTarget:nil
                                action:NULL
                      forControlEvents:UIControlEventAllEvents];
@@ -498,12 +496,12 @@ heightForHeaderInSection:(NSInteger)section
     self.profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
     [self.aroundTapButton addSubview:self.profileImageView];
     
-    self.fullNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
+    self.fullNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 15, 150, 20)];
     self.fullNameLabel.font = [FontProperties getSubtitleFont];
     [self.aroundTapButton addSubview:self.fullNameLabel];
     
-    self.goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 170, 20)];
-    self.goingOutLabel.font = [FontProperties mediumFont:13.0f];
+    self.goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 35, 170, 20)];
+    self.goingOutLabel.font = [FontProperties lightFont:13.0f];
     self.goingOutLabel.textAlignment = NSTextAlignmentLeft;
     self.goingOutLabel.textColor = [FontProperties getBlueColor];
     [self.aroundTapButton addSubview:self.goingOutLabel];
@@ -516,7 +514,7 @@ heightForHeaderInSection:(NSInteger)section
 - (void)setUser:(WGUser *)user {
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.fullNameLabel.text = user.fullName;
-    if ([user.isGoingOut boolValue]) {
+    if (user.isGoingOut.boolValue) {
         if (user.eventAttending.name && !user.eventAttending.isPrivate) {
             self.goingOutLabel.text = user.eventAttending.name;
         } else {
