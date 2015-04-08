@@ -26,7 +26,7 @@ NSMutableArray *chosenPeople;
 - (id)init {
     self = [super init];
     if (self) {
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -39,8 +39,6 @@ NSMutableArray *chosenPeople;
     selectedPeopleIndexes = [[NSMutableArray alloc] init];
 
     [self initializeTitle];
-    [self initializeSearchBar];
-    [self initializeTapHandler];
     [self initializeTableViewWithPeople];
 }
 
@@ -53,15 +51,16 @@ NSMutableArray *chosenPeople;
 
 - (void)initializeTitle {
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 30, self.view.frame.size.width - 30, 25)];
-    titleLabel.text = @"TAP 5 OR MORE FRIENDS";
+    titleLabel.text = @"Tap 5 or More Friends";
     titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.font = [FontProperties mediumFont:16];
+    titleLabel.font = [FontProperties getTitleFont];
+    titleLabel.textColor = [FontProperties getBlueColor];
     [self.view addSubview:titleLabel];
     
-    UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 60, 30, 60, 25)];
+    UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 30, 60, 25)];
     [doneButton addTarget:self action:@selector(donePressed) forControlEvents:UIControlEventTouchUpInside];
     [doneButton setTitle:@"Done" forState:UIControlStateNormal];
-    [doneButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    [doneButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
     doneButton.titleLabel.textAlignment = NSTextAlignmentRight;
     doneButton.titleLabel.font = [FontProperties getTitleFont];
     [doneButton setShowsTouchWhenHighlighted:YES];
@@ -70,10 +69,16 @@ NSMutableArray *chosenPeople;
 
 - (void)initializeTableViewWithPeople {
     self.automaticallyAdjustsScrollViewInsets = NO;
-    contactsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104)];
-    contactsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    contactsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    contactsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    [contactsTableView registerClass:[MobileInviteCell class] forCellReuseIdentifier:kMobileInviteCellName];
     contactsTableView.dataSource = self;
     contactsTableView.delegate = self;
+    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
+    searchBar.placeholder = @"Search By Name";
+    searchBar.delegate = self;
+    [contactsTableView setTableHeaderView:searchBar];
+    contactsTableView.contentOffset = CGPointMake(0, 50);
     [self.view addSubview:contactsTableView];
     [self getContactAccess];
 }
@@ -93,19 +98,8 @@ NSMutableArray *chosenPeople;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-    }
-    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    
-    UIButton *aroundCellButton = [[UIButton alloc] initWithFrame:cell.contentView.frame];
-    aroundCellButton.tag = (int)[indexPath row];
-    [aroundCellButton addTarget:self action:@selector(selectedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [cell.contentView addSubview:aroundCellButton];
-    
+    MobileInviteCell *cell = [tableView dequeueReusableCellWithIdentifier:kMobileInviteCellName forIndexPath:indexPath];
+
     ABRecordRef contactPerson;
     if (isFiltered)
         contactPerson  = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:[indexPath row]]);
@@ -113,20 +107,15 @@ NSMutableArray *chosenPeople;
         contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:[indexPath row]]);
     
 
-    UIImageView *selectedPersonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 30, 30)];
-    selectedPersonImageView.tag = (int)[indexPath row];
     ABRecordID recordID = ABRecordGetRecordID(contactPerson);
     NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
     
     if ([shownChosenPeople containsObject:recordIdString])
-        selectedPersonImageView.image = [UIImage imageNamed:@"tapFilled"];
+        cell.selectedPersonImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
     else
-        selectedPersonImageView.image = [UIImage imageNamed:@"tapUnselected"];
-    selectedPersonImageView.tintColor = [FontProperties getOrangeColor];
-    [aroundCellButton addSubview:selectedPersonImageView];
+        cell.selectedPersonImageView.image = [UIImage imageNamed:@"tapUnselectedInvite"];
     
-    UILabel *nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 10, self.view.frame.size.width - 55 - 15, 30)];
-    NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
+      NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
     NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty));
     NSString *fullName = [NSString stringWithFormat:@"%@ %@", firstName, lastName];
     [fullName capitalizedString];
@@ -146,8 +135,7 @@ NSMutableArray *chosenPeople;
         [attString addAttribute:NSForegroundColorAttributeName
                           value:RGB(20, 20, 20)
                           range:NSMakeRange([firstName length] + 1, [lastName length])];
-    nameOfPersonLabel.attributedText = [[NSAttributedString alloc] initWithAttributedString:attString];
-    [aroundCellButton addSubview:nameOfPersonLabel];
+    cell.nameOfPersonLabel.attributedText = [[NSAttributedString alloc] initWithAttributedString:attString];
     return cell;
 }
 
@@ -164,40 +152,33 @@ NSMutableArray *chosenPeople;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 70;
+    return [MobileInviteCell height];
 }
 
-
-- (void)selectedPersonPressed:(id)sender {
-    UIButton *buttonSender = (UIButton *)sender;
-    int tag = (int)buttonSender.tag;
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    int tag = (int)indexPath.row;
     ABRecordRef contactPerson;
     ABRecordID recordID;
     if (isFiltered) {
         contactPerson = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:tag]);
         recordID = ABRecordGetRecordID(contactPerson);
         tag = [MobileDelegate changeTag:tag fromArray:filteredPeopleContactList toArray:peopleContactList];
-       
+        
     } else {
         contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:tag]);
         recordID = ABRecordGetRecordID(contactPerson);
     }
-    [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
-    for (UIView *subview in buttonSender.subviews) {
-        if ([subview isKindOfClass:[UIImageView class]]) {
-            UIImageView *selectedImageView = (UIImageView *)subview;
-            NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
-            if (![shownChosenPeople containsObject:recordIdString]) {
-                selectedImageView.image = [UIImage imageNamed:@"tapFilled"];
-                [chosenPeople addObject:recordIdString];
-                [shownChosenPeople addObject:recordIdString];
-            }
-            else {
-                selectedImageView.image = [UIImage imageNamed:@"tapUnselected"];
-                [shownChosenPeople removeObject:recordIdString];
-            }
-        }
+    NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
+    if (![shownChosenPeople containsObject:recordIdString]) {
+        [chosenPeople addObject:recordIdString];
+        [shownChosenPeople addObject:recordIdString];
     }
+    else {
+        [shownChosenPeople removeObject:recordIdString];
+    }
+    [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
+    [contactsTableView reloadData];
 }
 
 - (void)donePressed {
@@ -205,42 +186,8 @@ NSMutableArray *chosenPeople;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)initializeSearchBar {
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
-    searchBar.barTintColor = [FontProperties getOrangeColor];
-    searchBar.tintColor = [FontProperties getOrangeColor];
-    searchBar.placeholder = @"Search By Name";
-    searchBar.delegate = self;
-    searchBar.layer.borderWidth = 1.0f;
-    searchBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-    [self.view addSubview:searchBar];
-}
-
-
-- (BOOL) textFieldShouldClear:(UITextField *)textField{
-    [searchBar resignFirstResponder];
-    [self.view endEditing:YES];
-    return YES;
-}
-
-- (BOOL)disablesAutomaticKeyboardDismissal {
-    return NO;
-}
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    [searchBar resignFirstResponder];
-    [self.view endEditing:YES];
-}
-
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
-{
-    [searchBar resignFirstResponder];
-    // You can write search code Here
-}
-
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    [searchBar resignFirstResponder];
-    [self.view endEditing:YES];
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [searchBar endEditing:YES];
 }
 
 - (void)searchBar:(UISearchBar *)searchBar
@@ -259,17 +206,37 @@ NSMutableArray *chosenPeople;
     [contactsTableView reloadData];
 }
 
-- (void) initializeTapHandler {
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(dismissKeyboard)];
-    tap.cancelsTouchesInView = YES;
-    [self.view addGestureRecognizer:tap];
+
+
+@end
+
+
+@implementation MobileInviteCell
+
++(CGFloat) height {
+    return 60;
 }
 
--(void)dismissKeyboard {
-    [self.view endEditing:YES];
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
 }
 
-
+- (void)setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [MobileInviteCell height]);
+    self.contentView.frame = self.frame;
+    
+    self.selectedPersonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 30, 30)];
+    self.selectedPersonImageView.tintColor = [FontProperties getOrangeColor];
+    self.selectedPersonImageView.center = CGPointMake(self.selectedPersonImageView.center.x, self.center.y);
+    [self.contentView addSubview:self.selectedPersonImageView];
+    
+    self.nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 10, self.frame.size.width - 55 - 15, 30)];
+    self.nameOfPersonLabel.center  = CGPointMake(self.nameOfPersonLabel.center.x, self.center.y);
+    [self.contentView addSubview:self.nameOfPersonLabel];
+}
 
 @end

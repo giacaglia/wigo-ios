@@ -1150,7 +1150,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) sendInvites:(NSArray *)numbers withHandler:(BoolResultBlock)handler {
-    [WGApi post:@"invites/" withArguments:@{ @"force" : @YES } andParameters:numbers andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:@"invites/" withArguments:@{} andParameters:numbers andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
 }

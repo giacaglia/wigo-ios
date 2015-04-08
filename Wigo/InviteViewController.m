@@ -570,7 +570,7 @@ heightForHeaderInSection:(NSInteger)section
 @implementation TapAllCell
 
 + (CGFloat) height {
-    return 75;
+    return 70;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
