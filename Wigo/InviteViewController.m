@@ -103,7 +103,6 @@
 - (void)initializeTableInvite {
     self.invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     [self.invitePeopleTableView registerClass:[TapCell class] forCellReuseIdentifier:kTapCellName];
-    [self.invitePeopleTableView registerClass:[FollowCell class] forCellReuseIdentifier:kFollowCellName];
     [self.invitePeopleTableView registerClass:[TapAllCell class] forCellReuseIdentifier:kTapAllName];
     self.invitePeopleTableView.dataSource = self;
     self.invitePeopleTableView.delegate = self;
@@ -125,7 +124,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 4;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -136,8 +135,6 @@
     if (section == kSectionTapCell) {
         int hasNextPage = ([self.presentedUsers.hasNextPage boolValue] ? 1 : 0);
         return self.presentedUsers.count + hasNextPage;
-    } else if (section == kSectionFollowCell) {
-        return self.presentedSuggestions.count;
     } else {
         if (self.isSearching) return filteredMobileContacts.count;
         return mobileContacts.count;
@@ -150,25 +147,6 @@
         [tapAllCell.aroundTapButton addTarget:self action:@selector(tapAllPressed) forControlEvents:UIControlEventTouchUpInside];
         return tapAllCell;
     }
-    if (indexPath.section == kSectionFollowCell) {
-        FollowCell *cell = (FollowCell *)[tableView dequeueReusableCellWithIdentifier:kFollowCellName forIndexPath:indexPath];
-        cell.profileImageView.image = nil;
-        cell.nameLabel.text = nil;
-        
-        if (self.presentedSuggestions.count == 0) return cell;
-        if (indexPath.row < self.presentedSuggestions.count) {
-            if (self.presentedSuggestions.hasNextPage.boolValue &&
-                indexPath.row == self.presentedSuggestions.count - 5) {
-                [self fetchNextPageSuggestions];
-            }
-            WGUser *user = (WGUser *)[self.presentedSuggestions objectAtIndex:indexPath.row];
-            cell.followPersonButton.tag = (int)indexPath.row;
-            [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-            cell.user = user;
-        }
-        return cell;
-    }
-
     
     TapCell *cell = (TapCell*)[tableView dequeueReusableCellWithIdentifier:kTapCellName forIndexPath:indexPath];
     cell.fullNameLabel.text = nil;
@@ -271,19 +249,6 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section == kSectionTapCell) {
         return [[UIView alloc] init];
-    } else if (section == kSectionFollowCell) {
-        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
-        headerView.backgroundColor = UIColor.whiteColor;
-        
-        UILabel *tapPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width, 30)];
-        tapPeopleLabel.text = @"Follow Classmates";
-        tapPeopleLabel.textAlignment = NSTextAlignmentLeft;
-        tapPeopleLabel.font = [FontProperties lightFont:15.0f];
-        tapPeopleLabel.textColor = [FontProperties getBlueColor];
-        
-        [headerView addSubview:tapPeopleLabel];
-        
-        return headerView;
     }
     else {
         UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
@@ -303,7 +268,7 @@
 -(CGFloat) tableView:(UITableView *)tableView
 heightForHeaderInSection:(NSInteger)section
 {
-    if (section == kSectionFollowCell || section == kSectionMobileCell) return 30;
+    if (section == kSectionMobileCell) return 30;
     else return 0;
 }
 
@@ -603,90 +568,6 @@ heightForHeaderInSection:(NSInteger)section
 }
 
 @end
-
-@implementation FollowCell
-
-+ (CGFloat) height {
-    return 70;
-}
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self setup];
-    }
-    return self;
-}
-
-- (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [FollowCell height]);
-    self.contentView.frame = self.frame;
-    self.contentView.backgroundColor = UIColor.whiteColor;
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-    self.profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-    self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.profileImageView.clipsToBounds = YES;
-    [self.contentView addSubview:self.profileImageView];
-    
-    self.profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, self.contentView.frame.size.width - 15 - 79 - 15, 60)];
-    self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
-    self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.profileImageView.clipsToBounds = YES;
-    self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width/2;
-    self.profileImageView.layer.borderWidth = 1.0f;
-    self.profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
-    [self.profileButton addSubview:self.profileImageView];
-    [self.contentView addSubview:self.profileButton];
-    
-    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-    self.nameLabel.font = [FontProperties mediumFont:18.0f];
-    self.nameLabel.textAlignment = NSTextAlignmentLeft;
-    self.nameLabel.userInteractionEnabled = YES;
-    [self.contentView addSubview:self.nameLabel];
-
-    self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS / 2 - 15, 49, 30)];
-    [self.contentView addSubview:self.followPersonButton];
-}
-
-- (void)setUser:(WGUser *)user {
-    _user = user;
-    [self.profileImageView setSmallImageForUser:user completed:nil];
-    self.nameLabel.text =  user.fullName;
-    [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-    [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
-    
-    if (!user.isCurrentUser) {
-        if (user.state == BLOCKED_USER_STATE) {
-            [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-            [self.followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
-            [self.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-            self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            self.followPersonButton.layer.borderWidth = 1;
-            self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            self.followPersonButton.layer.cornerRadius = 3;
-        } else {
-            if (user.isFollowing.boolValue) {
-                [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-                [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
-            }
-            if (user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
-                [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-                [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
-                [self.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-                self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-                self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-                self.followPersonButton.layer.borderWidth = 1;
-                self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-                self.followPersonButton.layer.cornerRadius = 3;
-            }
-        }
-    }
-
-}
-@end
-
 
 @implementation TapAllCell
 

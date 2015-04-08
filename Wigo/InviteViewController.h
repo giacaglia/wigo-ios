@@ -27,10 +27,8 @@
 #define kSectionTapAllCell 0
 #define kTapCellName @"tapCellName"
 #define kSectionTapCell 1
-#define kFollowCellName @"followCellName"
-#define kSectionFollowCell 2
 #define kInviteMobileCellName @"inviteCellName"
-#define kSectionMobileCell 3
+#define kSectionMobileCell 2
 
 @interface TapCell : UITableViewCell
 + (CGFloat) height;
@@ -42,15 +40,6 @@
 - (void)setUser:(WGUser *)user;
 - (void)setCellForContactPerson:(ABRecordRef)contactPerson
                withChosenPeople:(NSArray *)chosenPeople;
-@end
-
-@interface FollowCell : UITableViewCell
-+ (CGFloat) height;
-@property (nonatomic, strong) UIButton *profileButton;
-@property (nonatomic, strong) UIImageView *profileImageView;
-@property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UIButton *followPersonButton;
-@property (nonatomic, strong) WGUser *user;
 @end
 
 @interface TapAllCell : UITableViewCell

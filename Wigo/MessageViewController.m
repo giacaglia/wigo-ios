@@ -42,18 +42,6 @@
 - (void) initializeNavigationItem {
     self.navigationItem.titleView = nil;
     self.title = @"New Message";
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:UIColor.whiteColor, NSFontAttributeName:[FontProperties getTitleFont]};
-
-    UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 60, 44) andType:@0];
-    [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
-    [barBt setTitle:@" Back" forState:UIControlStateNormal];
-    [barBt setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    barBt.titleLabel.font = [FontProperties getSubtitleFont];
-    [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
-    [barItem setCustomView:barBt];
-    self.navigationItem.leftBarButtonItem = barItem;
-
 }
 
 - (void) viewDidAppear:(BOOL)animated {
