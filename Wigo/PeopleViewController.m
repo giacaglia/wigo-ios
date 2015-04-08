@@ -48,12 +48,10 @@ NSIndexPath *userIndex;
     didProfileSegue = NO;
     if (!self.currentTab) self.currentTab = @2;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
-    self.users = [[WGCollection alloc] initWithType:[WGUser class]];
     // Title setup
     [self initializeBackBarButton];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserAtTable:) name:@"updateUserAtTable" object:nil];
     [self initializeTableOfPeople];
 }
 
@@ -66,7 +64,7 @@ NSIndexPath *userIndex;
         [WGAnalytics tagView:@"friends"];
     }
     [self initializeRightBarButton];
-
+    self.title = self.user.firstName;
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -74,8 +72,6 @@ NSIndexPath *userIndex;
     
     if (!didProfileSegue) {
         if (!self.currentTab) self.currentTab = @2;
-        self.users = [[WGCollection alloc] initWithType:[WGUser class]];
-        self.filteredUsers = [[WGCollection alloc] initWithType:[WGUser class]];
         [self loadTableView];
     }
     didProfileSegue = NO;
@@ -90,9 +86,9 @@ NSIndexPath *userIndex;
 
 - (void)initializeBackBarButton {
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
-    [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
+    [barBt setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
-    [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    [barBt setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     barBt.titleLabel.font = [FontProperties getSubtitleFont];
     [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
@@ -396,6 +392,7 @@ viewForHeaderInSection:(NSInteger)section
     self.fetching = YES;
     [WGSpinnerView addDancingGToCenterView:self.view];
     self.everyone = [[WGCollection alloc] initWithType:[WGUser class]];
+    self.users = [[WGCollection alloc] initWithType:[WGUser class]];
     __weak typeof(self) weakSelf = self;
     [WGUser get:^(WGCollection *collection, NSError *error) {
         __strong typeof(self) strongSelf = weakSelf;

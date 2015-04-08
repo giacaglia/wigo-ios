@@ -36,8 +36,6 @@
 
 @property UILabel *nameOfPersonLabel;
 @property UIImageView *privateLogoImageView;
-@property (nonatomic, strong) UILabel *numberOfChatsLabel;
-@property (nonatomic, strong) UIImageView *orangeChatBubbleImageView;
 @end
 
 BOOL blockShown;
@@ -89,13 +87,30 @@ BOOL blockShown;
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
     self.tabBarController.navigationItem.titleView.hidden = NO;
-
+    self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
+    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: [FontProperties getBlueColor]] forBarMetrics:UIBarMetricsDefault];
     
     [self.pageControl removeFromSuperview];
     self.pageControl = nil;
     [_gradientImageView removeFromSuperview];
     _gradientImageView = nil;
 }
+
+- (UIImage *)imageWithColor:(UIColor *)color
+{
+    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
 
 
 - (void)viewDidAppear:(BOOL)animated {
