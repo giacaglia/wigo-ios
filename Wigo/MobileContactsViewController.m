@@ -228,6 +228,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [MobileInviteCell height]);
     self.contentView.frame = self.frame;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     self.selectedPersonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 30, 30)];
     self.selectedPersonImageView.tintColor = [FontProperties getOrangeColor];

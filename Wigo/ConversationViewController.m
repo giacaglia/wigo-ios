@@ -50,6 +50,7 @@ ProfileViewController *profileViewController;
     [super viewDidLoad];
     
     [self initializeNotificationObservers];
+    [self initializeMessageForEmptyConversation];
     
     bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
     orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[FontProperties getOrangeColor]];
@@ -377,6 +378,7 @@ ProfileViewController *profileViewController;
     everyDayLabel.textColor = [FontProperties getOrangeColor];
     everyDayLabel.textAlignment = NSTextAlignmentCenter;
     everyDayLabel.font = [FontProperties getBigButtonFont];
+    self.viewForEmptyConversation.hidden = YES;
     [self.viewForEmptyConversation addSubview:everyDayLabel];
 }
 
@@ -400,9 +402,9 @@ ProfileViewController *profileViewController;
         [collection reverse];
         strongSelf.messages = collection;
         if (strongSelf.messages.count == 0) {
-            [strongSelf initializeMessageForEmptyConversation];
+            self.viewForEmptyConversation.hidden = NO;
         } else {
-            strongSelf.viewForEmptyConversation.alpha = 0.0f;
+            strongSelf.viewForEmptyConversation.hidden = YES;
         }
         
         strongSelf.showLoadEarlierMessagesHeader = strongSelf.messages.hasNextPage.boolValue;

@@ -106,8 +106,10 @@ BOOL firstTimeLoading;
         [WGAnalytics tagView:@"where"];
     }
 
-    self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: [FontProperties getBlueColor]] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.backgroundColor = [FontProperties getBlueColor];
+    self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
 
     [self updateNavigationBar];
     [self.placesTableView reloadData];
@@ -189,6 +191,7 @@ BOOL firstTimeLoading;
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
+
     if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
         self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
         UIImageView *plusCreateImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 8, 16, 16)];
@@ -343,7 +346,7 @@ BOOL firstTimeLoading;
     
     self.blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
     self.blueBannerView.backgroundColor = [FontProperties getBlueColor];
-    self.blueBannerView.hidden = YES;
+    self.blueBannerView.hidden = NO;
     [self.view addSubview:self.blueBannerView];
 }
 
@@ -967,9 +970,9 @@ BOOL firstTimeLoading;
     
     self.labelSwitch.frame = CGRectMake(frame.origin.x, frame.origin.y + self.navigationController.navigationBar.frame.size.height, self.labelSwitch.frame.size.width, self.labelSwitch.frame.size.height);
     self.labelSwitch.transparency  = 1 - framePercentageHidden;
-    
     if (self.navigationController.navigationBar.frame.origin.y +
-        self.navigationController.navigationBar.frame.size.height <= 20) {
+        self.navigationController.navigationBar.frame.size.height <= 20 ||
+        self.navigationController.navigationBar.frame.origin.y >= 0) {
         self.blueBannerView.hidden = NO;
     }
     else {
