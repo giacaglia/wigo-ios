@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "rejectButton.png"
+      "filename" : "declineButton.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "rejectButton@2x.png"
+      "filename" : "declineButton@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "rejectButton@3x.png"
+      "filename" : "declineButton@3x.png"
     }
   ],
   "info" : {

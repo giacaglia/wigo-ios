@@ -628,7 +628,7 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void) setup {
     [super setup];
-    self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 75, PEOPLEVIEW_HEIGHT_OF_CELLS / 2 - 23, 75, 47)];
+    self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 60, PEOPLEVIEW_HEIGHT_OF_CELLS / 2 - 23, 60, 37.5)];
     [self.contentView addSubview:self.followPersonButton];
 }
 
@@ -691,14 +691,18 @@ viewForHeaderInSection:(NSInteger)section
 -(void) setup {
     [super setup];
     
-    self.acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 74 - 20, 0, 37, 37)];
-    [self.acceptButton setImage:[UIImage imageNamed:@"acceptButton"] forState:UIControlStateNormal];
+    self.acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 74 - 15, 0, 37, 37)];
+    UIImageView *acceptImgView = [[UIImageView alloc] initWithFrame:CGRectMake(8.5, 8.5, 20, 20)];
+    acceptImgView.image = [UIImage imageNamed:@"acceptButton"];
+    [self.acceptButton addSubview:acceptImgView];
     self.acceptButton.center = CGPointMake(self.acceptButton.center.x, self.contentView.center.y);
     [self.acceptButton addTarget:self action:@selector(acceptPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.acceptButton];
     
     self.rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 37 - 10, 0, 37, 37)];
-    [self.rejectButton setImage:[UIImage imageNamed:@"rejectButton"] forState:UIControlStateNormal];
+    UIImageView *rejectImgView = [[UIImageView alloc] initWithFrame:CGRectMake(8.5, 8.5, 20, 20)];
+    rejectImgView.image = [UIImage imageNamed:@"rejectButton"];
+    [self.rejectButton addSubview:rejectImgView];
     self.rejectButton.center = CGPointMake(self.rejectButton.center.x, self.contentView.center.y);
     [self.rejectButton addTarget:self action:@selector(rejectPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.rejectButton];
