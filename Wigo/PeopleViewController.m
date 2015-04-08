@@ -564,12 +564,12 @@ viewForHeaderInSection:(NSInteger)section
 }
 
 - (void)setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [PeopleCell height]);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [TablePersonCell height]);
     self.contentView.frame = self.frame;
     self.contentView.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    self.lineView = [[UIImageView alloc] initWithFrame:CGRectMake(0, PEOPLEVIEW_HEIGHT_OF_CELLS + 9 - 1, self.contentView.frame.size.width, 1)];
+    self.lineView = [[UIImageView alloc] initWithFrame:CGRectMake(0, [TablePersonCell height] - 0.5, self.contentView.frame.size.width, 0.5)];
     self.lineView.backgroundColor = RGBAlpha(184, 184, 184, 0.3f);
     [self.contentView addSubview:self.lineView];
     
@@ -578,7 +578,7 @@ viewForHeaderInSection:(NSInteger)section
     self.spinnerView.center = self.contentView.center;
     [self.contentView addSubview:self.spinnerView];
     
-    self.profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, self.contentView.frame.size.width - 15 - 79 - 15, 60)];
+    self.profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 0, self.contentView.frame.size.width - 15 - 79 - 15, 60)];
     self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
     self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.profileImageView.clipsToBounds = YES;
@@ -586,6 +586,7 @@ viewForHeaderInSection:(NSInteger)section
     self.profileImageView.layer.borderWidth = 1.0f;
     self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width/2;
     [self.profileButton addSubview:self.profileImageView];
+    self.profileButton.center = CGPointMake(self.profileButton.center.x, self.center.y);
     [self.contentView addSubview:self.profileButton];
     
     self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 15, 150, 20)];
@@ -628,7 +629,7 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void) setup {
     [super setup];
-    self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 60, PEOPLEVIEW_HEIGHT_OF_CELLS / 2 - 23, 60, 37.5)];
+    self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 60, [TablePersonCell height] / 2 - 19, 60, 37.5)];
     [self.contentView addSubview:self.followPersonButton];
 }
 

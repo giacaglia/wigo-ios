@@ -1072,7 +1072,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.descriptionLabel.center = CGPointMake(self.descriptionLabel.center.x, self.center.y);
     [self.contentView addSubview:self.descriptionLabel];
     
-    self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 20, 20)];
+    self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 17, 17)];
     self.orangeNewView.backgroundColor = [FontProperties getOrangeColor];
     self.orangeNewView.layer.cornerRadius = self.orangeNewView.frame.size.width/2;
     self.orangeNewView.layer.borderColor = UIColor.clearColor.CGColor;
@@ -1096,7 +1096,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (notification.id.intValue > WGProfile.currentUser.lastNotificationRead.intValue) {
         self.orangeNewView.hidden = NO;
     } else {
-        self.orangeNewView.hidden = NO;
+        self.orangeNewView.hidden = YES;
     }
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, notification.message];
