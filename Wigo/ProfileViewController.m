@@ -1259,7 +1259,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.underlineTapLabel.text = @"to see out";
     self.underlineTapLabel.textAlignment = NSTextAlignmentLeft;
     self.underlineTapLabel.textColor = [FontProperties getBlueColor];
-    self.underlineTapLabel.font = [FontProperties lightFont:11.0f];
+    self.underlineTapLabel.font = [FontProperties lightFont:13.0f];
     [self.tapButton addSubview:self.underlineTapLabel];
 }
 

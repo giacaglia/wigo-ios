@@ -132,6 +132,7 @@ BOOL firstTimeLoading;
     [super viewWillDisappear:animated];
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
+    self.tabBarController.navigationItem.titleView = nil;
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -208,9 +209,37 @@ BOOL firstTimeLoading;
         self.tabBarController.navigationItem.rightBarButtonItem = rightBarButton;
     }
 
-    UIImageView *topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 78, 34)];
-    topImageView.image = [UIImage imageNamed:@"topWigoLogo"];
-    self.tabBarController.navigationItem.titleView = topImageView;
+    UIView *toggleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 34)];
+    toggleView.layer.borderColor = UIColor.whiteColor.CGColor;
+    toggleView.layer.borderWidth = 1.0f;
+    toggleView.layer.cornerRadius = 7.0F;
+    toggleView.clipsToBounds = YES;
+    self.bostonButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 34)];
+    [self.bostonButton setTitle:@"Boston" forState:UIControlStateNormal];
+    [self.bostonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    self.bostonButton.titleLabel.font = [FontProperties mediumFont:12.0f];
+    [toggleView addSubview:self.bostonButton];
+    self.friendsButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 0, 70, 34)];
+    [self.friendsButton setTitle:@"Friends" forState:UIControlStateNormal];
+    self.friendsButton.titleLabel.font = [FontProperties mediumFont:12.0f];
+    [toggleView addSubview:self.friendsButton];
+    self.tabBarController.navigationItem.titleView = toggleView;
+    [self setState:YES];
+}
+
+- (void)setState:(BOOL)isBoston {
+    if (isBoston) {
+        [self.bostonButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+        self.bostonButton.backgroundColor = UIColor.whiteColor;
+        [self.friendsButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        self.friendsButton.backgroundColor = [FontProperties getBlueColor];
+    }
+    else {
+        [self.friendsButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+        self.friendsButton.backgroundColor = UIColor.whiteColor;
+        [self.bostonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        self.bostonButton.backgroundColor = [FontProperties getBlueColor];
+    }
 }
 
 -(void) initializeFlashScreen {

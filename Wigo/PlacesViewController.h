@@ -56,7 +56,8 @@
 @property (nonatomic, strong) UIView *blueBannerView;
 @property (nonatomic, strong) LabelSwitch *labelSwitch;
 @property (nonatomic, assign) CGFloat previousScrollViewYOffset;
-
+@property (nonatomic, strong) UIButton *bostonButton;
+@property (nonatomic, strong) UIButton *friendsButton;
 @end
 
 #import "EventPeopleScrollView.h"
