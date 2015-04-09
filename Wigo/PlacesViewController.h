@@ -58,6 +58,7 @@
 @property (nonatomic, assign) CGFloat previousScrollViewYOffset;
 @property (nonatomic, strong) UIButton *bostonButton;
 @property (nonatomic, strong) UIButton *friendsButton;
+@property (nonatomic, assign) BOOL isLocal;
 @end
 
 #import "EventPeopleScrollView.h"

@@ -195,19 +195,19 @@ BOOL firstTimeLoading;
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
 
-    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
-        self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
-        UIImageView *plusCreateImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 8, 16, 16)];
-        plusCreateImageView.image = [UIImage imageNamed:@"plusCreate"];
-        [self.rightButton addSubview:plusCreateImageView];
-        self.rightButton.titleLabel.font = [FontProperties lightFont:25];
-        [self.rightButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-        [self.rightButton addTarget:self action:@selector(goingSomewhereElsePressed)
-                   forControlEvents:UIControlEventTouchUpInside];
-        [self.rightButton setShowsTouchWhenHighlighted:YES];
-        UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
-        self.tabBarController.navigationItem.rightBarButtonItem = rightBarButton;
-    }
+//    if (!self.groupNumberID || [self.groupNumberID isEqualToNumber:WGProfile.currentUser.group.id]) {
+//        self.rightButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@3];
+//        UIImageView *plusCreateImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 8, 16, 16)];
+//        plusCreateImageView.image = [UIImage imageNamed:@"plusCreate"];
+//        [self.rightButton addSubview:plusCreateImageView];
+//        self.rightButton.titleLabel.font = [FontProperties lightFont:25];
+//        [self.rightButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+//        [self.rightButton addTarget:self action:@selector(goingSomewhereElsePressed)
+//                   forControlEvents:UIControlEventTouchUpInside];
+//        [self.rightButton setShowsTouchWhenHighlighted:YES];
+//        UIBarButtonItem *rightBarButton = [[UIBarButtonItem alloc] initWithCustomView:self.rightButton];
+//        self.tabBarController.navigationItem.rightBarButtonItem = rightBarButton;
+//    }
 
     UIView *toggleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 34)];
     toggleView.layer.borderColor = UIColor.whiteColor.CGColor;
@@ -215,20 +215,27 @@ BOOL firstTimeLoading;
     toggleView.layer.cornerRadius = 7.0F;
     toggleView.clipsToBounds = YES;
     self.bostonButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 34)];
+    [self.bostonButton addTarget:self action:@selector(changeState) forControlEvents:UIControlEventTouchUpInside];
     [self.bostonButton setTitle:@"Boston" forState:UIControlStateNormal];
     [self.bostonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     self.bostonButton.titleLabel.font = [FontProperties mediumFont:12.0f];
     [toggleView addSubview:self.bostonButton];
     self.friendsButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 0, 70, 34)];
+    [self.friendsButton addTarget:self action:@selector(changeState) forControlEvents:UIControlEventTouchUpInside];
     [self.friendsButton setTitle:@"Friends" forState:UIControlStateNormal];
     self.friendsButton.titleLabel.font = [FontProperties mediumFont:12.0f];
     [toggleView addSubview:self.friendsButton];
     self.tabBarController.navigationItem.titleView = toggleView;
-    [self setState:YES];
+    self.isLocal = YES;
 }
 
-- (void)setState:(BOOL)isBoston {
-    if (isBoston) {
+- (void)changeState {
+    self.isLocal = !self.isLocal;
+}
+
+- (void)setIsLocal:(BOOL)isLocal {
+    _isLocal = isLocal;
+    if (isLocal) {
         [self.bostonButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
         self.bostonButton.backgroundColor = UIColor.whiteColor;
         [self.friendsButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];

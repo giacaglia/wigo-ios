@@ -28,5 +28,5 @@
 @property (nonatomic, strong) UILabel *lastMessageLabel;
 @property (nonatomic, strong) WGMessage *message;
 @property (nonatomic, strong) UIView *orangeNewView;
-
+@property (nonatomic, strong) UIImageView *arrowMsgImageView;
 @end

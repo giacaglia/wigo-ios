@@ -33,20 +33,34 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [WGAnalytics tagView:@"chat_list"];
+    [self initializeTitleView];
     [self initializeRightBarButtonItem];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.tabBarController.navigationItem.titleView = nil;
+}
 
 - (void)scrollUp {
     [self.tableViewOfPeople setContentOffset:CGPointZero animated:YES];
 }
 
+- (void)initializeTitleView {
+    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    chatLabel.text = @"Chat";
+    chatLabel.font = [FontProperties mediumFont:18.0f];
+    chatLabel.textAlignment = NSTextAlignmentCenter;
+    chatLabel.textColor = UIColor.whiteColor;
+    self.tabBarController.navigationItem.titleView = chatLabel;
+}
+
 - (void)initializeRightBarButtonItem {
     CGRect profileFrame = CGRectMake(0, 0, 30, 21);
     UIButtonAligned *writeButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
-    [writeButton setTitle:@"NEW" forState:UIControlStateNormal];
-    writeButton.titleLabel.font = [FontProperties mediumFont:13.0f];
-    writeButton.titleLabel.textAlignment = NSTextAlignmentRight;
+    UIImageView *writeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+    writeImageView.image = [UIImage imageNamed:@"writeIcon"];
+    [writeButton addSubview:writeImageView];
     [writeButton addTarget:self action:@selector(writeMessage)
             forControlEvents:UIControlEventTouchUpInside];
     [writeButton setShowsTouchWhenHighlighted:YES];
@@ -234,18 +248,15 @@
     self.nameLabel.font = [FontProperties getSubtitleFont];
     [self.contentView addSubview:self.nameLabel];
     
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 90, 10, 80, 20)];
-    self.timeLabel.font = [FontProperties lightFont:15.0f];
-    self.timeLabel.textColor = RGB(179, 179, 179);
-    self.timeLabel.textAlignment = NSTextAlignmentRight;
-    [self.contentView addSubview:self.timeLabel];
-    
-    self.lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 35, 150, 30)];
-    self.lastMessageLabel.font = [FontProperties lightFont:13.0f];
+    self.arrowMsgImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, [ChatCell height]/2 - 9.5, 11, 19)];
+    self.arrowMsgImageView.image = [UIImage imageNamed:@"arrowMessage"];
+    [self.contentView addSubview:self.arrowMsgImageView];
+
+    self.lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 35, self.frame.size.width - 85 - 40, 20)];
+    self.lastMessageLabel.font = [FontProperties getSubtitleFont];
     self.lastMessageLabel.textColor = UIColor.blackColor;
     self.lastMessageLabel.textAlignment = NSTextAlignmentLeft;
-    self.lastMessageLabel.numberOfLines = 2;
-    self.lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.lastMessageLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     [self.contentView addSubview:self.lastMessageLabel];
     
     self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(6, 6, 12, 12)];
@@ -262,8 +273,16 @@
     
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text = user.fullName;
-    self.timeLabel.text = [message.created getUTCTimeStringToLocalTimeString];
     self.lastMessageLabel.text = message.message;
+//    self.timeLabel.text = [message.created getUTCTimeStringToLocalTimeString];
+    if (message.isRead) {
+        self.lastMessageLabel.textColor = RGB(208, 208, 208);
+        self.nameLabel.textColor = RGB(208, 208, 208);
+    }
+    else {
+        self.lastMessageLabel.textColor = UIColor.blackColor;
+        self.nameLabel.textColor = UIColor.blackColor;
+    }
     self.orangeNewView.hidden = message.isRead.boolValue;
 }
 
