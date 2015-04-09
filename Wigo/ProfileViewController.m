@@ -291,10 +291,12 @@ BOOL blockShown;
     [_rightBarBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
     
-    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
-    [barItem setCustomView:_rightBarBt];
+    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] initWithCustomView:_rightBarBt];
     // self.navigationItem.rightBarButtonItem = barItem;
     [self.navigationItem setRightBarButtonItem:barItem animated:NO];
+    UIBarButtonItem *tabBarBt =  [[UIBarButtonItem alloc] initWithCustomView:_rightBarBt];
+//    [tabBarBt setCustomView:_rightBarBt];
+    self.tabBarController.navigationItem.rightBarButtonItem = tabBarBt;
 }
 
 
@@ -488,7 +490,7 @@ BOOL blockShown;
 }
 
 - (void)chatPressed {
-    if ([self.user isCurrentUser]) {
+    if (self.user.isCurrentUser) {
         ChatViewController *chatViewController = [ChatViewController new];
         chatViewController.view.backgroundColor = UIColor.whiteColor;
         [self.navigationController pushViewController:chatViewController animated:YES];
@@ -687,6 +689,7 @@ BOOL blockShown;
             InviteCell *inviteCell = [tableView dequeueReusableCellWithIdentifier:@"InviteCell" forIndexPath:indexPath];
             inviteCell.delegate = self;
             inviteCell.user = self.user;
+            [inviteCell.chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
             return inviteCell;
         }
         if ([self shouldShowInviteCell]) {
@@ -742,7 +745,6 @@ BOOL blockShown;
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == kNotificationsSection) {
-        
         if (self.userState == OTHER_SCHOOL_USER_STATE) {
             return _nameView.frame.size.height;
         }
@@ -757,6 +759,7 @@ BOOL blockShown;
         return self.imageScrollView.frame.size.height - _nameView.frame.size.height;
     }
     else if (indexPath.section == kNotificationsSection) {
+        if ([self shouldShowInviteCell] && indexPath.row == 0) return [InviteCell height];
         return 65;
     }
     else if (indexPath.section == kInstagramSection) {
@@ -1180,7 +1183,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 + (CGFloat)height {
-    return 80.0f;
+    return 130;
 }
 
 - (void)setUser:(WGUser *)user {
@@ -1197,10 +1200,14 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (user.isTapped.boolValue) {
         self.tapImageView.image = [UIImage imageNamed:@"blueTappedImageView"];
         self.tapLabel.text = @"TAPPED";
+        self.tapLabel.frame = CGRectMake(55, 40 - 10, 70, 20);
+        self.underlineTapLabel.hidden = YES;
 
     } else {
         self.tapImageView.image = [UIImage imageNamed:@"blueTapImageView"];
         self.tapLabel.text = @"TAP";
+        self.tapLabel.frame = CGRectMake(55, 40 - 10 - 5, 70, 20);
+        self.underlineTapLabel.hidden = NO;
     }
     
 }
@@ -1227,23 +1234,24 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.chatButton addSubview:chatLabel];
     
     self.tapButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 130 - 20, 20, 130, 80)];
+    [self.tapButton addTarget:self action:@selector(inviteTapped) forControlEvents:UIControlEventTouchUpInside];
     self.tapButton.layer.cornerRadius = 27.0f;
     self.tapButton.layer.borderColor = RGB(216, 216, 216).CGColor;
     self.tapButton.layer.borderWidth = 0.5f;
     [self.contentView addSubview:self.tapButton];
     
-    self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 40 - 20, 40, 40)];
+    self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 40 - 20, 40, 40)];
     self.tapImageView.image = [UIImage imageNamed:@"blueTapImageView"];
     [self.tapButton addSubview:self.tapImageView];
 
-    self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(65, 40 - 10 - 5, 60, 20)];
+    self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 40 - 10 - 5, 70, 20)];
     self.tapLabel.text = @"TAP";
     self.tapLabel.textAlignment = NSTextAlignmentLeft;
     self.tapLabel.font = [FontProperties mediumFont:20.0f];
     self.tapLabel.textColor = [FontProperties getBlueColor];
     [self.tapButton addSubview:self.tapLabel];
     
-    self.underlineTapLabel = [[UILabel alloc] initWithFrame:CGRectMake(65, 50 - 5, 60, 15)];
+    self.underlineTapLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 50 - 5, 70, 15)];
     self.underlineTapLabel.text = @"to see out";
     self.underlineTapLabel.textAlignment = NSTextAlignmentLeft;
     self.underlineTapLabel.textColor = [FontProperties getBlueColor];
@@ -1252,8 +1260,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void) inviteTapped {
-//    self.inviteButton.enabled = NO;
-  
+    [self.delegate inviteTapped];
+    self.tapButton.enabled = NO;
+    WGUser *user = self.user;
+    user.isTapped = @1;
+    self.user = user;
 //    UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0, self.frame.size.width + 15, self.frame.size.height)];
 //    orangeBackground.backgroundColor = self.inviteButton.backgroundColor;
 //    orangeBackground.layer.cornerRadius = 8.0f;
