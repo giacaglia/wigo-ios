@@ -145,7 +145,6 @@ static char UIScrollViewGifPullToRefresh;
                                  animations:^{
                                      self.scrollView.contentOffset = CGPointMake(0, -GifRefreshControlHeight - self.originalContentInsectY);
                                      self.scrollView.contentInset = UIEdgeInsetsMake(GifRefreshControlHeight + self.originalContentInsectY + self.addedContentInset, 100.0f, 0.0f, 0.0f);
- 
                                  }
                                  completion:^(BOOL finished) {
                                      if (self.pullToRefreshActionHandler) {

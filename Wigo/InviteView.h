@@ -11,10 +11,12 @@
 #import "Delegate.h"
 
 @interface InviteView : UIView
-- (void) setLabelsForUser: (WGUser *) user;
-@property (nonatomic, assign) id<InviteCellDelegate> delegate;
-+ (CGFloat) rowHeight;
-@property (nonatomic, strong) UILabel *tappedLabel;
-@property (nonatomic, strong) UIButton *inviteButton;
++ (CGFloat) height;
 - (void)setup;
+@property (nonatomic, assign) id<InviteCellDelegate> delegate;
+@property (nonatomic, strong) UIButton *tapButton;
+@property (nonatomic, strong) WGUser *user;
+@property (nonatomic, strong) UIImageView *tapImageView;
+@property (nonatomic, strong) UILabel *tapLabel;
+@property (nonatomic, strong) UILabel *underlineTapLabel;
 @end

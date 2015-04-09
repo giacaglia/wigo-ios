@@ -26,7 +26,6 @@
 @property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UILabel *lastMessageLabel;
-@property (nonatomic, strong) UIImageView *lastMessageImageView;
 @property (nonatomic, strong) WGMessage *message;
 @property (nonatomic, strong) UIView *orangeNewView;
 

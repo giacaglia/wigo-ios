@@ -60,7 +60,7 @@ int imageWidth;
     [self.view addSubview:numberOfPeopleGoing];
     
     AttendeesLayout *layout = [AttendeesLayout new];
-    self.attendeesPhotosScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, imageWidth + 70) collectionViewLayout:layout];
+    self.attendeesPhotosScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [AttendeesPhotoCell height]) collectionViewLayout:layout];
     self.attendeesPhotosScrollView.center = CGPointMake(self.view.center.x, self.view.center.y + 10);
     self.attendeesPhotosScrollView.backgroundColor = UIColor.clearColor;
     self.attendeesPhotosScrollView.showsHorizontalScrollIndicator = NO;
@@ -290,6 +290,10 @@ referenceSizeForFooterInSection:(NSInteger)section {
 
 @implementation AttendeesPhotoCell
 
++ (CGFloat)height {
+    return imageWidth + 120.0f;
+}
+
 - (id) initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder: aDecoder];
     if (self) {
@@ -311,7 +315,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
     self.clipsToBounds = YES;
     self.layer.borderColor = RGBAlpha(225, 225, 225, 29).CGColor;
     self.layer.borderWidth = 1.0f;
-    self.layer.cornerRadius = 10.0f;
+    self.layer.cornerRadius = 14.0f;
     
     self.imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
     self.imgView.contentMode = UIViewContentModeScaleAspectFill;
@@ -323,53 +327,77 @@ referenceSizeForFooterInSection:(NSInteger)section {
     self.imageButton.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.imageButton];
     
-    UIImageView *blackBackgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, imageWidth - kNameBarHeight + 15, imageWidth, kNameBarHeight - 15)];
-    blackBackgroundImageView.image = [UIImage imageNamed:@"backgroundGradient"];
-    [self.contentView addSubview:blackBackgroundImageView];
+//    UIImageView *blackBackgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, imageWidth - kNameBarHeight + 15, imageWidth, kNameBarHeight - 15)];
+//    blackBackgroundImageView.image = [UIImage imageNamed:@"backgroundGradient"];
+//    [self.contentView addSubview:blackBackgroundImageView];
     
-    self.profileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, imageWidth - kNameBarHeight + 15, imageWidth, kNameBarHeight - 15)];
-    self.profileNameLabel.textColor = UIColor.whiteColor;
-    self.profileNameLabel.textAlignment = NSTextAlignmentCenter;
-    self.profileNameLabel.font = [FontProperties lightFont:24.0f];
-    [self.contentView addSubview:self.profileNameLabel];
-    
-    UIView *backgroundWhiteView = [[UIView alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, 70)];
+    UIView *backgroundWhiteView = [[UIView alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, 120)];
     backgroundWhiteView.backgroundColor = UIColor.whiteColor;
     [self.contentView addSubview:backgroundWhiteView];
     
-    self.inviteView = [[InviteView alloc] initWithFrame:CGRectMake(0, 0, imageWidth/2, 70)];
+    self.profileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, imageWidth, kNameBarHeight - 25)];
+    self.profileNameLabel.textColor = UIColor.blackColor;
+    self.profileNameLabel.textAlignment = NSTextAlignmentCenter;
+    self.profileNameLabel.font = [FontProperties lightFont:16.0f];
+    [backgroundWhiteView addSubview:self.profileNameLabel];
+    
+    self.mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kNameBarHeight - 25, imageWidth, 20)];
+    self.mutualFriendsLabel.textColor = RGB(180, 180, 180);
+    self.mutualFriendsLabel.textAlignment = NSTextAlignmentCenter;
+    self.mutualFriendsLabel.font = [FontProperties lightFont:12.0f];
+    [backgroundWhiteView addSubview:self.mutualFriendsLabel];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 49, imageWidth, 0.5)];
+    lineView.backgroundColor = RGB(214, 214, 214);
+    [backgroundWhiteView addSubview:lineView];
+
+    self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 50, imageWidth/2, 70)];
+    [self.chatButton addTarget:self action:@selector(chatPressed:) forControlEvents:UIControlEventTouchUpInside];
+    self.chatButton.backgroundColor = UIColor.whiteColor;
+    UIImageView *blueChatImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.chatButton.frame.size.width/2 - 20, 5, 40, 40)];
+    blueChatImageView.image = [UIImage imageNamed:@"blueCardChat"];
+    [self.chatButton addSubview:blueChatImageView];
+    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35 + 10, self.chatButton.frame.size.width, 20)];
+    chatLabel.textAlignment = NSTextAlignmentCenter;
+    chatLabel.text = @"CHAT";
+    chatLabel.textColor = [FontProperties getBlueColor];
+    chatLabel.font = [FontProperties mediumFont:14.0f];
+    [self.chatButton addSubview:chatLabel];
+    [backgroundWhiteView addSubview:self.chatButton];
+    
+    self.dividerLineView = [[UIView alloc] initWithFrame:CGRectMake(imageWidth/2, 50, 0.5, 70)];
+    self.dividerLineView.backgroundColor = RGB(214, 214, 214);
+    [backgroundWhiteView addSubview:self.dividerLineView];
+    
+    self.inviteView = [[InviteView alloc] initWithFrame:CGRectMake(imageWidth/2 + 0.5, 50, imageWidth/2, 70)];
     self.inviteView.backgroundColor = UIColor.whiteColor;
     [self.inviteView setup];
     self.inviteView.delegate = self;
     [backgroundWhiteView addSubview:self.inviteView];
     
-    self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth/2, 0, imageWidth/2, 70)];
-    [self.chatButton addTarget:self action:@selector(chatPressed:) forControlEvents:UIControlEventTouchUpInside];
-    self.chatButton.backgroundColor = UIColor.whiteColor;
-    UIImageView *orangeChatBubbleImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.chatButton.frame.size.width/2 - 10, 10 + 5, 20, 20)];
-    orangeChatBubbleImageView.image = [UIImage imageNamed:@"Chats"];
-    [self.chatButton addSubview:orangeChatBubbleImageView];
-    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35 - 10 + 10, self.chatButton.frame.size.width, 20)];
-    chatLabel.textAlignment = NSTextAlignmentCenter;
-    chatLabel.text = @"chat";
-    chatLabel.textColor = [FontProperties getOrangeColor];
-    chatLabel.font = [FontProperties scMediumFont:16.0f];
-    [self.chatButton addSubview:chatLabel];
-    [backgroundWhiteView addSubview:self.chatButton];
-    
-    self.followButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 30, 10, 60, 50)];
-    [self.followButton setImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+    //Follow button
+    self.followButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 50, imageWidth, 70)];
+    self.followButton.backgroundColor = [FontProperties getOrangeColor];
     [self.followButton addTarget:self action:@selector(followPressed:) forControlEvents:UIControlEventTouchUpInside];
+    UIImageView *whiteOrangeFollowImage = [[UIImageView alloc] initWithFrame:CGRectMake(imageWidth/2 - 60, 35 - 15, 30, 30)];
+    whiteOrangeFollowImage.image = [UIImage imageNamed:@"whiteOrangeFollow"];
+    [self.followButton addSubview:whiteOrangeFollowImage];
+    UILabel *addFriendLabel = [[UILabel alloc] initWithFrame:CGRectMake(imageWidth/2 - 20, 35 - 12.5f, 90, 25)];
+    addFriendLabel.text = @"Add Friend";
+    addFriendLabel.textColor = UIColor.whiteColor;
+    addFriendLabel.textAlignment = NSTextAlignmentLeft;
+    addFriendLabel.font = [FontProperties mediumFont:18.0f];
+    [self.followButton addSubview:addFriendLabel];
     [backgroundWhiteView addSubview:self.followButton];
     [backgroundWhiteView bringSubviewToFront: self.followButton];
     
-    self.followRequestLabel = [[UILabel alloc] initWithFrame: backgroundWhiteView.frame];
-    self.followRequestLabel.text = @"Your follow request has been sent";
-    self.followRequestLabel.textAlignment = NSTextAlignmentCenter;
-    self.followRequestLabel.textColor = [FontProperties getOrangeColor];
-    self.followRequestLabel.font = [FontProperties scMediumFont:16.0f];
-    self.followRequestLabel.hidden = YES;
-    [backgroundWhiteView addSubview: self.followRequestLabel];
+    self.pendingLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 50, imageWidth, 70)];
+    self.pendingLabel.backgroundColor = RGB(247, 247, 247);
+    self.pendingLabel.text = @"Pending";
+    self.pendingLabel.textColor = RGB(187, 187, 187);
+    self.pendingLabel.textAlignment = NSTextAlignmentCenter;
+    self.pendingLabel.font = [FontProperties mediumFont:20.0f];
+    [backgroundWhiteView addSubview:self.pendingLabel];
 }
 
 - (void)followPressed:(id)sender {
@@ -402,8 +430,9 @@ referenceSizeForFooterInSection:(NSInteger)section {
         
     }];
     
-    self.profileNameLabel.text = _user.fullName;
-    [self.inviteView setLabelsForUser:_user];
+    self.profileNameLabel.text = [NSString stringWithFormat:@"%@, 22", user.fullName];
+    self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%d mutual friends", 24];
+    self.inviteView.user = user;
     [self reloadView];
 }
 
@@ -412,7 +441,9 @@ referenceSizeForFooterInSection:(NSInteger)section {
     self.followButton.hidden = YES;
     self.chatButton.hidden = YES;
     self.inviteView.alpha = 0.0f;
-    self.followRequestLabel.hidden = YES;
+    self.pendingLabel.hidden = YES;
+    self.dividerLineView.hidden = YES;
+    self.mutualFriendsLabel.hidden = YES;
     if (self.user.isCurrentUser || self.user.state == OTHER_SCHOOL_USER_STATE) {
         // Don't show anything
     }
@@ -421,6 +452,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
              self.user.state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE ||
              self.user.state == PUBLIC_STATE ||
              self.user.state == PRIVATE_STATE) {
+        self.dividerLineView.hidden = NO;
         self.chatButton.hidden = NO;
         self.inviteView.alpha = 1.0f;
     }
@@ -428,9 +460,10 @@ referenceSizeForFooterInSection:(NSInteger)section {
              self.user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
              self.user.state == BLOCKED_USER_STATE) {
         self.followButton.hidden = NO;
+        self.mutualFriendsLabel.hidden = NO;
     }
     else if (self.user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
-        self.followRequestLabel.hidden = NO;
+        self.pendingLabel.hidden = NO;
     }
 }
 
@@ -476,7 +509,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
 
 - (void)setup
 {
-    self.itemSize = CGSizeMake(imageWidth, imageWidth + 70);
+    self.itemSize = CGSizeMake(imageWidth, [AttendeesPhotoCell height]);
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     self.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     self.minimumInteritemSpacing = 10.0;

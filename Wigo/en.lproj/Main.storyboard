@@ -6,14 +6,6 @@
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <mutableArray key="Whitney-Light.ttf">
-            <string>Whitney-Light</string>
-        </mutableArray>
-        <mutableArray key="Whitney-MediumSC.ttf">
-            <string>Whitney-MediumSC</string>
-        </mutableArray>
-    </customFonts>
     <scenes>
         <!--Event Story View Controller-->
         <scene sceneID="hcX-WI-tiY">
@@ -397,43 +389,7 @@
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="XXD-L1-pkX" id="hb1-ya-m85">
                                     <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vQ4-ci-1Ab">
-                                            <rect key="frame" x="71" y="11" width="233" height="48"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tap to see out:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IwM-ib-pII">
-                                                    <rect key="frame" x="17" y="13" width="108" height="21"/>
-                                                    <fontDescription key="fontDescription" name="Whitney-Light" family="Whitney-Light" pointSize="18"/>
-                                                    <color key="textColor" red="0.89411764705882346" green="0.89411764705882346" blue="0.89411764705882346" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ggW-oB-JSu">
-                                                    <rect key="frame" x="140" y="6" width="75" height="35"/>
-                                                    <color key="backgroundColor" red="0.95686280729999995" green="0.58431375029999999" blue="0.1764705926" alpha="1" colorSpace="deviceRGB"/>
-                                                    <fontDescription key="fontDescription" name="Whitney-MediumSC" family="Whitney-Medium SC" pointSize="18"/>
-                                                    <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <state key="normal" title="TAP">
-                                                        <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    </state>
-                                                </button>
-                                            </subviews>
-                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="233" id="mi8-Zh-BGn"/>
-                                            </constraints>
-                                        </view>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstAttribute="bottomMargin" secondItem="vQ4-ci-1Ab" secondAttribute="bottom" constant="2.5" id="6hE-qB-kQy"/>
-                                        <constraint firstItem="vQ4-ci-1Ab" firstAttribute="leading" relation="lessThanOrEqual" secondItem="hb1-ya-m85" secondAttribute="leadingMargin" constant="63" id="Mum-Mo-gfY"/>
-                                        <constraint firstItem="vQ4-ci-1Ab" firstAttribute="top" secondItem="hb1-ya-m85" secondAttribute="topMargin" constant="3" id="tWD-gu-ZG4"/>
-                                        <constraint firstItem="vQ4-ci-1Ab" firstAttribute="centerX" secondItem="hb1-ya-m85" secondAttribute="centerX" id="xPg-jV-iup"/>
-                                    </constraints>
                                 </tableViewCellContentView>
-                                <connections>
-                                    <outlet property="inviteButton" destination="ggW-oB-JSu" id="Ca9-dt-0l9"/>
-                                    <outlet property="titleLabel" destination="IwM-ib-pII" id="qdi-Z0-1aB"/>
-                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -446,7 +402,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zA2-sG-0eV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1863.5" y="-249.5"/>
+            <point key="canvasLocation" x="1863.5" y="-256.5"/>
         </scene>
         <!--Campus Notification View Controller-->
         <scene sceneID="KRE-xI-MdA">
@@ -579,5 +535,5 @@
         <image name="homeIcon" width="24" height="27"/>
         <image name="profileIcon" width="23" height="27"/>
     </resources>
-    <color key="tintColor" red="0.95686280729999995" green="0.58431375029999999" blue="0.1764705926" alpha="1" colorSpace="deviceRGB"/>
+    <color key="tintColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
 </document>

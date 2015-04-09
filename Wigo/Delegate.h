@@ -89,7 +89,7 @@ typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
 @protocol InviteCellDelegate
 - (void) inviteTapped;
 @optional
-@property State userState;
+@property (nonatomic, strong) WGUser *user;
 @end
 
 @protocol EventPeopleModalDelegate

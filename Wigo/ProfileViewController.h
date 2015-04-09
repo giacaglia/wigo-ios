@@ -62,10 +62,12 @@
 @end
 
 @interface InviteCell: UITableViewCell
++ (CGFloat) height;
 @property (nonatomic, strong) WGUser *user;
 @property (nonatomic, assign) id<InviteCellDelegate> delegate;
-+ (CGFloat) rowHeight;
-@property (nonatomic, strong) IBOutlet UIButton *inviteButton;
-@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
-@property (nonatomic, strong) UILabel *tappedLabel;
+@property (nonatomic, strong) UIButton *chatButton;
+@property (nonatomic, strong) UIButton *tapButton;
+@property (nonatomic, strong) UIImageView *tapImageView;
+@property (nonatomic, strong) UILabel *tapLabel;
+@property (nonatomic, strong) UILabel *underlineTapLabel;
 @end

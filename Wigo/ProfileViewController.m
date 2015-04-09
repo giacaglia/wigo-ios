@@ -325,7 +325,7 @@ BOOL blockShown;
     
     _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 15, self.view.frame.size.width - 14, 50)];
     _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
-    _nameOfPersonLabel.text = [self.user fullName];
+    _nameOfPersonLabel.text = [NSString stringWithFormat:@"%@, 22", self.user.fullName];
     _nameOfPersonLabel.textColor = [UIColor whiteColor];
     _nameOfPersonLabel.font = [FontProperties getSubHeaderFont];
     [_nameView addSubview:_nameOfPersonLabel];
@@ -1174,106 +1174,97 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 @implementation InviteCell
 
-#define kInviteTitleTemplate @"Tap to see out:"
 
 - (void) awakeFromNib {
     [self setup];
 }
 
-+ (CGFloat)rowHeight {
-    return 70.0f;
++ (CGFloat)height {
+    return 80.0f;
 }
 
 - (void)setUser:(WGUser *)user {
     _user = user;
-    if (user.isCurrentUser) {
-        self.inviteButton.hidden = YES;
-        self.inviteButton.enabled = NO;
-        self.titleLabel.hidden = YES;
-        self.tappedLabel.alpha = 0;
+   
+    if (user.isCurrentUser || self.user.state == OTHER_SCHOOL_USER_STATE) {
+        self.tapButton.hidden = YES;
+        self.chatButton.hidden = YES;
         return;
     }
     
-    if ([self.delegate userState] == OTHER_SCHOOL_USER_STATE) {
-        self.inviteButton.hidden = YES;
-        self.inviteButton.enabled = NO;
-        self.titleLabel.hidden = YES;
-        self.tappedLabel.alpha = 0;
-        } else {
-        if (user.isTapped.boolValue) {
-            self.inviteButton.hidden = YES;
-            self.inviteButton.enabled = NO;
-            self.titleLabel.hidden = YES;
-            self.tappedLabel.alpha = 1;
+    self.tapButton.hidden = NO;
+    self.chatButton.hidden = NO;
+    if (user.isTapped.boolValue) {
+        self.tapImageView.image = [UIImage imageNamed:@"blueTappedImageView"];
+        self.tapLabel.text = @"TAPPED";
 
-        } else {
-            self.inviteButton.hidden = NO;
-            self.titleLabel.hidden = NO;
-            self.titleLabel.text = kInviteTitleTemplate;
-            self.tappedLabel.alpha = 0;
-        }
+    } else {
+        self.tapImageView.image = [UIImage imageNamed:@"blueTapImageView"];
+        self.tapLabel.text = @"TAP";
     }
+    
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f);
-    self.titleLabel.font = [FontProperties lightFont: 18];
-    self.titleLabel.textColor = UIColor.lightGrayColor;
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [InviteCell height]);
+    self.backgroundColor = RGB(252, 252, 252);
+
+    self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(20, 20, 130, 80)];
+    self.chatButton.layer.cornerRadius = 27.0f;
+    self.chatButton.layer.borderColor = RGB(216, 216, 216).CGColor;
+    self.chatButton.layer.borderWidth = 0.5f;
+    [self.contentView addSubview:self.chatButton];
     
-    self.inviteButton.titleLabel.font =  [FontProperties lightFont:18.0f];
-    self.inviteButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.inviteButton.layer.borderWidth = 1;
-    self.inviteButton.layer.borderColor = UIColor.whiteColor.CGColor;
-    self.inviteButton.layer.cornerRadius = 7;
-    [self.inviteButton addTarget: self action: @selector(inviteTapped) forControlEvents: UIControlEventTouchUpInside];
+    UIImageView *chatImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 40 - 20, 40, 40)];
+    chatImageView.image = [UIImage imageNamed:@"blueChatImageView"];
+    [self.chatButton addSubview:chatImageView];
     
-    self.tappedLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, 70.0f)];
-    self.tappedLabel.text = @"TAPPED";
-    self.tappedLabel.font = [FontProperties lightFont: 24];
-    self.tappedLabel.textColor = UIColor.lightGrayColor;
-    self.tappedLabel.textAlignment = NSTextAlignmentCenter;
-    self.tappedLabel.alpha = 0;
+    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(65, 40 - 10, 60, 20)];
+    chatLabel.text = @"CHAT";
+    chatLabel.textAlignment = NSTextAlignmentCenter;
+    chatLabel.font = [FontProperties mediumFont:20.0f];
+    chatLabel.textColor = [FontProperties getBlueColor];
+    [self.chatButton addSubview:chatLabel];
     
-    [self.contentView addSubview:self.tappedLabel];
+    self.tapButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 130 - 20, 20, 130, 80)];
+    self.tapButton.layer.cornerRadius = 27.0f;
+    self.tapButton.layer.borderColor = RGB(216, 216, 216).CGColor;
+    self.tapButton.layer.borderWidth = 0.5f;
+    [self.contentView addSubview:self.tapButton];
+    
+    self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 40 - 20, 40, 40)];
+    self.tapImageView.image = [UIImage imageNamed:@"blueTapImageView"];
+    [self.tapButton addSubview:self.tapImageView];
+
+    self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(65, 40 - 10 - 5, 60, 20)];
+    self.tapLabel.text = @"TAP";
+    self.tapLabel.textAlignment = NSTextAlignmentLeft;
+    self.tapLabel.font = [FontProperties mediumFont:20.0f];
+    self.tapLabel.textColor = [FontProperties getBlueColor];
+    [self.tapButton addSubview:self.tapLabel];
+    
+    self.underlineTapLabel = [[UILabel alloc] initWithFrame:CGRectMake(65, 50 - 5, 60, 15)];
+    self.underlineTapLabel.text = @"to see out";
+    self.underlineTapLabel.textAlignment = NSTextAlignmentLeft;
+    self.underlineTapLabel.textColor = [FontProperties getBlueColor];
+    self.underlineTapLabel.font = [FontProperties lightFont:11.0f];
+    [self.tapButton addSubview:self.underlineTapLabel];
 }
 
 - (void) inviteTapped {
-    self.inviteButton.enabled = NO;
+//    self.inviteButton.enabled = NO;
   
-    UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0, self.frame.size.width + 15, self.frame.size.height)];
-    orangeBackground.backgroundColor = self.inviteButton.backgroundColor;
-    orangeBackground.layer.cornerRadius = 8.0f;
-    orangeBackground.layer.borderWidth = 1.0f;
-    orangeBackground.layer.borderColor = UIColor.clearColor.CGColor;
-    [self.contentView sendSubviewToBack:orangeBackground];
-    [self.contentView addSubview:orangeBackground];
-    self.titleLabel.hidden = YES;
-    self.tappedLabel.textColor = UIColor.whiteColor;
-    self.tappedLabel.alpha = 1;
-    [self.contentView bringSubviewToFront:self.tappedLabel];
+//    UIView *orangeBackground = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, 0, self.frame.size.width + 15, self.frame.size.height)];
+//    orangeBackground.backgroundColor = self.inviteButton.backgroundColor;
+//    orangeBackground.layer.cornerRadius = 8.0f;
+//    orangeBackground.layer.borderWidth = 1.0f;
+//    orangeBackground.layer.borderColor = UIColor.clearColor.CGColor;
+//    [self.contentView sendSubviewToBack:orangeBackground];
+//    [self.contentView addSubview:orangeBackground];
+//    self.titleLabel.hidden = YES;
+//    self.tappedLabel.alpha = 1;
+//    [self.contentView bringSubviewToFront:self.tappedLabel];
 
-    __weak typeof(self) weakSelf = self;
-    [UIView animateWithDuration:0.2f
-                          delay:0.0f
-                        options:UIViewAnimationOptionCurveEaseIn
-                     animations:^{
-        self.inviteButton.alpha = 0.0f;
-        orangeBackground.frame = CGRectMake(-10, 0, self.frame.size.width + 15, self.frame.size.height);
-        self.tappedLabel.alpha = 1;
-    } completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.2f animations:^{
-        orangeBackground.backgroundColor = RGB(231, 222, 214);
-        weakSelf.tappedLabel.textColor = UIColor.lightGrayColor;
-    } completion:^(BOOL finished) {
-    [UIView animateWithDuration:0.5f animations:^{
-        orangeBackground.alpha = 0.0f;
-    } completion:^(BOOL finished) {
-        if (weakSelf.delegate) {
-            [weakSelf.delegate inviteTapped];
-        }
-    }];
-    }];
-    }];
 }
 
 @end

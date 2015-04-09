@@ -342,10 +342,10 @@ BOOL firstTimeLoading;
     self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self addRefreshToScrollView];
     
-    self.labelSwitch = [[LabelSwitch alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, [LabelSwitch height])];
-    [self.view bringSubviewToFront:self.labelSwitch];
-    [self.view addSubview:self.labelSwitch];
-    
+//    self.labelSwitch = [[LabelSwitch alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, [LabelSwitch height])];
+//    [self.view bringSubviewToFront:self.labelSwitch];
+//    [self.view addSubview:self.labelSwitch];
+//    
     self.blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
     self.blueBannerView.backgroundColor = [FontProperties getBlueColor];
     self.blueBannerView.hidden = NO;
@@ -946,7 +946,7 @@ BOOL firstTimeLoading;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGRect frame = self.navigationController.navigationBar.frame;
-    frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height + self.labelSwitch.frame.size.height);
+//    frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height + self.labelSwitch.frame.size.height);
     CGFloat size = frame.size.height - 20;
     CGFloat framePercentageHidden = ((20 - frame.origin.y) / (frame.size.height - 1));
     CGFloat scrollOffset = scrollView.contentOffset.y;
@@ -968,10 +968,11 @@ BOOL firstTimeLoading;
         }
     }
    
-    self.navigationController.navigationBar.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height - self.labelSwitch.frame.size.height);
-    
-    self.labelSwitch.frame = CGRectMake(frame.origin.x, frame.origin.y + self.navigationController.navigationBar.frame.size.height, self.labelSwitch.frame.size.width, self.labelSwitch.frame.size.height);
-    self.labelSwitch.transparency  = 1 - framePercentageHidden;
+    self.navigationController.navigationBar.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
+
+//    self.navigationController.navigationBar.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height - self.labelSwitch.frame.size.height);
+//    self.labelSwitch.frame = CGRectMake(frame.origin.x, frame.origin.y + self.navigationController.navigationBar.frame.size.height, self.labelSwitch.frame.size.width, self.labelSwitch.frame.size.height);
+//    self.labelSwitch.transparency  = 1 - framePercentageHidden;
     if (self.navigationController.navigationBar.frame.origin.y +
         self.navigationController.navigationBar.frame.size.height <= 20 ||
         self.navigationController.navigationBar.frame.origin.y >= 0) {
@@ -1656,7 +1657,7 @@ BOOL firstTimeLoading;
 #pragma mark - Refresh Control
 
 - (void)addRefreshToScrollView {
-    CGFloat contentInset = 44 + [LabelSwitch height];
+    CGFloat contentInset = 44.0f;
     self.placesTableView.contentInset = UIEdgeInsetsMake(contentInset, 0, 0, 0);
     [WGSpinnerView addDancingGToUIScrollView:self.placesTableView
                          withBackgroundColor:RGB(237, 237, 237)

@@ -29,16 +29,19 @@
 #define kPeopleModalViewFooter @"peopleModalViewFooter"
 #define kAttendeesCellName @"attendeesCellName"
 @interface AttendeesPhotoCell : UICollectionViewCell <InviteCellDelegate>
++ (CGFloat) height;
 @property (nonatomic, strong) UIButton *imageButton;
 @property (nonatomic, strong) UIImageView *imgView;
 @property (nonatomic, strong) UILabel *backgroundNameLabel;
 @property (nonatomic, strong) UILabel *profileNameLabel;
+@property (nonatomic, strong) UILabel *mutualFriendsLabel;
 @property (nonatomic, strong) InviteView *inviteView;
 @property (nonatomic, strong) UIButton *chatButton;
 @property (nonatomic, strong) UIButton *followButton;
-@property (nonatomic, strong) UILabel *followRequestLabel;
+@property (nonatomic, strong) UILabel *pendingLabel;
 @property (nonatomic, assign) id<EventPeopleModalDelegate> eventPeopleModalDelegate;
-@property (nonatomic, strong ) WGUser *user;
+@property (nonatomic, strong) UIView *dividerLineView;
+@property (nonatomic, strong) WGUser *user;
 - (void)inviteTapped;
 @end
 

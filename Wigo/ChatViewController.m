@@ -240,16 +240,13 @@
     self.timeLabel.textAlignment = NSTextAlignmentRight;
     [self.contentView addSubview:self.timeLabel];
     
-    self.lastMessageImageView = [[UIImageView alloc] initWithFrame:CGRectMake(85, 25, 150, 40)];
-    [self.contentView addSubview:self.lastMessageImageView];
-
-    self.lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 150, 40)];
+    self.lastMessageLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 35, 150, 30)];
     self.lastMessageLabel.font = [FontProperties lightFont:13.0f];
     self.lastMessageLabel.textColor = UIColor.blackColor;
     self.lastMessageLabel.textAlignment = NSTextAlignmentLeft;
     self.lastMessageLabel.numberOfLines = 2;
     self.lastMessageLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [self.lastMessageImageView addSubview:self.lastMessageLabel];
+    [self.contentView addSubview:self.lastMessageLabel];
     
     self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(6, 6, 12, 12)];
     self.orangeNewView.backgroundColor = [FontProperties getOrangeColor];
@@ -267,10 +264,6 @@
     self.nameLabel.text = user.fullName;
     self.timeLabel.text = [message.created getUTCTimeStringToLocalTimeString];
     self.lastMessageLabel.text = message.message;
- 
-    self.lastMessageImageView.image = nil;
-    self.lastMessageLabel.textColor = UIColor.blackColor;
-    self.lastMessageLabel.hidden = NO;
     self.orangeNewView.hidden = message.isRead.boolValue;
 }
 

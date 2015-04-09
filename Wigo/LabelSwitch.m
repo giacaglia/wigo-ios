@@ -12,6 +12,10 @@
 
 @implementation LabelSwitch : UIView
 
++ (CGFloat) height {
+    return 40;
+}
+
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -72,11 +76,6 @@
         self.friendsLabel.textColor = RGB(179, 179, 179);
         self.bostonLabel.textColor = [FontProperties getBlueColor];
     }];
-}
-
-
-+ (CGFloat) height {
-    return 40;
 }
 
 - (void)setTransparency:(CGFloat)transparency {
