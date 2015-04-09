@@ -382,6 +382,10 @@ BOOL blockShown;
     locationImgView.center = CGPointMake(schoolImgView.center.x, locationImgView.center.y);
     workImgView.center = CGPointMake(schoolImgView.center.x, workImgView.center.y);
     
+    UIView *lineDividerView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width*0.7 - 1, 5, 0.5, 60)];
+    lineDividerView.backgroundColor = RGB(205, 205, 205);
+    [_headerButtonView addSubview:lineDividerView];
+    
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(friendsPressed) forControlEvents:UIControlEventTouchUpInside];
     _rightProfileButton.frame = CGRectMake(self.view.frame.size.width*0.7, 0, self.view.frame.size.width*0.3, 70);
