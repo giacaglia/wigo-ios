@@ -67,7 +67,6 @@ BOOL blockShown;
     [self initializeTableView];
     [self initializeNotificationHandlers];
     [self initializeLeftBarButton];
-    [self initializeRightBarButton];
     [self initializeNameOfPerson];
     [self initializeHeaderButtonView];
 
@@ -85,7 +84,7 @@ BOOL blockShown;
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-    [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
+    [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleLightContent];
     self.tabBarController.navigationItem.titleView.hidden = NO;
     self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: [FontProperties getBlueColor]] forBarMetrics:UIBarMetricsDefault];
@@ -117,6 +116,7 @@ BOOL blockShown;
     [super viewDidAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     self.tabBarController.navigationItem.titleView = nil;
+    [self initializeRightBarButton];
     
     if (self.user.state == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if (self.user.isCurrentUser) {
@@ -150,6 +150,7 @@ BOOL blockShown;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.tabBarController.navigationItem.titleView = nil;
+    [self initializeRightBarButton];
 
 //    self.tabBarController.navigationItem.titleView.hidden = YES;
 //    [[UIApplication sharedApplication] setStatusBarHidden:YES];
