@@ -12,9 +12,9 @@
 #import "UIButtonAligned.h"
 #import "SignViewController.h"
 #import "LabelSwitch.h"
+#import "BaseViewController.h"
 
-
-@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
+@interface PlacesViewController : BaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
     UIGestureRecognizerDelegate,
     PlacesDelegate,
     PrivacySwitchDelegate,

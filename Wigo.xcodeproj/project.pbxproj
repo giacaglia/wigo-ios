@@ -344,6 +344,8 @@
 		E9A765AD1AC5F06800F7C016 /* WGGetter.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765AB1AC5F06800F7C016 /* WGGetter.m */; };
 		E9A765B51AC9C03B00F7C016 /* WGNavigateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765B41AC9C03B00F7C016 /* WGNavigateParser.m */; };
 		E9A765B61AC9C03B00F7C016 /* WGNavigateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765B41AC9C03B00F7C016 /* WGNavigateParser.m */; };
+		E9A8B6E41AD81C0900C6901D /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A8B6E31AD81C0900C6901D /* BaseViewController.m */; };
+		E9A8B6E51AD81C0900C6901D /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A8B6E31AD81C0900C6901D /* BaseViewController.m */; };
 		E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
 		E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
 		E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */; };
@@ -805,6 +807,8 @@
 		E9A765AB1AC5F06800F7C016 /* WGGetter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGGetter.m; sourceTree = "<group>"; };
 		E9A765B31AC9C03B00F7C016 /* WGNavigateParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGNavigateParser.h; sourceTree = "<group>"; };
 		E9A765B41AC9C03B00F7C016 /* WGNavigateParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGNavigateParser.m; sourceTree = "<group>"; };
+		E9A8B6E21AD81C0900C6901D /* BaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
+		E9A8B6E31AD81C0900C6901D /* BaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
 		E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlacesViewController.h; sourceTree = "<group>"; };
 		E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileViewController.h; sourceTree = "<group>"; };
 		E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileViewController.m; sourceTree = "<group>"; };
@@ -1932,6 +1936,8 @@
 				FA2BE9BA19FAEAFC00CC0E5E /* EventStory */,
 				FA85ED981A5C3F50004B0465 /* Peek */,
 				E9AAAFCB193E3DCE0069F700 /* Chat */,
+				E9A8B6E21AD81C0900C6901D /* BaseViewController.h */,
+				E9A8B6E31AD81C0900C6901D /* BaseViewController.m */,
 			);
 			name = "Main Flow";
 			sourceTree = "<group>";
@@ -2391,6 +2397,7 @@
 				C12A112519787BE700D53B1C /* UIImage+GIF.m in Sources */,
 				C12A112619787BE700D53B1C /* UIImageView+WebCache.m in Sources */,
 				FA5526121A1FCB3700101AE7 /* GroupStats.m in Sources */,
+				E9A8B6E51AD81C0900C6901D /* BaseViewController.m in Sources */,
 				45D9FACF1A781AFD00D08577 /* JSQMessagesCollectionViewCellIncoming.m in Sources */,
 				FA55260D1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */,
 				C12A112819787BE700D53B1C /* SDImageCache.m in Sources */,
@@ -2449,6 +2456,7 @@
 				4563F5271A3F460F00F8C9C4 /* WGUser.m in Sources */,
 				E96F07C119BA654600E858D7 /* GKImageCropView.m in Sources */,
 				E900C2BC1961EADE00A01F50 /* SDWebImageManager.m in Sources */,
+				E9A8B6E41AD81C0900C6901D /* BaseViewController.m in Sources */,
 				45D9FAB01A781AFD00D08577 /* JSQMessagesTimestampFormatter.m in Sources */,
 				45D9FAC61A781AFD00D08577 /* JSQVideoMediaItem.m in Sources */,
 				E9DE130C196F06B100AFA05A /* WGSpinnerView.m in Sources */,

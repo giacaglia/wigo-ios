@@ -19,6 +19,7 @@ NSArray *filteredPeopleContactList;
 
 NSMutableArray *shownChosenPeople;
 NSMutableArray *chosenPeople;
+NSDictionary *letterToPeopleContactList;
 
 
 @implementation MobileContactsViewController
@@ -33,10 +34,12 @@ NSMutableArray *chosenPeople;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    letterToPeopleContactList = [NSMutableDictionary new];
     peopleContactList = [[NSArray alloc] init];
     chosenPeople = [[NSMutableArray alloc] init];
     shownChosenPeople = [[NSMutableArray alloc] init];
     selectedPeopleIndexes = [[NSMutableArray alloc] init];
+    letterToPeopleContactList = [NSMutableDictionary new];
 
     [self initializeTitle];
     [self initializeTableViewWithPeople];
@@ -51,7 +54,7 @@ NSMutableArray *chosenPeople;
 
 - (void)initializeTitle {
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 30, self.view.frame.size.width - 30, 25)];
-    titleLabel.text = @"Tap 5 or More Friends";
+    titleLabel.text = @"Tap Friends (5)";
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = [FontProperties getTitleFont];
     titleLabel.textColor = [FontProperties getBlueColor];
@@ -69,7 +72,7 @@ NSMutableArray *chosenPeople;
 
 - (void)initializeTableViewWithPeople {
     self.automaticallyAdjustsScrollViewInsets = NO;
-    contactsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    contactsTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64) style:UITableViewStyleGrouped];
     contactsTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [contactsTableView registerClass:[MobileInviteCell class] forCellReuseIdentifier:kMobileInviteCellName];
     contactsTableView.dataSource = self;
@@ -85,26 +88,32 @@ NSMutableArray *chosenPeople;
 
 - (void)getContactAccess {
     [WGSpinnerView addDancingGToCenterView:self.view];
-    [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
+    [MobileDelegate getSeparatedMobileContacts:^(NSDictionary *mobileDictionary) {
         [WGSpinnerView removeDancingGFromCenterView:self.view];
-        if ([mobileArray count] > 0) {
-            peopleContactList = [NSMutableArray arrayWithArray:mobileArray];
-            [contactsTableView reloadData];
-        } else {
-            [WGAnalytics tagAction:@"declined_access_mobile" atView:@"mobile_contacts"];
-            [self dismissViewControllerAnimated:NO completion:nil];
-        }
+        letterToPeopleContactList = mobileDictionary;
     }];
+//    [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
+//        [WGSpinnerView removeDancingGFromCenterView:self.view];
+//        if ([mobileArray count] > 0) {
+//            peopleContactList = [NSMutableArray arrayWithArray:mobileArray];
+//            [contactsTableView reloadData];
+//        } else {
+//            [WGAnalytics tagAction:@"declined_access_mobile" atView:@"mobile_contacts"];
+//            [self dismissViewControllerAnimated:NO completion:nil];
+//        }
+//    }];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     MobileInviteCell *cell = [tableView dequeueReusableCellWithIdentifier:kMobileInviteCellName forIndexPath:indexPath];
 
     ABRecordRef contactPerson;
-    if (isFiltered)
-        contactPerson  = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:[indexPath row]]);
-    else
-        contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:[indexPath row]]);
+//    if (isFiltered)
+//        contactPerson  = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:[indexPath row]]);
+//    else
+    NSString *key = (NSString *)[[MobileDelegate mobileKeys] objectAtIndex:indexPath.section];
+    NSArray *peopleArray = [letterToPeopleContactList objectForKey:key];
+    contactPerson = (__bridge ABRecordRef)([peopleArray objectAtIndex:indexPath.row]);
     
 
     ABRecordID recordID = ABRecordGetRecordID(contactPerson);
@@ -115,7 +124,7 @@ NSMutableArray *chosenPeople;
     else
         cell.selectedPersonImageView.image = [UIImage imageNamed:@"tapUnselectedInvite"];
     
-      NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
+    NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
     NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty));
     NSString *fullName = [NSString stringWithFormat:@"%@ %@", firstName, lastName];
     [fullName capitalizedString];
@@ -140,15 +149,17 @@ NSMutableArray *chosenPeople;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return letterToPeopleContactList.allKeys.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (isFiltered)
-        return [filteredPeopleContactList count];
-    else
-        return [peopleContactList count];
-    
+//    if (isFiltered)
+//        return [filteredPeopleContactList count];
+//    else
+//        return [peopleContactList count];
+    NSString *key = (NSString *)[[MobileDelegate mobileKeys] objectAtIndex:section];
+    NSArray *peopleArray = [letterToPeopleContactList objectForKey:key];
+    return peopleArray.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -160,15 +171,15 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     int tag = (int)indexPath.row;
     ABRecordRef contactPerson;
     ABRecordID recordID;
-    if (isFiltered) {
-        contactPerson = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:tag]);
-        recordID = ABRecordGetRecordID(contactPerson);
-        tag = [MobileDelegate changeTag:tag fromArray:filteredPeopleContactList toArray:peopleContactList];
-        
-    } else {
+//    if (isFiltered) {
+//        contactPerson = (__bridge ABRecordRef)([filteredPeopleContactList objectAtIndex:tag]);
+//        recordID = ABRecordGetRecordID(contactPerson);
+//        tag = [MobileDelegate changeTag:tag fromArray:filteredPeopleContactList toArray:peopleContactList];
+//        
+//    } else {
         contactPerson = (__bridge ABRecordRef)([peopleContactList objectAtIndex:tag]);
         recordID = ABRecordGetRecordID(contactPerson);
-    }
+//    }
     NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
     if (![shownChosenPeople containsObject:recordIdString]) {
         [chosenPeople addObject:recordIdString];
@@ -179,6 +190,29 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     }
     [selectedPeopleIndexes addObject:[NSNumber numberWithInt:tag]];
     [contactsTableView reloadData];
+}
+
+-(CGFloat)tableView:(UITableView*)tableView heightForHeaderInSection:(NSInteger)section {
+    return 30.0f;
+}
+
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30)];
+    view.backgroundColor = RGB(204, 204, 204);
+
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, tableView.frame.size.width, 30 - 5)];
+    label.font = [FontProperties mediumFont:18.0f];
+    label.text = [[MobileDelegate mobileKeys] objectAtIndex:section];
+    [view addSubview:label];
+    
+    return view;
+}
+
+- (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
+{
+    return [MobileDelegate mobileKeys];
 }
 
 - (void)donePressed {
@@ -214,7 +248,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 @implementation MobileInviteCell
 
 +(CGFloat) height {
-    return 50;
+    return 44;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -230,14 +264,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.contentView.frame = self.frame;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    self.selectedPersonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 25, 25)];
-    self.selectedPersonImageView.tintColor = [FontProperties getOrangeColor];
-    self.selectedPersonImageView.center = CGPointMake(self.selectedPersonImageView.center.x, self.center.y);
-    [self.contentView addSubview:self.selectedPersonImageView];
-    
-    self.nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 10, self.frame.size.width - 55 - 15, 30)];
+    self.nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, self.frame.size.width - 55 - 15, 30)];
     self.nameOfPersonLabel.center  = CGPointMake(self.nameOfPersonLabel.center.x, self.center.y);
     [self.contentView addSubview:self.nameOfPersonLabel];
+    
+    self.selectedPersonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 25 - 15, 10, 25, 25)];
+    self.selectedPersonImageView.center = CGPointMake(self.selectedPersonImageView.center.x, self.center.y);
+    [self.contentView addSubview:self.selectedPersonImageView];
 }
 
 @end
