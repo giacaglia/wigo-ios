@@ -199,10 +199,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 30)];
-    view.backgroundColor = RGB(204, 204, 204);
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 20)];
+    view.backgroundColor = RGB(239, 239, 244);
 
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, tableView.frame.size.width, 30 - 5)];
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, tableView.frame.size.width, 20 - 5)];
     label.font = [FontProperties mediumFont:18.0f];
     label.text = [[MobileDelegate mobileKeys] objectAtIndex:section];
     [view addSubview:label];

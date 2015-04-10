@@ -56,7 +56,7 @@
 @property (nonatomic, strong) UIView *blueBannerView;
 @property (nonatomic, strong) LabelSwitch *labelSwitch;
 @property (nonatomic, assign) CGFloat previousScrollViewYOffset;
-@property (nonatomic, strong) UIButton *bostonButton;
+@property (nonatomic, strong) UILabel *bostonLabel;
 @property (nonatomic, strong) UIButton *friendsButton;
 @property (nonatomic, assign) BOOL isLocal;
 @end
