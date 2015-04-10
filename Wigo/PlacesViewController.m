@@ -215,12 +215,22 @@ BOOL firstTimeLoading;
     toggleView.layer.borderWidth = 1.0f;
     toggleView.layer.cornerRadius = 7.0F;
     toggleView.clipsToBounds = YES;
-//    self.bostonButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 34)];
-//    [self.bostonButton addTarget:self action:@selector(localPressed) forControlEvents:UIControlEventTouchUpInside];
-//    [self.bostonButton setTitle:@"Boston" forState:UIControlStateNormal];
-//    [self.bostonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-//    self.bostonButton.titleLabel.font = [FontProperties mediumFont:12.0f];
-//    [toggleView addSubview:self.bostonButton];
+    self.bostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 70, 34)];
+    self.bostonLabel.text = @"Local";
+    self.bostonLabel.textColor = UIColor.whiteColor;
+    self.bostonLabel.font = [FontProperties mediumFont:12.0f];
+    self.bostonLabel.textAlignment = NSTextAlignmentCenter;
+    UITapGestureRecognizer *tapGest = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(localPressed)];
+    tapGest.numberOfTapsRequired = 1;
+    self.bostonLabel.userInteractionEnabled = YES;
+    [self.bostonLabel addGestureRecognizer:tapGest];
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]
+                                               initWithTarget:self
+                                               action:@selector(handleLongPress:)];
+    longPress.minimumPressDuration = 0.5;
+    [self.bostonLabel addGestureRecognizer:longPress];
+    [toggleView addSubview:self.bostonLabel];
+    
     self.friendsButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 0, 70, 34)];
     [self.friendsButton addTarget:self action:@selector(friendsPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.friendsButton setTitle:@"Friends" forState:UIControlStateNormal];
@@ -228,6 +238,18 @@ BOOL firstTimeLoading;
     [toggleView addSubview:self.friendsButton];
     self.tabBarController.navigationItem.titleView = toggleView;
     self.isLocal = YES;
+}
+
+- (void)handleLongPress:(UILongPressGestureRecognizer*)sender {
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        self.isLocal = YES;
+    }
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
+        PeekViewController *peekViewController = [PeekViewController new];
+        peekViewController.placesDelegate = self;
+        [self presentViewController:peekViewController animated:YES completion:nil];
+    }
 }
 
 - (void)localPressed {
@@ -241,16 +263,16 @@ BOOL firstTimeLoading;
 - (void)setIsLocal:(BOOL)isLocal {
     _isLocal = isLocal;
     if (isLocal) {
-//        [self.bostonButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
-//        self.bostonButton.backgroundColor = UIColor.whiteColor;
+        self.bostonLabel.textColor = [FontProperties getBlueColor];
+        self.bostonLabel.backgroundColor = UIColor.whiteColor;
         [self.friendsButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
         self.friendsButton.backgroundColor = [FontProperties getBlueColor];
     }
     else {
         [self.friendsButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
         self.friendsButton.backgroundColor = UIColor.whiteColor;
-//        [self.bostonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-//        self.bostonButton.backgroundColor = [FontProperties getBlueColor];
+        self.bostonLabel.textColor = UIColor.whiteColor;
+        self.bostonLabel.backgroundColor = [FontProperties getBlueColor];
     }
 }
 
