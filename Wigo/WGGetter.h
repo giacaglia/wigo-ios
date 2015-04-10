@@ -15,4 +15,7 @@
 
 - (void)fetchSuggestions;
 @property (nonatomic, strong) WGCollection *suggestions;
+
+- (void)fetchNotifications;
+@property (nonatomic, strong) WGCollection *notifications;
 @end

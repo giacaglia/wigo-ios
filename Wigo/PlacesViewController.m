@@ -94,6 +94,7 @@ BOOL firstTimeLoading;
     [self initializeWhereView];
     [NetworkFetcher.defaultGetter fetchMessages];
     [NetworkFetcher.defaultGetter fetchSuggestions];
+    [NetworkFetcher.defaultGetter fetchNotifications];
 }
 
 - (void) viewWillAppear:(BOOL)animated {

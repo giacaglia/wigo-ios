@@ -269,19 +269,17 @@
 }
 
 - (void)setMessage:(WGMessage *)message {
-    WGUser *user = [message otherUser];
+    WGUser *user = message.otherUser;
     
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text = user.fullName;
     self.lastMessageLabel.text = message.message;
 //    self.timeLabel.text = [message.created getUTCTimeStringToLocalTimeString];
-    if (message.isRead) {
+    if (message.isRead.boolValue) {
         self.lastMessageLabel.textColor = RGB(208, 208, 208);
-        self.nameLabel.textColor = RGB(208, 208, 208);
     }
     else {
         self.lastMessageLabel.textColor = UIColor.blackColor;
-        self.nameLabel.textColor = UIColor.blackColor;
     }
     self.orangeNewView.hidden = message.isRead.boolValue;
 }

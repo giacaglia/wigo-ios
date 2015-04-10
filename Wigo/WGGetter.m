@@ -9,6 +9,7 @@
 #import "WGGetter.h"
 #import "WGMessage.h"
 #import "WGUser.h"
+#import "WGNotification.h"
 
 @implementation WGGetter: NSObject
 
@@ -29,6 +30,23 @@
             if (error) return;
             strongSelf.suggestions = collection;
         });
+    }];
+}
+
+- (void)fetchNotifications {
+    self.notifications = [[WGCollection alloc] initWithType:[WGNotification class]];
+    __weak typeof(self) weakSelf = self;
+    [WGNotification get:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        for (WGNotification *notification in collection) {
+            if (!notification.isFromLastDay) {
+                [strongSelf.notifications addObject:notification];
+            }
+        }
     }];
 }
 
