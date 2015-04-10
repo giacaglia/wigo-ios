@@ -14,7 +14,7 @@
 #import "LabelSwitch.h"
 #import "BaseViewController.h"
 
-@interface PlacesViewController : BaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
+@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
     UIGestureRecognizerDelegate,
     PlacesDelegate,
     PrivacySwitchDelegate,

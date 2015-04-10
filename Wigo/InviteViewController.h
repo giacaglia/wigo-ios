@@ -27,8 +27,20 @@
 #define kSectionTapAllCell 0
 #define kTapCellName @"tapCellName"
 #define kSectionTapCell 1
-#define kInviteMobileCellName @"inviteCellName"
-#define kSectionMobileCell 2
+#define kFollowCellName @"followCellName"
+#define kSectionFollowCell 2
+//#define kFollowCellName @"followCellName"
+//#define kSectionFollowCell 2
+//#define kInviteMobileCellName @"inviteCellName"
+//#define kSectionMobileCell 3
+
+@interface TapAllCell : UITableViewCell
++ (CGFloat) height;
+@property (nonatomic, strong) UILabel *tapAllLabel;
+@property (nonatomic, strong) UIButton *aroundTapButton;
+@property (nonatomic, strong) UIImageView *tapImageView;
+@property (nonatomic, strong) UILabel *labelUnderButton;
+@end
 
 @interface TapCell : UITableViewCell
 + (CGFloat) height;
@@ -42,10 +54,11 @@
                withChosenPeople:(NSArray *)chosenPeople;
 @end
 
-@interface TapAllCell : UITableViewCell
+@interface FollowCell : UITableViewCell
 + (CGFloat) height;
-@property (nonatomic, strong) UILabel *tapAllLabel;
-@property (nonatomic, strong) UIButton *aroundTapButton;
-@property (nonatomic, strong) UIImageView *tapImageView;
-@property (nonatomic, strong) UILabel *labelUnderButton;
+@property (nonatomic, strong) UIButton *profileButton;
+@property (nonatomic, strong) UIImageView *profileImageView;
+@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UIButton *followPersonButton;
+@property (nonatomic, strong) WGUser *user;
 @end

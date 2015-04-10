@@ -216,13 +216,13 @@ BOOL firstTimeLoading;
     toggleView.layer.cornerRadius = 7.0F;
     toggleView.clipsToBounds = YES;
     self.bostonButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 34)];
-    [self.bostonButton addTarget:self action:@selector(changeState) forControlEvents:UIControlEventTouchUpInside];
+    [self.bostonButton addTarget:self action:@selector(localPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.bostonButton setTitle:@"Boston" forState:UIControlStateNormal];
     [self.bostonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     self.bostonButton.titleLabel.font = [FontProperties mediumFont:12.0f];
     [toggleView addSubview:self.bostonButton];
     self.friendsButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 0, 70, 34)];
-    [self.friendsButton addTarget:self action:@selector(changeState) forControlEvents:UIControlEventTouchUpInside];
+    [self.friendsButton addTarget:self action:@selector(friendsPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.friendsButton setTitle:@"Friends" forState:UIControlStateNormal];
     self.friendsButton.titleLabel.font = [FontProperties mediumFont:12.0f];
     [toggleView addSubview:self.friendsButton];
@@ -230,8 +230,12 @@ BOOL firstTimeLoading;
     self.isLocal = YES;
 }
 
-- (void)changeState {
-    self.isLocal = !self.isLocal;
+- (void)localPressed {
+    self.isLocal = YES;
+}
+
+- (void)friendsPressed {
+    self.isLocal = NO;
 }
 
 - (void)setIsLocal:(BOOL)isLocal {
