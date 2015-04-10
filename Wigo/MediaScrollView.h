@@ -15,10 +15,16 @@
 #define UIMediaPickerText @"UIMediaPickerText"
 #define UIMediaPickerPercentage @"UIMediaPickerPercentage"
 
+@class VideoCell;
+
 @protocol MediaScrollViewDelegate
 - (void)focusOnContent;
 - (void)upvotePressed;
+
 @optional
+- (MPMoviePlayerController *)sharedMoviePlayerController;
+- (NSMutableDictionary *)videoMetaData;
+
 - (void)updateEventMessage:(WGEventMessage *)eventMessage forCell:(UICollectionViewCell *)cell;
 - (void)dismissView;
 - (void)mediaPickerController:(UIImagePickerController *)controller
@@ -26,6 +32,8 @@
 - (void)mediaPickerController:(UIImagePickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info;
 - (void)cancelPressed;
+
+- (void)prepareVideoAtPage:(int)page;
 @end
 
 @interface MediaScrollView : UICollectionView <UICollectionViewDataSource,
@@ -45,8 +53,15 @@
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, assign) BOOL cameraPromptAddToStory;
 @property (nonatomic, strong) NSString *filenameString;
+@property (nonatomic, weak) VideoCell *currentVideoCell;
+
+@property (nonatomic) NSMutableDictionary *videoMetaDataInternal;
+
 -(void) closeViewWithHandler:(BoolResultBlock)handler;
 -(void) scrolledToPage:(int)page;
+-(void) scrollStoppedAtPage:(int)page;
+-(void) startedScrollingFromPage:(int)fromPage;
+
 
 - (void)callbackFromUploadWithInfo:(NSDictionary *)callbackInfo
                        andFilename:(NSString *)filename;
@@ -104,6 +119,18 @@
 @property (nonatomic, strong) UIImageView *thumbnailImageView2;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, strong) UILabel *label;
+@property (nonatomic, strong) NSURL *videoURL;
+
+@property (nonatomic) NSNumber *videoStartTime;
+@property (nonatomic) UIImage *startingThumbnail;
+
+@property (nonatomic) BOOL isCurrentVideoCell;
+
+- (void)prepareVideo;
+- (void)startVideo;
+- (void)pauseVideo;
+- (void)unloadVideo;
+
 @end
 
 
@@ -126,6 +153,7 @@
 @property (nonatomic, assign) double videoTimerCount;
 @property (nonatomic, assign) BOOL longGesturePressed;
 @property (nonatomic, strong) LLACircularProgressView *circularProgressView ;
+@property (nonatomic, strong) NSTimer *videoTimer;
 
 @property (nonatomic, strong) UIImageView *previewImageView;
 @property (nonatomic, strong) MPMoviePlayerController *previewMoviePlayer;

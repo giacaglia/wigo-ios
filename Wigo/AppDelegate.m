@@ -413,7 +413,7 @@ forRemoteNotification:(NSDictionary *)userInfo
             [WGProfile currentUser].googleAnalyticsEnabled = googleAnalyticsEnabled;
             [WGProfile currentUser].schoolStatistics = schoolStatistics;
             [WGProfile currentUser].privateEvents = privateEvents;
-            [WGProfile currentUser].videoEnabled = videoEnabled;
+            [WGProfile currentUser].videoEnabled = YES;//videoEnabled;
             [WGProfile currentUser].crossEventPhotosEnabled = crossEventPhotosEnabled;
             NSNumber *imageMultiple = [imageProperties objectForKey:kImageMultiple];
             NSNumber *imageQuality = [imageProperties objectForKey:kImageQuality];

@@ -27,6 +27,9 @@
 @property (nonatomic, assign) BOOL facesHidden;
 @property (nonatomic, strong) UIVisualEffectView *visualEffectView;
 @property (nonatomic, strong) UIView *holeView;
+
+- (NSInteger)getCurrentPageForScrollView:(UIScrollView *)scrollView;
+
 @end
 
 @implementation EventConversationViewController
@@ -54,6 +57,18 @@
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
     NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
     [WGAnalytics tagEvent:@"Event Story Detail View" withDetails: @{@"isPeeking": isPeekingString}];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    
+    [self.mediaScrollView prepareVideoAtPage:self.index.intValue];
+    [self.mediaScrollView scrollStoppedAtPage:self.index.intValue];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    NSLog(@"leaving page %d", (int)[self getCurrentPageForScrollView:self.mediaScrollView]);
+    [self.mediaScrollView startedScrollingFromPage:(int)[self getCurrentPageForScrollView:self.mediaScrollView]];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -324,6 +339,21 @@
     return page;
 }
 
+// get current page (rounded fractional page)
+
+- (NSInteger)getCurrentPageForScrollView:(UIScrollView *)scrollView {
+    float fractionalPage;
+    if (scrollView == self.mediaScrollView) {
+        CGFloat pageWidth = [[UIScreen mainScreen] bounds].size.width;
+        fractionalPage = (self.mediaScrollView.contentOffset.x) / pageWidth;
+    } else {
+        CGFloat pageWidth = newSizeOfEachFaceCell; // you need to have a **iVar** with getter for scrollView
+        fractionalPage = (self.facesCollectionView.contentOffset.x + newSizeOfEachFaceCell) / pageWidth;
+    }
+    // round fractionalPage
+    return floorf(fractionalPage+0.5);
+}
+
 - (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated {
     page = MAX(page, 0);
     page = MIN(page, self.eventMessages.count - 1);
@@ -379,6 +409,22 @@
         [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: activeIndexPath] setIsActive:YES];
             
         self.currentActiveCell = activeIndexPath;
+    }
+}
+
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if(scrollView == self.mediaScrollView) {
+        int page = (int)[self getCurrentPageForScrollView:scrollView];
+        [self.mediaScrollView startedScrollingFromPage:page];
+    }
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    
+    if(scrollView == self.mediaScrollView) {
+        int page = (int)[self getCurrentPageForScrollView:self.mediaScrollView];
+        [self.mediaScrollView scrollStoppedAtPage:page];
     }
 }
 
