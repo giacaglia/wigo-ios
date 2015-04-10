@@ -214,7 +214,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 @implementation MobileInviteCell
 
 +(CGFloat) height {
-    return 60;
+    return 50;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -230,7 +230,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.contentView.frame = self.frame;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    self.selectedPersonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 30, 30)];
+    self.selectedPersonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 10, 25, 25)];
     self.selectedPersonImageView.tintColor = [FontProperties getOrangeColor];
     self.selectedPersonImageView.center = CGPointMake(self.selectedPersonImageView.center.x, self.center.y);
     [self.contentView addSubview:self.selectedPersonImageView];
