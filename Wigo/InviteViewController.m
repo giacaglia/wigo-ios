@@ -9,6 +9,7 @@
 #import "InviteViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
+#import "MobileContactsViewController.h"
 
 @interface InviteViewController() {
     NSArray *mobileContacts;
@@ -79,8 +80,23 @@
     doneLabel.textAlignment = NSTextAlignmentLeft;
     doneLabel.font = [FontProperties getTitleFont];
     [aroundDoneButton addSubview:doneLabel];
+    
+    UIButton *aroundMobileButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 10 - 70, 40 - 5, 60 + 10, 15 + 10)];
+    [aroundMobileButton addTarget:self action:@selector(mobilePressed) forControlEvents:UIControlEventTouchUpInside];
+    [aroundMobileButton setShowsTouchWhenHighlighted:YES];
+    [self.view addSubview:aroundMobileButton];
+    UILabel *mobileLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 3, 60, 15)];
+    mobileLabel.text = @"Mobile";
+    mobileLabel.textColor = [FontProperties getBlueColor];
+    mobileLabel.textAlignment = NSTextAlignmentRight;
+    mobileLabel.font = [FontProperties getTitleFont];
+    [aroundMobileButton addSubview:mobileLabel];
 }
 
+
+- (void)mobilePressed {
+    [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
+}
 
 - (void)donePressed {
     NSArray *savedChosenPeople = [[NSUserDefaults standardUserDefaults] valueForKey:@"chosenPeople"];
@@ -690,7 +706,8 @@ heightForHeaderInSection:(NSInteger)section
     self.nameLabel.text =  user.fullName;
     [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
-    
+    self.followPersonButton.backgroundColor = UIColor.clearColor;
+
     if (!user.isCurrentUser) {
     if (user.state == BLOCKED_USER_STATE) {
         [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
@@ -709,11 +726,12 @@ heightForHeaderInSection:(NSInteger)section
         if (user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
             [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
-            [self.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            [self.followPersonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
             self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
             self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            self.followPersonButton.backgroundColor = RGB(223, 223, 223);
             self.followPersonButton.layer.borderWidth = 1;
-            self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            self.followPersonButton.layer.borderColor = UIColor.clearColor.CGColor;
             self.followPersonButton.layer.cornerRadius = 3;
         }
     }
