@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "Globals.h"
+#import "BaseViewController.h"
 
 
-@interface ChatViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface ChatViewController : BaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UIButton *chatButton;
 @property (nonatomic, strong) UITableView *tableViewOfPeople;

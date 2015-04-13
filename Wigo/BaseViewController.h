@@ -8,9 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BaseViewController : UITabBarController
+@interface BaseViewController : UIViewController
 
--(UIViewController*) viewControllerWithTabTitle:(NSString*)title image:(UIImage*)image;
--(void) addCenterButtonWithImage:(UIImage*)buttonImage highlightImage:(UIImage*)highlightImage;
-
+@property (nonatomic, assign) CGFloat previousScrollViewYOffset;
 @end

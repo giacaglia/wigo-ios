@@ -343,12 +343,12 @@ BOOL blockShown;
 
 #pragma mark Header Button View
 - (void)initializeHeaderButtonView {
-    _headerButtonView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width, 70)];
-    _headerButtonView.backgroundColor = [UIColor whiteColor];
+    _headerButtonView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width, 70 + 30)];
+    _headerButtonView.backgroundColor = UIColor.whiteColor;
     
     CALayer *lowerBorder = [CALayer layer];
     lowerBorder.backgroundColor = [[[UIColor lightGrayColor] colorWithAlphaComponent: 0.5f] CGColor];
-    lowerBorder.frame = CGRectMake(0, _headerButtonView.frame.size.height, CGRectGetWidth(_headerButtonView.frame), 0.5f);
+    lowerBorder.frame = CGRectMake(0, 70, CGRectGetWidth(_headerButtonView.frame), 0.5f);
     [_headerButtonView.layer addSublayer: lowerBorder];
     
     UIImageView *locationImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 9, 12)];
@@ -407,25 +407,20 @@ BOOL blockShown;
     [_rightProfileButton addSubview:friendsLabel];
     [_headerButtonView addSubview:_rightProfileButton];
     
-//    _chatButton = [[UIButton alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width/3, 0, self.view.frame.size.width/3, 70)];
-//    [_chatButton addTarget:self action:@selector(chatPressed) forControlEvents:UIControlEventTouchUpInside];
-//    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _chatButton.frame.size.width, 20)];
-//    chatLabel.textAlignment = NSTextAlignmentCenter;
-//    chatLabel.text = @"chat";
-//    chatLabel.textColor = RGB(137, 137, 137);
-//    chatLabel.font = [FontProperties scMediumFont:16.0f];
-//    [_chatButton addSubview:chatLabel];
-//    [_headerButtonView addSubview:_chatButton];
-    
-    [self initializeFollowButton];
-}
-
-- (void) initializeFollowButton {
     _followButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 10, 65, 50)];
     [_followButton setImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
     [_headerButtonView addSubview: _followButton];
     [_headerButtonView bringSubviewToFront: _followButton];
+    
+    UIView *notificationsHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 70, self.view.frame.size.width, 30)];
+    notificationsHeaderView.backgroundColor = RGB(248, 248, 248);
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 15, 30)];
+    titleLabel.text = @"Notifications";
+    titleLabel.font = [FontProperties lightFont:14.0f];
+    titleLabel.textColor = RGB(150, 150, 150);
+    [notificationsHeaderView addSubview:titleLabel];
+    [_headerButtonView addSubview:notificationsHeaderView];
 }
 
 #pragma mark - Action Taps
