@@ -518,6 +518,13 @@ BOOL firstTimeLoading;
     [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void){}];
 }
 
+#pragma mark - Where Are You Going? View and Delegate
+
+-(void)updateEvent:(WGEvent *)newEvent {
+    [self.events replaceObjectAtIndex:[self.events indexOfObject:newEvent] withObject:newEvent];
+}
+
+
 #pragma mark - Tablew View Data Source
 
 - (int)shouldShowAggregatePrivateEvents {
