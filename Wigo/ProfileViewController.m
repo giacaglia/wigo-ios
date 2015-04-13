@@ -1116,6 +1116,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.tapLabel.textColor = RGB(240, 203, 163);
     self.tapLabel.hidden = YES;
     [self.contentView addSubview:self.tapLabel];
+    
+    if ([self respondsToSelector:@selector(layoutMargins)]) {
+        self.layoutMargins = UIEdgeInsetsZero;
+    }
 }
 
 - (void)setNotification:(WGNotification *)notification {
@@ -1126,11 +1130,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     } else {
         self.orangeNewView.hidden = YES;
     }
-    [self.profileImageView setSmallImageForUser:user completed:nil];
-    self.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, notification.message];
-    
-    if ([self respondsToSelector:@selector(layoutMargins)]) {
-        self.layoutMargins = UIEdgeInsetsZero;
+    if (user) {
+        [self.profileImageView setSmallImageForUser:user completed:nil];
+        self.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, notification.message];
+    }
+    else {
+        self.profileImageView.image = [UIImage imageNamed:@"grayIcon"];
+        self.descriptionLabel.text = notification.message;
     }
 }
 

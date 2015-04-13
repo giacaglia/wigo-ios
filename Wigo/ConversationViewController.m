@@ -53,8 +53,8 @@ ProfileViewController *profileViewController;
     [self initializeMessageForEmptyConversation];
     
     bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
-    orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[FontProperties getOrangeColor]];
-    grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+    orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+    grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[FontProperties getBlueColor]];
     
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
@@ -226,10 +226,10 @@ ProfileViewController *profileViewController;
     if (!message.isMediaMessage) {
         
         if ([message.senderId isEqualToString:self.senderId]) {
-            cell.textView.textColor = [UIColor blackColor];
+            cell.textView.textColor = UIColor.whiteColor;
         }
         else {
-            cell.textView.textColor = [UIColor whiteColor];
+            cell.textView.textColor = UIColor.blackColor;
         }
         
         cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,

@@ -1666,8 +1666,9 @@ BOOL firstTimeLoading;
 }
 
 - (void)removeDancingG {
-    self.spinnerAtCenter ? [WGSpinnerView removeDancingGFromCenterView:self.view] : [self.placesTableView didFinishPullToRefresh];
-     self.spinnerAtCenter = NO;
+    [WGSpinnerView removeDancingGFromCenterView:self.view];
+    [self.placesTableView didFinishPullToRefresh];
+    self.spinnerAtCenter = NO;
 }
 
 - (void) fetchUserInfo {
