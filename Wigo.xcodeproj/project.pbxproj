@@ -346,6 +346,8 @@
 		E9A765B61AC9C03B00F7C016 /* WGNavigateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A765B41AC9C03B00F7C016 /* WGNavigateParser.m */; };
 		E9A8B6E41AD81C0900C6901D /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A8B6E31AD81C0900C6901D /* BaseViewController.m */; };
 		E9A8B6E51AD81C0900C6901D /* BaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A8B6E31AD81C0900C6901D /* BaseViewController.m */; };
+		E9A8B6FD1ADC4B9D00C6901D /* WhereAreYouViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A8B6FC1ADC4B9D00C6901D /* WhereAreYouViewController.m */; };
+		E9A8B6FE1ADC4B9D00C6901D /* WhereAreYouViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9A8B6FC1ADC4B9D00C6901D /* WhereAreYouViewController.m */; };
 		E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
 		E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFC8193E357E0069F700 /* UIButtonAligned.m */; };
 		E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACCA2319C4CBFB00F3EB20 /* MobileContactsViewController.m */; };
@@ -809,6 +811,8 @@
 		E9A765B41AC9C03B00F7C016 /* WGNavigateParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGNavigateParser.m; sourceTree = "<group>"; };
 		E9A8B6E21AD81C0900C6901D /* BaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseViewController.h; sourceTree = "<group>"; };
 		E9A8B6E31AD81C0900C6901D /* BaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseViewController.m; sourceTree = "<group>"; };
+		E9A8B6FB1ADC4B9D00C6901D /* WhereAreYouViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WhereAreYouViewController.h; sourceTree = "<group>"; };
+		E9A8B6FC1ADC4B9D00C6901D /* WhereAreYouViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WhereAreYouViewController.m; sourceTree = "<group>"; };
 		E9AAAFB5193CBA7A0069F700 /* PlacesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlacesViewController.h; sourceTree = "<group>"; };
 		E9AAAFBE193D0E4A0069F700 /* EditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditProfileViewController.h; sourceTree = "<group>"; };
 		E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditProfileViewController.m; sourceTree = "<group>"; };
@@ -1637,6 +1641,8 @@
 				E9C5CE391AB0EFFB0044745B /* OverlayViewController.m */,
 				E9A7659D1AC5D23A00F7C016 /* LabelSwitch.h */,
 				E9A7659E1AC5D23A00F7C016 /* LabelSwitch.m */,
+				E9A8B6FB1ADC4B9D00C6901D /* WhereAreYouViewController.h */,
+				E9A8B6FC1ADC4B9D00C6901D /* WhereAreYouViewController.m */,
 			);
 			name = Places;
 			sourceTree = "<group>";
@@ -2323,6 +2329,7 @@
 				C12A110C19787BE700D53B1C /* WGSpinnerView.m in Sources */,
 				E9D039C51A0986BA00DEF094 /* EventStoryViewController.m in Sources */,
 				45D9FABD1A781AFD00D08577 /* JSQMediaItem.m in Sources */,
+				E9A8B6FE1ADC4B9D00C6901D /* WhereAreYouViewController.m in Sources */,
 				45D9FAB91A781AFD00D08577 /* JSQMessagesCollectionViewLayoutAttributes.m in Sources */,
 				45D9FAE31A781AFD00D08577 /* JSQMessagesToolbarContentView.m in Sources */,
 				C12A110D19787BE700D53B1C /* UIImageCrop.m in Sources */,
@@ -2489,6 +2496,7 @@
 				45D9FBAE1A7AE1DD00D08577 /* GCDAsyncSocket.m in Sources */,
 				E900C2BA1961EADE00A01F50 /* SDWebImageDownloader.m in Sources */,
 				45DF86971A5B1F8200DB85AE /* NSDate+WGDate.m in Sources */,
+				E9A8B6FD1ADC4B9D00C6901D /* WhereAreYouViewController.m in Sources */,
 				E93030C41986A07F00FFC4F8 /* ContactUsViewController.m in Sources */,
 				E93DE52A195C82B900079074 /* MessageViewController.m in Sources */,
 				E900C2C11961EADE00A01F50 /* UIImage+WebP.m in Sources */,

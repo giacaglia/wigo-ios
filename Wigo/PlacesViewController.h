@@ -17,7 +17,6 @@
 @interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
     UIGestureRecognizerDelegate,
     PlacesDelegate,
-    PrivacySwitchDelegate,
     CLLocationManagerDelegate>
 #define kTodaySection 0
 #define kHighlightsEmptySection 1
@@ -41,9 +40,6 @@
 @property (nonatomic, assign) BOOL fetchingUserInfo;
 @property (nonatomic, assign) BOOL secondTimeFetchingUserInfo;
 @property (nonatomic, strong) UITableView *placesTableView;
-@property (nonatomic, strong) UITextField *whereAreYouGoingTextField;
-@property (nonatomic, strong) UIView *loadingView;
-@property (nonatomic, strong) UIView *loadingIndicator;
 @property (nonatomic, assign) BOOL presentingLockedView;
 @property (nonatomic, assign) BOOL shouldReloadEvents;
 @property (nonatomic, strong) UIButton *switchButton;

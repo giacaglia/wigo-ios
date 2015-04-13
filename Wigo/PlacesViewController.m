@@ -28,6 +28,7 @@
 #import "EventConversationViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "WGNavigateParser.h"
+#import "WhereAreYouViewController.h"
 
 #define kEventCellName @"EventCell"
 #define kHighlightOldEventCell @"HighlightOldEventCell"
@@ -39,7 +40,6 @@
     BOOL isLoaded;
 }
 
-@property (nonatomic, strong) UIView *whereAreYouGoingView;
 @property (nonatomic, assign) int tagInteger;
 @property (nonatomic, assign) BOOL isSearching;
 @property (nonatomic, strong) NSMutableArray *placeSubviewArray;
@@ -398,17 +398,11 @@ BOOL firstTimeLoading;
     [self.view endEditing:YES];
     [UIView animateWithDuration:0.2 animations:^{
         self.placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
-        _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0,-50);
-        _whereAreYouGoingView.alpha = 0;
     } completion:^(BOOL finished) {
     }];
-    [self clearTextField];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    if (touch.view == _whereAreYouGoingView) {
-        return NO;
-    }
     return YES;
 }
 
@@ -474,7 +468,6 @@ BOOL firstTimeLoading;
     WGProfile.tapAll = NO;
 
     [WGAnalytics tagAction:@"go_here" atView:@"where"];
-    self.whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
     
@@ -505,36 +498,8 @@ BOOL firstTimeLoading;
 
 - (void) goingSomewhereElsePressed {
     [WGAnalytics tagAction:@"create_event" atView:@"where"];
-    [self scrollUp];
-    [self showWhereAreYouGoingView];
+    [self.navigationController pushViewController:[WhereAreYouViewController new] animated:YES];
 
-    
-    [UIView animateWithDuration: 0.2 animations:^{
-        self.tabBarController.navigationItem.titleView.alpha = 0.0f;
-        self.tabBarController.navigationItem.leftBarButtonItem.customView.alpha = 0.0f;
-        self.tabBarController.navigationItem.rightBarButtonItem.customView.alpha = 0.0f;
-        
-        [self.whereAreYouGoingTextField becomeFirstResponder];
-        _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0, 50);
-        _whereAreYouGoingView.alpha = 1.0f;
-        
-    } completion:^(BOOL finished) {
-        
-        [self.tabBarController.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelledAddEventTapped)] animated: NO];
-        
-        [self.tabBarController.navigationItem setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Create" style: UIBarButtonItemStylePlain target: self action: @selector(createPressed)] animated: NO];
-        
-        [self.tabBarController.navigationItem.leftBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
-        
-        [self.tabBarController.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
-
-        self.placesTableView.userInteractionEnabled = NO;
-    }];
-}
-
-- (void) cancelledAddEventTapped {
-    [self updateNavigationBar];
-    [self dismissKeyboard];
 }
 
 - (void)profileSegue {
@@ -552,195 +517,6 @@ BOOL firstTimeLoading;
     _scrollViewSender.scrollEnabled = YES;
     [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void){}];
 }
-
-#pragma mark - Where Are You Going? View and Delegate
-
-- (void)showWhereAreYouGoingView {
-    if (!_whereAreYouGoingView) {
-        _whereAreYouGoingView = [[UIView alloc] initWithFrame:CGRectMake(0, 14, self.view.frame.size.width, self.view.frame.size.height)];
-        _whereAreYouGoingView.backgroundColor = UIColor.whiteColor;
-        _whereAreYouGoingView.alpha = 0;
-        [self.view addSubview:_whereAreYouGoingView];
-        
-        UILabel *eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 10, 90, 30)];
-        eventNameLabel.text = @"Event Name";
-        eventNameLabel.textColor = [FontProperties getBlueColor];
-        eventNameLabel.textAlignment = NSTextAlignmentCenter;
-        eventNameLabel.font = [FontProperties scMediumFont:15.0f];
-        [_whereAreYouGoingView addSubview:eventNameLabel];
-        
-        UIView *lineUnderEventName = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 40, 90, 1)];
-        lineUnderEventName.backgroundColor = [FontProperties getBlueColor];
-        [_whereAreYouGoingView addSubview:lineUnderEventName];
-        
-        self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 40, _whereAreYouGoingView.frame.size.width, 50)];
-        self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Señor Frogs @ 8pm (3rd & Main)" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
-        self.whereAreYouGoingTextField.font = [FontProperties openSansRegular:18.0f];
-        self.whereAreYouGoingTextField.textAlignment = NSTextAlignmentCenter;
-        self.whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
-        [[UITextField appearance] setTintColor:[FontProperties getBlueColor]];
-        self.whereAreYouGoingTextField.delegate = self;
-        self.whereAreYouGoingTextField.returnKeyType = UIReturnKeyDone;
-        [self.whereAreYouGoingTextField addTarget:self
-                                           action:@selector(textFieldDidChange:)
-                                 forControlEvents:UIControlEventEditingChanged];
-        [_whereAreYouGoingView addSubview:self.whereAreYouGoingTextField];
-        
-        CALayer *bottomBorder = [CALayer layer];
-        bottomBorder.frame = CGRectMake(0.0f, _whereAreYouGoingView.frame.size.height - 1, _whereAreYouGoingView.frame.size.width, 1.0f);
-        bottomBorder.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f].CGColor;
-        [_whereAreYouGoingView.layer addSublayer:bottomBorder];
-        
-        _eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 110, self.view.frame.size.width, self.view.frame.size.height)];
-        [_whereAreYouGoingView addSubview:_eventDetails];
-        
-        UILabel *eventTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
-        eventTypeLabel.text = @"Event Type";
-        eventTypeLabel.textAlignment = NSTextAlignmentCenter;
-        eventTypeLabel.textColor = [FontProperties getBlueColor];
-        eventTypeLabel.font = [FontProperties scMediumFont:15.0f];
-        [_eventDetails addSubview:eventTypeLabel];
-        
-        UIView *lineUnderEventType = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 45, 30, 90, 1)];
-        lineUnderEventType.backgroundColor = [FontProperties getBlueColor];
-        [_eventDetails addSubview:lineUnderEventType];
-        
-        _privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 120, 40, 240, 40)];
-        [_eventDetails addSubview:_privateSwitchView];
-        _privateSwitchView.privateString = @"Only you can invite people and only\nthose invited can see the event.";
-        _privateSwitchView.publicString =  @"The whole school can see and attend your event.";
-        _privateSwitchView.privateDelegate = self;
-        [_privateSwitchView.closeLockImageView stopAnimating];
-        [_privateSwitchView.openLockImageView stopAnimating];
-        
-        self.invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 82, self.view.frame.size.width, 30)];
-        self.invitePeopleLabel.text = _privateSwitchView.explanationString;
-        self.invitePeopleLabel.textAlignment = NSTextAlignmentCenter;
-        self.invitePeopleLabel.numberOfLines = 2;
-        self.invitePeopleLabel.font = [FontProperties openSansRegular:12.0f];
-        self.invitePeopleLabel.textColor = [FontProperties getBlueColor];
-        [_eventDetails addSubview:self.invitePeopleLabel];
-        
-        if ([UIScreen mainScreen].bounds.size.height == 480) {
-            _eventDetails.frame = CGRectMake(0, 77, self.view.frame.size.width, 30);
-        }
-    }
-    [_privateSwitchView.closeLockImageView stopAnimating];
-    [_privateSwitchView.openLockImageView stopAnimating];
-    if (![WGProfile.currentUser.privateEvents boolValue]) {
-        _eventDetails.hidden = YES;
-    }
-    else {
-        _eventDetails.hidden = NO;
-    }
-}
-
-- (void)updateUnderliningText {
-    self.invitePeopleLabel.text = _privateSwitchView.explanationString;
-}
-
-- (void)clearTextField {
-    self.placesTableView.userInteractionEnabled = YES;
-    self.whereAreYouGoingTextField.text = @"";
-}
-
-
-- (void)createPressed {
-    if (self.whereAreYouGoingTextField.text.length == 0) return;
-    
-    WGProfile.tapAll = NO;
-    WGProfile.currentUser.youAreInCharge = NO;
-    self.whereAreYouGoingTextField.enabled = NO;
-    self.tabBarController.navigationItem.rightBarButtonItem.enabled = NO;
-    [self addLoadingIndicator];
-    __weak typeof(self) weakSelf = self;
-    [WGEvent createEventWithName:self.whereAreYouGoingTextField.text
-                      andPrivate:_privateSwitchView.privacyTurnedOn
-                      andHandler:^(WGEvent *object, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        [UIView animateWithDuration:0.2f animations:^{
-            strongSelf.loadingIndicator.frame = CGRectMake(0, 0, strongSelf.loadingView.frame.size.width, strongSelf.loadingView.frame.size.height);
-        } completion:^(BOOL finished) {
-            if (finished) [strongSelf.loadingView removeFromSuperview];
-            
-            [strongSelf updateNavigationBar];
-            strongSelf.whereAreYouGoingTextField.enabled = YES;
-            strongSelf.tabBarController.navigationItem.rightBarButtonItem.enabled = YES;
-            if (error) {
-                return;
-            }
-            __weak typeof(strongSelf) weakOfStrong = strongSelf;
-            [WGProfile.currentUser goingToEvent:object withHandler:^(BOOL success, NSError *error) {
-                __strong typeof(weakOfStrong) strongOfStrong = weakOfStrong;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionSave];
-                    return;
-                }
-                
-                [strongOfStrong removeProfileUserFromAnyOtherEvent];
-                [strongOfStrong dismissKeyboard];
-                
-                WGProfile.currentUser.isGoingOut = @YES;
-                WGProfile.currentUser.eventAttending = object;
-                
-                WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : WGProfile.currentUser }];
-                
-                if ([strongOfStrong.allEvents containsObject:object]) {
-                    WGEvent *joinedEvent = (WGEvent *)[strongOfStrong.allEvents objectWithID:object.id];
-                    [joinedEvent.attendees insertObject:attendee atIndex:0];
-                } else {
-                    if (object.attendees) {
-                        [object.attendees insertObject:attendee atIndex:0];
-                    } else {
-                        WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
-                        object.attendees = eventAttendees;
-                    }
-                }
-                [strongOfStrong fetchEventsFirstPage];
-            }];
-        }];
-    }];
-    
-}
-
-- (void)addLoadingIndicator {
-    self.loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, 5, _whereAreYouGoingView.frame.size.width - 20, 5)];
-    self.loadingView.layer.borderColor = [FontProperties getBlueColor].CGColor;
-    self.loadingView.layer.borderWidth = 1.0f;
-    self.loadingView.layer.cornerRadius = 3.0f;
-    
-    self.loadingIndicator = [[UIView alloc ] initWithFrame:CGRectMake(0, 0, 0, self.loadingView.frame.size.height)];
-    self.loadingIndicator.backgroundColor = [FontProperties getBlueColor];
-    [self.loadingView addSubview:self.loadingIndicator];
-    [UIView animateWithDuration:0.8f animations:^{
-        self.loadingIndicator.frame = CGRectMake(0, 0, self.loadingView.frame.size.width*0.7, self.loadingView.frame.size.height);
-    }];
-    [_whereAreYouGoingView addSubview:self.loadingView];
-}
-
-
--(void)updateEvent:(WGEvent *)newEvent {
-    [self.events replaceObjectAtIndex:[self.events indexOfObject:newEvent] withObject:newEvent];
-}
-
-
-- (void)textFieldDidChange:(UITextField *)textField {
-    if(textField.text.length != 0) {
-        [self.tabBarController.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
-        
-    } else {
-        [self.tabBarController.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
-    }
-    
-}
-
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [self createPressed];
-    return YES;
-}
-
 
 #pragma mark - Tablew View Data Source
 
@@ -1395,7 +1171,6 @@ BOOL firstTimeLoading;
     // First start doing the network request
     WGProfile.tapAll = NO;
     [WGAnalytics tagAction:@"go_here" atView:@"where"];
-    self.whereAreYouGoingTextField.text = @"";
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
     
