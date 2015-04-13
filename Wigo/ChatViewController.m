@@ -27,11 +27,13 @@
 }
 
 - (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     [self fetchMessages];
 }
 
 
 - (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [WGAnalytics tagView:@"chat_list"];
     [self initializeTitleView];
     [self initializeRightBarButtonItem];

@@ -7,13 +7,58 @@
 //
 
 #import "BaseViewController.h"
+#import "Globals.h"
 
 @implementation BaseViewController
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [self initializeTopBlue];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self initializeTopBlue];
+}
+
+- (void)initializeTopBlue {
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: [FontProperties getBlueColor]] forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.backgroundColor = [FontProperties getBlueColor];
+    self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.tabBarController.tabBar.selectedImageTintColor = [FontProperties getBlueColor];
+    self.blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
+    self.blueBannerView.backgroundColor = [FontProperties getBlueColor];
+    self.blueBannerView.hidden = NO;
+    [self.view addSubview:self.blueBannerView];
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+//    self.navigationController.navigationBar.frame = CGRectMake(self.navigationController.navigationBar.frame.origin.x, 20, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height);
+    self.navigationController.navigationBar.backgroundColor = UIColor.clearColor;
     [self updateBarButtonItems:1.0f];
 }
+
+- (UIImage *)imageWithColor:(UIColor *)color
+{
+    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return image;
+}
+
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGRect frame = self.navigationController.navigationBar.frame;
@@ -47,10 +92,10 @@
     if (self.navigationController.navigationBar.frame.origin.y +
         self.navigationController.navigationBar.frame.size.height <= 20 ||
         self.navigationController.navigationBar.frame.origin.y >= 0) {
-//        self.blueBannerView.hidden = NO;
+        self.blueBannerView.hidden = NO;
     }
     else {
-//        self.blueBannerView.hidden = YES;
+        self.blueBannerView.hidden = YES;
     }
     
     [self updateBarButtonItems:(1 - framePercentageHidden)];

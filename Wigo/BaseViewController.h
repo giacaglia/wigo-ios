@@ -11,5 +11,6 @@
 @interface BaseViewController : UIViewController
 
 @property (nonatomic, assign) CGFloat previousScrollViewYOffset;
+@property (nonatomic, strong) UIView *blueBannerView;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 @end

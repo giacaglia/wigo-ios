@@ -100,18 +100,12 @@ BOOL firstTimeLoading;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.tabBarController.tabBar.selectedImageTintColor = [FontProperties getBlueColor];
     if ([self isPeeking] && self.groupNumberID && self.groupName) {
         [WGAnalytics tagView:@"where" withTargetGroup:[[WGGroup alloc] initWithJSON:@{@"name": self.groupName, @"id": self.groupNumberID}]];
     }
     else {
         [WGAnalytics tagView:@"where"];
     }
-
-    self.navigationController.navigationBar.shadowImage = [UIImage new];
-    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: [FontProperties getBlueColor]] forBarMetrics:UIBarMetricsDefault];
-    self.navigationController.navigationBar.backgroundColor = [FontProperties getBlueColor];
-    self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
 
     [self updateNavigationBar];
     [self.placesTableView reloadData];
@@ -124,10 +118,6 @@ BOOL firstTimeLoading;
     [super viewWillDisappear:animated];
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
-    self.navigationController.navigationBar.frame = CGRectMake(self.navigationController.navigationBar.frame.origin.x, 20, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height);
-    self.navigationController.navigationBar.backgroundColor = UIColor.clearColor;
-
-//    [self updateBarButtonItems:1.0f];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -192,21 +182,6 @@ BOOL firstTimeLoading;
     }
     
     [self.tabBarController.view addSubview:button];
-}
-
-- (UIImage *)imageWithColor:(UIColor *)color
-{
-    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-    
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
 }
 
 - (void) updateNavigationBar {
@@ -412,10 +387,6 @@ BOOL firstTimeLoading;
 //    [self.view bringSubviewToFront:self.labelSwitch];
 //    [self.view addSubview:self.labelSwitch];
 //    
-    self.blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
-    self.blueBannerView.backgroundColor = [FontProperties getBlueColor];
-    self.blueBannerView.hidden = NO;
-    [self.view addSubview:self.blueBannerView];
 }
 
 - (void)showEvent:(WGEvent *)event {
