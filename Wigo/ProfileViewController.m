@@ -770,7 +770,7 @@ BOOL blockShown;
         return 65;
     }
     else if (indexPath.section == kInstagramSection) {
-        return [InstaCell rowHeight];
+        return [InstaCell height];
     }
     else if (indexPath.section == kMutualFriendsSection) {
         return [MutualFriendsCell height];
@@ -1144,6 +1144,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 @implementation InstaCell
 
++ (CGFloat)height {
+    return 60.0f;
+}
+
+
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
@@ -1156,15 +1161,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self setup];
 }
 
-
-+ (CGFloat)rowHeight {
-    return 60.0f;
-}
-
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [InstaCell rowHeight]);
+    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [InstaCell height]);
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    self.instaLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [InstaCell rowHeight])];
+    self.instaLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [InstaCell height])];
     self.instaLabel.font = [FontProperties lightFont:20];
     self.instaLabel.textColor = [FontProperties getOrangeColor];
     self.instaLabel.textAlignment = NSTextAlignmentCenter;

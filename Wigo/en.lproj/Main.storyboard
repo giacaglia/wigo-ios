@@ -139,7 +139,26 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Lo-Gn-6yd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1842" y="-1042"/>
+            <point key="canvasLocation" x="1818" y="-330"/>
+        </scene>
+        <!--Event-->
+        <scene sceneID="6ds-0a-mCZ">
+            <objects>
+                <viewController id="lxq-zV-Ha6" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="uTQ-y1-Yh7"/>
+                        <viewControllerLayoutGuide type="bottom" id="1if-xF-3aU"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="0QI-R3-N3l">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Event" id="oJx-8F-hfS"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Hoe-Te-j8c" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1840" y="-1096"/>
         </scene>
         <!--Ambassador View Controller-->
         <scene sceneID="dbT-4j-l2v">
@@ -356,6 +375,7 @@
                     <connections>
                         <segue destination="Iyz-LG-mQU" kind="relationship" relationship="viewControllers" id="BDd-8p-8Sx"/>
                         <segue destination="Qnu-C5-NeM" kind="relationship" relationship="viewControllers" id="TYH-Vs-Sz6"/>
+                        <segue destination="lxq-zV-Ha6" kind="relationship" relationship="viewControllers" id="H0w-NJ-3k6"/>
                         <segue destination="5uj-2t-qG5" kind="relationship" relationship="viewControllers" id="OYd-Ui-R14"/>
                         <segue destination="4XA-L7-y6d" kind="relationship" relationship="viewControllers" id="ebm-Qt-h5e"/>
                     </connections>
@@ -402,7 +422,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zA2-sG-0eV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1863.5" y="-256.5"/>
+            <point key="canvasLocation" x="1831.5" y="671.5"/>
         </scene>
         <!--Campus Notification View Controller-->
         <scene sceneID="KRE-xI-MdA">

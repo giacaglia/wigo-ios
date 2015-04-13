@@ -87,11 +87,12 @@ BOOL firstTimeLoading;
     self.eventOffsetDictionary = [NSMutableDictionary new];
     
     UITabBarController *tab= self.tabBarController;
-    ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:3];
+    ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
     profileVc.user = [WGUser new];
 
     self.spinnerAtCenter = YES;
     [self initializeWhereView];
+    [self addCenterButton];
     [NetworkFetcher.defaultGetter fetchMessages];
     [NetworkFetcher.defaultGetter fetchSuggestions];
     [NetworkFetcher.defaultGetter fetchNotifications];
@@ -116,8 +117,8 @@ BOOL firstTimeLoading;
     [self.placesTableView reloadData];
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-
 }
+
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -169,6 +170,28 @@ BOOL firstTimeLoading;
         return NO;
     }
     return YES;
+}
+
+- (void)addCenterButton {
+    UIImage *buttonImage = [UIImage imageNamed:@"newEvent"];
+    UIImage *highlightImage = nil;
+    UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+    button.frame = CGRectMake(0.0, 0.0, buttonImage.size.width, buttonImage.size.height);
+    [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
+    [button setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
+    [button addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
+    CGFloat heightDifference = buttonImage.size.height - self.tabBarController.tabBar.frame.size.height;
+    if (heightDifference < 0)
+        button.center = self.tabBarController.tabBar.center;
+    else
+    {
+        CGPoint center = self.tabBarController.tabBar.center;
+        center.y = center.y - heightDifference/2.0;
+        button.center = center;
+    }
+    
+    [self.tabBarController.view addSubview:button];
 }
 
 - (UIImage *)imageWithColor:(UIColor *)color
@@ -1711,7 +1734,7 @@ BOOL firstTimeLoading;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
         [strongSelf.placesTableView reloadData];
         UITabBarController *tab= self.tabBarController;
-        ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:3];
+        ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
         profileVc.user = WGProfile.currentUser;
     }];
    

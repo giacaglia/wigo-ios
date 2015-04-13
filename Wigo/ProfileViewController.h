@@ -55,7 +55,7 @@
 
 #define kInstaCellName @"instaCellName"
 @interface InstaCell : UITableViewCell
-+ (CGFloat) rowHeight;
++ (CGFloat) height;
 @property (nonatomic, strong) WGUser *user;
 @property (nonatomic, strong) UILabel *instaLabel;
 - (BOOL)hasInstaTextForUser:(WGUser *)user;
