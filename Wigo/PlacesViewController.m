@@ -165,23 +165,23 @@ BOOL firstTimeLoading;
 - (void)addCenterButton {
     UIImage *buttonImage = [UIImage imageNamed:@"newEvent"];
     UIImage *highlightImage = nil;
-    UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-    button.frame = CGRectMake(0.0, 0.0, buttonImage.size.width, buttonImage.size.height);
-    [button setBackgroundImage:buttonImage forState:UIControlStateNormal];
-    [button setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
-    [button addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
+    self.createButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.createButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+    self.createButton.frame = CGRectMake(0.0, 0.0, buttonImage.size.width, buttonImage.size.height);
+    [self.createButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
+    [self.createButton setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
+    [self.createButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
     CGFloat heightDifference = buttonImage.size.height - self.tabBarController.tabBar.frame.size.height;
     if (heightDifference < 0)
-        button.center = self.tabBarController.tabBar.center;
+        self.createButton.center = self.tabBarController.tabBar.center;
     else
     {
         CGPoint center = self.tabBarController.tabBar.center;
         center.y = center.y - heightDifference/2.0;
-        button.center = center;
+        self.createButton.center = center;
     }
     
-    [self.tabBarController.view addSubview:button];
+    [self.tabBarController.view addSubview:self.createButton];
 }
 
 - (void) updateNavigationBar {
@@ -864,6 +864,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)showViewController:(UIViewController *)vc {
+    self.createButton.hidden = YES;
     [self addChildViewController:vc];
     [self.view addSubview:vc.view];
     vc.view.alpha = 0.0f;

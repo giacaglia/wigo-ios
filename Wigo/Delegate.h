@@ -44,6 +44,7 @@ typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
 - (void)showEvent:(WGEvent *)event;
 - (void)fetchEventsFirstPage;
 - (void)reloadTable;
+@property (nonatomic, strong) UIButton *createButton;
 @end
 
 @protocol PrivacySwitchDelegate <NSObject>

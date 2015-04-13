@@ -55,6 +55,7 @@
 @property (nonatomic, strong) UILabel *bostonLabel;
 @property (nonatomic, strong) UIButton *friendsButton;
 @property (nonatomic, assign) BOOL isLocal;
+@property (nonatomic, strong) UIButton *createButton;
 @end
 
 #import "EventPeopleScrollView.h"
