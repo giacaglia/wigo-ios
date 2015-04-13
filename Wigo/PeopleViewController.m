@@ -162,9 +162,9 @@ NSIndexPath *userIndex;
     self.friendRequestUsers.hasNextPage = @1;
     
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20)];
     if ([self.currentTab isEqual:@2]) {
-        self.tableViewOfPeople.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 108);
+        self.tableViewOfPeople.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 108 + 44);
     }
     [self.tableViewOfPeople registerClass:[PeopleCell class] forCellReuseIdentifier:kPeopleCellName];
     [self.tableViewOfPeople registerClass:[FollowPeopleCell class] forCellReuseIdentifier:kFollowPeopleCell];
@@ -178,7 +178,7 @@ NSIndexPath *userIndex;
     _searchBar.delegate = self;
     _searchBar.placeholder = @"Search by Name";
     self.tableViewOfPeople.tableHeaderView = _searchBar;
-    self.tableViewOfPeople.contentOffset = CGPointMake(0, 50);
+    self.tableViewOfPeople.contentOffset = CGPointMake(0, 50 - 44);
     [self.view addSubview:self.tableViewOfPeople];
 }
 
@@ -339,6 +339,7 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [_searchBar endEditing:YES];
+    [super scrollViewDidScroll:scrollView];
 }
 
 - (void) followedPersonPressed:(id)sender {

@@ -11,4 +11,5 @@
 @interface BaseViewController : UIViewController
 
 @property (nonatomic, assign) CGFloat previousScrollViewYOffset;
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 @end

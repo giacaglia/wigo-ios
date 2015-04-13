@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "WGUser.h"
 #import "Delegate.h"
+#import "BaseViewController.h"
 
-@interface PeopleViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, PeopleViewDelegate>
+@interface PeopleViewController : BaseViewController <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, PeopleViewDelegate>
 
 - (id)initWithUser:(WGUser *)user andTab:(NSNumber *)tab;
 - (id)initWithUser:(WGUser *)user;
