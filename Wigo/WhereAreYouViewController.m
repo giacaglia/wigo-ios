@@ -35,19 +35,23 @@
 - (void)setup {
     self.view.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     
+    UIScrollView *backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    backgroundScrollView.contentSize = CGSizeMake(self.view.frame.size.width, 380 + 110 + 200);
+    backgroundScrollView.showsVerticalScrollIndicator = NO;
+    [self.view addSubview:backgroundScrollView];
     
-    UILabel *eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 45, 64 + 10, 90, 30)];
+    UILabel *eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 45, 10, 90, 30)];
     eventNameLabel.text = @"Event Name";
     eventNameLabel.textColor = [FontProperties getBlueColor];
     eventNameLabel.textAlignment = NSTextAlignmentCenter;
     eventNameLabel.font = [FontProperties scMediumFont:15.0f];
-    [self.view addSubview:eventNameLabel];
+    [backgroundScrollView addSubview:eventNameLabel];
     
-    UIView *lineUnderEventName = [[UIView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 45, 64 + 40, 90, 1)];
+    UIView *lineUnderEventName = [[UIView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 45, 40, 90, 1)];
     lineUnderEventName.backgroundColor = [FontProperties getBlueColor];
-    [self.view addSubview:lineUnderEventName];
+    [backgroundScrollView addSubview:lineUnderEventName];
     
-    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 64 + 40, self.view.frame.size.width, 50)];
+    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 50)];
     self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Señor Frogs @ 8pm (3rd & Main)" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
     self.whereAreYouGoingTextField.font = [FontProperties openSansRegular:18.0f];
     self.whereAreYouGoingTextField.textAlignment = NSTextAlignmentCenter;
@@ -58,15 +62,15 @@
     [self.whereAreYouGoingTextField addTarget:self
                                    action:@selector(textFieldDidChange:)
                          forControlEvents:UIControlEventEditingChanged];
-    [self.view addSubview:self.whereAreYouGoingTextField];
+    [backgroundScrollView addSubview:self.whereAreYouGoingTextField];
     
     CALayer *bottomBorder = [CALayer layer];
     bottomBorder.frame = CGRectMake(0.0f, self.view.frame.size.height - 1, self.view.frame.size.width, 1.0f);
     bottomBorder.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f].CGColor;
-    [self.view.layer addSublayer:bottomBorder];
+    [backgroundScrollView.layer addSublayer:bottomBorder];
     
-    self.eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 64 + 110, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
-    [self.view addSubview:self.eventDetails];
+    self.eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 110, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
+    [backgroundScrollView addSubview:self.eventDetails];
     
     UILabel *eventTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 30)];
     eventTypeLabel.text = @"Event Type";
@@ -101,20 +105,19 @@
     
     [self.whereAreYouGoingTextField becomeFirstResponder];
     
+//    FSCalendar *fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 130, self.view.frame.size.width, 250)];
+//    fsCalendar.flow = FSCalendarFlowHorizontal;
+//    [self.eventDetails addSubview:fsCalendar];
+//
+//    FSCalendarHeader *fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 110, self.view.frame.size.width, 20)];
+//    fsCalendar.header = fsCalendarHeader;
+//    [self.eventDetails addSubview:fsCalendarHeader];
+
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
     titleLabel.text = @"Create Event";
     titleLabel.textColor = UIColor.whiteColor;
     titleLabel.font = [FontProperties mediumFont:18.0f];
     self.navigationItem.titleView = titleLabel;
-    
-//    FSCalendar *fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 130, self.view.frame.size.width, 250)];
-//    fsCalendar.flow = FSCalendarFlowVertical;
-//    [self.eventDetails addSubview:fsCalendar];
-//    
-//    FSCalendarHeader *fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 110, self.view.frame.size.width, 20)];
-//    fsCalendar.header = fsCalendarHeader;
-//    [self.eventDetails addSubview:fsCalendarHeader];
-
     
     [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelCreateEvent)] animated: NO];
 
