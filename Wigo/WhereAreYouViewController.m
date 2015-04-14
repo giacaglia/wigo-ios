@@ -107,9 +107,14 @@
     titleLabel.font = [FontProperties mediumFont:18.0f];
     self.navigationItem.titleView = titleLabel;
     
-//    FSCalendar *fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 112, self.view.frame.size.width, 200)];
+//    FSCalendar *fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 130, self.view.frame.size.width, 250)];
 //    fsCalendar.flow = FSCalendarFlowVertical;
 //    [self.eventDetails addSubview:fsCalendar];
+//    
+//    FSCalendarHeader *fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 110, self.view.frame.size.width, 20)];
+//    fsCalendar.header = fsCalendarHeader;
+//    [self.eventDetails addSubview:fsCalendarHeader];
+
     
     [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelCreateEvent)] animated: NO];
 
