@@ -15,7 +15,7 @@
 - (id)init {
     self = [super init];
     if (self) {
-        self.view.backgroundColor = UIColor.whiteColor;
+//        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -33,14 +33,10 @@
 
 - (void)setup {
     self.view.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
+    self.view.backgroundColor = RGB(248, 248, 248);
     [self initializeNavigationItem];
     
-    UIScrollView *backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    backgroundScrollView.contentSize = CGSizeMake(self.view.frame.size.width, 380 + 110 + 260);
-    backgroundScrollView.showsVerticalScrollIndicator = NO;
-    [self.view addSubview:backgroundScrollView];
-    
-    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 50)];
+    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 80)];
     self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Señor Frogs @ 8pm (3rd & Main)" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
     self.whereAreYouGoingTextField.font = [FontProperties openSansRegular:18.0f];
     self.whereAreYouGoingTextField.textAlignment = NSTextAlignmentCenter;
@@ -51,16 +47,19 @@
     [self.whereAreYouGoingTextField addTarget:self
                                    action:@selector(textFieldDidChange:)
                          forControlEvents:UIControlEventEditingChanged];
-    [backgroundScrollView addSubview:self.whereAreYouGoingTextField];
-        
-    self.eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 110, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
-    [backgroundScrollView addSubview:self.eventDetails];
+    self.whereAreYouGoingTextField.backgroundColor = UIColor.whiteColor;
+    [self.view addSubview:self.whereAreYouGoingTextField];
+    [self.whereAreYouGoingTextField becomeFirstResponder];
+    
+    self.eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 64 + 90, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
+    [self.view addSubview:self.eventDetails];
     
     self.privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 10, 240, 40)];
     [self.eventDetails addSubview:self.privateSwitchView];
     self.privateSwitchView.privateString = @"Only you can invite people and only\nthose invited can see the event.";
     self.privateSwitchView.publicString =  @"The whole school can see and attend your event.";
     self.privateSwitchView.privateDelegate = self;
+    self.privateSwitchView.backgroundColor = UIColor.whiteColor;
     [self.privateSwitchView.closeLockImageView stopAnimating];
     [self.privateSwitchView.openLockImageView stopAnimating];
     
@@ -73,30 +72,29 @@
     [self.eventDetails addSubview:self.invitePeopleLabel];
     
     if ([UIScreen mainScreen].bounds.size.height == 480) {
-        self.eventDetails.frame = CGRectMake(0, 77, [UIScreen mainScreen].bounds.size.width, 30);
+        self.eventDetails.frame = CGRectMake(0, 67, [UIScreen mainScreen].bounds.size.width, 30);
     }
     
-    [self.whereAreYouGoingTextField becomeFirstResponder];
-    
-    
-    self.wgSwitchView = [[WGSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 130, 240, 40)];
+    self.wgSwitchView = [[WGSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 90, 240, 40)];
     self.wgSwitchView.firstString = @"Today";
     self.wgSwitchView.secondString = @"Future";
     self.wgSwitchView.movingImageView.image = [UIImage imageNamed:@"calendarIcon"];
     self.wgSwitchView.switchDelegate = self;
+    self.wgSwitchView.backgroundColor = UIColor.whiteColor;
     [self.eventDetails addSubview:self.wgSwitchView];
     
-    self.fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 250)];
+    self.fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 170, self.view.frame.size.width, 250)];
     self.fsCalendar.flow = FSCalendarFlowHorizontal;
     self.fsCalendar.hidden = YES;
     self.fsCalendar.delegate = self;
+    self.fsCalendar.backgroundColor = UIColor.whiteColor;
     [self.eventDetails addSubview:self.fsCalendar];
     
-    self.fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 180, self.view.frame.size.width, 20)];
+    self.fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 140, self.view.frame.size.width, 30)];
     self.fsCalendar.header = self.fsCalendarHeader;
     self.fsCalendarHeader.hidden = YES;
+    self.fsCalendarHeader.backgroundColor = UIColor.whiteColor;
     [self.eventDetails addSubview:self.fsCalendarHeader];
-
 
     //    [UIView animateWithDuration: 0.2 animations:^{
     //        self.tabBarController.navigationItem.titleView.alpha = 0.0f;
@@ -240,6 +238,9 @@
     self.fsCalendarHeader.hidden = !self.fsCalendarHeader.hidden;
     if (self.fsCalendar.isHidden) {
         self.wgSwitchView.secondString = @"Future";
+    }
+    else {
+        [self.whereAreYouGoingTextField endEditing:YES];
     }
 }
 
