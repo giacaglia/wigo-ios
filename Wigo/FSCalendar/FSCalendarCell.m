@@ -166,11 +166,15 @@
 
 - (UIColor *)colorForCurrentStateInDictionary:(NSDictionary *)dictionary
 {
+   
     if (self.isSelected) {
         return dictionary[@(FSCalendarCellStateSelected)];
     }
     if (self.isToday) {
         return dictionary[@(FSCalendarCellStateToday)];
+    }
+    if ([self.date compare:[NSDate date]] == NSOrderedAscending) {
+        return dictionary[@(FSCalendarCellStatePlaceholder)];
     }
     if (self.isPlaceholder) {
         return dictionary[@(FSCalendarCellStatePlaceholder)];

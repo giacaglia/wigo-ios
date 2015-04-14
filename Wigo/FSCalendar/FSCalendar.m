@@ -232,6 +232,7 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     FSCalendarCell *cell = (FSCalendarCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    if ([cell.date compare:[NSDate date]] == NSOrderedAscending) return;
     if (cell.isPlaceholder) {
         [self setSelectedDate:cell.date animate:YES];
     } else {
