@@ -155,12 +155,13 @@
         else return 0;
     }
     if (section == kSectionTapCell) {
-        int hasNextPage = ([self.presentedUsers.hasNextPage boolValue] ? 1 : 0);
-        return self.presentedUsers.count + hasNextPage;
+        return self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue;
     } else {
-        return self.presentedSuggestions.count;
+        if (self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue >= 11) {
+            return 0;
+        }
+        return MIN(self.presentedSuggestions.count, 5);
 //        if (self.isSearching) return filteredMobileContacts.count;
-//        return mobileContacts.count;
     }
 }
 
@@ -175,6 +176,7 @@
         cell.fullNameLabel.text = nil;
         cell.profileImageView.image = nil;
         cell.goingOutLabel.text = nil;
+        cell.tapImageView.image = nil;
         
         if (indexPath.section == kSectionTapCell) {
             int tag = (int)indexPath.row;
@@ -183,7 +185,7 @@
             if (tag < self.presentedUsers.count) {
                 user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
             }
-            if (tag == self.presentedUsers.count - 5) {
+            if (tag == self.presentedUsers.count - 5 || tag == self.presentedUsers.count - 1) {
                 [self getNextPage];
             }
             if (user) {
@@ -294,15 +296,14 @@
     }
     else {
         UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
-        headerView.backgroundColor = UIColor.whiteColor;
-        
-        UILabel *tapPeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width, 30)];
-        tapPeopleLabel.text = @"Invite Contacts";
-        tapPeopleLabel.textAlignment = NSTextAlignmentLeft;
-        tapPeopleLabel.font = [FontProperties lightFont:15.0f];
-        tapPeopleLabel.textColor = [FontProperties getBlueColor];
-        [headerView addSubview:tapPeopleLabel];
-        
+        headerView.backgroundColor = RGB(248, 248, 248);
+
+        UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width, 30)];
+        headerLabel.text = @"Suggested Friends";
+        headerLabel.textAlignment = NSTextAlignmentLeft;
+        headerLabel.font = [FontProperties lightFont:14.0f];
+        headerLabel.textColor = RGB(150, 150, 150);
+        [headerView addSubview:headerLabel];
         return headerView;
     }
 }
@@ -310,8 +311,12 @@
 -(CGFloat) tableView:(UITableView *)tableView
 heightForHeaderInSection:(NSInteger)section
 {
-    if (section == kSectionFollowCell) return 30;
-    else return 0;
+    if (section == kSectionFollowCell) {
+        if ([self tableView:tableView numberOfRowsInSection:section] > 0) {
+           return 30;
+        }
+    }
+    return 0;
 }
 
 
