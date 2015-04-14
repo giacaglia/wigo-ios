@@ -8,6 +8,7 @@
 
 #import "WhereAreYouViewController.h"
 #import "Globals.h"
+#import "FSCalendar.h"
 #import "PrivateSwitchView.h"
 
 @implementation WhereAreYouViewController
@@ -105,6 +106,10 @@
     titleLabel.textColor = UIColor.whiteColor;
     titleLabel.font = [FontProperties mediumFont:18.0f];
     self.navigationItem.titleView = titleLabel;
+    
+//    FSCalendar *fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 112, self.view.frame.size.width, 200)];
+//    fsCalendar.flow = FSCalendarFlowVertical;
+//    [self.eventDetails addSubview:fsCalendar];
     
     [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelCreateEvent)] animated: NO];
 

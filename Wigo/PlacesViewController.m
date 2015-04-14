@@ -456,7 +456,7 @@ BOOL firstTimeLoading;
 - (void) goingSomewhereElsePressed {
     [WGAnalytics tagAction:@"create_event" atView:@"where"];
     [self.navigationController pushViewController:[WhereAreYouViewController new] animated:YES];
-
+//    [self.navigationController pushViewController:[CalendarConfigViewController new] animated:YES];
 }
 
 - (void)profileSegue {

@@ -251,6 +251,20 @@
 		E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B01961EADE00A01F50 /* UIImageView+HighlightedWebCache.m */; };
 		E900C2C31961EADE00A01F50 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B21961EADE00A01F50 /* UIImageView+WebCache.m */; };
 		E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */; };
+		E9096D551ADD5F1100386AC2 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = E9096D481ADD5F1100386AC2 /* .gitkeep */; };
+		E9096D561ADD5F1100386AC2 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = E9096D481ADD5F1100386AC2 /* .gitkeep */; };
+		E9096D571ADD5F1100386AC2 /* FSCalendar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */; };
+		E9096D581ADD5F1100386AC2 /* FSCalendar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */; };
+		E9096D591ADD5F1100386AC2 /* FSCalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D4C1ADD5F1100386AC2 /* FSCalendarCell.m */; };
+		E9096D5A1ADD5F1100386AC2 /* FSCalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D4C1ADD5F1100386AC2 /* FSCalendarCell.m */; };
+		E9096D5B1ADD5F1100386AC2 /* FSCalendarHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D4E1ADD5F1100386AC2 /* FSCalendarHeader.m */; };
+		E9096D5C1ADD5F1100386AC2 /* FSCalendarHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D4E1ADD5F1100386AC2 /* FSCalendarHeader.m */; };
+		E9096D5D1ADD5F1100386AC2 /* NSCalendar+FSExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D501ADD5F1100386AC2 /* NSCalendar+FSExtension.m */; };
+		E9096D5E1ADD5F1100386AC2 /* NSCalendar+FSExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D501ADD5F1100386AC2 /* NSCalendar+FSExtension.m */; };
+		E9096D5F1ADD5F1100386AC2 /* NSDate+FSExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D521ADD5F1100386AC2 /* NSDate+FSExtension.m */; };
+		E9096D601ADD5F1100386AC2 /* NSDate+FSExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D521ADD5F1100386AC2 /* NSDate+FSExtension.m */; };
+		E9096D611ADD5F1100386AC2 /* UIView+FSExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D541ADD5F1100386AC2 /* UIView+FSExtension.m */; };
+		E9096D621ADD5F1100386AC2 /* UIView+FSExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D541ADD5F1100386AC2 /* UIView+FSExtension.m */; };
 		E90AA8A81976C8B60055D74B /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E90AA8A71976C8B60055D74B /* Crashlytics.framework */; };
 		E91B840B1AAE4204002523C2 /* InviteView.m in Sources */ = {isa = PBXBuildFile; fileRef = E91B840A1AAE4204002523C2 /* InviteView.m */; };
 		E91B840C1AAE4204002523C2 /* InviteView.m in Sources */ = {isa = PBXBuildFile; fileRef = E91B840A1AAE4204002523C2 /* InviteView.m */; };
@@ -714,6 +728,19 @@
 		E900C2B21961EADE00A01F50 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		E900C2B31961EADE00A01F50 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
+		E9096D481ADD5F1100386AC2 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
+		E9096D491ADD5F1100386AC2 /* FSCalendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSCalendar.h; sourceTree = "<group>"; };
+		E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSCalendar.m; sourceTree = "<group>"; };
+		E9096D4B1ADD5F1100386AC2 /* FSCalendarCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSCalendarCell.h; sourceTree = "<group>"; };
+		E9096D4C1ADD5F1100386AC2 /* FSCalendarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSCalendarCell.m; sourceTree = "<group>"; };
+		E9096D4D1ADD5F1100386AC2 /* FSCalendarHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSCalendarHeader.h; sourceTree = "<group>"; };
+		E9096D4E1ADD5F1100386AC2 /* FSCalendarHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSCalendarHeader.m; sourceTree = "<group>"; };
+		E9096D4F1ADD5F1100386AC2 /* NSCalendar+FSExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCalendar+FSExtension.h"; sourceTree = "<group>"; };
+		E9096D501ADD5F1100386AC2 /* NSCalendar+FSExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSCalendar+FSExtension.m"; sourceTree = "<group>"; };
+		E9096D511ADD5F1100386AC2 /* NSDate+FSExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+FSExtension.h"; sourceTree = "<group>"; };
+		E9096D521ADD5F1100386AC2 /* NSDate+FSExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+FSExtension.m"; sourceTree = "<group>"; };
+		E9096D531ADD5F1100386AC2 /* UIView+FSExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+FSExtension.h"; sourceTree = "<group>"; };
+		E9096D541ADD5F1100386AC2 /* UIView+FSExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+FSExtension.m"; sourceTree = "<group>"; };
 		E90AA8A71976C8B60055D74B /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		E91B84091AAE4204002523C2 /* InviteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteView.h; sourceTree = "<group>"; };
 		E91B840A1AAE4204002523C2 /* InviteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteView.m; sourceTree = "<group>"; };
@@ -1399,6 +1426,36 @@
 			path = SDWebImage;
 			sourceTree = "<group>";
 		};
+		E9096D001ADD55D600386AC2 /* EventCreation */ = {
+			isa = PBXGroup;
+			children = (
+				E9A8B6FB1ADC4B9D00C6901D /* WhereAreYouViewController.h */,
+				E9A8B6FC1ADC4B9D00C6901D /* WhereAreYouViewController.m */,
+				E9096D471ADD5F1100386AC2 /* FSCalendar */,
+			);
+			name = EventCreation;
+			sourceTree = "<group>";
+		};
+		E9096D471ADD5F1100386AC2 /* FSCalendar */ = {
+			isa = PBXGroup;
+			children = (
+				E9096D481ADD5F1100386AC2 /* .gitkeep */,
+				E9096D491ADD5F1100386AC2 /* FSCalendar.h */,
+				E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */,
+				E9096D4B1ADD5F1100386AC2 /* FSCalendarCell.h */,
+				E9096D4C1ADD5F1100386AC2 /* FSCalendarCell.m */,
+				E9096D4D1ADD5F1100386AC2 /* FSCalendarHeader.h */,
+				E9096D4E1ADD5F1100386AC2 /* FSCalendarHeader.m */,
+				E9096D4F1ADD5F1100386AC2 /* NSCalendar+FSExtension.h */,
+				E9096D501ADD5F1100386AC2 /* NSCalendar+FSExtension.m */,
+				E9096D511ADD5F1100386AC2 /* NSDate+FSExtension.h */,
+				E9096D521ADD5F1100386AC2 /* NSDate+FSExtension.m */,
+				E9096D531ADD5F1100386AC2 /* UIView+FSExtension.h */,
+				E9096D541ADD5F1100386AC2 /* UIView+FSExtension.m */,
+			);
+			path = FSCalendar;
+			sourceTree = "<group>";
+		};
 		E921D6091923967D00361247 = {
 			isa = PBXGroup;
 			children = (
@@ -1641,8 +1698,6 @@
 				E9C5CE391AB0EFFB0044745B /* OverlayViewController.m */,
 				E9A7659D1AC5D23A00F7C016 /* LabelSwitch.h */,
 				E9A7659E1AC5D23A00F7C016 /* LabelSwitch.m */,
-				E9A8B6FB1ADC4B9D00C6901D /* WhereAreYouViewController.h */,
-				E9A8B6FC1ADC4B9D00C6901D /* WhereAreYouViewController.m */,
 			);
 			name = Places;
 			sourceTree = "<group>";
@@ -1937,6 +1992,7 @@
 			isa = PBXGroup;
 			children = (
 				E9A765AE1AC9BFA300F7C016 /* Places */,
+				E9096D001ADD55D600386AC2 /* EventCreation */,
 				E9AAAFCA193E3DC40069F700 /* User Profiles */,
 				FA85ED9A1A5C406A004B0465 /* Inviting */,
 				FA2BE9BA19FAEAFC00CC0E5E /* EventStory */,
@@ -2129,6 +2185,7 @@
 				E998C27519D068880012BF51 /* Whitney-Bold.ttf in Resources */,
 				E9CDC4571AA4EF9900CD0336 /* OpenSans-BoldItalic.ttf in Resources */,
 				C12A118519787BE700D53B1C /* Whitney-MediumSC.ttf in Resources */,
+				E9096D561ADD5F1100386AC2 /* .gitkeep in Resources */,
 				E9C340221A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */,
 				E9CDC46E1AA51EB300CD0336 /* OpenSans-Regular.ttf in Resources */,
 				C12A118919787BE700D53B1C /* Localizable.strings in Resources */,
@@ -2183,6 +2240,7 @@
 				45D9FAE81A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.xib in Resources */,
 				45D9FAE41A781AFD00D08577 /* JSQMessagesToolbarContentView.xib in Resources */,
 				E9CD53931993C73900206B75 /* Images.xcassets in Resources */,
+				E9096D551ADD5F1100386AC2 /* .gitkeep in Resources */,
 				C16D86A819747FF6003EB336 /* Localizable.strings in Resources */,
 				E957CD6D1A938B8400D0FF7C /* openLock.gif in Resources */,
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
@@ -2281,6 +2339,7 @@
 				E9A765B61AC9C03B00F7C016 /* WGNavigateParser.m in Sources */,
 				45D9FAA51A781AFD00D08577 /* JSQMessagesKeyboardController.m in Sources */,
 				45D9FAC71A781AFD00D08577 /* JSQVideoMediaItem.m in Sources */,
+				E9096D601ADD5F1100386AC2 /* NSDate+FSExtension.m in Sources */,
 				C1F5B3E41A654B8800CAFD95 /* JPBParallaxTableViewController.m in Sources */,
 				C1F5B3D71A654B4D00CAFD95 /* AFHTTPRequestOperation.m in Sources */,
 				45D9FAC31A781AFD00D08577 /* JSQMessagesBubbleImage.m in Sources */,
@@ -2295,6 +2354,7 @@
 				C1F5B3DD1A654B4D00CAFD95 /* AFURLRequestSerialization.m in Sources */,
 				C1F5B3DE1A654B4D00CAFD95 /* AFURLResponseSerialization.m in Sources */,
 				45D9FAAD1A781AFD00D08577 /* JSQMessagesBubbleImageFactory.m in Sources */,
+				E9096D5A1ADD5F1100386AC2 /* FSCalendarCell.m in Sources */,
 				C1F5B3DF1A654B4D00CAFD95 /* AFURLSessionManager.m in Sources */,
 				E9A765A91AC5EA7A00F7C016 /* WGNetworkFetcher.m in Sources */,
 				C1F5B3D61A654AE300CAFD95 /* NSDate+WGDate.m in Sources */,
@@ -2308,6 +2368,7 @@
 				C1F5B3CF1A654AC800CAFD95 /* WGMessage.m in Sources */,
 				C1F5B3D01A654AC800CAFD95 /* WGEventMessage.m in Sources */,
 				C1F5B3D11A654AC800CAFD95 /* WGNotification.m in Sources */,
+				E9096D621ADD5F1100386AC2 /* UIView+FSExtension.m in Sources */,
 				C1F5B3D21A654AC800CAFD95 /* WGCollection.m in Sources */,
 				C1F5B3D31A654AC800CAFD95 /* WGCollectionArray.m in Sources */,
 				C1F5B3D41A654AC800CAFD95 /* (null) in Sources */,
@@ -2329,10 +2390,12 @@
 				C12A110C19787BE700D53B1C /* WGSpinnerView.m in Sources */,
 				E9D039C51A0986BA00DEF094 /* EventStoryViewController.m in Sources */,
 				45D9FABD1A781AFD00D08577 /* JSQMediaItem.m in Sources */,
+				E9096D5C1ADD5F1100386AC2 /* FSCalendarHeader.m in Sources */,
 				E9A8B6FE1ADC4B9D00C6901D /* WhereAreYouViewController.m in Sources */,
 				45D9FAB91A781AFD00D08577 /* JSQMessagesCollectionViewLayoutAttributes.m in Sources */,
 				45D9FAE31A781AFD00D08577 /* JSQMessagesToolbarContentView.m in Sources */,
 				C12A110D19787BE700D53B1C /* UIImageCrop.m in Sources */,
+				E9096D5E1ADD5F1100386AC2 /* NSCalendar+FSExtension.m in Sources */,
 				45D9FA9B1A781AFD00D08577 /* NSString+JSQMessages.m in Sources */,
 				E96F07C019BA654600E858D7 /* GKImageCropOverlayView.m in Sources */,
 				45D9FBB91A8003EF00D08577 /* UIView+ViewToImage.m in Sources */,
@@ -2442,6 +2505,7 @@
 				FA8C37EC1A3FDFA500C46B9F /* FXBlurView.m in Sources */,
 				C12A113719787BE700D53B1C /* SignNavigationViewController.m in Sources */,
 				FA55261D1A1FDB4000101AE7 /* JBChartView.m in Sources */,
+				E9096D581ADD5F1100386AC2 /* FSCalendar.m in Sources */,
 				45D9FAB31A781AFD00D08577 /* JSQMessagesToolbarButtonFactory.m in Sources */,
 				C12A113819787BE700D53B1C /* SignUpViewController.m in Sources */,
 				C12A113919787BE700D53B1C /* UIView+WebCacheOperation.m in Sources */,
@@ -2458,6 +2522,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E994111219AA8D9200D76379 /* NSString+URLEncoding.m in Sources */,
+				E9096D5B1ADD5F1100386AC2 /* FSCalendarHeader.m in Sources */,
 				E9CD47141948E27500AEA17D /* UIImageViewShake.m in Sources */,
 				E921D6261923967D00361247 /* AppDelegate.m in Sources */,
 				4563F5271A3F460F00F8C9C4 /* WGUser.m in Sources */,
@@ -2481,6 +2546,7 @@
 				E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */,
 				E9D906BE19252DA900E39FC8 /* PeopleViewController.m in Sources */,
 				FA55261A1A1FDB4000101AE7 /* JBBarChartView.m in Sources */,
+				E9096D571ADD5F1100386AC2 /* FSCalendar.m in Sources */,
 				45DF86AD1A5C5DEB00DB85AE /* AFHTTPRequestOperationManager.m in Sources */,
 				E9D4F1681AD31EAA00478C78 /* GroupConversationViewController.m in Sources */,
 				E9C340291A97986500AB069F /* HighlightsCollectionView.m in Sources */,
@@ -2489,6 +2555,7 @@
 				454409581A537F1C00BB3036 /* WGMessage.m in Sources */,
 				E921D6221923967D00361247 /* main.m in Sources */,
 				E9A765931AC2005A00F7C016 /* WGI.m in Sources */,
+				E9096D5F1ADD5F1100386AC2 /* NSDate+FSExtension.m in Sources */,
 				45D9FBBC1A80043000D08577 /* UIImage+ImageEffects.m in Sources */,
 				E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */,
 				E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */,
@@ -2554,6 +2621,7 @@
 				E9CD53861993C29800206B75 /* FLAnimatedImageView.m in Sources */,
 				E91B840B1AAE4204002523C2 /* InviteView.m in Sources */,
 				E9CD473A194B9AD600AEA17D /* PhotoViewController.m in Sources */,
+				E9096D591ADD5F1100386AC2 /* FSCalendarCell.m in Sources */,
 				FABD33801A3B996F008FF56D /* ProfileViewController.m in Sources */,
 				4544094F1A51EF3000BB3036 /* WGCollectionArray.m in Sources */,
 				E9A0F9B11A1E5CBE001A66DF /* EventMessagesConstants.m in Sources */,
@@ -2611,6 +2679,7 @@
 				E9DFE16F1A001142003C5779 /* BatteryViewController.m in Sources */,
 				45D9FAE01A781AFD00D08577 /* JSQMessagesMediaPlaceholderView.m in Sources */,
 				45D9FBB01A7AE1DD00D08577 /* GCDAsyncUdpSocket.m in Sources */,
+				E9096D5D1ADD5F1100386AC2 /* NSCalendar+FSExtension.m in Sources */,
 				E900C2BE1961EADE00A01F50 /* UIButton+WebCache.m in Sources */,
 				E9AAAFC0193D0E4A0069F700 /* EditProfileViewController.m in Sources */,
 				45D9FA9E1A781AFD00D08577 /* UIDevice+JSQMessages.m in Sources */,
@@ -2620,6 +2689,7 @@
 				45DF86B01A5C5DEB00DB85AE /* AFSecurityPolicy.m in Sources */,
 				454409551A5241FA00BB3036 /* WGEvent.m in Sources */,
 				45D9FAD21A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.m in Sources */,
+				E9096D611ADD5F1100386AC2 /* UIView+FSExtension.m in Sources */,
 				45D9FA9C1A781AFD00D08577 /* UIColor+JSQMessages.m in Sources */,
 				E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */,
 				E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */,
