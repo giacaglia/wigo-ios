@@ -8,13 +8,20 @@
 
 #import <UIKit/UIKit.h>
 #import "PrivateSwitchView.h"
+#import "WGSwitchView.h"
+#import "FSCalendar.h"
 
 @interface WhereAreYouViewController : UIViewController<UITextFieldDelegate,
-                                                    PrivacySwitchDelegate>
+                                                    PrivacySwitchDelegate,
+                                                    WGSwitchDelegate,
+                                                    FSCalendarDelegate>
 @property (nonatomic, strong) UITextField *whereAreYouGoingTextField;
 @property (nonatomic, strong) UIView *eventDetails;
 @property (nonatomic, strong) PrivateSwitchView *privateSwitchView;
+@property (nonatomic, strong) WGSwitchView *wgSwitchView;
 @property (nonatomic, strong) UILabel *invitePeopleLabel;
 @property (nonatomic, strong) UIView *loadingView;
 @property (nonatomic, strong) UIView *loadingIndicator;
+@property (nonatomic, strong) FSCalendar *fsCalendar;
+@property (nonatomic, strong) FSCalendarHeader *fsCalendarHeader;
 @end

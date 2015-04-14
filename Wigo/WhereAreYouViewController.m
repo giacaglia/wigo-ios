@@ -8,7 +8,6 @@
 
 #import "WhereAreYouViewController.h"
 #import "Globals.h"
-#import "FSCalendar.h"
 #import "PrivateSwitchView.h"
 
 @implementation WhereAreYouViewController
@@ -34,22 +33,12 @@
 
 - (void)setup {
     self.view.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
+    [self initializeNavigationItem];
     
     UIScrollView *backgroundScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    backgroundScrollView.contentSize = CGSizeMake(self.view.frame.size.width, 380 + 110 + 200);
+    backgroundScrollView.contentSize = CGSizeMake(self.view.frame.size.width, 380 + 110 + 260);
     backgroundScrollView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:backgroundScrollView];
-    
-    UILabel *eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 45, 10, 90, 30)];
-    eventNameLabel.text = @"Event Name";
-    eventNameLabel.textColor = [FontProperties getBlueColor];
-    eventNameLabel.textAlignment = NSTextAlignmentCenter;
-    eventNameLabel.font = [FontProperties scMediumFont:15.0f];
-    [backgroundScrollView addSubview:eventNameLabel];
-    
-    UIView *lineUnderEventName = [[UIView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 45, 40, 90, 1)];
-    lineUnderEventName.backgroundColor = [FontProperties getBlueColor];
-    [backgroundScrollView addSubview:lineUnderEventName];
     
     self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 50)];
     self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Señor Frogs @ 8pm (3rd & Main)" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
@@ -63,27 +52,11 @@
                                    action:@selector(textFieldDidChange:)
                          forControlEvents:UIControlEventEditingChanged];
     [backgroundScrollView addSubview:self.whereAreYouGoingTextField];
-    
-    CALayer *bottomBorder = [CALayer layer];
-    bottomBorder.frame = CGRectMake(0.0f, self.view.frame.size.height - 1, self.view.frame.size.width, 1.0f);
-    bottomBorder.backgroundColor = [[FontProperties getBlueColor] colorWithAlphaComponent: 0.5f].CGColor;
-    [backgroundScrollView.layer addSublayer:bottomBorder];
-    
+        
     self.eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 110, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
     [backgroundScrollView addSubview:self.eventDetails];
     
-    UILabel *eventTypeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 30)];
-    eventTypeLabel.text = @"Event Type";
-    eventTypeLabel.textAlignment = NSTextAlignmentCenter;
-    eventTypeLabel.textColor = [FontProperties getBlueColor];
-    eventTypeLabel.font = [FontProperties scMediumFont:15.0f];
-    [self.eventDetails addSubview:eventTypeLabel];
-    
-    UIView *lineUnderEventType = [[UIView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 45, 30, 90, 1)];
-    lineUnderEventType.backgroundColor = [FontProperties getBlueColor];
-    [self.eventDetails addSubview:lineUnderEventType];
-    
-    self.privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 40, 240, 40)];
+    self.privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 10, 240, 40)];
     [self.eventDetails addSubview:self.privateSwitchView];
     self.privateSwitchView.privateString = @"Only you can invite people and only\nthose invited can see the event.";
     self.privateSwitchView.publicString =  @"The whole school can see and attend your event.";
@@ -91,7 +64,7 @@
     [self.privateSwitchView.closeLockImageView stopAnimating];
     [self.privateSwitchView.openLockImageView stopAnimating];
     
-    self.invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 82, [UIScreen mainScreen].bounds.size.width, 30)];
+    self.invitePeopleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 52, [UIScreen mainScreen].bounds.size.width, 30)];
     self.invitePeopleLabel.text = _privateSwitchView.explanationString;
     self.invitePeopleLabel.textAlignment = NSTextAlignmentCenter;
     self.invitePeopleLabel.numberOfLines = 2;
@@ -105,30 +78,26 @@
     
     [self.whereAreYouGoingTextField becomeFirstResponder];
     
-//    FSCalendar *fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 130, self.view.frame.size.width, 250)];
-//    fsCalendar.flow = FSCalendarFlowHorizontal;
-//    [self.eventDetails addSubview:fsCalendar];
-//
-//    FSCalendarHeader *fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 110, self.view.frame.size.width, 20)];
-//    fsCalendar.header = fsCalendarHeader;
-//    [self.eventDetails addSubview:fsCalendarHeader];
-
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
-    titleLabel.text = @"Create Event";
-    titleLabel.textColor = UIColor.whiteColor;
-    titleLabel.font = [FontProperties mediumFont:18.0f];
-    self.navigationItem.titleView = titleLabel;
     
-    [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelCreateEvent)] animated: NO];
-
-    [self.navigationItem setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Done" style: UIBarButtonItemStylePlain target: self action: @selector(createPressed)] animated: NO];
-
-    [self.navigationItem.leftBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
-
-    [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
-
+    self.wgSwitchView = [[WGSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 130, 240, 40)];
+    self.wgSwitchView.firstString = @"Today";
+    self.wgSwitchView.secondString = @"Future";
+    self.wgSwitchView.movingImageView.image = [UIImage imageNamed:@"calendarIcon"];
+    self.wgSwitchView.switchDelegate = self;
+    [self.eventDetails addSubview:self.wgSwitchView];
     
+    self.fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 250)];
+    self.fsCalendar.flow = FSCalendarFlowHorizontal;
+    self.fsCalendar.hidden = YES;
+    self.fsCalendar.delegate = self;
+    [self.eventDetails addSubview:self.fsCalendar];
     
+    self.fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 180, self.view.frame.size.width, 20)];
+    self.fsCalendar.header = self.fsCalendarHeader;
+    self.fsCalendarHeader.hidden = YES;
+    [self.eventDetails addSubview:self.fsCalendarHeader];
+
+
     //    [UIView animateWithDuration: 0.2 animations:^{
     //        self.tabBarController.navigationItem.titleView.alpha = 0.0f;
     //        self.tabBarController.navigationItem.leftBarButtonItem.customView.alpha = 0.0f;
@@ -150,6 +119,23 @@
     //
     //        self.placesTableView.userInteractionEnabled = NO;
     //    }];
+}
+
+- (void)initializeNavigationItem {
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
+    titleLabel.text = @"Create Event";
+    titleLabel.textColor = UIColor.whiteColor;
+    titleLabel.font = [FontProperties mediumFont:18.0f];
+    self.navigationItem.titleView = titleLabel;
+    
+    [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelCreateEvent)] animated: NO];
+    
+    [self.navigationItem setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Done" style: UIBarButtonItemStylePlain target: self action: @selector(createPressed)] animated: NO];
+    
+    [self.navigationItem.leftBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+    
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
+
 }
 
 - (void)createPressed {
@@ -209,10 +195,6 @@
 }
 
 
-- (void)updateUnderliningText {
-    self.invitePeopleLabel.text = _privateSwitchView.explanationString;
-}
-
 - (void)addLoadingIndicator {
     self.loadingView = [[UIView alloc] initWithFrame:CGRectMake(10, 64 + 5, self.view.frame.size.width - 20, 5)];
     self.loadingView.layer.borderColor = [FontProperties getBlueColor].CGColor;
@@ -242,6 +224,32 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [self createPressed];
     return YES;
+}
+
+#pragma mark - Private Switch Delegate
+
+- (void)updateUnderliningText {
+    self.invitePeopleLabel.text = _privateSwitchView.explanationString;
+}
+
+
+#pragma mark - WGSwitch View Delegate 
+
+- (void)switched {
+    self.fsCalendar.hidden = !self.fsCalendar.hidden;
+    self.fsCalendarHeader.hidden = !self.fsCalendarHeader.hidden;
+    if (self.fsCalendar.isHidden) {
+        self.wgSwitchView.secondString = @"Future";
+    }
+}
+
+#pragma mark - FSCalendar Delegate 
+- (void)calendar:(FSCalendar *)calendar didSelectDate:(NSDate *)date {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"EE, MMMM dd"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    NSString *dateString = [dateFormatter stringFromDate:date];
+    self.wgSwitchView.secondString = dateString;
 }
 
 @end

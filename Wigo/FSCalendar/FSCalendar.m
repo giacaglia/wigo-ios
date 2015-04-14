@@ -16,7 +16,7 @@
 #define kWeekHeight roundf(self.fs_height/9)
 #define kBlueText   [UIColor colorWithRed:109/255.0  green:166/255.0  blue:206/255.0    alpha:1.0]
 //#define kPink       [UIColor colorWithRed:198/255.0 green:51/255.0  blue:42/255.0     alpha:1.0]
-#define kPink       [UIColor colorWithRed:122/255.0 green:193/255.0  blue:226/255.0     alpha:0.3]
+#define kPink       [UIColor colorWithRed:208/255.0 green:227/255.0  blue:250/255.0     alpha:1.0]
 #define kBlue       [UIColor colorWithRed:109/255.0  green:166/255.0 blue:206/255.0    alpha:1.0]
 @interface FSCalendar (DataSourceAndDelegate)
 
