@@ -331,8 +331,8 @@ BOOL blockShown;
     _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 15, self.view.frame.size.width - 14, 50)];
     _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
     _nameOfPersonLabel.text = [NSString stringWithFormat:@"%@, 22", self.user.fullName];
-    _nameOfPersonLabel.textColor = [UIColor whiteColor];
-    _nameOfPersonLabel.font = [FontProperties getSubHeaderFont];
+    _nameOfPersonLabel.textColor = UIColor.whiteColor;
+    _nameOfPersonLabel.font = [FontProperties lightFont:20.0f];
     [_nameView addSubview:_nameOfPersonLabel];
 
     
@@ -868,8 +868,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     _nameViewBackground.alpha  = 1 - MAX(_nameViewBackground.alpha, 0);
     
     
-    CGFloat minFontSize = 24.0f;
-    CGFloat maxFontSize = 30.0f;
+    CGFloat minFontSize = 15.0f;
+    CGFloat maxFontSize = 20.0f;
     
     CGFloat currentSize = MIN(maxFontSize, maxFontSize - (maxFontSize - minFontSize)*(1 - lengthFraction));
     currentSize = MAX(currentSize, minFontSize);
