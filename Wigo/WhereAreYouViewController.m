@@ -12,14 +12,6 @@
 
 @implementation WhereAreYouViewController
 
-- (id)init {
-    self = [super init];
-    if (self) {
-//        self.view.backgroundColor = UIColor.whiteColor;
-    }
-    return self;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setup];
