@@ -100,9 +100,15 @@
     
     [self.whereAreYouGoingTextField becomeFirstResponder];
     
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
+    titleLabel.text = @"Create Event";
+    titleLabel.textColor = UIColor.whiteColor;
+    titleLabel.font = [FontProperties mediumFont:18.0f];
+    self.navigationItem.titleView = titleLabel;
+    
     [self.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelCreateEvent)] animated: NO];
 
-    [self.navigationItem setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Create" style: UIBarButtonItemStylePlain target: self action: @selector(createPressed)] animated: NO];
+    [self.navigationItem setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Done" style: UIBarButtonItemStylePlain target: self action: @selector(createPressed)] animated: NO];
 
     [self.navigationItem.leftBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
 
