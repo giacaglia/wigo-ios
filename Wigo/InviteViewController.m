@@ -154,14 +154,17 @@
         if ([WGProfile.currentUser isEqual:event.owner]) return 1;
         else return 0;
     }
-    if (section == kSectionTapCell) {
+    else if (section == kSectionTapCell) {
+        return 5;
+    }
+    else if (section == kSectionAllFriends) {
         return self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue;
-    } else {
+    }
+    else {
         if (self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue >= 11) {
             return 0;
         }
-        return MIN(self.presentedSuggestions.count, 5);
-//        if (self.isSearching) return filteredMobileContacts.count;
+        return MIN(self.presentedUsers.count, 5);
     }
 }
 
@@ -171,32 +174,31 @@
         [tapAllCell.aroundTapButton addTarget:self action:@selector(tapAllPressed) forControlEvents:UIControlEventTouchUpInside];
         return tapAllCell;
     }
-    if (indexPath.section == kSectionTapCell) {
+    if (indexPath.section == kSectionTapCell || indexPath.section == kSectionAllFriends) {
         TapCell *cell = (TapCell*)[tableView dequeueReusableCellWithIdentifier:kTapCellName forIndexPath:indexPath];
         cell.fullNameLabel.text = nil;
         cell.profileImageView.image = nil;
         cell.goingOutLabel.text = nil;
         cell.tapImageView.image = nil;
         
-        if (indexPath.section == kSectionTapCell) {
-            int tag = (int)indexPath.row;
-            WGUser *user;
-            if (self.presentedUsers.count == 0) return cell;
-            if (tag < self.presentedUsers.count) {
-                user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
-            }
-            if (tag == self.presentedUsers.count - 5 || tag == self.presentedUsers.count - 1) {
-                [self getNextPage];
-            }
-            if (user) {
-                cell.user = user;
-                [cell.aroundTapButton removeTarget:nil
-                                            action:NULL
-                                  forControlEvents:UIControlEventAllEvents];
-                [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
-                cell.aroundTapButton.tag = indexPath.row;
-            }
+        int tag = (int)indexPath.row;
+        WGUser *user;
+        if (self.presentedUsers.count == 0) return cell;
+        if (tag < self.presentedUsers.count) {
+            user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
         }
+        if (tag == self.presentedUsers.count - 5 || tag == self.presentedUsers.count - 1) {
+            [self getNextPage];
+        }
+        if (user) {
+            cell.user = user;
+            [cell.aroundTapButton removeTarget:nil
+                                        action:NULL
+                              forControlEvents:UIControlEventAllEvents];
+            [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
+            cell.aroundTapButton.tag = indexPath.row;
+        }
+        
         return cell;
     }
     
@@ -291,26 +293,35 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+    headerView.backgroundColor = RGB(248, 248, 248);
+    
+    UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width, 30)];
+    headerLabel.textAlignment = NSTextAlignmentLeft;
+    headerLabel.font = [FontProperties lightFont:14.0f];
+    headerLabel.textColor = RGB(150, 150, 150);
     if (section == kSectionTapCell) {
-        return [[UIView alloc] init];
+        headerLabel.text = @"Best Friends";
     }
-    else {
-        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
-        headerView.backgroundColor = RGB(248, 248, 248);
-
-        UILabel *headerLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width, 30)];
+    else if (section == kSectionAllFriends) {
+        headerLabel.text = @"All Friends";
+    }
+    else if (section == kSectionFollowCell) {
         headerLabel.text = @"Suggested Friends";
-        headerLabel.textAlignment = NSTextAlignmentLeft;
-        headerLabel.font = [FontProperties lightFont:14.0f];
-        headerLabel.textColor = RGB(150, 150, 150);
-        [headerView addSubview:headerLabel];
-        return headerView;
     }
+    [headerView addSubview:headerLabel];
+    return headerView;
 }
 
 -(CGFloat) tableView:(UITableView *)tableView
 heightForHeaderInSection:(NSInteger)section
 {
+    if (section == kSectionTapCell) {
+        return 30.0f;
+    }
+    if (section == kSectionAllFriends) {
+        return 30.0f;
+    }
     if (section == kSectionFollowCell) {
         if ([self tableView:tableView numberOfRowsInSection:section] > 0) {
            return 30;
@@ -426,6 +437,7 @@ heightForHeaderInSection:(NSInteger)section
 }
 
 - (void) getNextPage {
+    NSLog(@"Next page");
     if (self.isFetching) return;
     if (!self.presentedUsers.hasNextPage.boolValue) return;
 

@@ -27,8 +27,10 @@
 #define kSectionTapAllCell 0
 #define kTapCellName @"tapCellName"
 #define kSectionTapCell 1
+#define kAllFriendsCellName @"allFriendsCellName"
+#define kSectionAllFriends 2
 #define kFollowCellName @"followCellName"
-#define kSectionFollowCell 2
+#define kSectionFollowCell 3
 //#define kFollowCellName @"followCellName"
 //#define kSectionFollowCell 2
 //#define kInviteMobileCellName @"inviteCellName"
