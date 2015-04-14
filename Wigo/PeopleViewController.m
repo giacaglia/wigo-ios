@@ -174,11 +174,13 @@ NSIndexPath *userIndex;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableViewOfPeople.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableViewOfPeople.showsVerticalScrollIndicator = NO;
-    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(40, 0, self.view.frame.size.width - 80, 50)];
+    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 44, self.view.frame.size.width, 50)];
     _searchBar.delegate = self;
     _searchBar.placeholder = @"Search by Name";
-    self.tableViewOfPeople.tableHeaderView = _searchBar;
-    self.tableViewOfPeople.contentOffset = CGPointMake(0, 50 - 44);
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44 + 50)];
+    [headerView addSubview:_searchBar];
+    self.tableViewOfPeople.tableHeaderView = headerView;
+    self.tableViewOfPeople.contentOffset = CGPointMake(0, 50);
     [self.view addSubview:self.tableViewOfPeople];
 }
 
@@ -339,7 +341,45 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [_searchBar endEditing:YES];
-    [super scrollViewDidScroll:scrollView];
+//    CGRect frame = self.navigationController.navigationBar.frame;
+//    frame = CGRectMake(frame.origin.x, frame.origin.y + 50, frame.size.width, frame.size.height);
+//    CGFloat size = frame.size.height - 20;
+//    CGFloat framePercentageHidden = ((20 - frame.origin.y) / (frame.size.height - 1));
+//    CGFloat scrollOffset = scrollView.contentOffset.y;
+//    CGFloat scrollDiff = scrollOffset - self.previousScrollViewYOffset;
+//    CGFloat scrollHeight = scrollView.frame.size.height;
+//    CGFloat scrollContentSizeHeight = scrollView.contentSize.height + scrollView.contentInset.bottom;
+//    
+//    if (scrollOffset <= -scrollView.contentInset.top) {
+//        frame.origin.y = 20;
+//    } else if ((scrollOffset + scrollHeight) >= scrollContentSizeHeight) {
+//        frame.origin.y = -size;
+//    } else {
+//        // HACK to prevent the app to go up and down.
+//        if (frame.origin.y == 20 && scrollOffset == - 60) {
+//            frame.origin.y = 20;
+//        }
+//        else {
+//            frame.origin.y = MIN(20, MAX(-size, frame.origin.y - scrollDiff));
+//        }
+//    }
+//    
+//    self.navigationController.navigationBar.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
+//    
+//    if (self.navigationController.navigationBar.frame.origin.y +
+//        self.navigationController.navigationBar.frame.size.height <= 20 ||
+//        self.navigationController.navigationBar.frame.origin.y >= 0) {
+//        self.blueBannerView.hidden = NO;
+//    }
+//    else {
+//        super.blueBannerView.hidden = YES;
+//    }
+//    
+//    [super updateBarButtonItems:(1 - framePercentageHidden)];
+//    self.previousScrollViewYOffset = scrollOffset;
+//    if (scrollView.contentOffset.x != 0) {
+//        scrollView.contentOffset = CGPointMake(0, scrollView.contentOffset.y);
+//    }
 }
 
 - (void) followedPersonPressed:(id)sender {

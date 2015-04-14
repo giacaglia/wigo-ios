@@ -42,7 +42,6 @@
 - (void) initializeNavigationItem {
     self.title = @"New Message";
 
-
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 60, 44) andType:@0];
     [barBt setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
@@ -72,7 +71,7 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 70, self.view.frame.size.width - 22, 50)];
+    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
     _searchBar.placeholder = @"Search By Name";
     _searchBar.delegate = self;
     self.tableView.tableHeaderView = _searchBar;

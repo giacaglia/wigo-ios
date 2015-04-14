@@ -12,5 +12,6 @@
 
 @property (nonatomic, assign) CGFloat previousScrollViewYOffset;
 @property (nonatomic, strong) UIView *blueBannerView;
+- (void)updateBarButtonItems:(CGFloat)alpha;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 @end
