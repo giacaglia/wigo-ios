@@ -1548,6 +1548,7 @@
 		E921D61C1923967D00361247 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E9096D6F1ADF066400386AC2 /* UserTagging */,
 				E9CDC4491AA4EF8700CD0336 /* Open Sans */,
 				E9CDC4421AA4EF4900CD0336 /* Montserrat */,
 				E9CD53921993C73900206B75 /* Images.xcassets */,
@@ -1587,7 +1588,6 @@
 		E921D6531923973800361247 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				E9096D6F1ADF066400386AC2 /* UserTagging */,
 				E9AAAFCC193E3DDB0069F700 /* Signup/Login/Onboard */,
 				FA85ED991A5C3F93004B0465 /* Main Flow */,
 				E94A2850196C6BC50027D3BA /* Facebook Photos */,
