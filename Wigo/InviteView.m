@@ -47,15 +47,15 @@
 }
 
 - (void) setup {
-    self.tapButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 130, 80)];
+    self.tapButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, 80)];
     [self.tapButton addTarget:self action:@selector(inviteTapped) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.tapButton];
     
-    self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake(65 - 20, 5, 40, 40)];
+    self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 20, 5, 40, 40)];
     self.tapImageView.image = [UIImage imageNamed:@"blueTapImageView"];
     [self.tapButton addSubview:self.tapImageView];
     
-    self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(65 - 40, 45, 80, 20)];
+    self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 40, 45, 80, 20)];
     self.tapLabel.text = @"TAP";
     self.tapLabel.textAlignment = NSTextAlignmentCenter;
     self.tapLabel.font = [FontProperties mediumFont:14.0f];

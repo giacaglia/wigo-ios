@@ -99,7 +99,7 @@ NSIndexPath *userIndex;
 - (void) initializeRightBarButton {
     if ([self.currentTab isEqual:@2]) {
         UIButtonAligned *inviteButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 40, 16) andType:@3];
-        [inviteButton setTitle:@"INVITE" forState:UIControlStateNormal];
+        [inviteButton setTitle:@"Invite" forState:UIControlStateNormal];
         [inviteButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
         inviteButton.titleLabel.textAlignment = NSTextAlignmentRight;
         [inviteButton addTarget:self action:@selector(invitePressed)

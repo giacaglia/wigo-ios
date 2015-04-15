@@ -688,26 +688,26 @@ BOOL firstTimeLoading;
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
         HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCell forIndexPath:indexPath];
         cell.event = event;
-//        cell.placesDelegate = self;
-//        cell.oldEventLabel.text = event.name;
-//        if (cell.event.isPrivate) {
-//            cell.oldEventLabel.transform = CGAffineTransformMakeTranslation(20, 0);
-//            cell.privateIconImageView.hidden = NO;
-//        }
-//        else {
-//            cell.oldEventLabel.transform = CGAffineTransformMakeTranslation(0, 0);
-//            cell.privateIconImageView.hidden = YES;
-//        }
-//        NSString *contentURL;
-//        if ([event.highlight.mediaMimeType isEqual:kImageEventType]) {
-//            contentURL = event.highlight.media;
-//        }
-//        else {
-//            contentURL = event.highlight.thumbnail;
-//        }
-//        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile.currentUser cdnPrefix], contentURL]];
-//        [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-//        }];
+        cell.placesDelegate = self;
+        cell.oldEventLabel.text = event.name;
+        if (cell.event.isPrivate) {
+            cell.oldEventLabel.transform = CGAffineTransformMakeTranslation(20, 0);
+            cell.privateIconImageView.hidden = NO;
+        }
+        else {
+            cell.oldEventLabel.transform = CGAffineTransformMakeTranslation(0, 0);
+            cell.privateIconImageView.hidden = YES;
+        }
+        NSString *contentURL;
+        if ([event.highlight.mediaMimeType isEqual:kImageEventType]) {
+            contentURL = event.highlight.media;
+        }
+        else {
+            contentURL = event.highlight.thumbnail;
+        }
+        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile.currentUser cdnPrefix], contentURL]];
+        [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+        }];
 
         return cell;
     }
