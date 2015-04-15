@@ -12,7 +12,7 @@
 @interface WGGetter : NSObject
 
 - (void)fetchUserNames;
-@property (nonatomic, strong) NSArray *userNames;
+@property (nonatomic, strong) WGCollection *allUsers;
 
 - (void)fetchMessages;
 @property (nonatomic, strong) WGCollection *messages;

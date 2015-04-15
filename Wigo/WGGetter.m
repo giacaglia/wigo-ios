@@ -18,14 +18,9 @@
     __weak typeof(self) weakSelf = self;
     [WGProfile get:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-            NSMutableArray *fullNameArray = [NSMutableArray new];
             __strong typeof(self) strongSelf = weakSelf;
             if (error) return;
-            WGCollection *userCollection = collection;
-            for (WGUser *user in userCollection) {
-                [fullNameArray addObject:user.fullName];
-            }
-            strongSelf.userNames = fullNameArray;
+            strongSelf.allUsers = collection;
         });
     }];
 }

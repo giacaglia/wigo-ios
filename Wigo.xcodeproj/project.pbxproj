@@ -267,6 +267,8 @@
 		E9096D621ADD5F1100386AC2 /* UIView+FSExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D541ADD5F1100386AC2 /* UIView+FSExtension.m */; };
 		E9096D6D1ADD79CE00386AC2 /* WGSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D6C1ADD79CE00386AC2 /* WGSwitchView.m */; };
 		E9096D6E1ADD79CE00386AC2 /* WGSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D6C1ADD79CE00386AC2 /* WGSwitchView.m */; };
+		E9096D721ADF06AE00386AC2 /* WGUserParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D711ADF06AE00386AC2 /* WGUserParser.m */; };
+		E9096D731ADF06AE00386AC2 /* WGUserParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D711ADF06AE00386AC2 /* WGUserParser.m */; };
 		E90AA8A81976C8B60055D74B /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E90AA8A71976C8B60055D74B /* Crashlytics.framework */; };
 		E91B840B1AAE4204002523C2 /* InviteView.m in Sources */ = {isa = PBXBuildFile; fileRef = E91B840A1AAE4204002523C2 /* InviteView.m */; };
 		E91B840C1AAE4204002523C2 /* InviteView.m in Sources */ = {isa = PBXBuildFile; fileRef = E91B840A1AAE4204002523C2 /* InviteView.m */; };
@@ -745,6 +747,8 @@
 		E9096D541ADD5F1100386AC2 /* UIView+FSExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+FSExtension.m"; sourceTree = "<group>"; };
 		E9096D6B1ADD79CE00386AC2 /* WGSwitchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGSwitchView.h; sourceTree = "<group>"; };
 		E9096D6C1ADD79CE00386AC2 /* WGSwitchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGSwitchView.m; sourceTree = "<group>"; };
+		E9096D701ADF06AE00386AC2 /* WGUserParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGUserParser.h; sourceTree = "<group>"; };
+		E9096D711ADF06AE00386AC2 /* WGUserParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGUserParser.m; sourceTree = "<group>"; };
 		E90AA8A71976C8B60055D74B /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		E91B84091AAE4204002523C2 /* InviteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteView.h; sourceTree = "<group>"; };
 		E91B840A1AAE4204002523C2 /* InviteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteView.m; sourceTree = "<group>"; };
@@ -1462,6 +1466,15 @@
 			path = FSCalendar;
 			sourceTree = "<group>";
 		};
+		E9096D6F1ADF066400386AC2 /* UserTagging */ = {
+			isa = PBXGroup;
+			children = (
+				E9096D701ADF06AE00386AC2 /* WGUserParser.h */,
+				E9096D711ADF06AE00386AC2 /* WGUserParser.m */,
+			);
+			name = UserTagging;
+			sourceTree = "<group>";
+		};
 		E921D6091923967D00361247 = {
 			isa = PBXGroup;
 			children = (
@@ -1574,6 +1587,7 @@
 		E921D6531923973800361247 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				E9096D6F1ADF066400386AC2 /* UserTagging */,
 				E9AAAFCC193E3DDB0069F700 /* Signup/Login/Onboard */,
 				FA85ED991A5C3F93004B0465 /* Main Flow */,
 				E94A2850196C6BC50027D3BA /* Facebook Photos */,
@@ -2481,6 +2495,7 @@
 				C12A112919787BE700D53B1C /* UIButtonAligned.m in Sources */,
 				E9EA951B19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,
 				45D9FA9D1A781AFD00D08577 /* UIColor+JSQMessages.m in Sources */,
+				E9096D731ADF06AE00386AC2 /* WGUserParser.m in Sources */,
 				C12A112B19787BE700D53B1C /* FacebookImagesViewController.m in Sources */,
 				E9A765941AC2005A00F7C016 /* WGI.m in Sources */,
 				C12A112E19787BE700D53B1C /* SDWebImageDownloaderOperation.m in Sources */,
@@ -2676,6 +2691,7 @@
 				FA2BC2061A68268700055F7C /* TopSchoolViewController.m in Sources */,
 				FABD337A1A3B9904008FF56D /* FXBlurView.m in Sources */,
 				E99D0ADC1A2CCA3300384A73 /* PeekViewController.m in Sources */,
+				E9096D721ADF06AE00386AC2 /* WGUserParser.m in Sources */,
 				E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
 				E9CD472C194B889800AEA17D /* RWBlurPopover.m in Sources */,
 				E9D039C81A09886A00DEF094 /* MediaScrollView.m in Sources */,
