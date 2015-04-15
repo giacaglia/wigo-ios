@@ -179,7 +179,7 @@ BOOL blockShown;
     if ([self.user isEqual:WGProfile.currentUser]) {
         // TODO: Refetch notifications
         self.unexpiredNotifications = NetworkFetcher.defaultGetter.notifications;
-        [self fetchFirstPageNotifications];
+//        [self fetchFirstPageNotifications];
         [self updateBadge];
     }
 
@@ -951,12 +951,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)updateLastNotificationsRead {
-    [[WGProfile currentUser] setLastNotificationReadToLatest:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-            [[WGError sharedInstance] logError:error forAction:WGActionSave];
-        }
-    }];
+//    [WGProfile.currentUser setLastNotificationReadToLatest:^(BOOL success, NSError *error) {
+//        if (error) {
+//            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+//            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+//        }
+//    }];
 }
 
 - (void)updateBadge {

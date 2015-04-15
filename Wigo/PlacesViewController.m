@@ -93,10 +93,10 @@ BOOL firstTimeLoading;
     self.spinnerAtCenter = YES;
     [self initializeWhereView];
     [self addCenterButton];
-    [NetworkFetcher.defaultGetter fetchMessages];
-    [NetworkFetcher.defaultGetter fetchSuggestions];
-    [NetworkFetcher.defaultGetter fetchNotifications];
-    [NetworkFetcher.defaultGetter fetchUserNames];
+//    [NetworkFetcher.defaultGetter fetchMessages];
+//    [NetworkFetcher.defaultGetter fetchSuggestions];
+//    [NetworkFetcher.defaultGetter fetchNotifications];
+//    [NetworkFetcher.defaultGetter fetchUserNames];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
