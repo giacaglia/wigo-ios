@@ -368,14 +368,13 @@ ProfileViewController *profileViewController;
 }
 
 - (void)initializeMessageForEmptyConversation {
-    self.viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 90)];
-    self.viewForEmptyConversation.center = self.view.center;
-    
+    self.viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, 90)];
+    self.viewForEmptyConversation.center = CGPointMake(self.viewForEmptyConversation.center.x, self.view.center.y);
     [self.view addSubview:self.viewForEmptyConversation];
     
-    UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , self.view.frame.size.width, 30)];
-    everyDayLabel.text = @"Start a new chat today.";
-    everyDayLabel.textColor = [FontProperties getOrangeColor];
+    UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , [UIScreen mainScreen].bounds.size.width, 30)];
+    everyDayLabel.text = @"Start a new chat today";
+    everyDayLabel.textColor = UIColor.grayColor;
     everyDayLabel.textAlignment = NSTextAlignmentCenter;
     everyDayLabel.font = [FontProperties getBigButtonFont];
     self.viewForEmptyConversation.hidden = YES;
