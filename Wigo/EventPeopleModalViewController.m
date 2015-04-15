@@ -108,14 +108,15 @@ int imageWidth;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.placesDelegate.createButton.hidden = YES;
     self.tabBarController.tabBar.hidden = YES;
     [[self navigationController] setNavigationBarHidden:YES animated:NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    self.tabBarController.tabBar.hidden = NO;
     self.placesDelegate.createButton.hidden = NO;
+    self.tabBarController.tabBar.hidden = NO;
     [[self navigationController] setNavigationBarHidden:NO animated:NO];
 }
 

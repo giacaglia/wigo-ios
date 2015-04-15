@@ -865,7 +865,6 @@ BOOL firstTimeLoading;
 }
 
 - (void)showViewController:(UIViewController *)vc {
-    self.createButton.hidden = YES;
     [self addChildViewController:vc];
     [self.view addSubview:vc.view];
     vc.view.alpha = 0.0f;
