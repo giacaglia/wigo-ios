@@ -8,10 +8,27 @@
 
 #import "WGGetter.h"
 #import "WGMessage.h"
+#import "WGProfile.h"
 #import "WGUser.h"
 #import "WGNotification.h"
 
 @implementation WGGetter: NSObject
+
+- (void)fetchUserNames {
+    __weak typeof(self) weakSelf = self;
+    [WGProfile get:^(WGCollection *collection, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            NSMutableArray *fullNameArray = [NSMutableArray new];
+            __strong typeof(self) strongSelf = weakSelf;
+            if (error) return;
+            WGCollection *userCollection = collection;
+            for (WGUser *user in userCollection) {
+                [fullNameArray addObject:user.fullName];
+            }
+            strongSelf.userNames = fullNameArray;
+        });
+    }];
+}
 
 - (void)fetchMessages {
     __weak typeof(self) weakSelf = self;

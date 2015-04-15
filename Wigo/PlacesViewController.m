@@ -96,6 +96,7 @@ BOOL firstTimeLoading;
     [NetworkFetcher.defaultGetter fetchMessages];
     [NetworkFetcher.defaultGetter fetchSuggestions];
     [NetworkFetcher.defaultGetter fetchNotifications];
+    [NetworkFetcher.defaultGetter fetchUserNames];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
