@@ -647,7 +647,7 @@ BOOL blockShown;
 
 - (NSInteger) notificationCount {
     if (self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE) {
-        return self.unexpiredNotifications.count;
+        return self.unexpiredNotifications.count + 1;
     }
     return [self shouldShowInviteCell] ? 1 : 0;
 }
