@@ -29,6 +29,8 @@ typedef void (^WGEventMessageResultBlock)(WGEventMessage *object, NSError *error
 @property NSString *media;
 @property NSString *mediaMimeType;
 
+
+- (void)postEventMessage:(BoolResultBlock)handler;
 +(WGEventMessage *)serialize:(NSDictionary *)json;
 
 -(void) addPhoto:(NSData *)fileData withName:(NSString *)filename andHandler:(WGEventMessageResultBlock)handler;

@@ -69,9 +69,7 @@
 -(void) initObjects:(NSArray *)objects {
     self.objects = [[NSMutableArray alloc] init];
     for (NSDictionary *objectDict in objects) {
-        NSLog(@"1. objectDict: %@", objectDict);
         WGObject *object = [[self.type alloc] initWithJSON:objectDict];
-        NSLog(@"2. objectDict: %@", objectDict);
         [object addReferencesFromInclude:self.include];
         [self.objects addObject: object];
     }
