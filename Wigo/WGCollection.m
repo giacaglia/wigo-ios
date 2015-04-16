@@ -21,6 +21,7 @@
 #define kMessagesKey @"messages"
 #define kUserKey @"user"
 #define kTypeKey @"$type"
+#define kRefKey @"$ref"
 
 
 @implementation WGCollection
@@ -40,8 +41,8 @@
 
 +(WGCollection *)serializeResponse:(NSDictionary *) jsonResponse andClass:(Class)type {
     WGCollection *newCollection = [[WGCollection alloc] initWithType:type];
-    
-    newCollection.include = [jsonResponse objectForKey:@"include"];
+    // First pass : Go through all objects:
+    [newCollection firstPass:jsonResponse];
     [newCollection setMetaInfo: [jsonResponse objectForKey:kMetaKey]];
     [newCollection initObjects: [jsonResponse objectForKey:@"objects"]];
     return newCollection;
@@ -66,11 +67,46 @@
 
 #pragma mark - Objects
 
+- (void)firstPass:(NSDictionary *)jsonResponse {
+    self.allRefsObjects = [NSMutableDictionary new];
+    for (NSDictionary *objectDict in [jsonResponse objectForKey:@"include"]) {
+//        WGObject *obj = [[WGObject alloc] initWithJSON:objectDict];
+        [self.allRefsObjects setObject:objectDict forKey:[objectDict objectForKey:@"$id"]];
+    }
+    for (NSDictionary *objectDict in [jsonResponse objectForKey:@"objects"]) {
+//        WGObject *obj = [[WGObject alloc] initWithJSON:objectDict];
+        for (NSString *key in objectDict.allKeys) {
+            BOOL isKeyAGroup = [WGCollection isKeyAGroup:key];
+            if (isKeyAGroup) {
+                [self firstPass:[objectDict objectForKey:key]];
+            }
+        }
+        [self.allRefsObjects setObject:objectDict forKey:[objectDict objectForKey:@"$id"]];
+    }
+}
+
 -(void) initObjects:(NSArray *)objects {
     self.objects = [[NSMutableArray alloc] init];
     for (NSDictionary *objectDict in objects) {
+        for (NSString *key in objectDict) {
+            BOOL isKeyGroup = [WGCollection isKeyAGroup:key];
+            if (isKeyGroup) {
+            
+            }
+            else {
+                if ([key isEqual:kGroupKey] || [key isEqual:kAttendeesKey] ||
+                    [key isEqual:kHighlightKey] || [key isEqual:kUserKey]) {
+                    NSDictionary *nestedObj = [objectDict objectForKey:key];
+                    if ([nestedObj.allKeys containsObject:kRefKey]) {
+                        NSString *refID = [nestedObj objectForKey:kRefKey];
+                        nestedObj = [self.allRefsObjects objectForKey:refID];
+                        NSLog(@"object dict: %@", nestedObj);
+                    }
+//                        objectDict
+                }
+            }
+        }
         WGObject *object = [[self.type alloc] initWithJSON:objectDict];
-        [object addReferencesFromInclude:self.include];
         [self.objects addObject: object];
     }
 }
@@ -339,5 +375,16 @@
     }
 }
 
++ (NSString *)classFromDictionary:(NSDictionary *)objDict {
+    NSMutableString *mutTypeString = [objDict objectForKey:@"$type"];
+    return [NSString stringWithFormat:@"WG%@", mutTypeString];
+}
+
++ (BOOL)isKeyAGroup:(NSString *)key {
+    if ([key isEqual:kAttendeesKey] || [key isEqual:kMessagesKey]) {
+        return YES;
+    }
+    return NO;
+}
 
 @end
