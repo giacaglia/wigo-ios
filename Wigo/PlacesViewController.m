@@ -724,7 +724,7 @@ BOOL firstTimeLoading;
 }
 
 - (BOOL)isFullCellForEvent:(WGEvent *)event {
-    return [self isPeeking] || (event.id && [WGProfile.currentUser.eventAttending.id isEqual:event.id]);
+    return [self isPeeking] || (event.id && [event isEqual:WGProfile.currentUser.eventAttending]);
 }
 
 - (WGEvent *)getEventAtIndexPath:(NSIndexPath *)indexPath {
@@ -882,7 +882,7 @@ BOOL firstTimeLoading;
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationViewController.event = event;
-    if ([self isPeeking] || (!WGProfile.currentUser.crossEventPhotosEnabled && ![event isEqual:WGProfile.currentUser.eventAttending])) {
+    if ([self isPeeking] || (!WGProfile.currentUser.crossEventPhotosEnabled && ![[event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser])) {
     }
     else {
         eventMessages = [self eventMessagesWithCamera:eventMessages];

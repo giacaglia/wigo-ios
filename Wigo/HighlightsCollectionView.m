@@ -65,12 +65,12 @@
 
 - (void)collectionView:(UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (![self.event isEqual:WGProfile.currentUser.eventAttending] && _event.messages.count == 0 && !WGProfile.currentUser.crossEventPhotosEnabled) return;
+    if (![[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser] && _event.messages.count == 0 && !WGProfile.currentUser.crossEventPhotosEnabled) return;
     if (indexPath.section == kAddPhotoSection && self.isPeeking) return;
     if (self.isPeeking){
         indexPath = [NSIndexPath indexPathForItem:indexPath.item inSection:indexPath.section];
     }
-    if (indexPath.section != kAddPhotoSection || !self.isPeeking || (WGProfile.currentUser.crossEventPhotosEnabled || [self.event isEqual:WGProfile.currentUser.eventAttending])) {
+    if (indexPath.section != kAddPhotoSection || !self.isPeeking || (WGProfile.currentUser.crossEventPhotosEnabled || [[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser])) {
         int index = indexPath.item + 1;
         if (indexPath.section == kAddPhotoSection) index -= 1;
         [self.placesDelegate showConversationForEvent:self.event

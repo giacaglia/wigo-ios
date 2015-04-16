@@ -199,7 +199,7 @@
     scrollCell.alpha = 1.0f;
     scrollCell.imgView.image = nil;
     if (indexPath.section == kInviteSection) {
-        if (self.event.id && [self.event.id isEqual:WGProfile.currentUser.eventAttending.id]) {
+        if ([[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) {
             [scrollCell.imageButton removeTarget:nil
                                           action:NULL
                                 forControlEvents:UIControlEventAllEvents];
