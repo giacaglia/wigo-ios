@@ -989,7 +989,7 @@ static WGUser *currentUser = nil;
 }
 
 +(void) getInvites:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"following" : @"true", @"ordering" : @"invite" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -1037,7 +1037,8 @@ static WGUser *currentUser = nil;
 }
 
 +(void) getSuggestions:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/suggestions/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//    [WGApi get:@"users/suggestions/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;

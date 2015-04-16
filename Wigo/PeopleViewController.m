@@ -826,9 +826,6 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void)setUser:(WGUser *)user {
     super.user = user;
-    if (user.id.intValue > WGProfile.currentUser.lastUserRead.intValue) {
-        self.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
-    }
 }
 
 @end

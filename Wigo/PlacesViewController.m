@@ -94,7 +94,7 @@ BOOL firstTimeLoading;
     [self initializeWhereView];
     [self addCenterButton];
 //    [NetworkFetcher.defaultGetter fetchMessages];
-//    [NetworkFetcher.defaultGetter fetchSuggestions];
+    [NetworkFetcher.defaultGetter fetchSuggestions];
 //    [NetworkFetcher.defaultGetter fetchNotifications];
 //    [NetworkFetcher.defaultGetter fetchUserNames];
 }

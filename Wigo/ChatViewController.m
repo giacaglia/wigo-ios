@@ -282,7 +282,6 @@
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text = user.fullName;
     self.lastMessageLabel.text = message.message;
-//    self.timeLabel.text = [message.created getUTCTimeStringToLocalTimeString];
     if (message.isRead.boolValue) {
         self.lastMessageLabel.textColor = RGB(208, 208, 208);
     }
