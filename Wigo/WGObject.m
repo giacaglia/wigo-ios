@@ -43,6 +43,10 @@
     // Nothing to replace!
 }
 
+-(void)addReferencesFromInclude:(NSArray *)include {
+    if (!include) return;
+}
+
 +(WGObject *) serialize:(NSDictionary *)json {
     return [[WGObject alloc] initWithJSON:json];
 }

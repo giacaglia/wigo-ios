@@ -7,7 +7,21 @@
 //
 
 #import "WGCollection.h"
+#import "WGEvent.h"
+#import "WGEventMessage.h"
+#import "WGEventAttendee.h"
+#import "WGGroup.h"
+#import "WGUser.h"
 #define kMetaKey @"meta"
+
+#define kIsAttendingKey @"is_attending"
+#define kGroupKey @"group"
+#define kAttendeesKey @"attendees"
+#define kHighlightKey @"highlight"
+#define kMessagesKey @"messages"
+#define kUserKey @"user"
+#define kTypeKey @"$type"
+
 
 @implementation WGCollection
 
@@ -19,6 +33,7 @@
         self.objects = [[NSMutableArray alloc] init];
         self.type = type;
         self.currentPosition = 0;
+        self.parameters = [NSMutableDictionary new];
     }
     return self;
 }
@@ -26,9 +41,9 @@
 +(WGCollection *)serializeResponse:(NSDictionary *) jsonResponse andClass:(Class)type {
     WGCollection *newCollection = [[WGCollection alloc] initWithType:type];
     
+    newCollection.include = [jsonResponse objectForKey:@"include"];
     [newCollection setMetaInfo: [jsonResponse objectForKey:kMetaKey]];
     [newCollection initObjects: [jsonResponse objectForKey:@"objects"]];
-    
     return newCollection;
 }
 
@@ -54,7 +69,11 @@
 -(void) initObjects:(NSArray *)objects {
     self.objects = [[NSMutableArray alloc] init];
     for (NSDictionary *objectDict in objects) {
-        [self.objects addObject: [[self.type alloc] initWithJSON:objectDict]];
+        NSLog(@"1. objectDict: %@", objectDict);
+        WGObject *object = [[self.type alloc] initWithJSON:objectDict];
+        NSLog(@"2. objectDict: %@", objectDict);
+        [object addReferencesFromInclude:self.include];
+        [self.objects addObject: object];
     }
 }
 

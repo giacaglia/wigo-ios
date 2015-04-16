@@ -241,8 +241,8 @@
         scrollCell.goHereLabel.hidden = YES;
         [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         scrollCell.profileNameLabel.alpha = 1.0f;
-        WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
-        scrollCell.user = attendee.user;
+        WGUser *attendee = (WGUser *)[self.event.attendees objectAtIndex:indexPath.item];
+        scrollCell.user = attendee;
         if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
     }
     return scrollCell;

@@ -135,8 +135,8 @@ int imageWidth;
 
 - (void)presentUser:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:buttonSender.tag];
-    if (attendee) [self.placesDelegate presentUserAferModalView:attendee.user forEvent:self.event];
+    WGUser *attendee = (WGUser *)[self.event.attendees objectAtIndex:buttonSender.tag];
+    if (attendee) [self.placesDelegate presentUserAferModalView:attendee forEvent:self.event];
 }
 
 - (void)fetchEventAttendeesAsynchronous {
@@ -230,8 +230,8 @@ int imageWidth;
     attendeeCell.inviteView.alpha = 1.0f;
     attendeeCell.imageButton.tag = indexPath.item;
     [attendeeCell.imageButton addTarget:self action:@selector(presentUser:) forControlEvents:UIControlEventTouchUpInside];
-    WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
-    attendeeCell.user = attendee.user;
+    WGUser *attendee = (WGUser *)[self.event.attendees objectAtIndex:indexPath.item];
+    attendeeCell.user = attendee;
     attendeeCell.chatButton.tag = indexPath.item;
     attendeeCell.eventPeopleModalDelegate = self;
     if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
@@ -278,8 +278,8 @@ referenceSizeForFooterInSection:(NSInteger)section {
 
 - (void)chatPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:buttonSender.tag];
-    if (attendee) [self.placesDelegate presentConversationForUser:attendee.user];
+    WGUser *attendee = (WGUser *)[self.event.attendees objectAtIndex:buttonSender.tag];
+    if (attendee) [self.placesDelegate presentConversationForUser:attendee];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

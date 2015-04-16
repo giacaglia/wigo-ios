@@ -34,6 +34,7 @@ typedef void (^BoolResultBlock)(BOOL success, NSError *error);
 +(WGObject *)serialize:(NSDictionary *)json;
 -(NSDictionary *) deserialize;
 -(void) replaceReferences;
+-(void)addReferencesFromInclude:(NSArray *)include;
 
 -(BOOL) isFetched;
 
