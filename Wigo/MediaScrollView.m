@@ -444,7 +444,8 @@
                          @"event": self.event.id,
                          kMediaMimeTypeKey: type,
                          kThumbnailDataKey: thumbnailFileData,
-                         @"thumbnail": thumbnailFilename
+                         @"thumbnail": thumbnailFilename//,
+                         //@"fileURL":info[UIImagePickerControllerMediaURL]
                          };
     }
     
@@ -640,34 +641,44 @@
         NSLog(@"video data length: %d", (int)fileData.length);
         
         
+//        NSURL *fileURL = options[@"fileURL"];
+//        
 //         NSURL *uploadURL = [NSURL fileURLWithPath:[[NSTemporaryDirectory() stringByAppendingPathComponent:@"video_tmp"] stringByAppendingString:@".mp4"]];
 //         
 //         // Compress movie first
-//         [self convertVideoToLowQuailtyWithInputURL:movieURL outputURL:uploadURL];
+//         [self convertVideoToLowQuailtyWithInputURL:fileURL
+//                                          outputURL:uploadURL
+//                                         completion:^{
+//        
+//                                             
+//                                             NSData *fileData = [NSData dataWithContentsOfURL:uploadURL];
+//                                             NSLog(@"new length: %d", (int)fileData.length);
+        
+                                             
+                                             
+                                             [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumnailFileName andHandler:^(WGEventMessage *object, NSError *error) {
+                                                 __strong typeof(weakSelf) strongSelf = weakSelf;
+                                                 strongSelf.error = error;
+                                                 strongSelf.object = object;
+                                                 NSDictionary *objectDict = [strongSelf.object deserialize];
+                                                 if ([[objectDict allKeys] containsObject:@"media"]) {
+                                                     NSString *mediaName = [objectDict objectForKey:@"media"];
+                                                     NSArray *components = [mediaName componentsSeparatedByString:@"/"];
+                                                     NSString *returnedFilename = [components lastObject];
+                                                     if ([strongSelf.tasksStillBeingUploaded containsObject:returnedFilename]) {
+                                                         [strongSelf.tasksStillBeingUploaded removeObject:returnedFilename];
+                                                     }
+                                                     else {
+                                                         [strongSelf.tasksStillBeingUploaded addObject:returnedFilename];
+                                                     }
+                                                     [strongSelf callbackFromUploadWithInfo:nil andFilename:returnedFilename];
+                                                 }
+//                                             }];
+                                             
+                                             
+                                         }];
         
         
-        
-        
-        
-        
-        [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumnailFileName andHandler:^(WGEventMessage *object, NSError *error) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            strongSelf.error = error;
-            strongSelf.object = object;
-            NSDictionary *objectDict = [strongSelf.object deserialize];
-            if ([[objectDict allKeys] containsObject:@"media"]) {
-                NSString *mediaName = [objectDict objectForKey:@"media"];
-                NSArray *components = [mediaName componentsSeparatedByString:@"/"];
-                NSString *returnedFilename = [components lastObject];
-                if ([strongSelf.tasksStillBeingUploaded containsObject:returnedFilename]) {
-                    [strongSelf.tasksStillBeingUploaded removeObject:returnedFilename];
-                }
-                else {
-                    [strongSelf.tasksStillBeingUploaded addObject:returnedFilename];
-                }
-                [strongSelf callbackFromUploadWithInfo:nil andFilename:returnedFilename];
-            }
-        }];
 //        [newEventMessage addVideo:fileData withName:filename andHandler:^(WGEventMessage *object, NSError *error) {
 
 //        }];
@@ -677,16 +688,25 @@
 
 
 
+// credit: http://stackoverflow.com/questions/11751883/how-can-i-reduce-the-file-size-of-a-video-created-with-uiimagepickercontroller
+
+
 
 - (void)convertVideoToLowQuailtyWithInputURL:(NSURL*)inputURL
                                    outputURL:(NSURL*)outputURL
+                                  completion:(void (^)(void))completion
 {
     //setup video writer
+    
     AVAsset *videoAsset = [[AVURLAsset alloc] initWithURL:inputURL options:nil];
+    
+    
     
     AVAssetTrack *videoTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
     
     CGSize videoSize = videoTrack.naturalSize;
+    
+    NSLog(@"video size: %@", NSStringFromCGSize(videoSize));
     
     NSDictionary *videoWriterCompressionSettings =  [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:1250000], AVVideoAverageBitRateKey, nil];
     
@@ -746,6 +766,15 @@
              
              CMSampleBufferRef sampleBuffer;
              
+             /*
+              AVAssetReaderStatusUnknown = 0,
+              AVAssetReaderStatusReading,
+              AVAssetReaderStatusCompleted,
+              AVAssetReaderStatusFailed,
+              AVAssetReaderStatusCancelled,
+              */
+             
+             NSLog(@"video reader status: %d", (int)[videoReader status]);
              if ([videoReader status] == AVAssetReaderStatusReading &&
                  (sampleBuffer = [videoReaderOutput copyNextSampleBuffer])) {
                  
@@ -786,7 +815,11 @@
                                  if ([audioReader status] == AVAssetReaderStatusCompleted) {
                                      
                                      [videoWriter finishWritingWithCompletionHandler:^(){
-                                         //[self sendMovieFileAtURL:outputURL];
+                                         dispatch_async(dispatch_get_main_queue(),
+                                                        ^{
+                                                            completion();
+                                                        });
+                                         
                                      }];
                                      
                                  }
@@ -898,6 +931,7 @@
             [self.eventMessages insertObject:newEventMessage atIndex:1];
             [self.eventConversationDelegate highlightCellAtPage:1 animated:NO];
             [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+            
             self.shownCurrentImage = YES;
         }
         else {
@@ -1365,7 +1399,7 @@
     self.controller.sourceType = UIImagePickerControllerSourceTypeCamera;
     self.controller.cameraDevice = UIImagePickerControllerCameraDeviceRear;
     self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
-    self.controller.videoQuality = UIImagePickerControllerQualityTypeMedium;//UIImagePickerControllerQualityType640x480;
+    self.controller.videoQuality = UIImagePickerControllerQualityType640x480;
     self.controller.delegate = self;
     self.controller.showsCameraControls = NO;
     
@@ -1585,7 +1619,6 @@
         
         
         self.videoTimerCount -= timer.timeInterval;
-        NSLog(@"timer fired - progress: %f", self.videoTimerCount);
         UILongPressGestureRecognizer *gesture = timer.userInfo[@"gesture"];
         [self.circularProgressView setProgress: MIN(1.0, (8.0 - self.videoTimerCount)/8.0) animated:YES];
         
