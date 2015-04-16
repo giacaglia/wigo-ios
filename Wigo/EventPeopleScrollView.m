@@ -210,7 +210,7 @@
             }
             else {
                 scrollCell.alpha = 1.0f;
-                [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+                [scrollCell.imageButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
             }
             scrollCell.imgView.image = [UIImage imageNamed:@"inviteButton"];
             scrollCell.blueOverlayView.hidden = YES;
@@ -246,6 +246,10 @@
         if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
     }
     return scrollCell;
+}
+
+- (void)invitePressed {
+    [self.placesDelegate invitePressed:self.event];
 }
 
 #pragma mark - UICollectionView Header

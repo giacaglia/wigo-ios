@@ -408,10 +408,10 @@ BOOL firstTimeLoading;
     [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:WGProfile.currentUser] animated:YES];
 }
 
-- (void)invitePressed {
-    if (!WGProfile.currentUser.eventAttending.id) return;
+- (void)invitePressed:(WGEvent *)event {
+//    if (!WGProfile.currentUser.eventAttending.id) return;
     
-    [self presentViewController:[[InviteViewController alloc] initWithEvent:WGProfile.currentUser.eventAttending] animated:YES completion:nil];
+    [self presentViewController:[[InviteViewController alloc] initWithEvent:event] animated:YES completion:nil];
 }
 
 - (void)showOverlayForInvite:(id)sender {
