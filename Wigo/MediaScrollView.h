@@ -22,7 +22,10 @@
 - (void)upvotePressed;
 
 @optional
-- (MPMoviePlayerController *)sharedMoviePlayerController;
+
+- (MPMoviePlayerController *)getAvailableMoviePlayer;
+- (void)freeMoviePlayer:(MPMoviePlayerController *)moviePlayer;
+
 - (NSMutableDictionary *)videoMetaData;
 
 - (void)updateEventMessage:(WGEventMessage *)eventMessage forCell:(UICollectionViewCell *)cell;
@@ -70,7 +73,7 @@
 @property (nonatomic, strong) WGEventMessage *object;
 
 #pragma mark - UIImagePickerDelegate  Delegate
-@property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
+@property (nonatomic, strong) MPMoviePlayerController *scrollViewMoviePlayer;
 @property (nonatomic, strong) NSData *fileData;
 @property (nonatomic, strong) NSDictionary *options;
 @property (nonatomic, strong) NSString *type;

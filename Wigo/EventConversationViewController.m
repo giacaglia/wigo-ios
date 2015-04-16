@@ -143,6 +143,32 @@
 
 #pragma mark - UICollectionViewDelegate
 
+
+- (void)collectionView:(UICollectionView *)collectionView
+       willDisplayCell:(UICollectionViewCell *)cell
+    forItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if(collectionView == self.mediaScrollView) {
+        if([cell isKindOfClass:[VideoCell class]]) {
+            //[(VideoCell*)cell prepareVideo];
+        }
+    }
+    
+}
+
+- (void)collectionView:(UICollectionView *)collectionView
+  didEndDisplayingCell:(UICollectionViewCell *)cell
+    forItemAtIndexPath:(NSIndexPath *)indexPath {
+    if(collectionView == self.mediaScrollView) {
+        if([cell isKindOfClass:[VideoCell class]]) {
+            VideoCell *videoCell = (VideoCell*)cell;
+            [videoCell unloadVideo];
+        }
+    }
+    
+}
+
+
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (collectionView == self.facesCollectionView) {
         if (indexPath == self.currentActiveCell) {
@@ -286,6 +312,11 @@
     if (scrollView == self.mediaScrollView)
         _imagesScrollViewPointNow = scrollView.contentOffset;
     else _collectionViewPointNow = scrollView.contentOffset;
+    
+    if(scrollView == self.mediaScrollView) {
+        int page = (int)[self getCurrentPageForScrollView:scrollView];
+        [self.mediaScrollView startedScrollingFromPage:page];
+    }
 }
 
 
@@ -409,14 +440,6 @@
         [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: activeIndexPath] setIsActive:YES];
             
         self.currentActiveCell = activeIndexPath;
-    }
-}
-
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if(scrollView == self.mediaScrollView) {
-        int page = (int)[self getCurrentPageForScrollView:scrollView];
-        [self.mediaScrollView startedScrollingFromPage:page];
     }
 }
 
