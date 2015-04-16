@@ -37,6 +37,9 @@
 - (void)cancelPressed;
 
 - (void)prepareVideoAtPage:(int)page;
+
+- (void)markVideoPlayerIsSavingThumbnail:(BOOL)finished;
+
 @end
 
 @interface MediaScrollView : UICollectionView <UICollectionViewDataSource,
@@ -56,7 +59,13 @@
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, assign) BOOL cameraPromptAddToStory;
 @property (nonatomic, strong) NSString *filenameString;
+
+@property (nonatomic, strong) MPMoviePlayerController *sharedMoviePlayer;
 @property (nonatomic, weak) VideoCell *currentVideoCell;
+@property (nonatomic, weak) VideoCell *lastVideoCell;
+
+@property (nonatomic) BOOL videoPlayerIsSavingThumbnail;
+@property (nonatomic) BOOL videoIsWaitingToPrepare;
 
 @property (nonatomic) NSMutableDictionary *videoMetaDataInternal;
 
@@ -73,7 +82,7 @@
 @property (nonatomic, strong) WGEventMessage *object;
 
 #pragma mark - UIImagePickerDelegate  Delegate
-@property (nonatomic, strong) MPMoviePlayerController *scrollViewMoviePlayer;
+
 @property (nonatomic, strong) NSData *fileData;
 @property (nonatomic, strong) NSDictionary *options;
 @property (nonatomic, strong) NSString *type;
@@ -121,8 +130,9 @@
 @property (nonatomic, strong) UIImageView *thumbnailImageView;
 @property (nonatomic, strong) UIImageView *thumbnailImageView2;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
-@property (nonatomic, strong) UILabel *label;
 @property (nonatomic, strong) NSURL *videoURL;
+
+@property (nonatomic) BOOL isRequestingThumbnail;
 
 @property (nonatomic) NSNumber *videoStartTime;
 @property (nonatomic) UIImage *startingThumbnail;
@@ -132,7 +142,8 @@
 - (void)prepareVideo;
 - (void)startVideo;
 - (void)pauseVideo;
-- (void)unloadVideo;
+- (void)resumeVideo;
+- (void)unloadVideoCell;
 
 @end
 

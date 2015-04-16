@@ -162,7 +162,7 @@
     if(collectionView == self.mediaScrollView) {
         if([cell isKindOfClass:[VideoCell class]]) {
             VideoCell *videoCell = (VideoCell*)cell;
-            [videoCell unloadVideo];
+            [videoCell unloadVideoCell];
         }
     }
     

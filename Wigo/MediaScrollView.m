@@ -55,12 +55,15 @@
     [self registerClass:[CameraCell class] forCellWithReuseIdentifier:@"CameraCell"];
     
     
-    MPMoviePlayerController *playerA = [self videoCellMoviePlayer];
-    MPMoviePlayerController *playerB = [self videoCellMoviePlayer];
+//    MPMoviePlayerController *playerA = [self videoCellMoviePlayer];
+//    MPMoviePlayerController *playerB = [self videoCellMoviePlayer];
+//    self.moviePlayerPool = [NSMutableSet setWithObjects:playerA, playerB, nil];
     
-    self.moviePlayerPool = [NSMutableSet setWithObjects:playerA, playerB, nil];
+    self.sharedMoviePlayer = [self videoCellMoviePlayer];
     
-   
+    self.videoPlayerIsSavingThumbnail = NO;
+    self.videoIsWaitingToPrepare = NO;
+    
     self.videoMetaDataInternal = [NSMutableDictionary dictionary];
     
 }
@@ -321,9 +324,31 @@
             NSLog(@"switching video cells to page %d", page);
             //[self.currentVideoCell unloadVideo];
             
-            
-            self.currentVideoCell = (VideoCell *)currentCell;
-            [self.currentVideoCell prepareVideo];
+            if(currentCell == self.currentVideoCell) {
+                [self.currentVideoCell resumeVideo];
+            }
+            else {
+                
+                self.lastVideoCell = self.currentVideoCell;
+                self.currentVideoCell = (VideoCell *)currentCell;
+                
+                // if the previous video cell is preparing a thumbnail,
+                // wait until it finishes ( when markVideoPlayerIsSavingThumbnail: is called)
+                // to start preparing.
+                // Otherwise, start now
+                
+                if(!self.videoPlayerIsSavingThumbnail) {
+                    
+                    [self.lastVideoCell.moviePlayer stop];
+                    self.lastVideoCell.moviePlayer.shouldAutoplay = NO;
+                    
+                    [self.currentVideoCell prepareVideo];
+                    self.videoIsWaitingToPrepare = NO;
+                }
+                else {
+                    self.videoIsWaitingToPrepare = YES;
+                }
+            }
         }
         
 //
@@ -335,6 +360,26 @@
 //                self.lastMoviePlayer = theMoviePlayer;
 //            }
 //        }
+    }
+}
+
+// response to a video cell starting or finishing saving a thumbnail
+//
+// if it is finishing, and the current video is waiting to start preparing,
+// start preparing the current videw
+
+- (void)markVideoPlayerIsSavingThumbnail:(BOOL)videoPlayerIsSavingThumbnail {
+    self.videoPlayerIsSavingThumbnail = videoPlayerIsSavingThumbnail;
+    
+    if(!self.videoPlayerIsSavingThumbnail) {
+        if(self.videoIsWaitingToPrepare) {
+            self.videoIsWaitingToPrepare = NO;
+            
+            [self.lastVideoCell.moviePlayer stop];
+            self.lastVideoCell.moviePlayer.shouldAutoplay = NO;
+            
+            [self.currentVideoCell prepareVideo];
+        }
     }
 }
 
@@ -366,17 +411,18 @@
 //}
 
 - (MPMoviePlayerController *)getAvailableMoviePlayer {
+    return self.sharedMoviePlayer;
     
-    return [self videoCellMoviePlayer];
-    
-    MPMoviePlayerController *ret = [self.moviePlayerPool anyObject];
-    if (!ret) {
-        ret = [self videoCellMoviePlayer];
-    }
-    else {
-        [self.moviePlayerPool removeObject:ret];
-    }
-    return ret;
+//    return [self videoCellMoviePlayer];
+//    
+//    MPMoviePlayerController *ret = [self.moviePlayerPool anyObject];
+//    if (!ret) {
+//        ret = [self videoCellMoviePlayer];
+//    }
+//    else {
+//        [self.moviePlayerPool removeObject:ret];
+//    }
+//    return ret;
 }
 
 - (void)freeMoviePlayer:(MPMoviePlayerController *)moviePlayer {
@@ -907,6 +953,7 @@
             else {
                 [strongSelf.eventMessages replaceObjectAtIndex:1 withObject:strongSelf.object];
                 [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+                
                 strongSelf.shownCurrentImage = NO;
             }
         }];
@@ -994,12 +1041,17 @@
     
     
     self.isCurrentVideoCell = NO;
+    self.isRequestingThumbnail = NO;
     
     self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
     self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.thumbnailImageView.clipsToBounds = YES;
     
     [self.contentView addSubview:self.thumbnailImageView];
+    
+    self.spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    self.spinner.frame = CGRectMake(self.thumbnailImageView.frame.size.width/4, self.thumbnailImageView.frame.size.height/4, self.thumbnailImageView.frame.size.width/2,  self.thumbnailImageView.frame.size.height/2);
+    [self.thumbnailImageView addSubview:self.spinner];
     
     self.thumbnailImageView2 = [[UIImageView alloc] initWithFrame:self.frame];
     self.thumbnailImageView2.contentMode = UIViewContentModeScaleAspectFill;
@@ -1023,16 +1075,7 @@
     [self.focusButton addTarget:self action:@selector(focusOnContent) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.focusButton];
     [self.contentView bringSubviewToFront:self.focusButton];
-    
-    MPMoviePlayerController *ret = [[MPMoviePlayerController alloc] init];
-    ret.movieSourceType = MPMovieSourceTypeStreaming;
-    
-    ret.scalingMode = MPMovieScalingModeAspectFill;
-    [ret setControlStyle: MPMovieControlStyleNone];
-    ret.repeatMode = MPMovieRepeatModeOne;
-    ret.shouldAutoplay = NO;
-    
-    self.moviePlayer = ret;
+    [self.contentView bringSubviewToFront:self.label];
     
 }
 
@@ -1044,8 +1087,9 @@
 
 - (void)prepareVideo {
     
-    //self.moviePlayer = [self.mediaScrollDelegate getAvailableMoviePlayer];
+    self.moviePlayer = [self.mediaScrollDelegate getAvailableMoviePlayer];
     
+    NSLog(@"movie player: %@", self.moviePlayer.description);
     self.moviePlayer.view.frame = self.bounds;
     self.moviePlayer.contentURL = self.videoURL;
     
@@ -1056,24 +1100,48 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerThumbnailsLoaded:) name:MPMoviePlayerThumbnailImageRequestDidFinishNotification object:self.moviePlayer];
     
     
-    if(self.videoStartTime) {
-        self.moviePlayer.currentPlaybackTime = [self.videoStartTime floatValue];
-    }
+//    if(self.videoStartTime) {
+//        self.moviePlayer.currentPlaybackTime = [self.videoStartTime floatValue];
+//    }
     
     [self.moviePlayer prepareToPlay];
 
     [self.contentView addSubview:self.moviePlayer.view];
     [self.contentView bringSubviewToFront:self.thumbnailImageView];
     [self.contentView bringSubviewToFront:self.thumbnailImageView2];
-    self.thumbnailImageView2.hidden = YES;
+    self.thumbnailImageView.hidden = NO;
     self.thumbnailImageView2.image = nil;
+    self.thumbnailImageView2.hidden = YES;
     
+    [self.contentView bringSubviewToFront:self.label];
+    [self.contentView bringSubviewToFront:self.focusButton];
 }
 
-- (void)startVideo {
-    self.moviePlayer.shouldAutoplay = YES;
-    //[self.moviePlayer play];
+// play if ready, or start playing when ready
+
+// cancel any outstanding thumbnail requests,
+// as these will throw up the paused thumbnail on completion
+- (void)resumeVideo {
     
+    if(self.moviePlayer.isPreparedToPlay) {
+        [self.moviePlayer play];
+    }
+    self.moviePlayer.shouldAutoplay = YES;
+    [self.moviePlayer cancelAllThumbnailImageRequests];
+}
+
+// play if ready, or start playing when ready
+- (void)startVideo {
+    
+    [self.spinner stopAnimating];
+    
+    if(self.moviePlayer.isPreparedToPlay) {
+        [self.moviePlayer play];
+    }
+    else {
+        [self.spinner startAnimating];
+        self.moviePlayer.shouldAutoplay = YES;
+    }
 }
 
 - (void)pauseVideo {
@@ -1082,22 +1150,32 @@
         
         [self.moviePlayer pause];
         
-        NSArray *times = @[@(self.moviePlayer.currentPlaybackTime)];
+        //slight time adjustment to smooth pause effect
+        NSArray *times = @[@(self.moviePlayer.currentPlaybackTime+0.05)];
         
+        NSLog(@"requesting thumbnail");
+        
+        // only allow one thumbnail request for the shared player
+        [self.moviePlayer cancelAllThumbnailImageRequests];
+        
+        self.isRequestingThumbnail = YES;
+        [self.mediaScrollDelegate markVideoPlayerIsSavingThumbnail:YES];
         [self.moviePlayer requestThumbnailImagesAtTimes:times timeOption:MPMovieTimeOptionExact];
         
     }
+    self.moviePlayer.shouldAutoplay = NO;
 }
 
 // handle the video player being moved to another cell
 
-- (void)unloadVideo {
+- (void)unloadVideoCell {
+    
+    [self.spinner stopAnimating];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     self.thumbnailImageView.hidden = NO;
     self.thumbnailImageView2.hidden = YES;
-    [self.moviePlayer stop];
     
 }
 
@@ -1109,6 +1187,8 @@
         NSLog(@"playback state: %d", (int)self.moviePlayer.playbackState);
         if(self.moviePlayer.playbackState == MPMoviePlaybackStatePlaying) {
             self.thumbnailImageView.hidden = YES;
+            self.thumbnailImageView2.hidden = YES;
+            [self.spinner stopAnimating];
         }
     }
 }
@@ -1132,13 +1212,20 @@
 
 
 - (void)moviePlayerThumbnailsLoaded:(NSNotification*)notification {
-    NSLog(@"thumbnail loaded");
     
-    UIImage *thumbnailImage = notification.userInfo[MPMoviePlayerThumbnailImageKey];
-    if(thumbnailImage && [thumbnailImage isKindOfClass:[UIImage class]]) {
-        self.thumbnailImageView2.image = thumbnailImage;
-        self.thumbnailImageView2.hidden = NO;
-        [self.contentView bringSubviewToFront:self.thumbnailImageView2];
+    if(self.isRequestingThumbnail) {
+        self.isRequestingThumbnail = NO;
+        NSLog(@"thumbnail loaded");
+        
+        UIImage *thumbnailImage = notification.userInfo[MPMoviePlayerThumbnailImageKey];
+        if(thumbnailImage && [thumbnailImage isKindOfClass:[UIImage class]]) {
+            self.thumbnailImageView2.image = thumbnailImage;
+            self.thumbnailImageView2.hidden = NO;
+            [self.contentView bringSubviewToFront:self.thumbnailImageView2];
+            [self.mediaScrollDelegate markVideoPlayerIsSavingThumbnail:NO];
+            [self.contentView bringSubviewToFront:self.label];
+            [self.contentView bringSubviewToFront:self.focusButton];
+        }
     }
 }
 
