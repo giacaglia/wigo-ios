@@ -100,7 +100,6 @@
 @property (nonatomic, strong) UILabel *numberOfVotesLabel;
 @property (nonatomic, strong) UIButton *upVoteButton;
 @property (nonatomic, strong) UIImageView *upvoteImageView;
-@property (nonatomic, strong) UIButton *focusButton;
 @property (nonatomic, strong) UIView *touchableView;
 @property (nonatomic, strong) UIImageView *gradientBackgroundImageView;
 - (void)focusOnContent;

@@ -1070,11 +1070,23 @@
     [self.contentView addSubview:self.label];
     [self.contentView bringSubviewToFront:self.label];
     
-    self.focusButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 110, self.frame.size.width, self.frame.size.height - 220)];
-    self.focusButton.backgroundColor = UIColor.clearColor;
-    [self.focusButton addTarget:self action:@selector(focusOnContent) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:self.focusButton];
-    [self.contentView bringSubviewToFront:self.focusButton];
+    self.touchableView = [[UIView alloc] initWithFrame:CGRectMake(0, 110, self.frame.size.width, self.frame.size.height - 200)];
+    self.touchableView.backgroundColor = UIColor.clearColor;
+    [self.contentView addSubview:self.touchableView];
+    [self.contentView bringSubviewToFront:self.touchableView];
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(focusOnContent)];
+    singleTap.cancelsTouchesInView = YES;
+    singleTap.numberOfTapsRequired = 1;
+    [self.touchableView addGestureRecognizer:singleTap];
+    
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTapToLike)];
+    doubleTap.numberOfTapsRequired = 2;
+    doubleTap.cancelsTouchesInView = YES;
+    [self.touchableView addGestureRecognizer:doubleTap];
+    [singleTap requireGestureRecognizerToFail:doubleTap];
+    
+    [self.contentView bringSubviewToFront:self.touchableView];
     [self.contentView bringSubviewToFront:self.label];
     
 }
@@ -1105,7 +1117,7 @@
 //    }
     
     [self.moviePlayer prepareToPlay];
-
+    
     [self.contentView addSubview:self.moviePlayer.view];
     [self.contentView bringSubviewToFront:self.thumbnailImageView];
     [self.contentView bringSubviewToFront:self.thumbnailImageView2];
@@ -1113,8 +1125,9 @@
     self.thumbnailImageView2.image = nil;
     self.thumbnailImageView2.hidden = YES;
     
+    [self.contentView bringSubviewToFront:self.touchableView];
     [self.contentView bringSubviewToFront:self.label];
-    [self.contentView bringSubviewToFront:self.focusButton];
+    
 }
 
 // play if ready, or start playing when ready
@@ -1223,8 +1236,10 @@
             self.thumbnailImageView2.hidden = NO;
             [self.contentView bringSubviewToFront:self.thumbnailImageView2];
             [self.mediaScrollDelegate markVideoPlayerIsSavingThumbnail:NO];
+            
+            [self.contentView bringSubviewToFront:self.touchableView];
             [self.contentView bringSubviewToFront:self.label];
-            [self.contentView bringSubviewToFront:self.focusButton];
+            
         }
     }
 }
