@@ -20,6 +20,7 @@
 #define kHighlightKey @"highlight"
 #define kMessagesKey @"messages"
 #define kUserKey @"user"
+#define kEventKey @"event"
 #define kTypeKey @"$type"
 #define kRefKey @"$ref"
 
@@ -42,9 +43,14 @@
 +(WGCollection *)serializeResponse:(NSDictionary *) jsonResponse andClass:(Class)type {
     WGCollection *newCollection = [[WGCollection alloc] initWithType:type];
     // First pass : Go through all objects:
-    [newCollection firstPass:jsonResponse];
+   
     [newCollection setMetaInfo: [jsonResponse objectForKey:kMetaKey]];
-    [newCollection initObjects: [jsonResponse objectForKey:@"objects"]];
+   
+    newCollection.allRefsObjects = [NSMutableDictionary new];
+//    [newCollection firstPass:jsonResponse];
+//    NSArray *secondPassObjects = [newCollection parsedObjects: [jsonResponse objectForKey:@"objects"]];
+    [newCollection initObjects:[jsonResponse objectForKey:@"objects"]];
+
     return newCollection;
 }
 
@@ -68,13 +74,10 @@
 #pragma mark - Objects
 
 - (void)firstPass:(NSDictionary *)jsonResponse {
-    self.allRefsObjects = [NSMutableDictionary new];
     for (NSDictionary *objectDict in [jsonResponse objectForKey:@"include"]) {
-//        WGObject *obj = [[WGObject alloc] initWithJSON:objectDict];
         [self.allRefsObjects setObject:objectDict forKey:[objectDict objectForKey:@"$id"]];
     }
     for (NSDictionary *objectDict in [jsonResponse objectForKey:@"objects"]) {
-//        WGObject *obj = [[WGObject alloc] initWithJSON:objectDict];
         for (NSString *key in objectDict.allKeys) {
             BOOL isKeyAGroup = [WGCollection isKeyAGroup:key];
             if (isKeyAGroup) {
@@ -85,29 +88,47 @@
     }
 }
 
--(void) initObjects:(NSArray *)objects {
-    self.objects = [[NSMutableArray alloc] init];
+-(NSMutableArray *) parsedObjects:(NSArray *)objects {
+    NSMutableArray *resultingArray = [[NSMutableArray alloc] init];
     for (NSDictionary *objectDict in objects) {
-        for (NSString *key in objectDict) {
+        NSMutableDictionary *mutObjDict = [NSMutableDictionary dictionaryWithDictionary:objectDict];
+        for (NSString *key in mutObjDict) {
             BOOL isKeyGroup = [WGCollection isKeyAGroup:key];
             if (isKeyGroup) {
-            
+                NSMutableDictionary *nestedDict = [mutObjDict objectForKey:key];
+                NSLog(@"1.nested Dict:%p: %@",nestedDict, nestedDict);
+                NSArray *nestedArray = [nestedDict objectForKey:@"objects"];
+                NSMutableArray *updatedArray = [self parsedObjects:nestedArray];
+                NSLog(@"1.New array %@",updatedArray);
+                [nestedDict setValue:updatedArray forKey:@"objects"];
+                NSLog(@"2.nested Dict:%p: %@",nestedDict, nestedDict);
+//                [objectDict setValue:nestedDict forKey:key];
             }
             else {
                 if ([key isEqual:kGroupKey] || [key isEqual:kAttendeesKey] ||
-                    [key isEqual:kHighlightKey] || [key isEqual:kUserKey]) {
+                    [key isEqual:kHighlightKey] || [key isEqual:kUserKey] ||
+                    [key isEqual:kEventKey]) {
                     NSDictionary *nestedObj = [objectDict objectForKey:key];
                     if ([nestedObj.allKeys containsObject:kRefKey]) {
                         NSString *refID = [nestedObj objectForKey:kRefKey];
-                        nestedObj = [self.allRefsObjects objectForKey:refID];
-                        NSLog(@"object dict: %@", nestedObj);
+                        if ([self.allRefsObjects.allKeys containsObject:refID]) {
+                            nestedObj = [self.allRefsObjects objectForKey:refID];
+                            NSLog(@"object dict: %@", nestedObj);
+                        }
                     }
-//                        objectDict
+                    [mutObjDict setValue:nestedObj forKey:key];
                 }
             }
         }
-        WGObject *object = [[self.type alloc] initWithJSON:objectDict];
-        [self.objects addObject: object];
+        [resultingArray addObject: mutObjDict];
+    }
+    return resultingArray;
+}
+
+-(void) initObjects:(NSArray *)objects {
+    self.objects = [[NSMutableArray alloc] init];
+    for (NSDictionary *objectDict in objects) {
+        [self.objects addObject: [[self.type alloc] initWithJSON:objectDict]];
     }
 }
 
