@@ -12,6 +12,7 @@
 #import "WGEventAttendee.h"
 #import "WGGroup.h"
 #import "WGUser.h"
+#import "WGCache.h"
 #define kMetaKey @"meta"
 
 #define kIsAttendingKey @"is_attending"
@@ -24,6 +25,7 @@
 #define kTypeKey @"$type"
 #define kRefKey @"$ref"
 
+#define kArrayObjectKeys @[kGroupKey, kAttendeesKey, kHighlightKey, kUserKey, kEventKey]
 
 @implementation WGCollection
 
@@ -46,11 +48,8 @@
    
     [newCollection setMetaInfo: [jsonResponse objectForKey:kMetaKey]];
    
-    newCollection.allRefsObjects = [NSMutableDictionary new];
-//    [newCollection firstPass:jsonResponse];
-//    NSArray *secondPassObjects = [newCollection parsedObjects: [jsonResponse objectForKey:@"objects"]];
+    [newCollection firstPass:jsonResponse];
     [newCollection initObjects:[jsonResponse objectForKey:@"objects"]];
-
     return newCollection;
 }
 
@@ -74,56 +73,90 @@
 #pragma mark - Objects
 
 - (void)firstPass:(NSDictionary *)jsonResponse {
+    // First pass on the include list
     for (NSDictionary *objectDict in [jsonResponse objectForKey:@"include"]) {
-        [self.allRefsObjects setObject:objectDict forKey:[objectDict objectForKey:@"$id"]];
+        [[WGCache sharedCache] setObject:objectDict forKey:[objectDict objectForKey:@"$id"]];
     }
-    for (NSDictionary *objectDict in [jsonResponse objectForKey:@"objects"]) {
-        for (NSString *key in objectDict.allKeys) {
-            BOOL isKeyAGroup = [WGCollection isKeyAGroup:key];
-            if (isKeyAGroup) {
-                [self firstPass:[objectDict objectForKey:key]];
+    [self populateCache:[jsonResponse objectForKey:@"include"]];
+}
+
+
+- (void)populateCache:(id) object {
+    if ([object isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *objDict = (NSDictionary *)object;
+        if ([objDict.allKeys containsObject:@"$id"]) {
+            NSString *idOfObj = [objDict objectForKey:@"$id"];
+            if (![[[WGCache sharedCache] allKeys] containsObject:idOfObj]) {
+                [[WGCache sharedCache] setObject:objDict forKey:[objDict objectForKey:@"$id"]];
             }
         }
-        [self.allRefsObjects setObject:objectDict forKey:[objectDict objectForKey:@"$id"]];
+        for (id value in objDict.allValues) {
+            [self populateCache:value];
+        }
+    }
+    else if ([object isKindOfClass:[NSArray class]]) {
+        NSArray *objArray = (NSArray *)object;
+        for (id element in objArray) {
+            [self populateCache:element];
+        }
     }
 }
 
--(NSMutableArray *) parsedObjects:(NSArray *)objects {
-    NSMutableArray *resultingArray = [[NSMutableArray alloc] init];
-    for (NSDictionary *objectDict in objects) {
-        NSMutableDictionary *mutObjDict = [NSMutableDictionary dictionaryWithDictionary:objectDict];
-        for (NSString *key in mutObjDict) {
-            BOOL isKeyGroup = [WGCollection isKeyAGroup:key];
-            if (isKeyGroup) {
-                NSMutableDictionary *nestedDict = [mutObjDict objectForKey:key];
-                NSLog(@"1.nested Dict:%p: %@",nestedDict, nestedDict);
-                NSArray *nestedArray = [nestedDict objectForKey:@"objects"];
-                NSMutableArray *updatedArray = [self parsedObjects:nestedArray];
-                NSLog(@"1.New array %@",updatedArray);
-                [nestedDict setValue:updatedArray forKey:@"objects"];
-                NSLog(@"2.nested Dict:%p: %@",nestedDict, nestedDict);
-//                [objectDict setValue:nestedDict forKey:key];
-            }
-            else {
-                if ([key isEqual:kGroupKey] || [key isEqual:kAttendeesKey] ||
-                    [key isEqual:kHighlightKey] || [key isEqual:kUserKey] ||
-                    [key isEqual:kEventKey]) {
-                    NSDictionary *nestedObj = [objectDict objectForKey:key];
-                    if ([nestedObj.allKeys containsObject:kRefKey]) {
-                        NSString *refID = [nestedObj objectForKey:kRefKey];
-                        if ([self.allRefsObjects.allKeys containsObject:refID]) {
-                            nestedObj = [self.allRefsObjects objectForKey:refID];
-                            NSLog(@"object dict: %@", nestedObj);
-                        }
-                    }
-                    [mutObjDict setValue:nestedObj forKey:key];
-                }
-            }
+
+- (void)replaceRefs:(id)object {
+    if ([object isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *objDict = (NSMutableDictionary *)object;
+        if ([objDict.allKeys containsObject:@"$ref"]) {
+            NSString *idOfObj = [objDict objectForKey:@"$ref"];
+            [objDict setValue:[[WGCache sharedCache] objectForKey:idOfObj] forKey:idOfObj];
         }
-        [resultingArray addObject: mutObjDict];
+        for (id value in objDict.allValues) {
+            [self replaceRefs:value];
+        }
     }
-    return resultingArray;
+    else if ([object isKindOfClass:[NSArray class]]) {
+        NSArray *objArray = (NSArray *)object;
+        for (id element in objArray) {
+            [self replaceRefs:element];
+        }
+    }
 }
+
+
+//-(NSMutableArray *) parsedObjects:(NSArray *)objects {
+//    NSMutableArray *resultingArray = [[NSMutableArray alloc] init];
+//    for (NSDictionary *objectDict in objects) {
+//        NSMutableDictionary *mutObjDict = [NSMutableDictionary dictionaryWithDictionary:objectDict];
+//        for (NSString *key in mutObjDict) {
+//            BOOL isKeyGroup = [WGCollection isKeyAGroup:key];
+//            if (isKeyGroup) {
+//                NSMutableDictionary *nestedDict = [mutObjDict objectForKey:key];
+//                NSLog(@"1.nested Dict:%p: %@",nestedDict, nestedDict);
+//                NSArray *nestedArray = [nestedDict objectForKey:@"objects"];
+//                NSMutableArray *updatedArray = [self parsedObjects:nestedArray];
+//                NSLog(@"1.New array %@",updatedArray);
+//                [nestedDict setValue:updatedArray forKey:@"objects"];
+//                NSLog(@"2.nested Dict:%p: %@",nestedDict, nestedDict);
+////                [objectDict setValue:nestedDict forKey:key];
+//            }
+//            else {
+//                if ([kArrayObjectKeys containsObject:key]) {
+//                    NSDictionary *nestedObj = [objectDict objectForKey:key];
+//                    if ([nestedObj.allKeys containsObject:kRefKey]) {
+//                        NSString *refID = [nestedObj objectForKey:kRefKey];
+//                        if ([self.allRefsObjects.allKeys containsObject:refID]) {
+//                            nestedObj = [self.allRefsObjects objectForKey:refID];
+//                            NSLog(@"object dict: %@", nestedObj);
+//                        }
+//                    }
+//                    [mutObjDict setValue:nestedObj forKey:key];
+//                }
+//            }
+//        }
+//        [resultingArray addObject: mutObjDict];
+//    }
+//    return resultingArray;
+//}
 
 -(void) initObjects:(NSArray *)objects {
     self.objects = [[NSMutableArray alloc] init];
