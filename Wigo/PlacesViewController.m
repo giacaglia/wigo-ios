@@ -979,7 +979,6 @@ BOOL firstTimeLoading;
     
 }
 
-
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
     if (![WGProfile.currentUser.group.id isEqual:groupID]) {
         [WGProfile setPeekingGroupID:groupID];
