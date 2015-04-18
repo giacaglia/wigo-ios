@@ -723,6 +723,7 @@
     [self.mediaScrollView reloadData];
     
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
+    [self.mediaScrollView scrolledToPage:(int)page];
     [self hideOrShowFacesForPage:(int)page];
 }
 
