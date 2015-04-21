@@ -500,8 +500,8 @@ BOOL firstTimeLoading;
     }
     else if (self.pastDays.count > 0) {
         //[Today section] [Highlighs section] (really just space for a header) + pastDays sections
-        return 1 + 1;
-//        return 1 + 1 + self.pastDays.count;
+//        return 1 + 1;
+        return 1 + 1 + self.pastDays.count;
     }
     //[Today section]
     return 1;
@@ -1320,11 +1320,9 @@ BOOL firstTimeLoading;
             }
             
             for (WGEvent *event in strongSelf.oldEvents) {
-                if (![event highlight]) {
-                    continue;
-                }
                 NSString *eventDate = [[event expires] deserialize];
                 if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
+                    if (!eventDate) return;
                     [strongSelf.pastDays addObject: eventDate];
                     [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
                 }
