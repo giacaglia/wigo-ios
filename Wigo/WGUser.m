@@ -1201,7 +1201,7 @@ static WGUser *currentUser = nil;
     if (!user.id) {
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi post:@"taps" withParameters:@{ @"tapped" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:@"users/me/taps/" withParameters:@{ @"tapped_id" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isTapped = @YES;
         }

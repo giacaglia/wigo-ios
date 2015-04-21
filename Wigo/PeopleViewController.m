@@ -400,7 +400,7 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void)acceptPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    WGUser *user = (WGUser *)[self.users objectAtIndex:buttonSender.tag];
+    WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:buttonSender.tag];
     [WGProfile.currentUser acceptFollowRequestForUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
@@ -410,7 +410,7 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void)rejectPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    WGUser *user = (WGUser *)[self.users objectAtIndex:buttonSender.tag];
+    WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:buttonSender.tag];
     [WGProfile.currentUser rejectFollowRequestForUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];

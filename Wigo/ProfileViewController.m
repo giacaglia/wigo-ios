@@ -179,7 +179,7 @@ BOOL blockShown;
     if ([self.user isEqual:WGProfile.currentUser]) {
         // TODO: Refetch notifications
         self.unexpiredNotifications = NetworkFetcher.defaultGetter.notifications;
-//        [self fetchFirstPageNotifications];
+        [self fetchFirstPageNotifications];
         [self updateBadge];
     }
 
