@@ -20,6 +20,9 @@
 @end
 
 
+#define kSectionEventChat 0
+#define kSectionChats 1
+
 #define kChatCellName @"ChatCellName"
 @interface ChatCell : UITableViewCell
 + (CGFloat) height;

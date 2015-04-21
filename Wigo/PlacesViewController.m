@@ -94,7 +94,7 @@ BOOL firstTimeLoading;
     [self initializeWhereView];
     [self addCenterButton];
 //    [NetworkFetcher.defaultGetter fetchMessages];
-//    [NetworkFetcher.defaultGetter fetchSuggestions];
+    [NetworkFetcher.defaultGetter fetchSuggestions];
 //    [NetworkFetcher.defaultGetter fetchNotifications];
 //    [NetworkFetcher.defaultGetter fetchUserNames];
 }
@@ -143,7 +143,7 @@ BOOL firstTimeLoading;
         self.shouldReloadEvents = YES;
     }
     [self updateNavigationBar];
-//    [self fetchUserInfo];
+    [self fetchUserInfo];
 }
 
 - (void)showReferral {
@@ -168,7 +168,7 @@ BOOL firstTimeLoading;
     UIImage *highlightImage = nil;
     self.createButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.createButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-    self.createButton.frame = CGRectMake(0.0, 0.0, buttonImage.size.width, buttonImage.size.height);
+    self.createButton.frame = CGRectMake(0.0, 0.0, 55.0f, 55.0f);
     [self.createButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
     [self.createButton setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
     [self.createButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
@@ -1368,18 +1368,18 @@ BOOL firstTimeLoading;
         if (!strongSelf.secondTimeFetchingUserInfo) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
             strongSelf.secondTimeFetchingUserInfo = YES;
-            if (
-                (error || ![WGProfile.currentUser.emailValidated boolValue] ||
-                [WGProfile.currentUser.group.locked boolValue])
-                
-                &&
-                
-                !strongSelf.presentingLockedView )
-            {
-                [strongSelf showFlashScreen];
-                [strongSelf.signViewController reloadedUserInfo:success andError:error];
-                return;
-            }
+//            if (
+//                (error || ![WGProfile.currentUser.emailValidated boolValue] ||
+//                [WGProfile.currentUser.group.locked boolValue])
+//                
+//                &&
+//                
+//                !strongSelf.presentingLockedView )
+//            {
+//                [strongSelf showFlashScreen];
+//                [strongSelf.signViewController reloadedUserInfo:success andError:error];
+//                return;
+//            }
         }
         
         // Second time fetching user info... already logged in
@@ -1503,16 +1503,8 @@ BOOL firstTimeLoading;
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [backgroundView addSubview:self.eventPeopleScrollView];
     
-    self.numberOfHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, self.frame.size.width, 20)];
-    self.numberOfHighlightsLabel.textAlignment = NSTextAlignmentLeft;
-    self.numberOfHighlightsLabel.textColor = RGB(119, 119, 119);
-    self.numberOfHighlightsLabel.font = [FontProperties lightFont:15.0f];
-    self.numberOfHighlightsLabel.alpha = 1.0f;
-    self.numberOfHighlightsLabel.text = @"The Buzz";
-    [backgroundView addSubview:self.numberOfHighlightsLabel];
-    
     self.highlightsCollectionView = [[HighlightsCollectionView alloc]
-                                     initWithFrame:CGRectMake(0, self.numberOfHighlightsLabel.frame.origin.y + self.numberOfHighlightsLabel.frame.size.height + 5, self.frame.size.width, [HighlightCell height])
+                                     initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 20 + 5, self.frame.size.width, [HighlightCell height])
                                      collectionViewLayout:[HighlightsFlowLayout new]];
     [backgroundView addSubview:self.highlightsCollectionView];
 }

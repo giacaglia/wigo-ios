@@ -122,42 +122,6 @@
     }
 }
 
-
-//-(NSMutableArray *) parsedObjects:(NSArray *)objects {
-//    NSMutableArray *resultingArray = [[NSMutableArray alloc] init];
-//    for (NSDictionary *objectDict in objects) {
-//        NSMutableDictionary *mutObjDict = [NSMutableDictionary dictionaryWithDictionary:objectDict];
-//        for (NSString *key in mutObjDict) {
-//            BOOL isKeyGroup = [WGCollection isKeyAGroup:key];
-//            if (isKeyGroup) {
-//                NSMutableDictionary *nestedDict = [mutObjDict objectForKey:key];
-//                NSLog(@"1.nested Dict:%p: %@",nestedDict, nestedDict);
-//                NSArray *nestedArray = [nestedDict objectForKey:@"objects"];
-//                NSMutableArray *updatedArray = [self parsedObjects:nestedArray];
-//                NSLog(@"1.New array %@",updatedArray);
-//                [nestedDict setValue:updatedArray forKey:@"objects"];
-//                NSLog(@"2.nested Dict:%p: %@",nestedDict, nestedDict);
-////                [objectDict setValue:nestedDict forKey:key];
-//            }
-//            else {
-//                if ([kArrayObjectKeys containsObject:key]) {
-//                    NSDictionary *nestedObj = [objectDict objectForKey:key];
-//                    if ([nestedObj.allKeys containsObject:kRefKey]) {
-//                        NSString *refID = [nestedObj objectForKey:kRefKey];
-//                        if ([self.allRefsObjects.allKeys containsObject:refID]) {
-//                            nestedObj = [self.allRefsObjects objectForKey:refID];
-//                            NSLog(@"object dict: %@", nestedObj);
-//                        }
-//                    }
-//                    [mutObjDict setValue:nestedObj forKey:key];
-//                }
-//            }
-//        }
-//        [resultingArray addObject: mutObjDict];
-//    }
-//    return resultingArray;
-//}
-
 -(void) initObjects:(NSArray *)objects {
     self.objects = [[NSMutableArray alloc] init];
     for (NSDictionary *objectDict in objects) {

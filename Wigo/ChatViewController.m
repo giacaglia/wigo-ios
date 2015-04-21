@@ -175,17 +175,21 @@
 #pragma mark - Tablew View Data Source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+//    if (section == kSectionEventChat) return 1;
     return self.messages.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
     ChatCell *cell = [tableView dequeueReusableCellWithIdentifier:kChatCellName forIndexPath:indexPath];
-    
+//    if (indexPath.section == kSectionEventChat) {
+//        cell.nameLabel.text = @"Last message";
+//        cell.lastMessageLabel.text = @"New event";
+//        self.orangeNewView.hidden = message.isRead.boolValue;
+//    }
     if (indexPath.row == self.messages.count - 1) [self fetchNextPage];
     if (self.messages.count  == 0) return cell;
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
