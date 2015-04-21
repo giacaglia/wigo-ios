@@ -32,6 +32,7 @@
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, strong) ImageScrollView *imageScrollView;
 @property (nonatomic, strong) UIPageControl *pageControl;
+@property (nonatomic, strong) NSNumber *lastNotificationRead;
 @end
 
 

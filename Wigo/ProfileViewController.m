@@ -93,6 +93,7 @@ BOOL blockShown;
     self.pageControl = nil;
     [_gradientImageView removeFromSuperview];
     _gradientImageView = nil;
+    if (self.user.isCurrentUser) [self updateLastNotificationsRead];
 }
 
 - (UIImage *)imageWithColor:(UIColor *)color
@@ -121,7 +122,7 @@ BOOL blockShown;
     if (self.user.state == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if (self.user.isCurrentUser) {
         [self fetchUserInfo];
-        [self updateLastNotificationsRead];
+        self.lastNotificationRead = WGProfile.currentUser.lastNotificationRead;
     }
     else {
         if (self.user.isTapped == nil ||self.user.isFollowing == nil ) {
@@ -703,6 +704,9 @@ BOOL blockShown;
         if (!notification.fromUser.id) return notificationCell;
         if ([notification.type isEqual:@"group.unlocked"]) return notificationCell;
         notificationCell.notification = notification;
+        if (notification.id > WGProfile.currentUser.lastNotificationRead) {
+            self.lastNotificationRead = notification.id;
+        }
         return notificationCell;
     }
     else if (indexPath.section == kMutualFriendsSection) {
@@ -951,6 +955,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)updateLastNotificationsRead {
+    WGProfile.currentUser.lastNotificationRead = self.lastNotificationRead;
 //    [WGProfile.currentUser setLastNotificationReadToLatest:^(BOOL success, NSError *error) {
 //        if (error) {
 //            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
@@ -1120,7 +1125,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)setNotification:(WGNotification *)notification {
     _notification = notification;
     WGUser *user = notification.fromUser;
-    if (notification.id.intValue > WGProfile.currentUser.lastNotificationRead.intValue) {
+    if (notification.id.longLongValue > WGProfile.currentUser.lastNotificationRead.longLongValue) {
         self.orangeNewView.hidden = NO;
     } else {
         self.orangeNewView.hidden = YES;

@@ -205,10 +205,17 @@ static WGUser *currentUser = nil;
 
 -(void) setLastNotificationRead:(NSNumber *)lastNotificationRead {
     [self setObject:lastNotificationRead forKey:kLastNotificationReadKey];
+    [[NSUserDefaults standardUserDefaults] setObject:lastNotificationRead forKey:kLastNotificationReadKey];
 }
 
 -(NSNumber *) lastNotificationRead {
-    return [self objectForKey:kLastNotificationReadKey];
+    if ([self objectForKey:kLastNotificationReadKey]) {
+        return [self objectForKey:kLastNotificationReadKey];
+    }
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kLastNotificationReadKey]) {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:kLastNotificationReadKey];
+    }
+    return @0;
 }
 
 -(void) setLastUserRead:(NSNumber *)lastUserRead {
