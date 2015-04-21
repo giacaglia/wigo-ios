@@ -10,8 +10,6 @@
 
 @interface WGParser : NSObject
 
-@property NSMutableDictionary *cache;
-
 -(id) replaceReferences:(id) object;
 
 @end

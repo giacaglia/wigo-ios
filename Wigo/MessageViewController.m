@@ -85,7 +85,7 @@
     if (self.isFetchingEveryone) return;
     self.isFetchingEveryone = YES;
     __weak typeof(self) weakSelf = self;
-    [[WGProfile currentUser] getNotMeForMessage:^(WGCollection *collection, NSError *error) {
+    [WGProfile.currentUser getNotMeForMessage:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
             strongSelf.isFetchingEveryone = NO;

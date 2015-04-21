@@ -32,7 +32,7 @@ typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 - (void)updateEvent:(WGEvent *)newEvent;
 @property (nonatomic, assign) BOOL doNotReloadOffsets;
-- (void)invitePressed;
+- (void)invitePressed:(WGEvent *)event;
 - (void)showOverlayForInvite:(id)sender;
 - (void)goHerePressed:(id)sender withHandler:(BoolResultBlock)handler;
 - (void)startAnimatingAtTop:(id)sender

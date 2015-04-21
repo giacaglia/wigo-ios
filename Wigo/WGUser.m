@@ -850,8 +850,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) getNotMeForMessage:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/"  withArguments:@{ @"id__ne" : self.id, @"context": @"message"}
-            andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/me/"  withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -945,6 +944,28 @@ static WGUser *currentUser = nil;
     }];
 }
 
+-(void) getFriendRequests:(WGCollectionResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"users/%@/friends/requests", self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       if (error) {
+           handler(nil, error);
+           return;
+       }
+       NSError *dataError;
+       WGCollection *objects;
+       @try {
+           objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+       }
+       @catch (NSException *exception) {
+           NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+           
+           dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+       }
+       @finally {
+           handler(objects, dataError);
+       }
+    }];
+}
 +(void) getOnboarding:(WGCollectionResultBlock)handler {
     [WGApi get:@"users/" withArguments:@{ @"query" : @"onboarding" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
@@ -990,7 +1011,7 @@ static WGUser *currentUser = nil;
 }
 
 +(void) getInvites:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"following" : @"true", @"ordering" : @"invite" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -1038,7 +1059,8 @@ static WGUser *currentUser = nil;
 }
 
 +(void) getSuggestions:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/suggestions/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//    [WGApi get:@"users/suggestions/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -1224,12 +1246,13 @@ static WGUser *currentUser = nil;
 }
 
 -(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler {
-    [user saveKey:kIsFollowingKey withValue:@YES andHandler:^(BOOL success, NSError *error) {
-        if (!error && user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
+    [WGApi post:[NSString stringWithFormat:@"users/me/friends/"] withParameters:@{ @"friend_id": user.id} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
             user.isFollowingRequested = @YES;
         }
         handler(error == nil, error);
     }];
+
 }
 
 -(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {

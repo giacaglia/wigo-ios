@@ -7,30 +7,19 @@
 //
 
 #import "WGParser.h"
+#import "WGCache.h"
 
 #define kReferenceIdKey @"$id"
 #define kReferenceKey @"$ref"
 
 @implementation WGParser
 
--(id) init {
-    if (self = [super init]) {
-        self.cache = [[NSMutableDictionary alloc] init];
-    }
-    return self;
-}
 
 -(id) replaceReferences:(id) object {
     [self addReferencesToCache:object];
     
-    if ([[self.cache allKeys] count] > 0) {
-        if ([object isKindOfClass:[NSDictionary class]]) {
-            return [self replaceReferencesInDictionary:object];
-        } else if ([object isKindOfClass:[NSArray class]]) {
-            return [self replaceReferencesInArray: object];
-        } else {
-            return object;
-        }
+    if ([[[WGCache sharedCache] allKeys] count] > 0) {
+        return [self replaceReferencesInObject:object];
     } else {
         return object;
     }
@@ -38,83 +27,51 @@
 
 -(void) addReferencesToCache:(id) object {
     if ([object isKindOfClass:[NSDictionary class]]) {
-        [self addReferencesInDictionary:object];
-    } else if ([object isKindOfClass:[NSArray class]]) {
-        [self addReferencesInArray:object];
+        NSDictionary *objDict = (NSDictionary *)object;
+        if ([objDict objectForKey:kReferenceIdKey]) {
+            [[WGCache sharedCache] setObject:objDict
+                                      forKey:[objDict objectForKey:kReferenceIdKey]];
+            return;
+        }
+        for (id key in [objDict allKeys]) {
+            id element = [objDict objectForKey:key];
+            [self addReferencesToCache:element];
+        }
     }
-}
-
--(void) addReferencesInDictionary:(NSDictionary *)dictionary {
-    if ([dictionary objectForKey:kReferenceIdKey]) {
-        [self.cache setObject:dictionary forKey:[dictionary objectForKey:kReferenceIdKey]];
-    }
-    for (id key in [dictionary allKeys]) {
-        id object = [dictionary objectForKey:key];
-        if (object) {
-            if ([object isKindOfClass:[NSDictionary class]]) {
-                [self addReferencesInDictionary:object];
-            } else if ([object isKindOfClass:[NSArray class]]) {
-                [self addReferencesInArray:object];
-            }
+    else if ([object isKindOfClass:[NSArray class]]) {
+        NSArray *objArray = (NSArray *)object;
+        for (id element in objArray) {
+            [self addReferencesToCache:element];
         }
     }
 }
 
--(void) addReferencesInArray:(NSArray *) array {
-    for (int i = 0; i < [array count]; i++) {
-        id object = [array objectAtIndex:i];
-        if (object) {
-            if ([object isKindOfClass:[NSDictionary class]]) {
-                [self addReferencesInDictionary:object];
-            } else if ([object isKindOfClass:[NSArray class]]) {
-                [self addReferencesInArray:object];
-            }
+- (id)replaceReferencesInObject:(id)object {
+    if ([object isKindOfClass:[NSDictionary class]]) {
+        NSDictionary *objDict = (NSDictionary *)object;
+        if ([objDict objectForKey:kReferenceKey] &&
+            [[WGCache sharedCache] objectForKey:[objDict objectForKey:kReferenceKey]]) {
+            return [[WGCache sharedCache] objectForKey:[objDict objectForKey:kReferenceKey]];
         }
-    }
-}
-
--(NSDictionary *) replaceReferencesInDictionary:(NSDictionary *) dictionary {
-    NSMutableDictionary *newDict = [[NSMutableDictionary alloc] init];
-    
-    if ([dictionary objectForKey:kReferenceKey] && ![self.cache objectForKey:[dictionary objectForKey:kReferenceKey]]) {
-        NSLog(@"Server error, missing ref for dict: %@", dictionary);
-    }
-    
-    if ([dictionary objectForKey:kReferenceKey] && [self.cache objectForKey:[dictionary objectForKey:kReferenceKey]]) {
-        return [self.cache objectForKey:[dictionary objectForKey:kReferenceKey]];
-    }
-    
-    for (id key in [dictionary allKeys]) {
-        id object = [dictionary objectForKey:key];
-        if (object) {
-            if ([object isKindOfClass:[NSDictionary class]]) {
-                [newDict setObject:[self replaceReferencesInDictionary: object] forKey:key];
-            } else if ([object isKindOfClass:[NSArray class]]) {
-                [newDict setObject:[self replaceReferencesInArray: object] forKey:key];
-            } else {
-                [newDict setObject:object forKey:key];
-            }
+        NSMutableDictionary *newDict = [NSMutableDictionary new];
+        for (id key in [objDict allKeys]) {
+            id element = [objDict objectForKey:key];
+            id newElement = [self replaceReferencesInObject:element];
+            [newDict setObject:newElement forKeyedSubscript:key];
         }
+        return newDict;
     }
-    
-    return newDict;
-}
-
--(NSArray *) replaceReferencesInArray:(NSArray *) array {
-    NSMutableArray *newArray = [[NSMutableArray alloc] init];
-    for (int i = 0; i < [array count]; i++) {
-        id object = [array objectAtIndex:i];
-        if (object) {
-            if ([object isKindOfClass:[NSDictionary class]]) {
-                [newArray addObject:[self replaceReferencesInDictionary: object]];
-            } else if ([object isKindOfClass:[NSArray class]]) {
-                [newArray addObject:[self replaceReferencesInArray: object]];
-            } else {
-                [newArray addObject:object];
-            }
+   
+    else if ([object isKindOfClass:[NSArray class]]) {
+        NSArray *objArray = (NSArray *)object;
+        NSMutableArray *newArray = [NSMutableArray new];
+        for (id element in objArray) {
+            id newElement = [self replaceReferencesInObject:element];
+            [newArray addObject:newElement];
         }
+        return newArray;
     }
-    return newArray;
+    return object;
 }
 
 @end

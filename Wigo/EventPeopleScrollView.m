@@ -33,16 +33,9 @@
 
 - (void)addInviteButton {
     self.hiddenInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
-    UIImageView *inviteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
-    inviteImageView.image = [UIImage imageNamed:@"inviteButton"];
-    [self.hiddenInviteButton addSubview:inviteImageView];
-    
-    UILabel *inviteLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.widthOfEachCell, self.widthOfEachCell, 20)];
-    inviteLabel.text = @"Invite";
-    inviteLabel.textColor = [FontProperties getBlueColor];
-    inviteLabel.font = [FontProperties scMediumFont:12.0f];
-    inviteLabel.textAlignment = NSTextAlignmentCenter;
-    [self.hiddenInviteButton addSubview:inviteLabel];
+//    UIImageView *inviteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
+//    inviteImageView.image = [UIImage imageNamed:@"inviteButton"];
+//    [self.hiddenInviteButton addSubview:inviteImageView];
     
     self.hiddenInviteButton.hidden = YES;
     self.hiddenInviteButton.transform = CGAffineTransformMakeScale(0.2f, 0.2f);
@@ -198,8 +191,9 @@
     ScrollViewCell *scrollCell = [collectionView dequeueReusableCellWithReuseIdentifier:kScrollViewCellName forIndexPath:indexPath];
     scrollCell.alpha = 1.0f;
     scrollCell.imgView.image = nil;
+    scrollCell.imgViewLabel.hidden = YES;
     if (indexPath.section == kInviteSection) {
-        if (self.event.id && [self.event.id isEqual:WGProfile.currentUser.eventAttending.id]) {
+        if ([[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) {
             [scrollCell.imageButton removeTarget:nil
                                           action:NULL
                                 forControlEvents:UIControlEventAllEvents];
@@ -210,15 +204,16 @@
             }
             else {
                 scrollCell.alpha = 1.0f;
-                [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+                [scrollCell.imageButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
             }
-            scrollCell.imgView.image = [UIImage imageNamed:@"inviteButton"];
+//            scrollCell.imgView.image = [UIImage imageNamed:@"inviteButton"];
+            scrollCell.imgViewLabel.hidden = NO;
+            scrollCell.imgView.layer.borderColor = [FontProperties getBlueColor].CGColor;
+            scrollCell.imgView.layer.borderWidth = 1.0f;
+            scrollCell.imgView.layer.cornerRadius = scrollCell.imgView.frame.size.width/2.0f;
             scrollCell.blueOverlayView.hidden = YES;
             scrollCell.goHereLabel.hidden = YES;
-            scrollCell.profileNameLabel.text = @"Invite";
-            scrollCell.profileNameLabel.alpha = 1.0f;
-            scrollCell.profileNameLabel.textColor = [FontProperties getBlueColor];
-            scrollCell.profileNameLabel.font = [FontProperties scMediumFont:12.0f];
+            scrollCell.profileNameLabel.text = nil;
         }
         else {
             [scrollCell.imageButton removeTarget:nil
@@ -241,11 +236,15 @@
         scrollCell.goHereLabel.hidden = YES;
         [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         scrollCell.profileNameLabel.alpha = 1.0f;
-        WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
-        scrollCell.user = attendee.user;
+        WGUser *attendee = (WGUser *)[self.event.attendees objectAtIndex:indexPath.item];
+        scrollCell.user = attendee;
         if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
     }
     return scrollCell;
+}
+
+- (void)invitePressed {
+    [self.placesDelegate invitePressed:self.event];
 }
 
 #pragma mark - UICollectionView Header
@@ -304,6 +303,14 @@
     self.imgView.layer.borderColor = UIColor.clearColor.CGColor;
     self.imgView.layer.borderWidth = 1.0f;
     [self.imageButton addSubview:self.imgView];
+    
+    self.imgViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
+    self.imgViewLabel.text = @"INVITE";
+    self.imgViewLabel.font = [FontProperties mediumFont:12.0f];
+    self.imgViewLabel.textColor = [FontProperties getBlueColor];
+    self.imgViewLabel.textAlignment = NSTextAlignmentCenter;
+    self.imgViewLabel.hidden = YES;
+    [self.imageButton addSubview:self.imgViewLabel];
     
     self.blueOverlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
     self.blueOverlayView.backgroundColor = RGB(109, 166, 206);

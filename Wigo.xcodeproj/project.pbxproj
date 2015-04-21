@@ -269,6 +269,8 @@
 		E9096D6E1ADD79CE00386AC2 /* WGSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D6C1ADD79CE00386AC2 /* WGSwitchView.m */; };
 		E9096D721ADF06AE00386AC2 /* WGUserParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D711ADF06AE00386AC2 /* WGUserParser.m */; };
 		E9096D731ADF06AE00386AC2 /* WGUserParser.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D711ADF06AE00386AC2 /* WGUserParser.m */; };
+		E9096D761AE174B300386AC2 /* WGCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D751AE174B300386AC2 /* WGCache.m */; };
+		E9096D771AE174B300386AC2 /* WGCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D751AE174B300386AC2 /* WGCache.m */; };
 		E90AA8A81976C8B60055D74B /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E90AA8A71976C8B60055D74B /* Crashlytics.framework */; };
 		E91B840B1AAE4204002523C2 /* InviteView.m in Sources */ = {isa = PBXBuildFile; fileRef = E91B840A1AAE4204002523C2 /* InviteView.m */; };
 		E91B840C1AAE4204002523C2 /* InviteView.m in Sources */ = {isa = PBXBuildFile; fileRef = E91B840A1AAE4204002523C2 /* InviteView.m */; };
@@ -749,6 +751,8 @@
 		E9096D6C1ADD79CE00386AC2 /* WGSwitchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGSwitchView.m; sourceTree = "<group>"; };
 		E9096D701ADF06AE00386AC2 /* WGUserParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGUserParser.h; sourceTree = "<group>"; };
 		E9096D711ADF06AE00386AC2 /* WGUserParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGUserParser.m; sourceTree = "<group>"; };
+		E9096D741AE174B300386AC2 /* WGCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGCache.h; sourceTree = "<group>"; };
+		E9096D751AE174B300386AC2 /* WGCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGCache.m; sourceTree = "<group>"; };
 		E90AA8A71976C8B60055D74B /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		E91B84091AAE4204002523C2 /* InviteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InviteView.h; sourceTree = "<group>"; };
 		E91B840A1AAE4204002523C2 /* InviteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InviteView.m; sourceTree = "<group>"; };
@@ -1325,6 +1329,8 @@
 				4544094E1A51EF3000BB3036 /* WGCollectionArray.m */,
 				E9A765B31AC9C03B00F7C016 /* WGNavigateParser.h */,
 				E9A765B41AC9C03B00F7C016 /* WGNavigateParser.m */,
+				E9096D741AE174B300386AC2 /* WGCache.h */,
+				E9096D751AE174B300386AC2 /* WGCache.m */,
 			);
 			name = "Data Model";
 			sourceTree = "<group>";
@@ -2528,6 +2534,7 @@
 				C12A113719787BE700D53B1C /* SignNavigationViewController.m in Sources */,
 				FA55261D1A1FDB4000101AE7 /* JBChartView.m in Sources */,
 				E9096D581ADD5F1100386AC2 /* FSCalendar.m in Sources */,
+				E9096D771AE174B300386AC2 /* WGCache.m in Sources */,
 				45D9FAB31A781AFD00D08577 /* JSQMessagesToolbarButtonFactory.m in Sources */,
 				C12A113819787BE700D53B1C /* SignUpViewController.m in Sources */,
 				C12A113919787BE700D53B1C /* UIView+WebCacheOperation.m in Sources */,
@@ -2664,6 +2671,7 @@
 				E9A765971AC2012C00F7C016 /* WGTracker.m in Sources */,
 				45DF86B41A5C5DEB00DB85AE /* AFURLSessionManager.m in Sources */,
 				E900C2B71961EADE00A01F50 /* SDImageCache.m in Sources */,
+				E9096D761AE174B300386AC2 /* WGCache.m in Sources */,
 				E9AAAFC9193E357E0069F700 /* UIButtonAligned.m in Sources */,
 				FA5526111A1FCB3700101AE7 /* GroupStats.m in Sources */,
 				E9EA951A19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */,

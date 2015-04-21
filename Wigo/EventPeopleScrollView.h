@@ -24,6 +24,7 @@ typedef enum  {
 @property (nonatomic, strong) WGUser *user;
 @property (nonatomic, strong) UIButton *imageButton;
 @property (nonatomic, strong) UIImageView *imgView;
+@property (nonatomic, strong) UILabel *imgViewLabel;
 @property (nonatomic, strong) UILabel *profileNameLabel;
 @property (nonatomic, strong) UIView *blueOverlayView;
 @property (nonatomic, strong) UILabel *goHereLabel;

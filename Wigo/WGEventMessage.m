@@ -141,6 +141,20 @@
     return [self objectForKey:kUserKey];
 }
 
+- (void)postEventMessage:(BoolResultBlock)handler {
+    NSString *eventID = [self.parameters objectForKey:@"event"];
+    NSString *classURL = [NSString stringWithFormat:@"events/%@/messages/", eventID];
+    [self.parameters removeObjectForKey:@"event"];
+    [WGApi post:classURL withParameters:self.parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(NO, error);
+            return;
+        }
+        handler(YES, nil);
+    }];
+}
+
+
 -(void) addPhoto:(NSData *)fileData withName:(NSString *)filename andHandler:(WGEventMessageResultBlock)handler {
     [WGApi uploadPhoto:fileData withFileName:filename andHandler:^(NSDictionary *jsonResponse, NSDictionary *fields, NSError *error) {
         NSError *dataError;

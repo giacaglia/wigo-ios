@@ -16,6 +16,7 @@ typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error
 
 @property Class type;
 
+@property NSMutableDictionary *allRefsObjects;
 @property NSMutableArray *objects;
 @property NSInteger currentPosition;
 
@@ -23,6 +24,8 @@ typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error
 @property NSString *nextPage;
 @property NSString *previousPage;
 @property NSNumber *metaNumResults;
+@property NSMutableDictionary *parameters;
+@property (nonatomic, strong) NSArray *include;
 
 -(id) initWithType:(Class)type;
 
@@ -53,5 +56,6 @@ typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error
 -(void) addPreviousPage:(BoolResultBlock)handler;
 -(void) addNextPage:(BoolResultBlock)handler;
 -(void) getNextPage:(WGCollectionResultBlock)handler;
-
++ (NSString *)classFromDictionary:(NSDictionary *)objDict;
++ (BOOL)isKeyAGroup:(NSString *)key;
 @end

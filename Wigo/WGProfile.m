@@ -109,6 +109,7 @@ static BOOL tapAll = NO;
 }
 
 -(NSString *) key {
+    return @"0026cjAKWyXemocHRXM6TsdgEx";
     if ([self objectForKey:kKeyKey]) {
         return [self objectForKey:kKeyKey];
     }
@@ -356,7 +357,8 @@ static BOOL tapAll = NO;
         }
         NSError *dataError;
         @try {
-            [WGProfile setCurrentUser:[[WGUser alloc] initWithJSON:jsonResponse]];
+            NSArray *objects = (NSArray *)[jsonResponse objectForKey:@"objects"];
+            [WGProfile setCurrentUser:[[WGUser alloc] initWithJSON:[objects objectAtIndex:0]]];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];

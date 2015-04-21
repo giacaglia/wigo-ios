@@ -42,7 +42,7 @@
     else chosenPeople = [NSMutableArray new];
     [self getMobileContacts];
     [self fetchFirstPageEveryone];
-    [self fetchSuggestions];
+//    [self fetchSuggestions];
     [self initializeTitle];
     [self initializeTableInvite];
 }
@@ -161,10 +161,11 @@
         return self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue;
     }
     else {
-        if (self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue >= 11) {
-            return 0;
-        }
-        return MIN(self.presentedUsers.count, 5);
+        return 0;
+//        if (self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue >= 11) {
+//            return 0;
+//        }
+//        return MIN(self.presentedSuggestions.count, 5);
     }
 }
 
@@ -174,7 +175,31 @@
         [tapAllCell.aroundTapButton addTarget:self action:@selector(tapAllPressed) forControlEvents:UIControlEventTouchUpInside];
         return tapAllCell;
     }
-    if (indexPath.section == kSectionTapCell || indexPath.section == kSectionAllFriends) {
+    else if (indexPath.section == kSectionTapCell ) {
+        TapCell *cell = (TapCell*)[tableView dequeueReusableCellWithIdentifier:kTapCellName forIndexPath:indexPath];
+        cell.fullNameLabel.text = nil;
+        cell.profileImageView.image = nil;
+        cell.goingOutLabel.text = nil;
+        cell.tapImageView.image = nil;
+        
+        int tag = (int)indexPath.row;
+        WGUser *user;
+        if (self.presentedUsers.count == 0) return cell;
+        if (tag < self.presentedUsers.count) {
+            user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
+        }
+        if (user) {
+            cell.user = user;
+            [cell.aroundTapButton removeTarget:nil
+                                        action:NULL
+                              forControlEvents:UIControlEventAllEvents];
+            [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
+            cell.aroundTapButton.tag = indexPath.row;
+        }
+        
+        return cell;
+    }
+    else if (indexPath.section == kSectionAllFriends) {
         TapCell *cell = (TapCell*)[tableView dequeueReusableCellWithIdentifier:kTapCellName forIndexPath:indexPath];
         cell.fullNameLabel.text = nil;
         cell.profileImageView.image = nil;
@@ -208,10 +233,6 @@
         cell.nameLabel.text = nil;
         if (self.presentedSuggestions.count == 0) return cell;
         if (indexPath.row < self.presentedSuggestions.count) {
-            if (self.presentedSuggestions.hasNextPage.boolValue &&
-                indexPath.row == self.presentedSuggestions.count - 5) {
-                [self fetchNextPageSuggestions];
-            }
             WGUser *user = (WGUser *)[self.presentedSuggestions objectAtIndex:indexPath.row];
             cell.followPersonButton.tag = (int)indexPath.row;
             [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -437,7 +458,6 @@ heightForHeaderInSection:(NSInteger)section
 }
 
 - (void) getNextPage {
-    NSLog(@"Next page");
     if (self.isFetching) return;
     if (!self.presentedUsers.hasNextPage.boolValue) return;
 
@@ -498,23 +518,22 @@ heightForHeaderInSection:(NSInteger)section
     }];
 }
 
-- (void)fetchNextPageSuggestions {
-    if (!self.presentedSuggestions.hasNextPage.boolValue) return;
-    __weak typeof(self) weakSelf = self;
-    [self.presentedSuggestions addNextPage:^(BOOL success, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            __strong typeof(self) strongSelf = weakSelf;
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            [strongSelf.presentedSuggestions removeObject:WGProfile.currentUser];
-            [strongSelf.invitePeopleTableView reloadData];
-        });
-    }];
-
-}
+//- (void)fetchNextPageSuggestions {
+//    if (!self.presentedSuggestions.hasNextPage.boolValue) return;
+//    __weak typeof(self) weakSelf = self;
+//    [self.presentedSuggestions addNextPage:^(BOOL success, NSError *error) {
+//        dispatch_async(dispatch_get_main_queue(), ^(void) {
+//            __strong typeof(self) strongSelf = weakSelf;
+//            if (error) {
+//                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+//                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+//                return;
+//            }
+//            [strongSelf.presentedSuggestions removeObject:WGProfile.currentUser];
+//            [strongSelf.invitePeopleTableView reloadData];
+//        });
+//    }];
+//}
 
 
 #pragma mark - Mobile

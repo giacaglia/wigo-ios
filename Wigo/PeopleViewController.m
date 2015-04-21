@@ -155,12 +155,6 @@ NSIndexPath *userIndex;
 
 
 - (void)initializeTableOfPeople {
-    self.friendRequestUsers = [[WGCollection alloc] initWithType:[WGUser class]];
-    for (int i = 0; i < 2; i++) {
-        [self.friendRequestUsers addObject:WGProfile.currentUser];
-    }
-    self.friendRequestUsers.hasNextPage = @1;
-    
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20)];
     if ([self.currentTab isEqual:@2]) {
@@ -196,6 +190,7 @@ NSIndexPath *userIndex;
     self.navigationItem.titleView = nil;
     if ([self.currentTab isEqualToNumber:@2]) {
         [self fetchFirstPageSuggestions];
+        [self fetchFirstPageFriendRequests];
     }
     else if ([self.currentTab isEqualToNumber:@3]) {
         [self fetchFirstPageFollowers];
@@ -251,7 +246,9 @@ NSIndexPath *userIndex;
         }
         else {
             FollowPeopleCell *followPeopleCell = [tableView dequeueReusableCellWithIdentifier:kFollowPeopleCell forIndexPath:indexPath];
-            followPeopleCell.user = WGProfile.currentUser;
+            WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:indexPath.item];
+            if (!user) return followPeopleCell;
+            followPeopleCell.user = user;
             return followPeopleCell;
         }
     }
@@ -317,7 +314,10 @@ NSIndexPath *userIndex;
 heightForHeaderInSection:(NSInteger)section
 {
     if (self.isSearching) return 0;
-    if ([self.currentTab isEqual:@2]) return 30.0f;
+    if ([self.currentTab isEqual:@2]) {
+        if (section == 0 && self.friendRequestUsers.count == 0) return 0;
+        return 30.0f;
+    }
     return 0;
 }
 
@@ -559,6 +559,23 @@ viewForHeaderInSection:(NSInteger)section
             for (WGFollow *follow in strongSelf.followers) {
                 [strongSelf.users addObject:follow.user];
             }
+            [strongSelf.tableViewOfPeople reloadData];
+        });
+    }];
+
+}
+
+- (void)fetchFirstPageFriendRequests {
+    __weak typeof(self) weakSelf = self;
+    [WGProfile.currentUser getFriendRequests:^(WGCollection *collection, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            strongSelf.friendRequestUsers = collection;
             [strongSelf.tableViewOfPeople reloadData];
         });
     }];
@@ -826,9 +843,6 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void)setUser:(WGUser *)user {
     super.user = user;
-    if (user.id.intValue > WGProfile.currentUser.lastUserRead.intValue) {
-        self.contentView.backgroundColor = [FontProperties getBackgroundLightOrange];
-    }
 }
 
 @end
