@@ -249,6 +249,12 @@ NSIndexPath *userIndex;
             WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:indexPath.item];
             if (!user) return followPeopleCell;
             followPeopleCell.user = user;
+            [followPeopleCell.acceptButton addTarget:self
+                                              action:@selector(acceptPressed:)
+                                    forControlEvents:UIControlEventTouchUpInside];
+            [followPeopleCell.rejectButton addTarget:self
+                                              action:@selector(rejectPressed:)
+                                    forControlEvents:UIControlEventTouchUpInside];
             return followPeopleCell;
         }
     }
@@ -390,6 +396,26 @@ viewForHeaderInSection:(NSInteger)section
     [user followUser];
     [self.users replaceObjectAtIndex:row withObject:user];
     [self.tableViewOfPeople reloadData];
+}
+
+- (void)acceptPressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    WGUser *user = (WGUser *)[self.users objectAtIndex:buttonSender.tag];
+    [WGProfile.currentUser acceptFollowRequestForUser:user withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+        }
+    }];
+}
+
+- (void)rejectPressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    WGUser *user = (WGUser *)[self.users objectAtIndex:buttonSender.tag];
+    [WGProfile.currentUser rejectFollowRequestForUser:user withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+        }
+    }];
 }
 
 
@@ -813,7 +839,6 @@ viewForHeaderInSection:(NSInteger)section
     acceptImgView.image = [UIImage imageNamed:@"acceptButton"];
     [self.acceptButton addSubview:acceptImgView];
     self.acceptButton.center = CGPointMake(self.acceptButton.center.x, self.contentView.center.y);
-    [self.acceptButton addTarget:self action:@selector(acceptPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.acceptButton];
     
     self.rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 37 - 10, 0, 37, 37)];
@@ -821,25 +846,10 @@ viewForHeaderInSection:(NSInteger)section
     rejectImgView.image = [UIImage imageNamed:@"rejectButton"];
     [self.rejectButton addSubview:rejectImgView];
     self.rejectButton.center = CGPointMake(self.rejectButton.center.x, self.contentView.center.y);
-    [self.rejectButton addTarget:self action:@selector(rejectPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.rejectButton];
 }
 
-- (void)acceptPressed {
-    [WGProfile.currentUser acceptFollowRequestForUser:self.user withHandler:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionSave];
-        }
-    }];
-}
 
-- (void)rejectPressed {
-    [WGProfile.currentUser rejectFollowRequestForUser:self.user withHandler:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-        }
-    }];
-}
 
 - (void)setUser:(WGUser *)user {
     super.user = user;
