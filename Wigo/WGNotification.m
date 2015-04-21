@@ -78,32 +78,11 @@
     return nil;
 }
 -(NSString *) message {
-    NSString *type = self.type;
-    if ([type isEqualToString:@"tap"]) {
-        if (![self.created isFromLastDay]) {
-            if (self.eventName) {
-                return [NSString stringWithFormat:@"wants to see you out at %@", self.eventName];
-            }
-            return @"wants to see you out";
-        } else {
-            return @"wanted to see you out";
-        }
-    } else if( [type isEqualToString:@"follow"] || [type isEqualToString:@"facebook.follow"]) {
-        return @"is now following you";
-    } else if ([type isEqualToString:@"joined"]) {
-        return @"joined WiGo";
-    } else if ([type isEqualToString:@"goingout"]) {
-        return @"is going out";
-    } else if ([type isEqualToString:@"follow.accepted"]) {
-        return @"accepted your follow request";
-    }
-    else {
-        return [self.properties objectForKey:kMessageKey];
-    }
+    return [self objectForKey:kMessageKey];
 }
 
 +(void) get:(WGCollectionResultBlock)handler {
-    [WGApi get:@"notifications/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/me/notifications/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
