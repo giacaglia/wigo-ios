@@ -44,7 +44,6 @@
 @interface FaceCell : UICollectionViewCell
 - (void) resetToInactive;
 - (void)setToActiveWithNoAnimation;
-- (void)updateUIToRead:(BOOL)read;
 @property (nonatomic, strong) WGUser *user;
 @property (nonatomic, assign) BOOL rightLineEnabled;
 @property (nonatomic, assign) BOOL leftLineEnabled;

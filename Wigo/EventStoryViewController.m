@@ -391,12 +391,6 @@
     myCell.timeLabel.textColor = RGB(59, 59, 59);
     myCell.faceAndMediaTypeView.alpha = 1.0f;
     
-    if (eventMessage.isRead) {
-        if ([eventMessage.isRead boolValue]) {
-            [myCell updateUIToRead:YES];
-        }
-        else [myCell updateUIToRead:NO];
-    }
     return myCell;
 }
 

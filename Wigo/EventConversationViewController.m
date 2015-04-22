@@ -43,7 +43,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
     if (self.eventMessages.count > 0) {
         self.currentActiveCell = [NSIndexPath indexPathForItem:[self.index intValue] inSection:0];
@@ -55,6 +54,16 @@
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
     NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
     [WGAnalytics tagEvent:@"Event Story Detail View" withDetails: @{@"isPeeking": isPeekingString}];
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -156,8 +165,8 @@
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,-self.facesCollectionView.frame.size.height);
             self.buttonCancel.alpha = 0;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, self.buttonCancel.frame.size.height);
-            self.buttonTrash.alpha = 0;
-            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, self.buttonTrash.frame.size.height);
+//            self.buttonTrash.alpha = 0;
+//            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, self.buttonTrash.frame.size.height);
             self.upVoteButton.alpha = 0;
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, self.numberOfVotesLabel.frame.size.height);
             self.numberOfVotesLabel.alpha = 0;
@@ -172,8 +181,8 @@
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,0);
             self.buttonCancel.alpha = 1;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, 0);
-            self.buttonTrash.alpha = 1;
-            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, 0);
+//            self.buttonTrash.alpha = 1;
+//            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, 0);
             self.upVoteButton.alpha = 1;
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, 0);
             self.numberOfVotesLabel.alpha = 1;
@@ -351,20 +360,17 @@
 - (void)hideOrShowFacesForPage:(int)page {
     if (page < self.eventMessages.count) {
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-        self.buttonTrash.hidden = ![eventMessage.user isEqual:WGProfile.currentUser];
-        self.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
+//        self.buttonTrash.hidden = ![eventMessage.user isEqual:WGProfile.currentUser];
+//        self.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
         if (eventMessage.vote.intValue == 1) {
             self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
-            self.numberOfVotesLabel.font = [FontProperties openSansBold:21.0f];
         }
         else {
             self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
-            self.numberOfVotesLabel.font = [FontProperties openSansSemibold:21.0f];
-
         }
         if (eventMessage.mediaMimeType && [eventMessage.mediaMimeType isEqualToString:kCameraType]) {
             self.buttonCancel.hidden = YES;
-            self.buttonTrash.hidden = YES;
+//            self.buttonTrash.hidden = YES;
             self.facesHidden = NO;
             [self focusOnContent];
         } else if (eventMessage.mediaMimeType && ([eventMessage.mediaMimeType isEqualToString:kFaceImage] || [eventMessage.mediaMimeType isEqualToString:kNotAbleToPost])) {
@@ -422,27 +428,28 @@
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
+//    
+//    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 29, self.view.frame.size.height - 65 - 8, 58, 65)];
+//    UIImageView *buttonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.buttonTrash.frame.size.width/2 - 14, self.buttonTrash.frame.size.height - 32, 29, 32)];
+//    buttonImageView.image = [UIImage imageNamed:@"trashIcon"];
+//    [self.buttonTrash addSubview:buttonImageView];
+//    [self.buttonTrash addTarget:self action:@selector(trashPressed) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:self.buttonTrash];
     
-    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 29, self.view.frame.size.height - 65 - 8, 58, 65)];
-    UIImageView *buttonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.buttonTrash.frame.size.width/2 - 14, self.buttonTrash.frame.size.height - 32, 29, 32)];
-    buttonImageView.image = [UIImage imageNamed:@"trashIcon"];
-    [self.buttonTrash addSubview:buttonImageView];
-    [self.buttonTrash addTarget:self action:@selector(trashPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.buttonTrash];
-    
-    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 40, self.view.frame.size.height - 28, 32, 20)];
+    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 75, self.view.frame.size.height - 28, 150, 20)];
     self.numberOfVotesLabel.textColor = UIColor.whiteColor;
-    self.numberOfVotesLabel.textAlignment = NSTextAlignmentRight;
-    self.numberOfVotesLabel.font = [FontProperties openSansSemibold:21.0f];
+    self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberOfVotesLabel.font = [FontProperties mediumFont:17.0f];
     self.numberOfVotesLabel.layer.shadowOpacity = 1.0f;
     self.numberOfVotesLabel.layer.shadowColor = UIColor.blackColor.CGColor;
     self.numberOfVotesLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
     self.numberOfVotesLabel.layer.shadowRadius = 0.5;
+    self.numberOfVotesLabel.text = @"10 likes";
     [self.view addSubview:self.numberOfVotesLabel];
     
     self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 , self.view.frame.size.height - 52, 56, 52)];
     [self.view addSubview:self.upVoteButton];
-    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 24, 22, 18)];
+    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(26, 24, 22, 18)];
     self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
     [self.upVoteButton addSubview:self.upvoteImageView];
     [self.upVoteButton addTarget:self action:@selector(upvotePressed) forControlEvents:UIControlEventTouchUpInside];
@@ -918,16 +925,6 @@
     self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/14;
 //    self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
 //    self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
-}
-
-- (void)updateUIToRead:(BOOL)read {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (read) {
-            self.faceAndMediaTypeView.alpha = 0.4f;
-        } else {
-            self.faceAndMediaTypeView.alpha = 1.0f;
-        }
-    });
 }
 
 - (void)setUser:(WGUser *)user {
