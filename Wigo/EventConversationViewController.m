@@ -369,7 +369,12 @@
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
 //        self.buttonTrash.hidden = ![eventMessage.user isEqual:WGProfile.currentUser];
         if (eventMessage.upVotes) {
-            self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ likes", eventMessage.upVotes.stringValue]; 
+            if (eventMessage.upVotes.intValue == 1) {
+                self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ like", eventMessage.upVotes.stringValue];
+            }
+            else {
+                self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ likes", eventMessage.upVotes.stringValue];
+            }
         }
         if (eventMessage.vote.intValue == 1) {
             self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
@@ -514,7 +519,12 @@
         f.numberStyle = NSNumberFormatterDecimalStyle;
         NSNumber *myNumber = [f numberFromString:self.numberOfVotesLabel.text];
         myNumber = [NSNumber numberWithInt:(myNumber.intValue + 1)];
-        self.numberOfVotesLabel.text = myNumber.stringValue;
+        if (myNumber.intValue == 1) {
+            self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ like", myNumber.stringValue];
+        }
+        else {
+            self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ likes", myNumber.stringValue];
+        }
         self.numberOfVotesLabel.font = [FontProperties openSansBold:21.0f];
     }
     
