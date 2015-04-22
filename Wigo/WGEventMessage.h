@@ -37,6 +37,6 @@ typedef void (^WGEventMessageResultBlock)(WGEventMessage *object, NSError *error
 
 -(void) addVideo:(NSData *)fileData withName:(NSString *)filename thumbnail:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(WGEventMessageResultBlock) handler;
 
--(void) vote:(BOOL)upVote withHandler:(BoolResultBlock)handler;
+-(void) vote:(BOOL)upVote forEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler;
 
 @end

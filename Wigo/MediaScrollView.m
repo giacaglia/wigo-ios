@@ -963,15 +963,6 @@
     else self.label.hidden = YES;
 }
 
-
-- (void)sendVote:(BOOL)upvoteBool {
-    [self.eventMessage vote:upvoteBool withHandler:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionPost];
-        }
-    }];
-}
-
 - (void)focusOnContent {
     [self.mediaScrollDelegate focusOnContent];
 }

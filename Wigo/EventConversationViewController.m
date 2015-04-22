@@ -505,7 +505,7 @@
     if (!votedUpNumber) {
         eventMessage.vote = @1;
         eventMessage.upVotes = @([eventMessage.upVotes intValue] + 1);
-        [eventMessage vote:upvoteBool withHandler:^(BOOL success, NSError *error) {
+        [eventMessage vote:upvoteBool forEvent:self.event withHandler:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] logError:error forAction:WGActionPost];
             }
