@@ -186,16 +186,17 @@
         [self addReadPage:i];
     }
     if (self.eventMessagesRead.count > 0) {
-        __weak typeof(handler) weakHandler = handler;
-        [self.event setMessagesRead:self.eventMessagesRead andHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionSave];
-                weakHandler(NO, error);
-                return;
-            }
-            weakHandler(YES, error);
-        }];
+#pragma - TO DO: mark messages as read
+//        __weak typeof(handler) weakHandler = handler;
+//        [self.event setMessagesRead:self.eventMessagesRead andHandler:^(BOOL success, NSError *error) {
+//            if (error) {
+//                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+//                [[WGError sharedInstance] logError:error forAction:WGActionSave];
+//                weakHandler(NO, error);
+//                return;
+//            }
+//            weakHandler(YES, error);
+//        }];
     }
 }
 
