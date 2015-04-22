@@ -1633,7 +1633,7 @@ BOOL firstTimeLoading;
     self.backgroundColor = RGB(237, 237, 237);
     
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSSW"];
+    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSS"];
     NSDate *date = [dateFormat dateFromString:self.day];
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate: date];

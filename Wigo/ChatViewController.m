@@ -28,6 +28,7 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.lastMessageRead = WGProfile.currentUser.lastMessageRead;
     [self fetchMessages];
 }
 
@@ -41,6 +42,9 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    if (self.lastMessageRead.longLongValue > WGProfile.currentUser.lastMessageRead.longLongValue) {
+        WGProfile.currentUser.lastMessageRead =self.lastMessageRead;
+    }
     self.tabBarController.navigationItem.titleView = nil;
 }
 
@@ -185,14 +189,18 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ChatCell *cell = [tableView dequeueReusableCellWithIdentifier:kChatCellName forIndexPath:indexPath];
-//    if (indexPath.section == kSectionEventChat) {
-//        cell.nameLabel.text = @"Last message";
-//        cell.lastMessageLabel.text = @"New event";
-//        self.orangeNewView.hidden = message.isRead.boolValue;
-//    }
     if (indexPath.row == self.messages.count - 1) [self fetchNextPage];
     if (self.messages.count  == 0) return cell;
-    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
+    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.row];
+    if (message.id.longLongValue >= self.lastMessageRead.longLongValue) {
+        self.lastMessageRead = message.id;
+        cell.lastMessageLabel.textColor = RGB(208, 208, 208);
+        cell.orangeNewView.hidden = YES;
+    }
+    else {
+        cell.lastMessageLabel.textColor = UIColor.blackColor;
+        cell.orangeNewView.hidden = NO;
+    }
     cell.message = message;
     return cell;
 }
@@ -286,13 +294,13 @@
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text = user.fullName;
     self.lastMessageLabel.text = message.message;
-    if (message.isRead.boolValue) {
-        self.lastMessageLabel.textColor = RGB(208, 208, 208);
-    }
-    else {
-        self.lastMessageLabel.textColor = UIColor.blackColor;
-    }
-    self.orangeNewView.hidden = message.isRead.boolValue;
+//    if (message.isRead.boolValue) {
+//        self.lastMessageLabel.textColor = RGB(208, 208, 208);
+//    }
+//    else {
+//        self.lastMessageLabel.textColor = UIColor.blackColor;
+//    }
+//    self.orangeNewView.hidden = message.isRead.boolValue;
 }
 
 @end

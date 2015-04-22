@@ -110,7 +110,6 @@ static BOOL tapAll = NO;
 }
 
 -(NSString *) key {
-    return @"0026cjAKWyXemocHRXM6TsdgEx";
     if ([self objectForKey:kKeyKey]) {
         return [self objectForKey:kKeyKey];
     }

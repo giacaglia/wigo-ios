@@ -196,11 +196,14 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setLastMessageRead:(NSNumber *)lastMessageRead {
-    [self setObject:lastMessageRead forKey:kLastMessageReadKey];
+    [[NSUserDefaults standardUserDefaults] setObject:lastMessageRead forKey:kLastMessageReadKey];
 }
 
 -(NSNumber *) lastMessageRead {
-    return [self objectForKey:kLastMessageReadKey];
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kLastMessageReadKey]) {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:kLastMessageReadKey];
+    }
+    return @0;
 }
 
 -(void) setLastNotificationRead:(NSNumber *)lastNotificationRead {
