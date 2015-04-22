@@ -933,7 +933,7 @@
 - (void)setUser:(WGUser *)user {
     _user = user;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.faceImageView setSmallImageForUser:WGProfile.currentUser completed:nil];
+        [self.faceImageView setSmallImageForUser:user completed:nil];
     });
 }
 

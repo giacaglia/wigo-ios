@@ -47,8 +47,6 @@
     // First pass : Go through all objects:
    
     [newCollection setMetaInfo: [jsonResponse objectForKey:kMetaKey]];
-   
-    [newCollection firstPass:jsonResponse];
     [newCollection initObjects:[jsonResponse objectForKey:@"objects"]];
     return newCollection;
 }
@@ -72,55 +70,6 @@
 
 #pragma mark - Objects
 
-- (void)firstPass:(NSDictionary *)jsonResponse {
-    // First pass on the include list
-    for (NSDictionary *objectDict in [jsonResponse objectForKey:@"include"]) {
-        [[WGCache sharedCache] setObject:objectDict forKey:[objectDict objectForKey:@"$id"]];
-    }
-    [self populateCache:[jsonResponse objectForKey:@"include"]];
-}
-
-
-- (void)populateCache:(id) object {
-    if ([object isKindOfClass:[NSDictionary class]]) {
-        NSDictionary *objDict = (NSDictionary *)object;
-        if ([objDict.allKeys containsObject:@"$id"]) {
-            NSString *idOfObj = [objDict objectForKey:@"$id"];
-            if (![[[WGCache sharedCache] allKeys] containsObject:idOfObj]) {
-                [[WGCache sharedCache] setObject:objDict forKey:[objDict objectForKey:@"$id"]];
-            }
-        }
-        for (id value in objDict.allValues) {
-            [self populateCache:value];
-        }
-    }
-    else if ([object isKindOfClass:[NSArray class]]) {
-        NSArray *objArray = (NSArray *)object;
-        for (id element in objArray) {
-            [self populateCache:element];
-        }
-    }
-}
-
-
-- (void)replaceRefs:(id)object {
-    if ([object isKindOfClass:[NSDictionary class]]) {
-        NSMutableDictionary *objDict = (NSMutableDictionary *)object;
-        if ([objDict.allKeys containsObject:@"$ref"]) {
-            NSString *idOfObj = [objDict objectForKey:@"$ref"];
-            [objDict setValue:[[WGCache sharedCache] objectForKey:idOfObj] forKey:idOfObj];
-        }
-        for (id value in objDict.allValues) {
-            [self replaceRefs:value];
-        }
-    }
-    else if ([object isKindOfClass:[NSArray class]]) {
-        NSArray *objArray = (NSArray *)object;
-        for (id element in objArray) {
-            [self replaceRefs:element];
-        }
-    }
-}
 
 -(void) initObjects:(NSArray *)objects {
     self.objects = [[NSMutableArray alloc] init];

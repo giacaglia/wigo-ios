@@ -9,8 +9,10 @@
 #import <objc/runtime.h>
 #import "WGObject.h"
 #import "WGCollection.h"
+#import "WGCache.h"
 
 #define kIdKey @"id"
+#define kRefKey @"$ref"
 #define kCreatedKey @"created"
 
 @implementation WGObject
@@ -28,6 +30,10 @@
 -(id) initWithJSON:(NSDictionary *)json {
     if (json == nil || ![json isKindOfClass:[NSDictionary class]]) {
         return nil;
+    }
+    if ([json objectForKey:kRefKey] &&
+        [[WGCache sharedCache] objectForKey:[json objectForKey:kRefKey]]) {
+        json = [[WGCache sharedCache] objectForKey:[json objectForKey:kRefKey]];
     }
     self = [super init];
     if (self) {
