@@ -11,6 +11,8 @@
 
 @interface WGGetter : NSObject
 
+- (void)fetchMeta;
+
 - (void)fetchUserNames;
 @property (nonatomic, strong) WGCollection *allUsers;
 

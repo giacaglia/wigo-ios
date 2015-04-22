@@ -62,5 +62,12 @@
     }];
 }
 
+- (void)fetchMeta {
+    [WGApi get:@"users/me/meta/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) return;
+        [WGProfile setNumFriends:[jsonResponse objectForKey:@"num_friends"]];
+    }];
+}
+
 
 @end

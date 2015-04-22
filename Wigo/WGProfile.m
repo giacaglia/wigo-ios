@@ -27,6 +27,7 @@
 #define kShowSchoolStatistics @"school_statistics"
 #define kChosenPeople @"chosenPeople"
 #define kNumberOfTimesWentOut @"numberOfTimesWentOut"
+#define kNumberOfFriends @"num_friends"
 #define kAWSKeyKey @"awsKey"
 #define kCDNPrefix @"cdnPrefix"
 #define kShowedOnboardView @"showedOnboardView"
@@ -267,6 +268,14 @@ static BOOL tapAll = NO;
 
 -(NSNumber *) triedToRegister {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kTriedToRegisterKey];
+}
+
++(void)setNumFriends:(NSNumber *)numFriends {
+    [[NSUserDefaults standardUserDefaults] setObject:numFriends forKey:kNumberOfFriends];
+}
+
++ (NSNumber *)numFriends {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kNumberOfFriends];
 }
 
 -(void) setNumberOfTimesWentOut:(NSNumber *)numberOfTimesWentOut {

@@ -24,8 +24,7 @@ static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/
 #define kTargetUserKey @"target_user"
 #define kUserEmailKey @"email"
 #define kUserGenderKey @"gender"
-#define kUserNumFollowingKey @"num_following"
-#define kUserNumFollowersKey @"num_followers"
+#define kUserNumFriendsKey @"num_friends"
 #define kUserPeriodWentOutKey @"period_went_out"
 
 // Group keys

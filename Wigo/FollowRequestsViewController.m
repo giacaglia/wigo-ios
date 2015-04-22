@@ -81,7 +81,7 @@
     WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:buttonSender.tag];
     WGUser *user = notification.fromUser;
     
-    [[WGProfile currentUser] acceptFollowRequestForUser:user withHandler:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser acceptFriendRequestFromUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
         }
@@ -147,7 +147,7 @@
         }
     }
     WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:buttonSender.tag];
-    [[WGProfile currentUser] rejectFollowRequestForUser:notification.fromUser withHandler:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser rejectFriendRequestForUser:notification.fromUser withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionDelete];
         }

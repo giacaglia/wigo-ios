@@ -81,28 +81,6 @@
     }];
 }
 
-+(void) getFollowsForFollow:(WGUser *)user withHandler:(WGCollectionResultBlock)handler {
-    [WGApi get:@"follows/" withArguments:@{ @"follow" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (error) {
-            handler(nil, error);
-            return;
-        }
-        NSError *dataError;
-        WGCollection *objects;
-        @try {
-            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
-        }
-        @catch (NSException *exception) {
-            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-            
-            dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
-        }
-        @finally {
-            handler(objects, dataError);
-        }
-
-    }];
-}
 
 +(void) searchFollows:(NSString *)query forFollow:(WGUser *)user withHandler:(WGCollectionResultBlock)handler {
     [WGApi get:@"users/" withArguments:@{ @"follow" : user.id, @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {

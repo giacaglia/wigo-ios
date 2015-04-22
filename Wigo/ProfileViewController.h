@@ -25,8 +25,7 @@
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, assign) BOOL isFetchingNotifications;
 @property (nonatomic, strong) WGCollection *events;
-@property (nonatomic, strong) UILabel *numberOfFollowersLabel;
-@property (nonatomic, strong) UILabel *numberOfFollowingLabel;
+@property (nonatomic, strong) UILabel *numberOfFriendsLabel;
 @property (nonatomic, strong) WGCollection *unexpiredNotifications;
 @property (nonatomic, strong) WGCollection *notifications;
 @property (nonatomic, assign) BOOL isPeeking;

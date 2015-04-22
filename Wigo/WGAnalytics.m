@@ -127,12 +127,10 @@ withTargetGroup:(WGGroup *)targetGroup
         [tracker set:[GAIFields customDimensionForIndex:1] value:[profile genderName]];
         
         // Following/Followers
-        NSString *followingBucket = [self bucketizeUsers:[profile.numFollowing intValue]];
-        NSString *followersBucket = [self bucketizeUsers:[profile.numFollowers intValue]];
+        NSString *followingBucket = [self bucketizeUsers:[profile.numFriends intValue]];
         // [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:followingBucket forKey:@"Following"]];
         // [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:followersBucket forKey:@"Followers"]];
         [tracker set:[GAIFields customDimensionForIndex:2] value:followingBucket];
-        [tracker set:[GAIFields customDimensionForIndex:3] value:followersBucket];
         
         // is Group Locked
         NSString *locked = [profile.group.locked boolValue] ? @"Yes" : @"No";

@@ -200,7 +200,7 @@ NSIndexPath *userIndex;
         [self fetchFirstPageFriendRequests];
     }
     else if ([self.currentTab isEqualToNumber:@3]) {
-        [self fetchFirstPageFollowers];
+        [self fetchFirstPageFriends];
     }
 }
 
@@ -240,7 +240,7 @@ NSIndexPath *userIndex;
         return self.users.hasNextPage.boolValue;
     }
     else if ([self.currentTab isEqual:@3]) {
-       return self.followers.hasNextPage.boolValue;
+       return self.users.hasNextPage.boolValue;
     }
     return NO;
 }
@@ -408,7 +408,7 @@ viewForHeaderInSection:(NSInteger)section
 - (void)acceptPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:buttonSender.tag];
-    [WGProfile.currentUser acceptFollowRequestForUser:user withHandler:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser acceptFriendRequestFromUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
         }
@@ -418,7 +418,7 @@ viewForHeaderInSection:(NSInteger)section
 - (void)rejectPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:buttonSender.tag];
-    [WGProfile.currentUser rejectFollowRequestForUser:user withHandler:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser rejectFriendRequestForUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
         }
@@ -462,34 +462,24 @@ viewForHeaderInSection:(NSInteger)section
 #pragma mark - Network functions
 
 - (void)loadNextPage {
-    if ([self.currentTab isEqualToNumber:@2]) {
-        [self fetchNextPageSuggestions];
-    }
-    else if ([self.currentTab isEqualToNumber:@3]) {
-        [self fetchFollowers];
-    }
-}
+    [self fetchNextPage];
+  }
 
 - (void)fetchFirstPageSuggestions {
     self.users = NetworkFetcher.defaultGetter.suggestions;
     [self.tableViewOfPeople reloadData];
 }
 
-- (void)fetchNextPageSuggestions {
-    if (self.fetching) return;
+- (void)fetchNextPage {
+    if (self.users) return;
     if (!self.users.hasNextPage.boolValue) return;
     self.fetching = YES;
     __weak typeof(self) weakSelf = self;
     [self.users addNextPage:^(BOOL success, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
+        __strong typeof(self) strongSelf = weakSelf;
+        if (error) return;
         strongSelf.fetching = NO;
-        if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-            return;
-        }
         [strongSelf.tableViewOfPeople reloadData];
-
     }];
 }
 
@@ -548,12 +538,12 @@ viewForHeaderInSection:(NSInteger)section
     }];
 }
 
--(void) fetchFirstPageFollowers {
+-(void) fetchFirstPageFriends {
     if (self.fetching) return;
     self.fetching = YES;
     [WGSpinnerView addDancingGToCenterView:self.view];
     __weak typeof(self) weakSelf = self;
-    [WGFollow getFollowsForFollow:self.user withHandler:^(WGCollection *collection, NSError *error) {
+    [self.user getFriends:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
             strongSelf.fetching = NO;
@@ -563,39 +553,10 @@ viewForHeaderInSection:(NSInteger)section
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
-            strongSelf.followers = collection;
-            strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
-            for (WGFollow *follow in strongSelf.followers) {
-                [strongSelf.users addObject:follow.user];
-            }
+            strongSelf.users = collection;
             [strongSelf.tableViewOfPeople reloadData];
         });
     }];
-}
-
--(void) fetchFollowers {
-    if (self.fetching) return;
-    if (!self.followers.hasNextPage.boolValue) return;
-    self.fetching = YES;
-    __weak typeof(self) weakSelf = self;
-    [self.followers addNextPage:^(BOOL success, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            __strong typeof(self) strongSelf = weakSelf;
-            strongSelf.fetching = NO;
-            [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            strongSelf.users = [[WGCollection alloc] initWithType:[WGUser class]];
-            for (WGFollow *follow in strongSelf.followers) {
-                [strongSelf.users addObject:follow.user];
-            }
-            [strongSelf.tableViewOfPeople reloadData];
-        });
-    }];
-
 }
 
 - (void)fetchFirstPageFriendRequests {

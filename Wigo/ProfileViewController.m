@@ -393,12 +393,12 @@ BOOL blockShown;
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(friendsPressed) forControlEvents:UIControlEventTouchUpInside];
     _rightProfileButton.frame = CGRectMake(self.view.frame.size.width*0.7, 0, self.view.frame.size.width*0.3, 70);
-    self.numberOfFollowingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _rightProfileButton.frame.size.width, 25)];
-    self.numberOfFollowingLabel.textColor = RGB(80, 80, 80);
-    self.numberOfFollowingLabel.font = [FontProperties mediumFont:20.0f];
-    self.numberOfFollowingLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberOfFollowingLabel.text = self.user.numFollowing.stringValue;
-    [_rightProfileButton addSubview:self.numberOfFollowingLabel];
+    self.numberOfFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _rightProfileButton.frame.size.width, 25)];
+    self.numberOfFriendsLabel.textColor = RGB(80, 80, 80);
+    self.numberOfFriendsLabel.font = [FontProperties mediumFont:20.0f];
+    self.numberOfFriendsLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberOfFriendsLabel.text = [WGProfile numFriends].stringValue;
+    [_rightProfileButton addSubview:self.numberOfFriendsLabel];
     
     UILabel *friendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _rightProfileButton.frame.size.width, 20)];
     friendsLabel.textColor = RGB(137, 137, 137);
@@ -896,7 +896,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [WGProfile reload:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.user = WGProfile.currentUser;
-        strongSelf.numberOfFollowingLabel.text = [strongSelf.user.numFollowing stringValue];
+        strongSelf.numberOfFriendsLabel.text = [WGProfile numFriends].stringValue;
         strongSelf.imageScrollView.user = WGProfile.currentUser;
         strongSelf.pageControl.numberOfPages = strongSelf.user.images.count;
         [strongSelf reloadViewForUserState];

@@ -23,7 +23,6 @@
 @property (nonatomic, strong) WGCollection *everyone;
 @property (nonatomic, strong) WGCollection *users;
 @property (nonatomic, strong) WGCollection *suggestions;
-@property (nonatomic, strong) WGCollection *followers;
 @property (nonatomic, strong) WGCollection *filteredUsers;
 @property (nonatomic, strong) WGCollection *friendRequestUsers;
 @property (nonatomic, assign) BOOL fetching;

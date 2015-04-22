@@ -85,8 +85,7 @@ static NSString *previousViewName;
     [userDict setValue:user.id forKey:kObjectID];
     [userDict setValue:user.email forKey:kUserEmailKey];
     [userDict setValue:user.genderName forKey:kUserGenderKey];
-    [userDict setValue:user.numFollowing forKey:kUserNumFollowingKey];
-    [userDict setValue:user.numFollowers forKey:kUserNumFollowersKey];
+    [userDict setValue:user.numFriends forKey:kUserNumFriendsKey];
     [userDict setValue:(NSNumber *)[user objectForKey:@"period_went_out"] forKey:kUserPeriodWentOutKey];
     [self setValue:userDict forKey:kUserKey];
 }
@@ -97,8 +96,7 @@ static NSString *previousViewName;
     [userDict setValue:targetUser.email forKey:kUserEmailKey];
     [userDict setValue:targetUser.fullName forKey:kObjectName];
     [userDict setValue:targetUser.genderName forKey:kUserGenderKey];
-    [userDict setValue:targetUser.numFollowing forKey:kUserNumFollowingKey];
-    [userDict setValue:targetUser.numFollowers forKey:kUserNumFollowersKey];
+    [userDict setValue:targetUser.numFriends forKey:kUserNumFriendsKey];
     [userDict setValue:(NSNumber *)[targetUser objectForKey:@"period_went_out"] forKey:kUserPeriodWentOutKey];
     [self setValue:userDict forKey:kTargetUserKey];
 }

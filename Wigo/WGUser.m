@@ -61,7 +61,7 @@
 #define kFirstNameKey @"first_name" //: "Josh",
 #define kGenderKey @"gender" //: "male",
 #define kFacebookIdKey @"facebook_id" //: "10101301503877593",
-#define kNumFollowersKey @"num_followers" //: 5,
+#define kNumFriendsKey @"num_friends" //: 5,
 #define kUsernameKey @"username" //: "jelman"
 #define kIsAttendingKey @"is_attending"
 #define kPeriodWentOutKey @"period_went_out"
@@ -292,20 +292,12 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kFacebookAccessTokenKey];
 }
 
--(void) setNumFollowing:(NSNumber *)numFollowing {
-    [self setObject:numFollowing forKey:kNumFollowingKey];
+-(void) setNumFriends:(NSNumber *)numFriends {
+    [self setObject:numFriends forKey:kNumFriendsKey];
 }
 
--(NSNumber *) numFollowing {
-    return [self objectForKey:kNumFollowingKey];
-}
-
--(void) setNumFollowers:(NSNumber *)numFollowers {
-    [self setObject:numFollowers forKey:kNumFollowersKey];
-}
-
--(NSNumber *) numFollowers {
-    return [self objectForKey:kNumFollowersKey];
+-(NSNumber *) numFriends {
+    return [self objectForKey:kNumFriendsKey];
 }
 
 -(void) setGroupRank:(NSNumber *)groupRank {
@@ -856,7 +848,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) getNotMeForMessage:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/me/"  withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/me/friends/"  withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -950,8 +942,31 @@ static WGUser *currentUser = nil;
     }];
 }
 
+- (void)getFriends:(WGCollectionResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"users/%@/friends/", self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       if (error) {
+           handler(nil, error);
+           return;
+       }
+       NSError *dataError;
+       WGCollection *objects;
+       @try {
+           objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+       }
+       @catch (NSException *exception) {
+           NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+           
+           dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+       }
+       @finally {
+           handler(objects, dataError);
+       }
+   }];
+}
+
 -(void) getFriendRequests:(WGCollectionResultBlock)handler {
-    [WGApi get:[NSString stringWithFormat:@"users/%@/friends/requests", self.id]
+    [WGApi get:[NSString stringWithFormat:@"users/%@/friends/requests/", self.id]
    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
        if (error) {
            handler(nil, error);
@@ -1065,7 +1080,6 @@ static WGUser *currentUser = nil;
 }
 
 +(void) getSuggestions:(WGCollectionResultBlock)handler {
-//    [WGApi get:@"users/suggestions/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
     [WGApi get:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
@@ -1261,20 +1275,20 @@ static WGUser *currentUser = nil;
 
 }
 
--(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
+-(void) acceptFriendRequestFromUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     if (!user.id) {
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
     [WGApi post:@"users/me/friends/" withParameters:@{ @"friend_id" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isFollower = @YES;
-            self.numFollowers = @([self.numFollowers intValue] + 1);
+            self.numFriends = @([self.numFriends intValue] + 1);
         }
         handler(error == nil, error);
     }];
 }
 
--(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
+-(void) rejectFriendRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     if (!user.id) {
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }

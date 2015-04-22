@@ -29,6 +29,9 @@
 @property BOOL crossEventPhotosEnabled;
 @property BOOL youAreInCharge;
 
+
++(NSNumber *)numFriends;
++(void)setNumFriends:(NSNumber *)numFriends;
 +(void) setCurrentUser:(WGUser *)user;
 +(WGProfile *) currentUser;
 +(void)setPeekingGroupID:(NSNumber *)peekingGroupID;
