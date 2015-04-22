@@ -63,6 +63,7 @@
 
 @interface EventCell : UITableViewCell
 + (CGFloat) height;
+@property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) UIButton *privacyLockButton;

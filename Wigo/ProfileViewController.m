@@ -179,7 +179,7 @@ BOOL blockShown;
     
     if ([self.user isEqual:WGProfile.currentUser]) {
         // TODO: Refetch notifications
-        self.unexpiredNotifications = NetworkFetcher.defaultGetter.notifications;
+        self.notifications = NetworkFetcher.defaultGetter.notifications;
         [self fetchFirstPageNotifications];
         [self updateBadge];
     }
@@ -648,7 +648,7 @@ BOOL blockShown;
 
 - (NSInteger) notificationCount {
     if (self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE) {
-        return self.unexpiredNotifications.count + 1;
+        return self.notifications.count + 1;
     }
     return [self shouldShowInviteCell] ? 1 : 0;
 }
@@ -699,8 +699,8 @@ BOOL blockShown;
              indexPath = [NSIndexPath indexPathForItem:(indexPath.item - 1) inSection:indexPath.section];
         }
         NotificationCell *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName forIndexPath:indexPath];
-        if (indexPath.row >= self.unexpiredNotifications.count) return notificationCell;
-        WGNotification *notification = (WGNotification *)[self.unexpiredNotifications objectAtIndex:indexPath.row];
+        if (indexPath.row >= self.notifications.count) return notificationCell;
+        WGNotification *notification = (WGNotification *)[self.notifications objectAtIndex:indexPath.row];
         if (!notification.fromUser.id) return notificationCell;
         if ([notification.type isEqual:@"group.unlocked"]) return notificationCell;
         notificationCell.notification = notification;
@@ -790,7 +790,7 @@ BOOL blockShown;
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kNotificationsSection && self.user.isCurrentUser) {
-        WGNotification *notification = (WGNotification *)[self.unexpiredNotifications objectAtIndex:indexPath.row];
+        WGNotification *notification = (WGNotification *)[self.notifications objectAtIndex:indexPath.row];
         WGUser *user = notification.fromUser;
        
         if ([notification.type isEqualToString:@"follow"] ||
@@ -907,7 +907,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)fetchFirstPageNotifications {
     if (self.isFetchingNotifications) return;
     self.isFetchingNotifications = YES;
-    self.unexpiredNotifications = [[WGCollection alloc] initWithType:[WGNotification class]];
     
     __weak typeof(self) weakSelf = self;
     [WGNotification get:^(WGCollection *collection, NSError *error) {
@@ -919,11 +918,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             return;
         }
         strongSelf.notifications = collection;
-        for (WGNotification *notification in strongSelf.notifications) {
-            if (!notification.isFromLastDay) {
-                [strongSelf.unexpiredNotifications addObject:notification];
-            }
-        }
         strongSelf.tableView.separatorColor = [self.tableView.separatorColor colorWithAlphaComponent: 1.0f];
         [strongSelf.tableView reloadData];
     }];
@@ -944,11 +938,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         }
         for (WGNotification *notification in collection) {
             [strongSelf.notifications addObject:notification];
-            if (!notification.isFromLastDay) {
-                if (![strongSelf.unexpiredNotifications containsObject:notification]) {
-                    [strongSelf.unexpiredNotifications addObject:notification];
-                }
-            }
         }
         [strongSelf.tableView reloadData];
     }];
