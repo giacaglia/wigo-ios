@@ -17,7 +17,7 @@
 #define kMediaKey @"media"
 #define kIsReadKey @"is_read"
 #define kEventOwnerKey @"event_owner"
-#define kVoteKey @"vote"
+#define kVoteKey @"voted"
 #define kDownVotesKey @"down_votes"
 #define kNumVotesKey @"num_votes"
 #define kMediaMimeType @"media_mime_type"
@@ -123,7 +123,9 @@
 }
 
 -(NSNumber *) vote {
-    return [self objectForKey:kVoteKey];
+    NSDictionary *eventDict = [[WGCache sharedCache] objectForKey:kEventMessagesKey];
+    NSDictionary *metaDict = [eventDict objectForKey:self.id.stringValue];
+    return [metaDict objectForKey:kVoteKey];
 }
 
 -(void) setUpVotes:(NSNumber *)upVotes {
