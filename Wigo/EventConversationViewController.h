@@ -45,7 +45,6 @@
 - (void) resetToInactive;
 - (void)setToActiveWithNoAnimation;
 - (void)updateUIToRead:(BOOL)read;
-- (void)setStateForUser:(WGUser *)user;
 @property (nonatomic, strong) WGUser *user;
 @property (nonatomic, assign) BOOL rightLineEnabled;
 @property (nonatomic, assign) BOOL leftLineEnabled;

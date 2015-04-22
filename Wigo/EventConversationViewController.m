@@ -43,7 +43,8 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+
     if (self.eventMessages.count > 0) {
         self.currentActiveCell = [NSIndexPath indexPathForItem:[self.index intValue] inSection:0];
     } else {
@@ -78,7 +79,6 @@
         [myCell resetToInactive];
     });
 
-    myCell.faceImageView.layer.borderColor = UIColor.whiteColor.CGColor;
     
     myCell.leftLineEnabled = (indexPath.row > 0);
     myCell.rightLineEnabled = (indexPath.row < self.eventMessages.count - 1);
@@ -750,7 +750,7 @@
 - (void) setup {
     self.frame = CGRectMake(0, 0, newSizeOfEachFaceCell, sizeOfEachFaceCell);
     self.contentView.frame = self.frame;
-    
+
     self.faceAndMediaTypeView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 2*(sizeOfEachFaceCell/3),  2*(sizeOfEachFaceCell/3))];
     self.faceAndMediaTypeView.alpha = 0.5f;
     [self.contentView addSubview:self.faceAndMediaTypeView];
@@ -761,26 +761,27 @@
     self.faceImageView.backgroundColor = UIColor.blackColor;
     self.faceImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.faceImageView.layer.masksToBounds = YES;
-    self.faceImageView.layer.borderWidth = 1.0;
+    self.faceImageView.layer.borderColor = UIColor.whiteColor.CGColor;
+    self.faceImageView.layer.borderWidth = 3.0;
     self.faceImageView.layer.cornerRadius = self.faceImageView.frame.size.width/2;
     [self.faceAndMediaTypeView addSubview: self.faceImageView];
     
-    self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
-    self.leftLine.alpha = 0.5f;
-    self.leftLine.backgroundColor = UIColor.whiteColor;
-    [self.contentView addSubview: self.leftLine];
+//    self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
+//    self.leftLine.alpha = 0.5f;
+//    self.leftLine.backgroundColor = UIColor.whiteColor;
+//    [self.contentView addSubview: self.leftLine];
     
-    self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
-    self.rightLine.alpha = 0.5f;
-    self.rightLine.backgroundColor = UIColor.whiteColor;
-    [self.contentView addSubview: self.rightLine];
+//    self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
+//    self.rightLine.alpha = 0.5f;
+//    self.rightLine.backgroundColor = UIColor.whiteColor;
+//    [self.contentView addSubview: self.rightLine];
     
     self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.faceImageView.frame.origin.x + self.faceImageView.frame.size.width, sizeOfEachFaceCell/5, sizeOfEachFaceCell/6, sizeOfEachFaceCell/6)];
     self.mediaTypeImageView.layer.masksToBounds = YES;
     self.mediaTypeImageView.backgroundColor = [UIColor blackColor];
     self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell*0.08;
-    self.mediaTypeImageView.layer.borderWidth = 1.0;
-    self.mediaTypeImageView.layer.borderColor = UIColor.blackColor.CGColor;
+    self.mediaTypeImageView.layer.borderWidth = 3.0;
+    self.mediaTypeImageView.layer.borderColor = UIColor.whiteColor.CGColor;
     self.mediaTypeImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.mediaTypeImageView.hidden = YES;
     [self.faceAndMediaTypeView addSubview:self.mediaTypeImageView];
@@ -789,17 +790,18 @@
     self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
     [self.faceAndMediaTypeView addSubview:self.spinner];
     
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.faceImageView.frame.origin.y + self.faceImageView.frame.size.height, self.contentView.frame.size.width, 20)];
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, 20)];
     self.timeLabel.center = CGPointMake(self.contentView.center.x, self.timeLabel.center.y);
     self.timeLabel.numberOfLines = 0;
     self.timeLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.timeLabel.textAlignment = NSTextAlignmentCenter;
-    self.timeLabel.font = [FontProperties lightFont:12];
+    self.timeLabel.font = [FontProperties mediumFont:14];
     self.timeLabel.textColor = UIColor.whiteColor;
     self.timeLabel.layer.shadowColor = UIColor.blackColor.CGColor;
     self.timeLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
     self.timeLabel.layer.shadowOpacity = 0.5;
     self.timeLabel.layer.shadowRadius = 0.5;
+    self.timeLabel.alpha = 0.0f;
     [self.contentView addSubview:self.timeLabel];
     [self.contentView sendSubviewToBack:self.timeLabel];
 
@@ -868,13 +870,13 @@
 }
 
 
-- (void)setRightLineEnabled:(BOOL)rightLineEnabled {
-    self.rightLine.hidden = !rightLineEnabled;
-}
+//- (void)setRightLineEnabled:(BOOL)rightLineEnabled {
+//    self.rightLine.hidden = !rightLineEnabled;
+//}
 
-- (void)setLeftLineEnabled:(BOOL)leftLineEnabled {
-    self.leftLine.hidden = !leftLineEnabled;
-}
+//- (void)setLeftLineEnabled:(BOOL)leftLineEnabled {
+//    self.leftLine.hidden = !leftLineEnabled;
+//}
 
 - (void) setIsActive:(BOOL)isActive {
     if (_isActive == isActive) {
@@ -884,12 +886,14 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:0.5 delay: 0.0 options: UIViewAnimationOptionCurveLinear animations:^{
                 [self setToActiveWithNoAnimation];
+                self.timeLabel.alpha = 1.0f;
             } completion:^(BOOL finished) {}];
         });
 
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration: 0.5    animations:^{
+                self.timeLabel.alpha = 0.0f;
                 [self resetToInactive];
             }];
         });
@@ -901,8 +905,8 @@
 - (void)setToActiveWithNoAnimation {
     self.faceAndMediaTypeView.alpha = 1.0f;
     self.faceImageView.transform = CGAffineTransformIdentity;
-    self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
-    self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
+//    self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
+//    self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
     self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfEachFaceCell, 0.15*sizeOfEachFaceCell, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
     self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
 }
@@ -912,8 +916,8 @@
     self.faceImageView.transform = CGAffineTransformMakeScale(0.75, 0.75);
     self.mediaTypeImageView.frame = CGRectMake(0.6*sizeOfEachFaceCell, 0.25*sizeOfEachFaceCell, sizeOfEachFaceCell/6.6, sizeOfEachFaceCell/6.6);
     self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/14;
-    self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
-    self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
+//    self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
+//    self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
 }
 
 - (void)updateUIToRead:(BOOL)read {
@@ -929,7 +933,7 @@
 - (void)setUser:(WGUser *)user {
     _user = user;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.faceImageView setSmallImageForUser:user completed:nil];
+        [self.faceImageView setSmallImageForUser:WGProfile.currentUser completed:nil];
     });
 }
 
