@@ -683,6 +683,7 @@ BOOL firstTimeLoading;
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
         cell.event = event;
         cell.placesDelegate = self;
+        cell.eventPeopleScrollView.isPeeking = YES;
         cell.eventPeopleScrollView.groupID = self.groupNumberID;
         cell.eventPeopleScrollView.placesDelegate = self;
         if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
@@ -1632,7 +1633,7 @@ BOOL firstTimeLoading;
     self.backgroundColor = RGB(237, 237, 237);
     
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    [dateFormat setDateFormat:@"yyyy-MM-dd hh:mm:ss"];
+    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSSW"];
     NSDate *date = [dateFormat dateFromString:self.day];
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate: date];
