@@ -1349,7 +1349,8 @@ static WGUser *currentUser = nil;
 }
 
 -(void) getConversation:(WGCollectionResultBlock)handler {
-    [WGApi get:@"messages/" withArguments:@{ @"conversation" : self.id, @"ordering" : @"-id" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:[NSString stringWithFormat:@"conversations/%@/", self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;

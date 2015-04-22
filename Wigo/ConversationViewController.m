@@ -297,14 +297,14 @@ ProfileViewController *profileViewController;
     message.message = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     message.created = date;
     message.toUser = self.user;
-    message.user = [WGProfile currentUser];
+    message.user = WGProfile.currentUser;
     __weak typeof(self) weakSelf = self;
-    [message create:^(BOOL success, NSError *error) {
+    [message sendMessage:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             [strongSelf.messages removeObject:message];
-            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionPost];
+            return;
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             [strongSelf.collectionView reloadData];

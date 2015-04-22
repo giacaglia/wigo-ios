@@ -482,7 +482,7 @@ heightForHeaderInSection:(NSInteger)section
 
 - (void) fetchFirstPageEveryone {
     __weak typeof(self) weakSelf = self;
-    [WGUser getInvites:^(WGCollection *collection, NSError *error) {
+    [event getInvites:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
             if (error) {

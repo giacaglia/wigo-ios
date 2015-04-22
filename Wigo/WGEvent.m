@@ -228,6 +228,29 @@
 
 }
 
+-(void) getInvites:(WGCollectionResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"events/%@/invites/", self.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[WGEventMessage class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+}
+
 -(void) getMessages:(WGCollectionResultBlock)handler {
     [WGApi get:@"eventmessages/" withArguments:@{ @"event" : self.id, @"ordering" : @"-id" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {

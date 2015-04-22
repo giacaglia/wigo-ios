@@ -594,18 +594,10 @@ BOOL firstTimeLoading;
         return 0;
     }
     else if ([self shouldShowHighlights] && indexPath.section > 1) {
-        return [OldEventShowHighlightsCell height];
+        return [EventCell height];
     }
     else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
-        
-        NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
-        
-        NSArray *eventObjectArray = ((NSArray *)[self.dayToEventObjArray objectForKey: day]);
-
-        WGEvent *event = [eventObjectArray objectAtIndex:[indexPath row]];
-        if (event.highlight) {
-            return [HighlightOldEventCell height];
-        }
+        return [EventCell height];
     }
     
     return 0;
@@ -688,29 +680,16 @@ BOOL firstTimeLoading;
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
         }
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
-        HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCell forIndexPath:indexPath];
+        EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
         cell.event = event;
         cell.placesDelegate = self;
-        cell.oldEventLabel.text = event.name;
-        if (cell.event.isPrivate) {
-            cell.oldEventLabel.transform = CGAffineTransformMakeTranslation(20, 0);
-            cell.privateIconImageView.hidden = NO;
+        cell.eventPeopleScrollView.groupID = self.groupNumberID;
+        cell.eventPeopleScrollView.placesDelegate = self;
+        if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
+            cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
         }
-        else {
-            cell.oldEventLabel.transform = CGAffineTransformMakeTranslation(0, 0);
-            cell.privateIconImageView.hidden = YES;
-        }
-        NSString *contentURL;
-        if ([event.highlight.mediaMimeType isEqual:kImageEventType]) {
-            contentURL = event.highlight.media;
-        }
-        else {
-            contentURL = event.highlight.thumbnail;
-        }
-        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile.currentUser cdnPrefix], contentURL]];
-        [cell.highlightImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-        }];
-
+        cell.highlightsCollectionView.placesDelegate = self;
+        cell.highlightsCollectionView.isPeeking = [self isPeeking];
         return cell;
     }
     return nil;
@@ -1147,9 +1126,6 @@ BOOL firstTimeLoading;
         }
         
         for (WGEvent *event in strongSelf.oldEvents) {
-            if (![event highlight]) {
-                continue;
-            }
             NSString *eventDate = [[event expires] deserialize];
             if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
                 [strongSelf.pastDays addObject: eventDate];
@@ -1217,9 +1193,6 @@ BOOL firstTimeLoading;
             }
             
             for (WGEvent *event in strongSelf.oldEvents) {
-                if (![event highlight]) {
-                    continue;
-                }
                 NSString *eventDate = [[event expires] deserialize];
                 if (eventDate) {
                     if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
@@ -1273,9 +1246,6 @@ BOOL firstTimeLoading;
             }
             
             for (WGEvent *event in strongSelf.oldEvents) {
-                if (![event highlight]) {
-                    continue;
-                }
                 NSString *eventDate = [[event expires] deserialize];
                 if (eventDate) {
                     if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {

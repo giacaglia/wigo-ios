@@ -137,6 +137,20 @@
     }];
 }
 
+-(void) sendMessage:(BoolResultBlock)handler {
+    [WGApi post:@"messages/"
+ withParameters:@{@"to_user_id": self.toUser.id,
+                    @"user_id": self.user.id,
+                    @"message": self.message  }
+     andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+         if (error) {
+             handler(NO, error);
+             return;
+         }
+         handler(YES, error);
+    }];
+}
+
 -(void) deleteConversation:(BoolResultBlock)handler {
     NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", self.toUser.id];
     [WGApi delete:queryString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
