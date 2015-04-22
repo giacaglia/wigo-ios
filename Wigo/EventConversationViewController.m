@@ -104,7 +104,7 @@
     } else {
         myCell.faceAndMediaTypeView.alpha = 1.0f;
         if (user) {
-            [myCell setStateForUser:user];
+            myCell.user = user;
             myCell.eventConversationDelegate = self;
         }
         if ([eventMessage objectForKey:@"media_mime_type"] && [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
@@ -926,11 +926,11 @@
     });
 }
 
-- (void)setStateForUser:(WGUser *)user {
+- (void)setUser:(WGUser *)user {
+    _user = user;
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.faceImageView setSmallImageForUser:user completed:nil];
     });
-    self.user = user;
 }
 
 @end

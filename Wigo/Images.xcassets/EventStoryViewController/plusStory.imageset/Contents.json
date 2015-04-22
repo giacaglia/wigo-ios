@@ -2,7 +2,8 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "plusStory.png"
     },
     {
       "idiom" : "universal",
@@ -12,7 +13,7 @@
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "plusStoryButton@3x.png"
+      "filename" : "plusStory@3x.png"
     }
   ],
   "info" : {

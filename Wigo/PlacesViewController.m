@@ -196,12 +196,12 @@ BOOL firstTimeLoading;
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
 
-    UIView *toggleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 34)];
+    UIView *toggleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 30)];
     toggleView.layer.borderColor = UIColor.whiteColor.CGColor;
     toggleView.layer.borderWidth = 1.0f;
     toggleView.layer.cornerRadius = 7.0F;
     toggleView.clipsToBounds = YES;
-    self.bostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 70, 34)];
+    self.bostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 70, 30)];
     self.bostonLabel.text = @"Local";
     self.bostonLabel.textColor = UIColor.whiteColor;
     self.bostonLabel.font = [FontProperties mediumFont:12.0f];
@@ -217,7 +217,7 @@ BOOL firstTimeLoading;
     [self.bostonLabel addGestureRecognizer:longPress];
     [toggleView addSubview:self.bostonLabel];
     
-    self.friendsButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 0, 70, 34)];
+    self.friendsButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 0, 70, 30)];
     [self.friendsButton addTarget:self action:@selector(friendsPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.friendsButton setTitle:@"Friends" forState:UIControlStateNormal];
     self.friendsButton.titleLabel.font = [FontProperties mediumFont:12.0f];
@@ -1180,12 +1180,10 @@ BOOL firstTimeLoading;
             strongSelf.pastDays = [[NSMutableArray alloc] init];
             strongSelf.dayToEventObjArray = [[NSMutableDictionary alloc] init];
             strongSelf.events = [[WGCollection alloc] initWithType:[WGEvent class]];
-            
             strongSelf.oldEvents = [[WGCollection alloc] initWithType:[WGEvent class]];
             for (WGEvent *event in strongSelf.allEvents) {
-                
                 if (event) {
-                    if ([event.isExpired boolValue]) {
+                    if (event.isExpired.boolValue) {
                         [strongSelf.oldEvents addObject:event];
                     } else {
                         [strongSelf.events addObject:event];
@@ -1238,7 +1236,7 @@ BOOL firstTimeLoading;
             
             for (WGEvent *event in strongSelf.allEvents) {
                 if (event) {
-                    if ([event.isExpired boolValue]) {
+                    if (event.isExpired.boolValue) {
                         [strongSelf.oldEvents addObject:event];
                     } else {
                         [strongSelf.events addObject:event];
@@ -1284,7 +1282,7 @@ BOOL firstTimeLoading;
                 else strongSelf.aggregateEvent = nil;
             }
             for (WGEvent *event in strongSelf.allEvents) {
-                if ([event.isExpired boolValue]) {
+                if (event.isExpired.boolValue) {
                     [strongSelf.oldEvents addObject:event];
                 } else {
                     [strongSelf.events addObject:event];
@@ -1409,7 +1407,7 @@ BOOL firstTimeLoading;
 @implementation EventCell
 
 + (CGFloat)height {
-    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 10;
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 30;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
