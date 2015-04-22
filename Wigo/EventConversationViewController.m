@@ -51,6 +51,7 @@
     }
 
     [self highlightCellAtPage:self.index.intValue animated:YES];
+    [self fetchEventMeta];
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
     NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
     [WGAnalytics tagEvent:@"Event Story Detail View" withDetails: @{@"isPeeking": isPeekingString}];
@@ -192,6 +193,12 @@
             self.facesHidden = NO;
         }];
     }
+}
+
+- (void)fetchEventMeta {
+    [self.event getMeta:^(WGCollection *collection, NSError *error) {
+        NSLog(@"here");
+    }];
 }
 
 
@@ -361,7 +368,9 @@
     if (page < self.eventMessages.count) {
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
 //        self.buttonTrash.hidden = ![eventMessage.user isEqual:WGProfile.currentUser];
-//        self.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
+        if (eventMessage.upVotes) {
+            self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ likes", eventMessage.upVotes.stringValue]; 
+        }
         if (eventMessage.vote.intValue == 1) {
             self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
         }
@@ -444,7 +453,6 @@
     self.numberOfVotesLabel.layer.shadowColor = UIColor.blackColor.CGColor;
     self.numberOfVotesLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
     self.numberOfVotesLabel.layer.shadowRadius = 0.5;
-    self.numberOfVotesLabel.text = @"10 likes";
     [self.view addSubview:self.numberOfVotesLabel];
     
     self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 , self.view.frame.size.height - 52, 56, 52)];

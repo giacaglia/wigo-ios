@@ -8,6 +8,7 @@
 
 #import "WGEventMessage.h"
 #import "WGEvent.h"
+#import "WGCache.h"
 
 #define kUserKey @"user"
 #define kMessageKey @"message"
@@ -18,7 +19,7 @@
 #define kEventOwnerKey @"event_owner"
 #define kVoteKey @"vote"
 #define kDownVotesKey @"down_votes"
-#define kUpVotesKey @"up_votes"
+#define kNumVotesKey @"num_votes"
 #define kMediaMimeType @"media_mime_type"
 
 #define kImageEventType @"image/jpeg"
@@ -126,11 +127,13 @@
 }
 
 -(void) setUpVotes:(NSNumber *)upVotes {
-    [self setObject:upVotes forKey:kUpVotesKey];
+    [self setObject:upVotes forKey:kNumVotesKey];
 }
 
 -(NSNumber *) upVotes {
-    return [self objectForKey:kUpVotesKey];
+    NSDictionary *eventDict = [[WGCache sharedCache] objectForKey:kEventMessagesKey];
+    NSDictionary *metaDict = [eventDict objectForKey:self.id.stringValue];
+    return [metaDict objectForKey:kNumVotesKey];
 }
 
 -(void) setUser:(WGUser *)user {

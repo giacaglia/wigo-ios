@@ -8,6 +8,7 @@
 
 #import "WGEvent.h"
 #import "WGProfile.h"
+#import "WGCache.h"
 
 #define kNameKey @"name"
 
@@ -226,6 +227,18 @@
         }
     }];
 
+}
+
+-(void) getMeta:(WGCollectionResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"events/%@/messages/meta/", self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       if (error) {
+           handler(nil, error);
+           return;
+       }
+       [[WGCache sharedCache] setObject:jsonResponse forKey:kEventMessagesKey];
+       
+    }];
 }
 
 -(void) getInvites:(WGCollectionResultBlock)handler {

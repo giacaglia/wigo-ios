@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#define kEventMessagesKey @"event_messages"
 
 @interface WGCache : NSObject 
 
