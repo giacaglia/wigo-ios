@@ -369,6 +369,12 @@
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
 //        self.buttonTrash.hidden = ![eventMessage.user isEqual:WGProfile.currentUser];
         if (eventMessage.upVotes) {
+            if (eventMessage.upVotes.intValue == 0) {
+                self.numberOfVotesLabel.hidden = YES;
+            }
+            else {
+                self.numberOfVotesLabel.hidden = NO;
+            }
             if (eventMessage.upVotes.intValue == 1) {
                 self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ like", eventMessage.upVotes.stringValue];
             }
@@ -519,13 +525,13 @@
         f.numberStyle = NSNumberFormatterDecimalStyle;
         NSNumber *myNumber = [f numberFromString:self.numberOfVotesLabel.text];
         myNumber = [NSNumber numberWithInt:(myNumber.intValue + 1)];
+        self.numberOfVotesLabel.hidden = NO;
         if (myNumber.intValue == 1) {
             self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ like", myNumber.stringValue];
         }
         else {
             self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ likes", myNumber.stringValue];
         }
-        self.numberOfVotesLabel.font = [FontProperties openSansBold:21.0f];
     }
     
 }
