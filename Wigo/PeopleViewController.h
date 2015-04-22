@@ -28,6 +28,7 @@
 @property (nonatomic, strong) WGCollection *friendRequestUsers;
 @property (nonatomic, assign) BOOL fetching;
 @property (nonatomic, assign) BOOL isSearching;
+@property (nonatomic, strong) NSNumber *lastUserRead;
 @end
 
 @interface TablePersonCell : UITableViewCell

@@ -518,22 +518,6 @@ heightForHeaderInSection:(NSInteger)section
     }];
 }
 
-//- (void)fetchNextPageSuggestions {
-//    if (!self.presentedSuggestions.hasNextPage.boolValue) return;
-//    __weak typeof(self) weakSelf = self;
-//    [self.presentedSuggestions addNextPage:^(BOOL success, NSError *error) {
-//        dispatch_async(dispatch_get_main_queue(), ^(void) {
-//            __strong typeof(self) strongSelf = weakSelf;
-//            if (error) {
-//                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-//                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-//                return;
-//            }
-//            [strongSelf.presentedSuggestions removeObject:WGProfile.currentUser];
-//            [strongSelf.invitePeopleTableView reloadData];
-//        });
-//    }];
-//}
 
 
 #pragma mark - Mobile

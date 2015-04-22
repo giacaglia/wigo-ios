@@ -57,6 +57,7 @@ NSIndexPath *userIndex;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    self.lastUserRead = WGProfile.currentUser.lastUserRead;
     if ([self.currentTab isEqualToNumber:@2]) {
         [WGAnalytics tagView:@"school_people"];
     }
@@ -78,8 +79,14 @@ NSIndexPath *userIndex;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    if (self.lastUserRead.longLongValue)
+    WGProfile.currentUser.lastUserRead = self.lastUserRead;
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
 }
@@ -126,7 +133,7 @@ NSIndexPath *userIndex;
 }
 
 - (void) goBack {
-    [[WGProfile currentUser] setLastUserReadToLatest:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser setLastUserReadToLatest:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
@@ -281,7 +288,7 @@ NSIndexPath *userIndex;
         [cell.followPersonButton setImage:nil forState:UIControlStateNormal];
         return cell;
     }
-    
+    if (user.id.longLongValue > self.lastUserRead.longLongValue) self.lastUserRead = user.id;
     cell.user = user;
    
     cell.profileButton.tag = tag;
@@ -292,7 +299,7 @@ NSIndexPath *userIndex;
     }
     
     if ([self.currentTab isEqualToNumber:@2] &&
-        user.id.intValue > WGProfile.currentUser.lastUserRead.intValue) {
+        user.id.longLongValue > WGProfile.currentUser.lastUserRead.longLongValue) {
         cell.orangeNewView.hidden = NO;
     }
     else {

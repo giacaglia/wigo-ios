@@ -704,7 +704,7 @@ BOOL blockShown;
         if (!notification.fromUser.id) return notificationCell;
         if ([notification.type isEqual:@"group.unlocked"]) return notificationCell;
         notificationCell.notification = notification;
-        if (notification.id > WGProfile.currentUser.lastNotificationRead) {
+        if (notification.id.longLongValue > WGProfile.currentUser.lastNotificationRead.longLongValue) {
             self.lastNotificationRead = notification.id;
         }
         return notificationCell;
@@ -955,7 +955,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)updateLastNotificationsRead {
-    WGProfile.currentUser.lastNotificationRead = self.lastNotificationRead;
+    if (self.lastNotificationRead.longLongValue > WGProfile.currentUser.lastNotificationRead.longLongValue) {
+        WGProfile.currentUser.lastNotificationRead = self.lastNotificationRead;
+    }
 //    [WGProfile.currentUser setLastNotificationReadToLatest:^(BOOL success, NSError *error) {
 //        if (error) {
 //            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];

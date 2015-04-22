@@ -204,14 +204,10 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setLastNotificationRead:(NSNumber *)lastNotificationRead {
-    [self setObject:lastNotificationRead forKey:kLastNotificationReadKey];
     [[NSUserDefaults standardUserDefaults] setObject:lastNotificationRead forKey:kLastNotificationReadKey];
 }
 
 -(NSNumber *) lastNotificationRead {
-    if ([self objectForKey:kLastNotificationReadKey]) {
-        return [self objectForKey:kLastNotificationReadKey];
-    }
     if ([[NSUserDefaults standardUserDefaults] objectForKey:kLastNotificationReadKey]) {
         return [[NSUserDefaults standardUserDefaults] objectForKey:kLastNotificationReadKey];
     }
@@ -219,11 +215,14 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setLastUserRead:(NSNumber *)lastUserRead {
-    [self setObject:lastUserRead forKey:kLastUserReadKey];
+    [[NSUserDefaults standardUserDefaults] setObject:lastUserRead forKey:kLastUserReadKey];
 }
 
 -(NSNumber *) lastUserRead {
-    return [self objectForKey:kLastUserReadKey];
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kLastUserReadKey]) {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:kLastUserReadKey];
+    }
+    return 0;
 }
 
 -(void)setPeriodWentOut:(NSNumber *)periodWentOut {
