@@ -131,6 +131,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 -(void) getFriends:(WGCollectionResultBlock)handler;
 -(void) getFriendRequests:(WGCollectionResultBlock)handler;
+-(void) getNumMutualFriends:(WGNumResultBlock)handler;
 -(void) getMutualFriends:(WGCollectionResultBlock)handler;
 -(void) getNotMeForMessage:(WGCollectionResultBlock)handler;
 +(void) searchReferals:(NSString *)query withHandler:(WGSerializedCollectionResultBlock)handler;

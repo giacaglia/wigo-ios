@@ -850,8 +850,20 @@ static WGUser *currentUser = nil;
     }
 }
 
+-(void) getNumMutualFriends:(WGNumResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"users/%@/friends/common/%@/count/", WGProfile.currentUser.id, self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       if (error) {
+           handler(nil, error);
+           return;
+       }
+       NSNumber *numberOfFriends = [jsonResponse objectForKey:@"count"];
+       handler(numberOfFriends, error);
+}];
+}
+
 -(void) getMutualFriends:(WGCollectionResultBlock)handler {
-    [WGApi get:[NSString stringWithFormat:@"users/%@/friends/common/%@", self.id, WGProfile.currentUser.id]
+    [WGApi get:[NSString stringWithFormat:@"users/%@/friends/common/%@", WGProfile.currentUser.id, self.id]
    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
        if (error) {
            handler(nil, error);

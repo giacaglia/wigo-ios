@@ -13,6 +13,7 @@
 
 typedef void (^WGSerializedCollectionResultBlock)(NSURL *urlSent, WGCollection *collection, NSError *error);
 typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error);
+typedef void (^WGNumResultBlock)(NSNumber *result, NSError *error);
 
 @property Class type;
 

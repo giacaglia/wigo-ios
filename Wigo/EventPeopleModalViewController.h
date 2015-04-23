@@ -30,6 +30,7 @@
 #define kAttendeesCellName @"attendeesCellName"
 @interface AttendeesPhotoCell : UICollectionViewCell <InviteCellDelegate>
 + (CGFloat) height;
+@property (nonatomic, strong) UIView *backgroundWhiteView;
 @property (nonatomic, strong) UIButton *imageButton;
 @property (nonatomic, strong) UIImageView *imgView;
 @property (nonatomic, strong) UILabel *backgroundNameLabel;

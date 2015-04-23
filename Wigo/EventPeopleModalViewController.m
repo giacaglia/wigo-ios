@@ -333,25 +333,25 @@ referenceSizeForFooterInSection:(NSInteger)section {
 //    blackBackgroundImageView.image = [UIImage imageNamed:@"backgroundGradient"];
 //    [self.contentView addSubview:blackBackgroundImageView];
     
-    UIView *backgroundWhiteView = [[UIView alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, 120)];
-    backgroundWhiteView.backgroundColor = UIColor.whiteColor;
-    [self.contentView addSubview:backgroundWhiteView];
+    self.backgroundWhiteView = [[UIView alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, 120)];
+    self.backgroundWhiteView.backgroundColor = UIColor.whiteColor;
+    [self.contentView addSubview:self.backgroundWhiteView];
     
     self.profileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 5, imageWidth, kNameBarHeight - 25)];
     self.profileNameLabel.textColor = UIColor.blackColor;
     self.profileNameLabel.textAlignment = NSTextAlignmentCenter;
     self.profileNameLabel.font = [FontProperties lightFont:16.0f];
-    [backgroundWhiteView addSubview:self.profileNameLabel];
+    [self.backgroundWhiteView addSubview:self.profileNameLabel];
     
     self.mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kNameBarHeight - 25, imageWidth, 20)];
     self.mutualFriendsLabel.textColor = RGB(180, 180, 180);
     self.mutualFriendsLabel.textAlignment = NSTextAlignmentCenter;
     self.mutualFriendsLabel.font = [FontProperties lightFont:12.0f];
-    [backgroundWhiteView addSubview:self.mutualFriendsLabel];
+    [self.backgroundWhiteView addSubview:self.mutualFriendsLabel];
     
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 49, imageWidth, 0.5)];
     lineView.backgroundColor = RGB(214, 214, 214);
-    [backgroundWhiteView addSubview:lineView];
+    [self.backgroundWhiteView addSubview:lineView];
 
     self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 50, imageWidth/2, 70)];
     [self.chatButton addTarget:self action:@selector(chatPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -365,17 +365,17 @@ referenceSizeForFooterInSection:(NSInteger)section {
     chatLabel.textColor = [FontProperties getBlueColor];
     chatLabel.font = [FontProperties mediumFont:14.0f];
     [self.chatButton addSubview:chatLabel];
-    [backgroundWhiteView addSubview:self.chatButton];
+    [self.backgroundWhiteView addSubview:self.chatButton];
     
     self.dividerLineView = [[UIView alloc] initWithFrame:CGRectMake(imageWidth/2, 50, 0.5, 70)];
     self.dividerLineView.backgroundColor = RGB(214, 214, 214);
-    [backgroundWhiteView addSubview:self.dividerLineView];
+    [self.backgroundWhiteView addSubview:self.dividerLineView];
     
     self.inviteView = [[InviteView alloc] initWithFrame:CGRectMake(imageWidth/2 + 0.5, 50, imageWidth/2, 70)];
     self.inviteView.backgroundColor = UIColor.whiteColor;
     [self.inviteView setup];
     self.inviteView.delegate = self;
-    [backgroundWhiteView addSubview:self.inviteView];
+    [self.backgroundWhiteView addSubview:self.inviteView];
     
     //Follow button
     self.followButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 50, imageWidth, 70)];
@@ -390,8 +390,8 @@ referenceSizeForFooterInSection:(NSInteger)section {
     addFriendLabel.textAlignment = NSTextAlignmentLeft;
     addFriendLabel.font = [FontProperties mediumFont:18.0f];
     [self.followButton addSubview:addFriendLabel];
-    [backgroundWhiteView addSubview:self.followButton];
-    [backgroundWhiteView bringSubviewToFront: self.followButton];
+    [self.backgroundWhiteView addSubview:self.followButton];
+    [self.backgroundWhiteView bringSubviewToFront: self.followButton];
     
     self.pendingLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 50, imageWidth, 70)];
     self.pendingLabel.backgroundColor = RGB(247, 247, 247);
@@ -399,7 +399,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
     self.pendingLabel.textColor = RGB(187, 187, 187);
     self.pendingLabel.textAlignment = NSTextAlignmentCenter;
     self.pendingLabel.font = [FontProperties mediumFont:20.0f];
-    [backgroundWhiteView addSubview:self.pendingLabel];
+    [self.backgroundWhiteView addSubview:self.pendingLabel];
 }
 
 - (void)followPressed:(id)sender {
@@ -431,9 +431,22 @@ referenceSizeForFooterInSection:(NSInteger)section {
         });
         
     }];
+    [user getNumMutualFriends:^(NSNumber *numMutualFriends, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (numMutualFriends.intValue == 1) {
+                strongSelf.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friend", numMutualFriends];
+            }
+            else {
+                strongSelf.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", numMutualFriends];
+            }
+        });
+    }];
     
+    if (user.isCurrentUser) {
+        self.profileNameLabel.frame = CGRectMake(self.profileNameLabel.frame.origin.x, 25 - self.profileNameLabel.frame.size.height/2, self.profileNameLabel.frame.size.width, self.profileNameLabel.frame.size.height);
+    }
     self.profileNameLabel.text = [NSString stringWithFormat:@"%@, 22", user.fullName];
-    self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%d mutual friends", 24];
     self.inviteView.user = user;
     [self reloadView];
 }

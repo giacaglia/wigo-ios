@@ -334,7 +334,7 @@ BOOL blockShown;
 
 #pragma mark Header Button View
 - (void)initializeHeaderButtonView {
-    _headerButtonView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width, 70 + 30)];
+    _headerButtonView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width, self.view.frame.size.width, 70)];
     _headerButtonView.backgroundColor = UIColor.whiteColor;
     
     CALayer *lowerBorder = [CALayer layer];
@@ -404,6 +404,8 @@ BOOL blockShown;
     [_headerButtonView addSubview: _followButton];
     [_headerButtonView bringSubviewToFront: _followButton];
     
+    if (!self.user.isCurrentUser) return;
+    _headerButtonView.frame = CGRectMake(_headerButtonView.frame.origin.x, _headerButtonView.frame.origin.y, _headerButtonView.frame.size.width, _headerButtonView.frame.size.height + 30);
     UIView *notificationsHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 70, self.view.frame.size.width, 30)];
     notificationsHeaderView.backgroundColor = RGB(248, 248, 248);
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, self.view.frame.size.width - 15, 30)];

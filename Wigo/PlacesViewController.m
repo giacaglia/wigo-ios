@@ -627,7 +627,7 @@ BOOL firstTimeLoading;
         if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
         cell.loadingView.hidden = YES;
         cell.placesDelegate = self;
-        cell.eventPeopleScrollView.rowOfEvent = indexPath.row;
+        cell.eventPeopleScrollView.rowOfEvent = (int)indexPath.row;
         cell.eventPeopleScrollView.isPeeking = [self isPeeking];
         cell.eventPeopleScrollView.hidden = NO;
         cell.privacyLockButton.tag = indexPath.row;
