@@ -567,6 +567,7 @@ static WGUser *currentUser = nil;
 }
 
 -(NSNumber *) emailValidated {
+    return @YES;
     return [self objectForKey:kEmailValidatedKey];
 }
 
@@ -848,6 +849,29 @@ static WGUser *currentUser = nil;
         }];
  
     }
+}
+
+-(void) getMutualFriends:(WGCollectionResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"users/%@/friends/common/%@", self.id, WGProfile.currentUser.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       if (error) {
+           handler(nil, error);
+           return;
+       }
+       NSError *dataError;
+       WGCollection *objects;
+       @try {
+           objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+       }
+       @catch (NSException *exception) {
+           NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+           
+           dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+       }
+       @finally {
+           handler(objects, dataError);
+       }
+    }];
 }
 
 -(void) getNotMeForMessage:(WGCollectionResultBlock)handler {

@@ -127,21 +127,11 @@ BOOL blockShown;
     else {
         if (self.user.isTapped == nil ||self.user.isFollowing == nil ) {
             __weak typeof(self) weakSelf = self;
-            [self.user refetchUserWithGroup:WGProfile.peekingGroupID andHandler:^(BOOL success, NSError *error) {
+            [self.user getMutualFriends:^(WGCollection *collection, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
-                if (error) {
-                    return;
-                }
-                if (strongSelf.isPeeking) {
-                    strongSelf.userState = OTHER_SCHOOL_USER_STATE;
-                }
-                else {
-                    strongSelf.userState = strongSelf.user.state;
-                }
-                strongSelf.imageScrollView.user = strongSelf.user;
-                strongSelf.pageControl.numberOfPages = strongSelf.user.images.count;
+                if (error) return;
+                strongSelf.mutualFriends = collection;
                 [strongSelf.tableView reloadData];
-                [strongSelf reloadViewForUserState];
             }];
         }
     }
@@ -461,7 +451,7 @@ BOOL blockShown;
     self.userState = self.user.state;
     [self reloadViewForUserState];
     
-    [[WGProfile currentUser] unblock:self.user withHandler:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser unblock:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionPost];
@@ -711,6 +701,7 @@ BOOL blockShown;
     }
     else if (indexPath.section == kMutualFriendsSection) {
         MutualFriendsCell *mutualFriendsCell = [tableView dequeueReusableCellWithIdentifier:kMutualFriendsCellName forIndexPath:indexPath];
+        mutualFriendsCell.users = self.mutualFriends;
         return mutualFriendsCell;
     }
    else if (indexPath.section == kInstagramSection) {
@@ -1010,12 +1001,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 
 - (void)setUsers:(WGCollection *)users {
+    _users = users;
     [self.mutualFriendsCollection reloadData];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
-    return 10;
+    return self.users.count;
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -1035,7 +1027,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     scrollCell.blueOverlayView.hidden = YES;
     scrollCell.goHereLabel.hidden = YES;
     scrollCell.profileNameLabel.alpha = 1.0f;
-    scrollCell.user = WGProfile.currentUser;
+    scrollCell.user = (WGUser *)[self.users objectAtIndex:indexPath.item];
     return scrollCell;
 }
 

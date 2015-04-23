@@ -31,6 +31,7 @@
 @property (nonatomic, strong) ImageScrollView *imageScrollView;
 @property (nonatomic, strong) UIPageControl *pageControl;
 @property (nonatomic, strong) NSNumber *lastNotificationRead;
+@property (nonatomic, strong) WGCollection *mutualFriends;
 @end
 
 
