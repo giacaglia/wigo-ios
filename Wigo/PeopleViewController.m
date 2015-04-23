@@ -740,7 +740,7 @@ viewForHeaderInSection:(NSInteger)section
             self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             self.followPersonButton.layer.cornerRadius = 8;
         } else {
-            if ([user.isFollowing boolValue]) {
+            if (user.isFriend.boolValue) {
                 [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
                 [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
             }

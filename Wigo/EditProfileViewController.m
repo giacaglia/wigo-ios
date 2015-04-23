@@ -403,15 +403,6 @@ UIViewController *webViewController;
     }];
 }
 
-- (void)favoritesSwitchPressed:(id)sender {
-    BOOL state = [sender isOn];
-    [WGProfile currentUser].isFavoritesGoingOutNotificationEnabled = [NSNumber numberWithBool:state];
-    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
-        [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-        [[WGError sharedInstance] logError:error forAction:WGActionSave];
-    }];
-}
-
 #pragma mark - UITextView Delegate methods
 
 - (void)textViewDidChange:(UITextView *)textView {

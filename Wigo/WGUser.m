@@ -22,17 +22,15 @@
 #define kNameKey @"name"
 #define kFacebookAccessTokenKey @"facebook_access_token"
 #define kPrivacyKey @"privacy"
-#define kIsFollowerKey @"is_follower"
 #define kNumFollowingKey @"num_following"
 #define kIsTappedKey @"is_tapped"
+#define kIsFriendKey @"is_friend"
 #define kIsBlockedKey @"is_blocked"
 #define kIsBlockingKey @"is_blocking"
 #define kBioKey @"bio"
 #define kImageKey @"image"
 #define kModifiedKey @"modified"
-#define kIsFollowingKey @"is_following"
 #define kLastNameKey @"last_name"
-#define kIsFollowingRequestedKey @"is_following_requested"
 #define kIsGoingOutKey @"is_goingout"
 #define kLastMessageReadKey @"last_message_read"
 #define kLastNotificationReadKey @"last_notification_read"
@@ -57,7 +55,6 @@
 #define kNotificationsKey @"notifications"
 #define kTapsKey @"taps"
 #define kFavoritesGoingOutKey @"favorites_going_out"
-#define kIsFavoriteKey @"is_favorite" //: false,
 #define kFirstNameKey @"first_name" //: "Josh",
 #define kGenderKey @"gender" //: "male",
 #define kFacebookIdKey @"facebook_id" //: "10101301503877593",
@@ -595,36 +592,12 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kIsBlockingKey];
 }
 
--(void) setIsFavorite:(NSNumber *)isFavorite {
-    [self setObject:isFavorite forKey:kIsFavoriteKey];
+-(void) setIsFriend:(NSNumber *)isFriend {
+    [self setObject:isFriend forKey:kIsFriendKey];
 }
 
--(NSNumber *) isFavorite {
-    return [self objectForKey:kIsFavoriteKey];
-}
-
--(void) setIsFollower:(NSNumber *)isFollower {
-    [self setObject:isFollower forKey:kIsFollowerKey];
-}
-
--(NSNumber *) isFollower {
-    return [self objectForKey:kIsFollowerKey];
-}
-
--(void) setIsFollowing:(NSNumber *)isFollowing {
-    [self setObject:isFollowing forKey:kIsFollowingKey];
-}
-
--(NSNumber *) isFollowing {
-    return [self objectForKey:kIsFollowingKey];
-}
-
--(void) setIsFollowingRequested:(NSNumber *)isFollowingRequested {
-    [self setObject:isFollowingRequested forKey:kIsFollowingRequestedKey];
-}
-
--(NSNumber *) isFollowingRequested {
-    return [self objectForKey:kIsFollowingRequestedKey];
+-(NSNumber *) isFriend {
+    return [self objectForKey:kIsFriendKey];
 }
 
 -(void) setIsGoingOut:(NSNumber *)isGoingOut {
@@ -702,25 +675,6 @@ static WGUser *currentUser = nil;
     [self setObject:referredByNumber forKey:kReferredByKey];
 }
 
--(void) setIsFavoritesGoingOutNotificationEnabled:(NSNumber *)isFavoritesGoingOutNotificationEnabled {
-    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary:self.properties];
-    
-    NSMutableDictionary *notifications = [[NSMutableDictionary alloc] initWithDictionary:[properties objectForKey:kNotificationsKey]];
-    
-    [notifications setObject:isFavoritesGoingOutNotificationEnabled forKey:kFavoritesGoingOutKey];
-    [properties setObject:notifications forKey:kNotificationsKey];
-    
-    self.properties = properties;
-}
-
--(NSNumber *) isFavoritesGoingOutNotificationEnabled {
-    if (self.properties) {
-        if ([self.properties objectForKey:kNotificationsKey]) {
-            return [[self.properties objectForKey:kNotificationsKey] objectForKey:kFavoritesGoingOutKey];
-        }
-    }
-    return nil;
-}
 
 -(State) state {
     if (self.isCurrentUser) {
@@ -731,16 +685,18 @@ static WGUser *currentUser = nil;
         return BLOCKED_USER_STATE;
     }
     if (self.privacy == PRIVATE) {
-        if ([self.isFollowingRequested boolValue]) {
-            return NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
-        }
-        else if ([self.isFollowing boolValue]) {
+//        if ([self.isFollowingRequested boolValue]) {
+//            return NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
+//        }
+        if (self.isFriend.boolValue) {
             if (self.eventAttending) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
             return FOLLOWING_USER_STATE;
         }
         else return NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
     }
-    if ([self.isFollowing boolValue] || [self.isFollowingRequested boolValue]) {
+#warning TODO: Check if the isFriend is dealt properly
+    if (self.isFriend.boolValue) {
+//    if (self.isFriend.boolValue || [self.isFollowingRequested boolValue]) {
         if (self.eventAttending) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
         return FOLLOWING_USER_STATE;
     }
@@ -758,10 +714,11 @@ static WGUser *currentUser = nil;
         }];
     }
     else {
-        if (self.isFollowing.boolValue || self.isFollowingRequested.boolValue) {
-            // If it's following user
-            self.isFollowing = @NO;
-            self.isFollowingRequested = @NO;
+#warning TODO: Check if the isFriend is dealt properly
+//        if (self.isFollowing.boolValue || self.isFollowingRequested.boolValue) {
+        if (self.isFriend.boolValue) {
+        // If it's following user
+            self.isFriend = @NO;
             [WGProfile.currentUser unfollow:self withHandler:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] logError:error forAction:WGActionDelete];
@@ -770,14 +727,15 @@ static WGUser *currentUser = nil;
             
         }
         else  {
+#warning TODO: Check if the isFriend is dealt properly
             if (self.privacy == PRIVATE) {
                 // If it's not following and it's private
-                self.isFollowingRequested = @YES;
+//                self.isFollowingRequested = @YES;
             } else {
                 // If it's not following and it's public
-                self.isFollowing = @YES;
+                self.isFriend = @YES;
             }
-            [WGProfile.currentUser follow:self withHandler:^(BOOL success, NSError *error) {
+            [WGProfile.currentUser friendUser:self withHandler:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] logError:error forAction:WGActionPost];
                 }
@@ -1313,15 +1271,15 @@ static WGUser *currentUser = nil;
 }
 
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler {
-    [user saveKey:kIsFollowingKey withValue:@NO andHandler:^(BOOL success, NSError *error) {
-        handler(error == nil, error);
-    }];
+//    [user saveKey:kIsFollowingKey withValue:@NO andHandler:^(BOOL success, NSError *error) {
+//        handler(error == nil, error);
+//    }];
 }
 
--(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler {
+-(void) friendUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi post:[NSString stringWithFormat:@"users/me/friends/"] withParameters:@{ @"friend_id": user.id} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isFollowingRequested = @YES;
+            user.isFriend = @YES;
         }
         handler(error == nil, error);
     }];
@@ -1334,7 +1292,6 @@ static WGUser *currentUser = nil;
     }
     [WGApi post:@"users/me/friends/" withParameters:@{ @"friend_id" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isFollower = @YES;
             self.numFriends = @([self.numFriends intValue] + 1);
         }
         handler(error == nil, error);
@@ -1347,7 +1304,6 @@ static WGUser *currentUser = nil;
     }
     [WGApi delete:@"users/me/friends/" withArguments:@{ @"friend_id" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isFollower = @NO;
         }
         handler(error == nil, error);
     }];

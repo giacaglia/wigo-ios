@@ -46,7 +46,6 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 @property NSString* key;
 @property (nonatomic, assign) Privacy privacy;
-@property NSNumber* isFollower;
 @property NSNumber* isTapped;
 @property NSNumber* isBlocked;
 @property NSNumber* isBlocking;
@@ -54,9 +53,8 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSString* bio;
 @property NSString* image;
 @property NSDate* modified;
-@property NSNumber* isFollowing;
+@property NSNumber* isFriend;
 @property NSString* lastName;
-@property NSNumber* isFollowingRequested;
 @property NSNumber* isGoingOut;
 @property NSNumber* lastMessageRead;
 @property NSNumber* lastNotificationRead;
@@ -71,9 +69,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSArray *arrayTooltipTracked;
 @property NSDictionary *events;
 
-@property NSNumber* isFavorite;
 @property NSString* firstName;
-
 @property (nonatomic, assign) Gender gender;
 @property NSString* email;
 @property NSString* facebookId;
@@ -84,7 +80,6 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property WGGroup* group;
 @property NSNumber* groupRank;
 @property NSNumber* isTapPushNotificationEnabled;
-@property NSNumber* isFavoritesGoingOutNotificationEnabled;
 
 @property NSNumber* numUnreadConversations;
 @property NSNumber* numUnreadNotifications;
@@ -138,7 +133,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 +(void) searchReferals:(NSString *)query withHandler:(WGSerializedCollectionResultBlock)handler;
 -(void) searchNotMe:(NSString *)query withContext:(NSString *)contextString withHandler:(WGCollectionResultBlock)handler;
 -(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
--(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler;
+-(void) friendUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) acceptFriendRequestFromUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) rejectFriendRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;

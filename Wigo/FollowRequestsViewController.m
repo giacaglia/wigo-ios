@@ -116,7 +116,8 @@
     [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
     
-    if ([user.isFollowing boolValue]) {
+#warning TODO: Check if the isFriend is dealt properly
+    if (user.isFriend.boolValue) {
         followBackPersonButton.tag = 100;
         [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
     }
@@ -181,14 +182,17 @@
                 buttonSender.layer.borderWidth = 1;
                 buttonSender.layer.borderColor = [FontProperties getOrangeColor].CGColor;
                 buttonSender.layer.cornerRadius = 3;
-                user.isFollowingRequested = @YES;
+#warning TODO: Check if the isFriend is dealt properly
+//                user.isFollowingRequested = @YES;
             }
             else {
+                
                 [buttonSender setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-                user.isFollowing = @YES;
+#warning TODO: Check if the isFriend is dealt properly
+                user.isFriend = @YES;
             }
             buttonSender.tag = 100;
-            [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
+            [WGProfile.currentUser friendUser:user withHandler:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionSave];
@@ -198,9 +202,8 @@
             [buttonSender setTitle:nil forState:UIControlStateNormal];
             [buttonSender setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
             buttonSender.tag = -100;
-            user.isFollowing = @NO;
-            user.isFollowingRequested = @NO;
-            [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
+            user.isFriend = @NO;
+            [WGProfile.currentUser unfollow:user withHandler:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionSave];
