@@ -264,6 +264,7 @@ BOOL firstTimeLoading;
         self.bostonLabel.textColor = UIColor.whiteColor;
         self.bostonLabel.backgroundColor = [FontProperties getBlueColor];
     }
+    [self fetchEventsFirstPage];
 }
 
 -(void) initializeFlashScreen {
@@ -1411,7 +1412,7 @@ BOOL firstTimeLoading;
 @implementation EventCell
 
 + (CGFloat)height {
-    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 30;
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1429,16 +1430,16 @@ BOOL firstTimeLoading;
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    self.backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
-    self.backgroundView.backgroundColor = UIColor.whiteColor;
-    [self.contentView addSubview:self.backgroundView];
+    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, [EventCell height] - 20)];
+    self.whiteView.backgroundColor = UIColor.whiteColor;
+    [self.contentView addSubview:self.whiteView];
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];
     self.loadingView.hidden = YES;
-    [self.backgroundView addSubview:self.loadingView];
+    [self.whiteView addSubview:self.loadingView];
     
     self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
-    [self.backgroundView addSubview:self.privacyLockButton];
+    [self.whiteView addSubview:self.privacyLockButton];
     
     self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 26.5 - 8., 12, 16)];
     self.privacyLockImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
@@ -1450,7 +1451,7 @@ BOOL firstTimeLoading;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.font = [FontProperties semiboldFont:18.0f];
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
-    [self.backgroundView addSubview:self.eventNameLabel];
+    [self.whiteView addSubview:self.eventNameLabel];
     
     self.verifiedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 16.5, 20, 20)];
     self.verifiedImageView.image = [UIImage imageNamed:@"dancingG-0"];
@@ -1459,24 +1460,24 @@ BOOL firstTimeLoading;
     
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
     lineView.backgroundColor = RGB(215, 215, 215);
-    [self.backgroundView addSubview:lineView];
+    [self.whiteView addSubview:lineView];
     
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 40 + 20, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
-    [self.backgroundView addSubview:self.numberOfPeopleGoingLabel];
+    [self.whiteView addSubview:self.numberOfPeopleGoingLabel];
 
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
     self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
     self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 60 + 9, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
-    [self.backgroundView addSubview:self.eventPeopleScrollView];
+    [self.whiteView addSubview:self.eventPeopleScrollView];
     
     self.highlightsCollectionView = [[HighlightsCollectionView alloc]
                                      initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 20 + 5, self.frame.size.width, [HighlightCell height])
                                      collectionViewLayout:[HighlightsFlowLayout new]];
-    [self.backgroundView addSubview:self.highlightsCollectionView];
+    [self.whiteView addSubview:self.highlightsCollectionView];
 }
 
 - (void)setEvent:(WGEvent *)event {

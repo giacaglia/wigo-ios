@@ -288,7 +288,10 @@
 }
 
 +(void) get:(WGCollectionResultBlock)handler {
-    [WGApi get:@"events/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    NSString* eventsString;
+    if (WGProfile.isLocal) eventsString = @"events/";
+    else eventsString = @"users/me/events/";
+    [WGApi get:eventsString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
