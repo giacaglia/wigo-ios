@@ -983,7 +983,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 5, 140, 20)];
     self.mutualFriendsLabel.textColor = RGB(159, 159, 159);
     self.mutualFriendsLabel.textAlignment = NSTextAlignmentLeft;
-    self.mutualFriendsLabel.text = @"24 mutual friends";
+//    self.mutualFriendsLabel.text = @"24 mutual friends";
     self.mutualFriendsLabel.font = [FontProperties mediumFont:15.0f];
     [self.contentView addSubview:self.mutualFriendsLabel];
     
@@ -1002,6 +1002,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)setUsers:(WGCollection *)users {
     _users = users;
+    if (users.total == 0) return;
+    self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", users.total];
     [self.mutualFriendsCollection reloadData];
 }
 

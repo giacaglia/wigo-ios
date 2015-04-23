@@ -23,7 +23,7 @@ typedef void (^WGCollectionResultBlock)(WGCollection *collection, NSError *error
 @property NSNumber *hasNextPage;
 @property NSString *nextPage;
 @property NSString *previousPage;
-@property NSNumber *metaNumResults;
+@property NSNumber *total;
 @property NSMutableDictionary *parameters;
 @property (nonatomic, strong) NSArray *include;
 

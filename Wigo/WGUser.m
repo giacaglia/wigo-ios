@@ -567,7 +567,6 @@ static WGUser *currentUser = nil;
 }
 
 -(NSNumber *) emailValidated {
-    return @YES;
     return [self objectForKey:kEmailValidatedKey];
 }
 

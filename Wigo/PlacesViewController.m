@@ -490,7 +490,7 @@ BOOL firstTimeLoading;
     BOOL areEventsOfTodayDone = self.oldEvents.count > 0 || ![self.allEvents.hasNextPage boolValue];
     return (self.aggregateEvent &&
             self.aggregateEvent.attendees &&
-            self.aggregateEvent.attendees.metaNumResults.intValue > 0 &&
+            self.aggregateEvent.attendees.total.intValue > 0 &&
             areEventsOfTodayDone) ? 1 : 0;
 }
 

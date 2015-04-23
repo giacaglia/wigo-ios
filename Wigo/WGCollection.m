@@ -25,6 +25,9 @@
 #define kTypeKey @"$type"
 #define kRefKey @"$ref"
 
+// Meta info
+#define kMetaTotal @"total"
+
 #define kArrayObjectKeys @[kGroupKey, kAttendeesKey, kHighlightKey, kUserKey, kEventKey]
 
 @implementation WGCollection
@@ -333,8 +336,8 @@
         self.nextPage = [metaDictionary objectForKey:@"next"];
         self.nextPage = [self.nextPage substringFromIndex:5];
     }
-    if ([metaDictionary objectForKey:@"num_results"]) {
-        self.metaNumResults = [metaDictionary objectForKey:@"num_results"];
+    if ([metaDictionary objectForKey:kMetaTotal]) {
+        self.total = [metaDictionary objectForKey:kMetaTotal];
     }
     if ([metaDictionary objectForKey:@"previous"]) {
         self.previousPage = [metaDictionary objectForKey:@"previous"];
