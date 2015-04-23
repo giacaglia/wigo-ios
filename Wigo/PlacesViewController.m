@@ -1645,30 +1645,20 @@ BOOL firstTimeLoading;
     if (weekday < 0) weekday += 7;
     NSString *dayName = [dateFormat weekdaySymbols][weekday];
     
-    UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(self.center.x - 50, 20, 100, 0.5f)];
+    UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 0.5f)];
+    lineView.center = CGPointMake(lineView.center.x, self.center.y);
     lineView.backgroundColor = RGB(210, 210, 210);
     [self addSubview: lineView];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 20.5, self.frame.size.width, self.frame.size.height - 23.5)];
-    titleLabel.backgroundColor = [UIColor clearColor];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(self.frame.size.width/2 - 70.0f, 20.5, 140, self.frame.size.height - 23.5)];
+    titleLabel.center = CGPointMake(titleLabel.center.x, self.center.y);
+    titleLabel.backgroundColor = self.backgroundColor;
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = [FontProperties scMediumFont: 18.0f];
     titleLabel.textColor = RGB(155, 155, 155);
     titleLabel.text = [dayName lowercaseString];
     titleLabel.center = CGPointMake(self.center.x, titleLabel.center.y);
     [self addSubview: titleLabel];
-    
-    if (self.isFirst) {
-        UILabel *highlights = [[UILabel alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 20)];
-        highlights.backgroundColor = [UIColor clearColor];
-        highlights.textAlignment = NSTextAlignmentCenter;
-        highlights.font = [FontProperties scMediumFont: 13.0f];
-        highlights.textColor = RGB(180, 180, 180);
-        highlights.text = @"Highlights From Past";
-        [self addSubview: highlights];
-        
-        lineView.center = CGPointMake(lineView.center.x, lineView.center.y + 5);
-    }
 }
 
 + (CGFloat) height: (BOOL) isFirst  {
