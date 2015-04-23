@@ -1366,7 +1366,7 @@ static WGUser *currentUser = nil;
     if (!event.id) {
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi post:@"eventattendees/" withParameters:@{ @"event" : event.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:[NSString stringWithFormat:@"events/%@/attendees/", event.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             self.isGoingOut = @YES;
             self.eventAttending = event;
