@@ -24,6 +24,7 @@
 #define kPrivacyKey @"privacy"
 #define kNumFollowingKey @"num_following"
 #define kIsTappedKey @"is_tapped"
+#define kFriendRequestKey @"friend_request"
 #define kIsFriendKey @"is_friend"
 #define kIsBlockedKey @"is_blocked"
 #define kIsBlockingKey @"is_blocking"
@@ -78,6 +79,9 @@
 
 #define kPrivacyPublicValue @"public"
 #define kPrivacyPrivateValue @"private"
+
+#define kFriendRequestSent @"sent"
+#define kFriendRequestReceived @"received"
 
 static WGUser *currentUser = nil;
 
@@ -600,6 +604,14 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kIsFriendKey];
 }
 
+-(void) setFriendRequest:(NSString *)friendRequest {
+    [self setObject:friendRequest forKey:kFriendRequestKey];
+}
+
+-(NSString *) friendRequest {
+    return [self objectForKey:kFriendRequestKey];
+}
+
 -(void) setIsGoingOut:(NSNumber *)isGoingOut {
     [self setObject:isGoingOut forKey:kIsGoingOutKey];
 }
@@ -681,13 +693,12 @@ static WGUser *currentUser = nil;
         if (self.privacy == PRIVATE) return PRIVATE_STATE;
         else return PUBLIC_STATE;
     }
-    if ([self.isBlocked boolValue]) {
-        return BLOCKED_USER_STATE;
-    }
+    if (self.isBlocked.boolValue) return BLOCKED_USER_STATE;
     if (self.privacy == PRIVATE) {
-//        if ([self.isFollowingRequested boolValue]) {
-//            return NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
-//        }
+        if ([self.friendRequest isEqual:kFriendRequestSent] ||
+            [self.friendRequest isEqual:kFriendRequestReceived]) {
+            return NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
+        }
         if (self.isFriend.boolValue) {
             if (self.eventAttending) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
             return FOLLOWING_USER_STATE;
@@ -833,6 +844,20 @@ static WGUser *currentUser = nil;
        strongSelf.numMutualFriends = numberOfFriends;
        handler(numberOfFriends, error);
 }];
+}
+
+-(void) getMeta:(BoolResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"users/%@/meta/", self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       if (error) {
+           handler(NO, error);
+           return;
+       }
+       for (NSString *key in jsonResponse) {
+           [self setObject:[jsonResponse objectForKey:key] forKey:key];
+       }
+       handler(YES, nil);
+   }];
 }
 
 -(void) getMutualFriends:(WGCollectionResultBlock)handler {

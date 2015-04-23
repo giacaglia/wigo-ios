@@ -133,6 +133,12 @@ BOOL blockShown;
                 strongSelf.mutualFriends = collection;
                 [strongSelf.tableView reloadData];
             }];
+            [self.user getMeta:^(BOOL success, NSError *error) {
+                __strong typeof(weakSelf) strongSelf = weakSelf;
+                if (error) return;
+                strongSelf.userState = strongSelf.user.state;
+                [strongSelf reloadViewForUserState];
+            }];
         }
     }
 }
