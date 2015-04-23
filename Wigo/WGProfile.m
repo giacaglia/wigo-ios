@@ -46,6 +46,7 @@
 static WGProfile *currentUser = nil;
 static NSNumber *peekingGroupID = nil;
 static BOOL tapAll = NO;
+static BOOL isLocal = YES;
 
 @implementation WGProfile
 
@@ -104,13 +105,21 @@ static BOOL tapAll = NO;
     return tapAll;
 }
 
++ (void)setIsLocal:(BOOL)newIsLocal {
+    isLocal = newIsLocal;
+}
+
++ (BOOL)isLocal {
+    return isLocal;
+}
+
 -(void) setKey:(NSString *)key {
     [self setObject:key forKey:kKeyKey];
     [[NSUserDefaults standardUserDefaults] setObject:key forKey:kKeyKey];
 }
 
 -(NSString *) key {
-    return @"0026cjAKWyXemocHRXM6TsdgEx";
+    return @"0728iD6sJocLtgu4kZfGEawf38";
     if ([self objectForKey:kKeyKey]) {
         return [self objectForKey:kKeyKey];
     }

@@ -192,6 +192,7 @@
     scrollCell.alpha = 1.0f;
     scrollCell.imgView.image = nil;
     scrollCell.imgViewLabel.hidden = YES;
+    scrollCell.imgView.layer.borderColor = UIColor.clearColor.CGColor;
     if (indexPath.section == kInviteSection) {
         if ([[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) {
             [scrollCell.imageButton removeTarget:nil
@@ -206,7 +207,6 @@
                 scrollCell.alpha = 1.0f;
                 [scrollCell.imageButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
             }
-//            scrollCell.imgView.image = [UIImage imageNamed:@"inviteButton"];
             scrollCell.imgViewLabel.hidden = NO;
             scrollCell.imgView.layer.borderColor = [FontProperties getBlueColor].CGColor;
             scrollCell.imgView.layer.borderWidth = 1.0f;

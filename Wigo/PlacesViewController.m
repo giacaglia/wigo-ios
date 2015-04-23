@@ -250,6 +250,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)setIsLocal:(BOOL)isLocal {
+    WGProfile.isLocal = isLocal;
     _isLocal = isLocal;
     if (isLocal) {
         self.bostonLabel.textColor = [FontProperties getBlueColor];

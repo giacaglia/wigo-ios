@@ -37,7 +37,20 @@ int imageWidth;
     backView.image = self.backgroundImage;
     [self.view addSubview:backView];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 50, self.view.frame.size.width - 30, 20)];
+    AttendeesLayout *layout = [AttendeesLayout new];
+    self.attendeesPhotosScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [AttendeesPhotoCell height]) collectionViewLayout:layout];
+    self.attendeesPhotosScrollView.center = CGPointMake(self.view.center.x, self.view.center.y + 10);
+    self.attendeesPhotosScrollView.backgroundColor = UIColor.clearColor;
+    self.attendeesPhotosScrollView.showsHorizontalScrollIndicator = NO;
+    self.attendeesPhotosScrollView.pagingEnabled = NO;
+    self.attendeesPhotosScrollView.delegate = self;
+    self.attendeesPhotosScrollView.dataSource = self;
+    [self.attendeesPhotosScrollView registerClass:[AttendeesPhotoCell class] forCellWithReuseIdentifier:kAttendeesCellName];
+    [self.attendeesPhotosScrollView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kPeopleModalViewHeader];
+     [self.attendeesPhotosScrollView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:kPeopleModalViewFooter];
+    [self.view addSubview:self.attendeesPhotosScrollView];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.attendeesPhotosScrollView.frame.origin.y/2 - 23, self.view.frame.size.width - 30, 20)];
     CGSize size = [self.event.name sizeWithAttributes:
                    @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
     if (size.width > self.view.frame.size.width - 30) {
@@ -58,19 +71,6 @@ int imageWidth;
     numberOfPeopleGoing.textColor = RGB(119, 119, 119);
     numberOfPeopleGoing.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:numberOfPeopleGoing];
-    
-    AttendeesLayout *layout = [AttendeesLayout new];
-    self.attendeesPhotosScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [AttendeesPhotoCell height]) collectionViewLayout:layout];
-    self.attendeesPhotosScrollView.center = CGPointMake(self.view.center.x, self.view.center.y + 10);
-    self.attendeesPhotosScrollView.backgroundColor = UIColor.clearColor;
-    self.attendeesPhotosScrollView.showsHorizontalScrollIndicator = NO;
-    self.attendeesPhotosScrollView.pagingEnabled = NO;
-    self.attendeesPhotosScrollView.delegate = self;
-    self.attendeesPhotosScrollView.dataSource = self;
-    [self.attendeesPhotosScrollView registerClass:[AttendeesPhotoCell class] forCellWithReuseIdentifier:kAttendeesCellName];
-    [self.attendeesPhotosScrollView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kPeopleModalViewHeader];
-     [self.attendeesPhotosScrollView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:kPeopleModalViewFooter];
-    [self.view addSubview:self.attendeesPhotosScrollView];
     
     // IOS 4
     if ([UIScreen mainScreen].bounds.size.height == 480) {

@@ -38,6 +38,8 @@
 +(NSNumber *)peekingGroupID;
 +(void)setTapAll:(BOOL)tapAll;
 +(BOOL)tapAll;
++(void)setIsLocal:(BOOL)isLocal;
++(BOOL)isLocal;
 -(void) login:(BoolResultBlock)handler;
 -(void) signup:(BoolResultBlock)handler;
 +(void) reload:(BoolResultBlock)handler;
