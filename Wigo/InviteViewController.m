@@ -42,7 +42,7 @@
     else chosenPeople = [NSMutableArray new];
     [self getMobileContacts];
     [self fetchFirstPageEveryone];
-//    [self fetchSuggestions];
+    [self fetchSuggestions];
     [self initializeTitle];
     [self initializeTableInvite];
 }
@@ -146,7 +146,7 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 3;
+    return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -155,13 +155,18 @@
         else return 0;
     }
     else if (section == kSectionTapCell) {
-        return 5;
+//        return 5;
+        return self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue;
     }
     else if (section == kSectionAllFriends) {
         return self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue;
     }
     else {
-        return 0;
+        if (self.presentedUsers.total.intValue > 10) {
+            return 0;
+        }
+        return MIN(self.presentedSuggestions.count, 5);
+//        return 0;
 //        if (self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue >= 11) {
 //            return 0;
 //        }
@@ -486,7 +491,6 @@ heightForHeaderInSection:(NSInteger)section
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
@@ -507,7 +511,6 @@ heightForHeaderInSection:(NSInteger)section
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }

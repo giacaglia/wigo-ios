@@ -251,7 +251,7 @@
         NSError *dataError;
         WGCollection *objects;
         @try {
-            objects = [WGCollection serializeResponse:jsonResponse andClass:[WGEventMessage class]];
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[WGUser class]];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];

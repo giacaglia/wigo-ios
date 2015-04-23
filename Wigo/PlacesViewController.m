@@ -89,7 +89,10 @@ BOOL firstTimeLoading;
     UITabBarController *tab= self.tabBarController;
     ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
     profileVc.user = [WGUser new];
-
+    
+//    UITabBarItem* tabBarItem = [tab.tabBar.items objectAtIndex:1];
+//    tabBarItem.badgeValue = @"";
+    
     self.spinnerAtCenter = YES;
     [self initializeWhereView];
     [self addCenterButton];
@@ -1360,7 +1363,7 @@ BOOL firstTimeLoading;
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
         [strongSelf.placesTableView reloadData];
-        UITabBarController *tab= self.tabBarController;
+        UITabBarController *tab = self.tabBarController;
         ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
         profileVc.user = WGProfile.currentUser;
     }];
