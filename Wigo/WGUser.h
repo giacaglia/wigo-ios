@@ -89,6 +89,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSNumber* numUnreadConversations;
 @property NSNumber* numUnreadNotifications;
 @property NSNumber* numUnreadUsers;
+@property NSNumber *numMutualFriends;
 
 @property UIImageView *avatarView;
 

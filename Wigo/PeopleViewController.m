@@ -691,9 +691,13 @@ viewForHeaderInSection:(NSInteger)section
 }
 
 - (void)setUser:(WGUser *)user {
+    _user = user;
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text =  user.fullName;
-    self.mutualFriendsLabel.text = @"37 mutual friends";
+    if (user.numMutualFriends) {
+        self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", user.numMutualFriends];
+    }
+    
 }
 
 @end

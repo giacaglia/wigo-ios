@@ -446,6 +446,9 @@ referenceSizeForFooterInSection:(NSInteger)section {
     if (user.isCurrentUser) {
         self.profileNameLabel.frame = CGRectMake(self.profileNameLabel.frame.origin.x, 25 - self.profileNameLabel.frame.size.height/2, self.profileNameLabel.frame.size.width, self.profileNameLabel.frame.size.height);
     }
+    else {
+        self.profileNameLabel.frame = CGRectMake(0, 5, imageWidth, kNameBarHeight - 25);
+    }
     self.profileNameLabel.text = [NSString stringWithFormat:@"%@, 22", user.fullName];
     self.inviteView.user = user;
     [self reloadView];

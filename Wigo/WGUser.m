@@ -65,6 +65,7 @@
 #define kUsernameKey @"username" //: "jelman"
 #define kIsAttendingKey @"is_attending"
 #define kPeriodWentOutKey @"period_went_out"
+#define kNumMutualFriends @"num_mutual_friends"
 
 #define kGroupKey @"group" //: {},
 #define kGroupLockedKey @"locked"
@@ -666,6 +667,17 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kNumUnreadUsersKey];
 }
 
+-(NSNumber *)numMutualFriends {
+    if ([self objectForKey:kNumMutualFriends]) {
+        return [self objectForKey:kNumMutualFriends];
+    }
+    return nil;
+}
+
+-(void)setNumMutualFriends:(NSNumber *)numMutualFriends {
+    [self setObject:numMutualFriends forKey:kNumMutualFriends];
+}
+
 -(void) setIsTapPushNotificationEnabled:(NSNumber *)isTapPushNotificationEnabled {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary:self.properties];
     
@@ -851,13 +863,16 @@ static WGUser *currentUser = nil;
 }
 
 -(void) getNumMutualFriends:(WGNumResultBlock)handler {
+    __weak typeof(self) weakSelf = self;
     [WGApi get:[NSString stringWithFormat:@"users/%@/friends/common/%@/count/", WGProfile.currentUser.id, self.id]
    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
        if (error) {
            handler(nil, error);
            return;
        }
+       __strong typeof(weakSelf) strongSelf = weakSelf;
        NSNumber *numberOfFriends = [jsonResponse objectForKey:@"count"];
+       strongSelf.numMutualFriends = numberOfFriends;
        handler(numberOfFriends, error);
 }];
 }
