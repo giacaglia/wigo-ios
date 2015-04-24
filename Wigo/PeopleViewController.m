@@ -81,8 +81,10 @@ NSIndexPath *userIndex;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if (self.lastUserRead.longLongValue)
-    WGProfile.currentUser.lastUserRead = self.lastUserRead;
+    if ([self.lastUserRead compare:WGProfile.currentUser.lastUserRead] == NSOrderedDescending ||
+        !WGProfile.currentUser.lastUserRead) {
+        WGProfile.currentUser.lastUserRead = self.lastUserRead;
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -133,14 +135,7 @@ NSIndexPath *userIndex;
 }
 
 - (void) goBack {
-    [WGProfile.currentUser setLastUserReadToLatest:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-            [[WGError sharedInstance] logError:error forAction:WGActionSave];
-        }
-    }];
     [self.navigationController popViewControllerAnimated:YES];
-
 }
 
 - (void)tappedButton:(id)sender {
@@ -288,7 +283,6 @@ NSIndexPath *userIndex;
         [cell.followPersonButton setImage:nil forState:UIControlStateNormal];
         return cell;
     }
-    if (user.id.longLongValue > self.lastUserRead.longLongValue) self.lastUserRead = user.id;
     cell.user = user;
    
     cell.profileButton.tag = tag;
@@ -298,14 +292,14 @@ NSIndexPath *userIndex;
         [cell.profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
     }
     
-    if ([self.currentTab isEqualToNumber:@2] &&
-        user.id.longLongValue > WGProfile.currentUser.lastUserRead.longLongValue) {
-        cell.orangeNewView.hidden = NO;
-    }
-    else {
+    if (self.lastUserRead && [user.created compare:self.lastUserRead] != NSOrderedDescending ) {
         cell.orangeNewView.hidden = YES;
     }
-    
+    else {
+        self.lastUserRead = user.created;
+        cell.orangeNewView.hidden = YES;
+
+    }
     return cell;
 }
 

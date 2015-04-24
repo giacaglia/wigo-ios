@@ -474,17 +474,4 @@ static BOOL isLocal = YES;
 }
 
 
--(void) setLastNotificationReadToLatest:(BoolResultBlock)handler {
-    [self saveKey:kLastNotificationReadKey withValue:@"latest" andHandler:^(BOOL success, NSError *error) {
-        handler(success, error);
-    }];
-}
-
--(void) setLastUserReadToLatest:(BoolResultBlock)handler {
-    [self saveKey:kLastUserReadKey withValue:@"latest" andHandler:^(BOOL success, NSError *error) {
-        handler(success, error);
-    }];
-}
-
-
 @end

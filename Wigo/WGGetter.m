@@ -12,6 +12,7 @@
 #import "WGUser.h"
 #import "WGNotification.h"
 
+
 @implementation WGGetter: NSObject
 
 - (void)fetchUserNames {
@@ -65,8 +66,31 @@
 - (void)fetchMeta {
     [WGApi get:@"users/me/meta/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) return;
+        if ([jsonResponse objectForKey:@"last_notification"]) {
+            NSString *notificationString = [jsonResponse objectForKey:@"last_notification"];
+            NSDate *lastNotification = [WGGetter getDateFromString:notificationString];
+            WGProfile.currentUser.lastNotificationRead = lastNotification;
+        }
+        if ([jsonResponse objectForKey:@"last_message"]) {
+            NSString *messageString = [jsonResponse objectForKey:@"last_message"];
+            NSDate *lastMessage = [WGGetter getDateFromString:messageString];
+            WGProfile.currentUser.lastMessageRead = lastMessage;
+        }
+        if ([jsonResponse objectForKey:@"last_user"]) {
+            NSString *userString = [jsonResponse objectForKey:@"last_user"];
+            NSDate *lastUser = [WGGetter getDateFromString:userString];
+            WGProfile.currentUser.lastUserRead = lastUser;
+        }
         [WGProfile setNumFriends:[jsonResponse objectForKey:@"num_friends"]];
     }];
+}
+
++(NSDate *)getDateFromString:(NSString *)timeString {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSS"];
+    NSDate *dateFromString = [[NSDate alloc] init];
+    dateFromString = [dateFormatter dateFromString:timeString];
+    return dateFromString;
 }
 
 

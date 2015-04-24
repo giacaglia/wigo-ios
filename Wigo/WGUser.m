@@ -208,34 +208,26 @@ static WGUser *currentUser = nil;
     return nil;
 }
 
--(void) setLastNotificationRead:(NSNumber *)lastNotificationRead {
+-(void) setLastNotificationRead:(NSDate *)lastNotificationRead {
     [[NSUserDefaults standardUserDefaults] setObject:lastNotificationRead forKey:kLastNotificationReadKey];
 }
 
--(NSNumber *) lastNotificationRead {
+-(NSDate *) lastNotificationRead {
     if ([[NSUserDefaults standardUserDefaults] objectForKey:kLastNotificationReadKey]) {
         return [[NSUserDefaults standardUserDefaults] objectForKey:kLastNotificationReadKey];
     }
-    return @0;
+    return nil;
 }
 
--(void) setLastUserRead:(NSNumber *)lastUserRead {
+-(void) setLastUserRead:(NSDate *)lastUserRead {
     [[NSUserDefaults standardUserDefaults] setObject:lastUserRead forKey:kLastUserReadKey];
 }
 
--(NSNumber *) lastUserRead {
+-(NSDate *) lastUserRead {
     if ([[NSUserDefaults standardUserDefaults] objectForKey:kLastUserReadKey]) {
         return [[NSUserDefaults standardUserDefaults] objectForKey:kLastUserReadKey];
     }
-    return 0;
-}
-
--(void)setPeriodWentOut:(NSNumber *)periodWentOut {
-    [self setObject:periodWentOut forKey:kPeriodWentOutKey];
-}
-
--(NSNumber *)periodWentOut {
-    return [self objectForKey:kPeriodWentOutKey];
+    return nil;
 }
 
 -(void) setGender:(Gender)gender {

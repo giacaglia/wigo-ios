@@ -88,6 +88,7 @@ BOOL blockShown;
     self.tabBarController.navigationItem.titleView.hidden = NO;
     self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: [FontProperties getBlueColor]] forBarMetrics:UIBarMetricsDefault];
+
     
     [self.pageControl removeFromSuperview];
     self.pageControl = nil;
@@ -149,8 +150,8 @@ BOOL blockShown;
     self.tabBarController.navigationItem.titleView = nil;
     [self initializeRightBarButton];
 
-//    self.tabBarController.navigationItem.titleView.hidden = YES;
-//    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    self.lastNotificationRead = WGProfile.currentUser.lastNotificationRead;
+
 
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
@@ -702,8 +703,9 @@ BOOL blockShown;
         if (!notification.fromUser.id) return notificationCell;
         if ([notification.type isEqual:@"group.unlocked"]) return notificationCell;
         notificationCell.notification = notification;
-        if (notification.id.longLongValue > WGProfile.currentUser.lastNotificationRead.longLongValue) {
-            self.lastNotificationRead = notification.id;
+        if (self.lastNotificationRead &&
+            [notification.created compare:self.lastNotificationRead] != NSOrderedDescending ) {
+            self.lastNotificationRead = notification.created;
         }
         return notificationCell;
     }
@@ -912,7 +914,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.isFetchingNotifications = NO;
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
@@ -943,15 +944,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)updateLastNotificationsRead {
-    if (self.lastNotificationRead.longLongValue > WGProfile.currentUser.lastNotificationRead.longLongValue) {
+    if ([self.lastNotificationRead compare:WGProfile.currentUser.lastNotificationRead] == NSOrderedDescending ||
+        !WGProfile.currentUser.lastNotificationRead) {
         WGProfile.currentUser.lastNotificationRead = self.lastNotificationRead;
     }
-//    [WGProfile.currentUser setLastNotificationReadToLatest:^(BOOL success, NSError *error) {
-//        if (error) {
-//            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-//            [[WGError sharedInstance] logError:error forAction:WGActionSave];
-//        }
-//    }];
 }
 
 - (void)updateBadge {
@@ -1117,11 +1113,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)setNotification:(WGNotification *)notification {
     _notification = notification;
     WGUser *user = notification.fromUser;
-    if (notification.id.longLongValue > WGProfile.currentUser.lastNotificationRead.longLongValue) {
-        self.orangeNewView.hidden = NO;
-    } else {
+//    if (notification.id.longLongValue > WGProfile.currentUser.lastNotificationRead.longLongValue) {
+//        self.orangeNewView.hidden = NO;
+//    } else {
         self.orangeNewView.hidden = YES;
-    }
+//    }
     if (user) {
         [self.profileImageView setSmallImageForUser:user completed:nil];
         self.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, notification.message];

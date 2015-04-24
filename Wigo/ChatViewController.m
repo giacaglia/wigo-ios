@@ -198,9 +198,9 @@
         cell.orangeNewView.hidden = YES;
     }
     else {
+        self.lastMessageRead = message.date;
         cell.lastMessageLabel.textColor = UIColor.blackColor;
         cell.orangeNewView.hidden = NO;
-        self.lastMessageRead = message.date;
     }
     cell.message = message;
     return cell;
