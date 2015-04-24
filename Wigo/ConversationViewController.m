@@ -306,6 +306,7 @@ ProfileViewController *profileViewController;
             [strongSelf scrollToBottomAnimated:YES];
         });
     }];
+    [self updateLastMessagesRead:message];
     self.viewForEmptyConversation.alpha = 0.0f;
     
     self.inputToolbar.contentView.textView.text = @"";
@@ -437,7 +438,7 @@ ProfileViewController *profileViewController;
 
 - (void)updateLastMessagesRead:(WGMessage *)message {
     if ([message.date compare:WGProfile.currentUser.lastMessageRead] == NSOrderedDescending) {
-        WGProfile.currentUser.lastMessageRead = message.date;
+        WGProfile.currentUser.lastMessageRead = message.created;
     }
 }
 
