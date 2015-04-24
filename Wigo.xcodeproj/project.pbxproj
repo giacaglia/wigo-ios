@@ -320,6 +320,8 @@
 		E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */; };
 		E9706E1819C20EAE00A21DE0 /* WigoCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */; };
 		E9706E1919C20EAE00A21DE0 /* WigoCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */; };
+		E9747D4A1AEA905400E0FE18 /* TabBarAuxiliar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9747D491AEA905400E0FE18 /* TabBarAuxiliar.m */; };
+		E9747D4B1AEA905400E0FE18 /* TabBarAuxiliar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9747D491AEA905400E0FE18 /* TabBarAuxiliar.m */; };
 		E9798F9919901EC100A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
 		E9798F9A19901EC700A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
 		E98C185C1924176600EF60F8 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E98C185B1924176500EF60F8 /* MapKit.framework */; };
@@ -805,6 +807,8 @@
 		E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WigoCustomCell.xib; sourceTree = "<group>"; };
 		E9706E1619C20EAE00A21DE0 /* WigoCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WigoCustomCell.h; sourceTree = "<group>"; };
 		E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoCustomCell.m; sourceTree = "<group>"; };
+		E9747D481AEA905400E0FE18 /* TabBarAuxiliar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarAuxiliar.h; sourceTree = "<group>"; };
+		E9747D491AEA905400E0FE18 /* TabBarAuxiliar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarAuxiliar.m; sourceTree = "<group>"; };
 		E9798F9819901EC100A97AE9 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		E97999D019759A2900C617E3 /* Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
 		E98C185B1924176500EF60F8 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -1594,6 +1598,7 @@
 		E921D6531923973800361247 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				E9747D471AEA8FE100E0FE18 /* Tab Bar */,
 				E9AAAFCC193E3DDB0069F700 /* Signup/Login/Onboard */,
 				FA85ED991A5C3F93004B0465 /* Main Flow */,
 				E94A2850196C6BC50027D3BA /* Facebook Photos */,
@@ -1699,6 +1704,15 @@
 				E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */,
 			);
 			name = WigoCustomCell;
+			sourceTree = "<group>";
+		};
+		E9747D471AEA8FE100E0FE18 /* Tab Bar */ = {
+			isa = PBXGroup;
+			children = (
+				E9747D481AEA905400E0FE18 /* TabBarAuxiliar.h */,
+				E9747D491AEA905400E0FE18 /* TabBarAuxiliar.m */,
+			);
+			name = "Tab Bar";
 			sourceTree = "<group>";
 		};
 		E99EC28B1986B6A400CBFA59 /* Popup Helpers */ = {
@@ -2536,6 +2550,7 @@
 				E9096D581ADD5F1100386AC2 /* FSCalendar.m in Sources */,
 				E9096D771AE174B300386AC2 /* WGCache.m in Sources */,
 				45D9FAB31A781AFD00D08577 /* JSQMessagesToolbarButtonFactory.m in Sources */,
+				E9747D4B1AEA905400E0FE18 /* TabBarAuxiliar.m in Sources */,
 				C12A113819787BE700D53B1C /* SignUpViewController.m in Sources */,
 				C12A113919787BE700D53B1C /* UIView+WebCacheOperation.m in Sources */,
 				E9ACDC6A19AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
@@ -2660,6 +2675,7 @@
 				E900C2BF1961EADE00A01F50 /* UIImage+GIF.m in Sources */,
 				45D9FAAA1A781AFD00D08577 /* JSQMessagesAvatarImageFactory.m in Sources */,
 				E900C2C31961EADE00A01F50 /* UIImageView+WebCache.m in Sources */,
+				E9747D4A1AEA905400E0FE18 /* TabBarAuxiliar.m in Sources */,
 				FABD337D1A3B9904008FF56D /* JPBParallaxTableViewController.m in Sources */,
 				45F74FF21A5DA86500A5170F /* WGGroup.m in Sources */,
 				FADD07301A0D296900492369 /* LLACircularProgressView.m in Sources */,

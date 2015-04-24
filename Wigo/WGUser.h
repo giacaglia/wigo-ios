@@ -57,7 +57,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSString* friendRequest;
 @property NSString* lastName;
 @property NSNumber* isGoingOut;
-@property NSNumber* lastMessageRead;
+@property NSDate* lastMessageRead;
 @property NSNumber* lastNotificationRead;
 @property NSNumber* lastUserRead;
 @property NSNumber* periodWentOut;

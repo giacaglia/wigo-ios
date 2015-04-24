@@ -17,7 +17,7 @@
 @property (nonatomic, strong) UITableView *tableViewOfPeople;
 @property (nonatomic, strong) WGCollection *messages;
 @property (nonatomic, assign) BOOL isFetching;
-@property (nonatomic, strong) NSNumber *lastMessageRead;
+@property (nonatomic, strong) NSDate *lastMessageRead;
 @end
 
 

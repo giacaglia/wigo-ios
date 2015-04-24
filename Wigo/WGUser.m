@@ -197,15 +197,15 @@ static WGUser *currentUser = nil;
     return [NSDate serialize:[self objectForKey:kModifiedKey]];
 }
 
--(void) setLastMessageRead:(NSNumber *)lastMessageRead {
+-(void) setLastMessageRead:(NSDate *)lastMessageRead {
     [[NSUserDefaults standardUserDefaults] setObject:lastMessageRead forKey:kLastMessageReadKey];
 }
 
--(NSNumber *) lastMessageRead {
+-(NSDate *) lastMessageRead {
     if ([[NSUserDefaults standardUserDefaults] objectForKey:kLastMessageReadKey]) {
         return [[NSUserDefaults standardUserDefaults] objectForKey:kLastMessageReadKey];
     }
-    return @0;
+    return nil;
 }
 
 -(void) setLastNotificationRead:(NSNumber *)lastNotificationRead {

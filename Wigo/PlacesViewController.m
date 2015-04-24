@@ -86,12 +86,11 @@ BOOL firstTimeLoading;
     self.shouldReloadEvents = YES;
     self.eventOffsetDictionary = [NSMutableDictionary new];
     
-    UITabBarController *tab= self.tabBarController;
+    UITabBarController *tab = self.tabBarController;
     ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
     profileVc.user = [WGUser new];
+    self.isLocal = YES;
     
-//    UITabBarItem* tabBarItem = [tab.tabBar.items objectAtIndex:1];
-//    tabBarItem.badgeValue = @"";
     
     self.spinnerAtCenter = YES;
     [self initializeWhereView];
@@ -226,7 +225,7 @@ BOOL firstTimeLoading;
     self.friendsButton.titleLabel.font = [FontProperties mediumFont:12.0f];
     [toggleView addSubview:self.friendsButton];
     self.tabBarController.navigationItem.titleView = toggleView;
-    self.isLocal = YES;
+    self.isLocal = self.isLocal;
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer*)sender {

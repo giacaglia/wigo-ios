@@ -442,8 +442,8 @@ ProfileViewController *profileViewController;
 }
 
 - (void)updateLastMessagesRead:(WGMessage *)message {
-    if ([message.id intValue] > [[WGProfile currentUser].lastMessageRead intValue]) {
-        WGProfile.currentUser.lastMessageRead = message.id;
+    if ([message.date compare:WGProfile.currentUser.lastMessageRead] == NSOrderedDescending) {
+        WGProfile.currentUser.lastMessageRead = message.date;
     }
 }
 
