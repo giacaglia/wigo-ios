@@ -537,7 +537,7 @@ BOOL firstTimeLoading;
         return [TodayHeader height];
     }
     else if (section == kHighlightsEmptySection) { //highlights section seperator
-        return 40;
+        return 0;
     }
     else if ([self shouldShowHighlights] && section > 1) {
         return 0;
@@ -554,7 +554,7 @@ BOOL firstTimeLoading;
         return [TodayHeader new];
     }
     else if (section == kHighlightsEmptySection) {
-        return [HighlightsHeader init];
+        return nil;
     }
     else if ([self shouldShowHighlights] && section > 1) {
         return nil;
@@ -1603,24 +1603,6 @@ BOOL firstTimeLoading;
 
 @end
 
-@implementation HighlightsHeader
-
-+ (instancetype) init {
-    HighlightsHeader *header = [[HighlightsHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [HighlightsHeader height])];
-    [header setup];
-    return header;
-}
-
-- (void) setup {
-    self.backgroundColor = RGB(237, 237, 237);
-
-}
-
-+ (CGFloat)height {
-    return 60.0f;
-}
-
-@end
 
 @implementation PastDayHeader
 
@@ -1646,12 +1628,12 @@ BOOL firstTimeLoading;
     NSString *dayName = [dateFormat weekdaySymbols][weekday];
     
     UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 0.5f)];
-    lineView.center = CGPointMake(lineView.center.x, self.center.y);
+    lineView.center = CGPointMake(lineView.center.x, self.center.y - 10);
     lineView.backgroundColor = RGB(210, 210, 210);
     [self addSubview: lineView];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(self.frame.size.width/2 - 70.0f, 20.5, 140, self.frame.size.height - 23.5)];
-    titleLabel.center = CGPointMake(titleLabel.center.x, self.center.y);
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(self.frame.size.width/2 - 70.0f, 0, 140, self.frame.size.height - 23.5)];
+    titleLabel.center = CGPointMake(titleLabel.center.x, self.center.y - 10);
     titleLabel.backgroundColor = self.backgroundColor;
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = [FontProperties scMediumFont: 18.0f];
