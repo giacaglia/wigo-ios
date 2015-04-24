@@ -271,13 +271,7 @@ ProfileViewController *profileViewController;
 }
 
 - (void) goBack {
-    [self.user readConversation:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionSave];
-        }
-    }];
-    
-    self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
+    self.navigationController.navigationBar.barTintColor = UIColor.clearColor;
     self.navigationController.navigationBar.translucent = YES;
     
     [self.navigationController popViewControllerAnimated:YES];
@@ -402,7 +396,7 @@ ProfileViewController *profileViewController;
         [collection reverse];
         strongSelf.messages = collection;
         if (strongSelf.messages.count == 0) {
-            self.viewForEmptyConversation.hidden = NO;
+            strongSelf.viewForEmptyConversation.hidden = NO;
         } else {
             strongSelf.viewForEmptyConversation.hidden = YES;
         }

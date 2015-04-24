@@ -168,14 +168,6 @@
     }];
 }
 
-- (void)markMessageAsRead:(WGMessage *)message {
-    [message.otherUser readConversation:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionSave];
-        }
-    }];
-}
-
 
 #pragma mark - Tablew View Data Source
 
@@ -221,8 +213,7 @@
     
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
     message.isRead = @YES;
-    [self markMessageAsRead:message];
-    WGUser *user = [message otherUser];
+    WGUser *user = message.otherUser;
     ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithUser:user];
     [self.navigationController pushViewController:conversationViewController animated:YES];
 }
@@ -295,13 +286,6 @@
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text = user.fullName;
     self.lastMessageLabel.text = message.message;
-//    if (message.isRead.boolValue) {
-//        self.lastMessageLabel.textColor = RGB(208, 208, 208);
-//    }
-//    else {
-//        self.lastMessageLabel.textColor = UIColor.blackColor;
-//    }
-//    self.orangeNewView.hidden = message.isRead.boolValue;
 }
 
 @end
