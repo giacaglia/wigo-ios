@@ -77,6 +77,7 @@
 @property (nonatomic, strong) UIView *grayView;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @property (nonatomic, strong) UIImageView *verifiedImageView;
+@property (nonatomic, assign) BOOL isOldEvent;
 @end
 
 

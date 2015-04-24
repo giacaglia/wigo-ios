@@ -39,7 +39,6 @@ typedef enum  {
 
 
 @property EventPeopleModalViewController *eventPeopleModalViewController;
-
 @property (nonatomic, assign) id <UserSelectDelegate> userSelectDelegate;
 @property (nonatomic, assign) id <PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) NSNumber *groupID;

@@ -621,6 +621,7 @@ BOOL firstTimeLoading;
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
         //Cleanup
+        cell.isOldEvent = NO;
         cell.highlightsCollectionView.event = nil;
         cell.highlightsCollectionView.eventMessages = nil;
         [cell.highlightsCollectionView reloadData];
@@ -685,6 +686,7 @@ BOOL firstTimeLoading;
         }
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
+        cell.isOldEvent = YES;
         cell.event = event;
         cell.placesDelegate = self;
         cell.eventPeopleScrollView.isPeeking = YES;
@@ -1514,6 +1516,19 @@ BOOL firstTimeLoading;
         dispatch_async(dispatch_get_main_queue(), ^{
             self.verifiedImageView.hidden = YES;
         });
+    }
+}
+
+- (void)setIsOldEvent:(BOOL)isOldEvent {
+    if (isOldEvent) {
+        self.whiteView.backgroundColor = RGB(221, 221, 221);
+        self.eventNameLabel.textColor = RGB(121, 121, 121);
+        self.numberOfPeopleGoingLabel.textColor = RGB(148, 148, 148);
+    }
+    else {
+        self.whiteView.backgroundColor = UIColor.whiteColor;
+        self.eventNameLabel.textColor = [FontProperties getBlueColor];
+        self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     }
 }
 
