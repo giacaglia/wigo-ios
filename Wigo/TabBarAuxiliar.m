@@ -14,11 +14,16 @@
 
 + (void)checkForIndexes {
     //For chats
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     NSDate *nowDate = [NSDate date];
     if ([WGProfile.currentUser.lastNotificationRead compare:nowDate]) {
         NSLog(@"hjere");
         //        TabBarAuxiliar addNotificationTo:kIndexOfProfile forVC:<#(UIViewController *)#>
+    }
+    if ([WGProfile.currentUser.lastUserRead compare:nowDate]) {
+        NSLog(@"last user read");
+    }
+    if ([WGProfile.currentUser.lastNotificationRead compare:nowDate]) {
+        NSLog(@"fjeiahjf");
     }
 //    return [[dateFormatter dateFromString:dateString] dateByAddingTimeInterval:timeZoneSeconds];
 

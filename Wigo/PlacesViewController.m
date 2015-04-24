@@ -171,20 +171,11 @@ BOOL firstTimeLoading;
     UIImage *highlightImage = nil;
     self.createButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.createButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-    self.createButton.frame = CGRectMake(0.0, 0.0, 55.0f, 55.0f);
+    self.createButton.frame = CGRectMake(0.0, 0.0, 49.0f, 49.0f);
     [self.createButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
     [self.createButton setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
     [self.createButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
-    CGFloat heightDifference = buttonImage.size.height - self.tabBarController.tabBar.frame.size.height;
-    if (heightDifference < 0)
-        self.createButton.center = self.tabBarController.tabBar.center;
-    else
-    {
-        CGPoint center = self.tabBarController.tabBar.center;
-        center.y = center.y - heightDifference/2.0;
-        self.createButton.center = center;
-    }
-    
+    self.createButton.center = self.tabBarController.tabBar.center;
     [self.tabBarController.view addSubview:self.createButton];
 }
 
