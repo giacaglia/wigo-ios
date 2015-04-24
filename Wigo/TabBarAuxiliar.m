@@ -12,26 +12,30 @@
 @implementation TabBarAuxiliar
 
 
-+ (void)checkForIndexes {
++ (void)checkIndex:(int)index ForDate:(NSDate *)date {
     //For chats
-    NSDate *nowDate = [NSDate date];
-    if ([WGProfile.currentUser.lastNotificationRead compare:nowDate]) {
-        NSLog(@"hjere");
-        //        TabBarAuxiliar addNotificationTo:kIndexOfProfile forVC:<#(UIViewController *)#>
+    if (index == kIndexOfChats) {
+        if ([WGProfile.currentUser.lastMessageRead compare:date] == NSOrderedAscending) {
+            [TabBarAuxiliar addNotificationTo:kIndexOfChats];
+        }
     }
-    if ([WGProfile.currentUser.lastUserRead compare:nowDate]) {
-        NSLog(@"last user read");
+    else if (index == kIndexOfFriends) {
+        if ([WGProfile.currentUser.lastUserRead compare:date] == NSOrderedAscending) {
+            [TabBarAuxiliar addNotificationTo:kIndexOfFriends];
+        }
     }
-    if ([WGProfile.currentUser.lastNotificationRead compare:nowDate]) {
-        NSLog(@"fjeiahjf");
+    else {
+        if ([WGProfile.currentUser.lastNotificationRead compare:date] == NSOrderedAscending) {
+            [TabBarAuxiliar addNotificationTo:kIndexOfProfile];
+        }
     }
-//    return [[dateFormatter dateFromString:dateString] dateByAddingTimeInterval:timeZoneSeconds];
-
 }
 
-+ (void)addNotificationTo:(int)index forVC:(UIViewController *)vc {
++ (void)addNotificationTo:(int)index {
+    UINavigationController *navigationController = (UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController;
+    NSArray *viewControllers = navigationController.viewControllers;
+    UITabBarController *tabBarController = [viewControllers objectAtIndex:0];
     float distance = [UIScreen mainScreen].bounds.size.width/5 * (index + 0.6f);
-    UITabBarController *tabBarController = vc.tabBarController;
     UITabBar *tabBar = tabBarController.tabBar;
     UIView *orangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 16, 16)];
     orangeView.backgroundColor = [FontProperties getOrangeColor];

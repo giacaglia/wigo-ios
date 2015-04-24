@@ -11,6 +11,7 @@
 #import "WGProfile.h"
 #import "WGUser.h"
 #import "WGNotification.h"
+#import "TabBarAuxiliar.h"
 
 
 @implementation WGGetter: NSObject
@@ -69,17 +70,17 @@
         if ([jsonResponse objectForKey:@"last_notification"]) {
             NSString *notificationString = [jsonResponse objectForKey:@"last_notification"];
             NSDate *lastNotification = [WGGetter getDateFromString:notificationString];
-//            WGProfile.currentUser.lastNotificationRead = lastNotification;
+            [TabBarAuxiliar checkIndex:kIndexOfProfile ForDate:lastNotification];
         }
         if ([jsonResponse objectForKey:@"last_message"]) {
             NSString *messageString = [jsonResponse objectForKey:@"last_message"];
             NSDate *lastMessage = [WGGetter getDateFromString:messageString];
-//            WGProfile.currentUser.lastMessageRead = lastMessage;
+            [TabBarAuxiliar checkIndex:kIndexOfChats ForDate:lastMessage];
         }
         if ([jsonResponse objectForKey:@"last_user"]) {
             NSString *userString = [jsonResponse objectForKey:@"last_user"];
             NSDate *lastUser = [WGGetter getDateFromString:userString];
-//            WGProfile.currentUser.lastUserRead = lastUser;
+            [TabBarAuxiliar checkIndex:kIndexOfFriends ForDate:lastUser];
         }
         [WGProfile setNumFriends:[jsonResponse objectForKey:@"num_friends"]];
     }];

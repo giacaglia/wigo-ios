@@ -13,7 +13,6 @@
 #define kIndexOfProfile 4
 
 @interface TabBarAuxiliar : NSObject
-
-
-+ (void)addNotificationTo:(int)index forVC:(UIViewController *)vc;
++ (void)checkIndex:(int)index ForDate:(NSDate *)date;
++ (void)addNotificationTo:(int)index;
 @end
