@@ -164,8 +164,10 @@
             VideoCell *videoCell = (VideoCell*)cell;
             [videoCell unloadVideoCell];
         }
+        else if([cell isKindOfClass:[CameraCell class]]) {
+            [(CameraCell *)cell cellDidDisappear];
+        }
     }
-    
 }
 
 

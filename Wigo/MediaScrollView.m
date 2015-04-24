@@ -6,11 +6,15 @@
 //  Copyright (c) 2014 Giuliano Giacaglia. All rights reserved.
 //
 
+#import <ImageIO/ImageIO.h>
+
 #import "MediaScrollView.h"
 #import "Globals.h"
 #import "EventMessagesConstants.h"
 #import "WGEventMessage.h"
 #import "WGCollection.h"
+#import "UIImage+Rotation.h"
+
 #import <AVFoundation/AVFoundation.h>
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 #define kMediaMimeTypeKey @"media_mime_type"
@@ -560,43 +564,45 @@
 - (NSData *)getImageDataFromImage:(UIImage *)image
                     andController:(UIImagePickerController *)controller
                        isTemplate:(BOOL)isTemplate{
-    CGFloat imageWidth = image.size.height * 1.0; // because the image is rotated
-    CGFloat imageHeight = image.size.width * 1.0; // because the image is rotated
     
-    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
-    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-    
-    CGFloat ratio = imageWidth/screenHeight; // approximately 4.0
-    CGFloat cropWidth = screenHeight * ratio;
-    CGFloat cropHeight = screenWidth * ratio;
-    
-    CGFloat jpegQuality = WGProfile.currentUser.imageQuality;
-    CGFloat imageMultiple = WGProfile.currentUser.imageMultiple;
-    
-    CGFloat translation = (imageHeight - cropHeight) / 2.0;
-    
-    UIImage *flippedImage;
-    if (!isTemplate) {
-        UIImage *croppedImage = [image croppedImage:CGRectMake(0, translation, cropWidth, cropHeight)];
-        UIImage *scaledImage = [croppedImage resizedImage:CGSizeMake(screenHeight*imageMultiple, screenWidth*imageMultiple) interpolationQuality:kCGInterpolationHigh];
-        flippedImage = scaledImage;
-        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
-            flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
-                                               scale:scaledImage.scale
-                                         orientation:UIImageOrientationLeftMirrored];
-        }
-    }
-    else {
-//        UIImage *scaledImage = [image resizedImage:CGSizeMake(screenWidth*imageMultiple, screenHeight*imageMultiple) interpolationQuality:kCGInterpolationHigh];
-        flippedImage = image;
+    return UIImageJPEGRepresentation(image, WGProfile.currentUser.imageQuality);
+//    CGFloat imageWidth = image.size.height * 1.0; // because the image is rotated
+//    CGFloat imageHeight = image.size.width * 1.0; // because the image is rotated
+//    
+//    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+//    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+//    
+//    CGFloat ratio = imageWidth/screenHeight; // approximately 4.0
+//    CGFloat cropWidth = screenHeight * ratio;
+//    CGFloat cropHeight = screenWidth * ratio;
+//    
+//    CGFloat jpegQuality = WGProfile.currentUser.imageQuality;
+//    CGFloat imageMultiple = WGProfile.currentUser.imageMultiple;
+//    
+//    CGFloat translation = (imageHeight - cropHeight) / 2.0;
+//    
+//    UIImage *flippedImage;
+//    if (!isTemplate) {
+//        UIImage *croppedImage = [image croppedImage:CGRectMake(0, translation, cropWidth, cropHeight)];
+//        UIImage *scaledImage = [croppedImage resizedImage:CGSizeMake(screenHeight*imageMultiple, screenWidth*imageMultiple) interpolationQuality:kCGInterpolationHigh];
+//        flippedImage = scaledImage;
 //        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
 //            flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
 //                                               scale:scaledImage.scale
 //                                         orientation:UIImageOrientationLeftMirrored];
 //        }
-    }
-    
-    return UIImageJPEGRepresentation(flippedImage, jpegQuality);
+//    }
+//    else {
+////        UIImage *scaledImage = [image resizedImage:CGSizeMake(screenWidth*imageMultiple, screenHeight*imageMultiple) interpolationQuality:kCGInterpolationHigh];
+//        flippedImage = image;
+////        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+////            flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
+////                                               scale:scaledImage.scale
+////                                         orientation:UIImageOrientationLeftMirrored];
+////        }
+//    }
+//    
+//    return UIImageJPEGRepresentation(flippedImage, jpegQuality);
 
 }
 
@@ -1467,6 +1473,10 @@
 
 @implementation MediaCell
 
+- (void)cellDidDisappear {
+    
+}
+
 - (void)updateUI {
     if (self.eventMessage.message) {
         NSString *message = self.eventMessage.message;
@@ -1530,6 +1540,8 @@
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
+    
+    self.isTakingPicture = NO;
 
     self.controller = [[UIImagePickerController alloc] init];
     self.controller.sourceType = UIImagePickerControllerSourceTypeCamera;
@@ -1538,6 +1550,15 @@
     self.controller.videoQuality = UIImagePickerControllerQualityType640x480;
     self.controller.delegate = self;
     self.controller.showsCameraControls = NO;
+    
+    self.photoController = [[UIImagePickerController alloc] init];
+    self.photoController.sourceType = UIImagePickerControllerSourceTypeCamera;
+    self.photoController.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+    self.photoController.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+    self.photoController.videoQuality = UIImagePickerControllerQualityTypeMedium;
+    self.photoController.delegate = self;
+    self.photoController.showsCameraControls = NO;
+    
     
     CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
     CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
@@ -1548,10 +1569,13 @@
     CGFloat yAdjust = delta / 2.0;
     
     CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, yAdjust); //This slots the preview exactly in the middle of the screen
-    self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
+    //self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
     
-    self.controller.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeMovie, (NSString *)kUTTypeImage, nil];
+    self.photoController.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeImage, nil];
+    self.controller.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeMovie, nil];
     [self.contentView addSubview:self.controller.view];
+    
+    
 
     self.overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
     self.controller.cameraOverlayView = self.overlayView;
@@ -1704,10 +1728,25 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerThumbnailsLoaded:) name:MPMoviePlayerThumbnailImageRequestDidFinishNotification object:self.previewMoviePlayer];
     
+    self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
+    self.photoController.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
+    
+}
+
+- (void)cellDidDisappear {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)cameraIsReady:(NSNotification *)notification {
     NSLog(@"camera is ready");
+    if(notification.object && [notification.object isKindOfClass:[AVCaptureSession class]]) {
+        self.captureSession = notification.object;
+    }
+    
+//    if(self.isTakingPicture) {
+//        self.isTakingPicture = NO;
+//        [self.photoController takePicture];
+//    }
 }
 
 - (void)cameraStopped:(NSNotification *)notification {
@@ -1725,9 +1764,10 @@
 - (void)takePicture {
     NSLog(@"capture mode: %d", (int)self.controller.cameraCaptureMode);
     NSLog(@"taking picture");
-    self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
-    if (self.controller.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn &&
-        self.controller.cameraDevice == UIImagePickerControllerCameraDeviceFront ) {
+    
+    //self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
+    if (self.photoController.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn &&
+        self.photoController.cameraDevice == UIImagePickerControllerCameraDeviceFront ) {
         [UIView animateWithDuration:0.04 animations:^{
             self.flashWhiteView.alpha = 1.0f;
         } completion:^(BOOL finished) {
@@ -1736,11 +1776,158 @@
     }
     self.pictureButton.userInteractionEnabled = NO;
     
-    [self.controller takePicture];
+    
+    // take picture
+    
+//    UIGraphicsBeginImageContextWithOptions(self.controller.view.frame.size, NO, 0.0);
+//    CGContextRef context = UIGraphicsGetCurrentContext();
+//    
+//    [self.controller.view.layer renderInContext:context];
+//    
+//    UIImage *photo = UIGraphicsGetImageFromCurrentImageContext();
+//    
+//    UIGraphicsEndImageContext();
+//    
+//    NSDictionary *mediaDict = @{UIImagePickerControllerMediaMetadata:@{},
+//                                UIImagePickerControllerMediaType:@"public.image",
+//                                UIImagePickerControllerOriginalImage:photo};
+//    
+//    [self imagePickerController:self.controller
+//  didFinishPickingMediaWithInfo:mediaDict];
+    
+//    self.isTakingPicture = YES;
+//    
+//    [self.controller.view removeFromSuperview];
+//    [self.contentView addSubview:self.photoController.view];
+    
+    //[self.photoController takePicture];
+    
+    for(AVCaptureInput *input in self.captureSession.inputs) {
+        NSLog(@"input: %@", input.description);
+    }
+    
+    
+    AVCaptureStillImageOutput *stillImageOutput = nil;
+    for(AVCaptureOutput *output in self.captureSession.outputs) {
+        if([output isKindOfClass:[AVCaptureStillImageOutput class]]) {
+            stillImageOutput = (AVCaptureStillImageOutput *)output;
+        }
+        NSLog(@"output: %@", output.description);
+    }
+    
+    NSDictionary *outputSettings = @{ AVVideoCodecKey : AVVideoCodecJPEG,
+                                      (NSString*)kCVPixelBufferPixelFormatTypeKey:[NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]};
+    
+    [stillImageOutput setOutputSettings:outputSettings];
+//    
+//    NSString* key = ;
+//    NSNumber* value = ;
+//    NSDictionary* outputSettings = [NSDictionary dictionaryWithObject:value forKey:key];
+//    
+//    [newStillImageOutput setOutputSettings:outputSettings];
+    
+    AVCaptureConnection *videoConnection = nil;
+    for (AVCaptureConnection *connection in stillImageOutput.connections) {
+        for (AVCaptureInputPort *port in [connection inputPorts]) {
+            if ([[port mediaType] isEqual:AVMediaTypeVideo] ) {
+                videoConnection = connection;
+                break;
+            }
+        }
+        if (videoConnection) { break; }
+    }
+    
+    [stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:
+     ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+         CFDictionaryRef exifAttachments =
+         CMGetAttachment(imageSampleBuffer, kCGImagePropertyExifDictionary, NULL);
+         
+         if (exifAttachments) {
+             // Do something with the attachments.
+         }
+         
+         UIImage *image = [self imageFromSampleBuffer:imageSampleBuffer];
+
+         if(image) {
+             
+             NSDictionary *mediaDict = @{UIImagePickerControllerMediaMetadata:(__bridge NSDictionary *)exifAttachments,
+                                         UIImagePickerControllerMediaType:@"public.image",
+                                         UIImagePickerControllerOriginalImage:image};
+             [self imagePickerController:self.controller
+           didFinishPickingMediaWithInfo:mediaDict];
+         }
+         
+         // Continue as appropriate.
+     }];
+
+}
+
+// courtesy http://stackoverflow.com/questions/3305862/uiimage-created-from-cmsamplebufferref-not-displayed-in-uiimageview
+
+- (UIImage *) imageFromSampleBuffer:(CMSampleBufferRef) sampleBuffer // Create a CGImageRef from sample buffer data
+{
+//    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+//    CVPixelBufferLockBaseAddress(imageBuffer,0);        // Lock the image buffer
+//    
+//    uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0);   // Get information of the image
+//    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+//    size_t width = CVPixelBufferGetWidth(imageBuffer);
+//    size_t height = CVPixelBufferGetHeight(imageBuffer);
+//    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+//    
+//    CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+//    CGImageRef newImage = CGBitmapContextCreateImage(newContext);
+//    CGContextRelease(newContext);
+//    
+//    CGColorSpaceRelease(colorSpace);
+//    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+//    /* CVBufferRelease(imageBuffer); */  // do not call this!
+//    
+//    return newImage;
+    
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+    
+    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+    
+    // Get the number of bytes per row for the pixel buffer
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    // Get the pixel buffer width and height
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    
+    
+    
+    // Create a device-dependent RGB color space
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    // Create a bitmap graphics context with the sample buffer data
+    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8,
+                                                 bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    // Create a Quartz image from the pixel data in the bitmap graphics context
+    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
+    // Unlock the pixel buffer
+    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+    
+    
+    // Free up the context and color space
+    CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
+    
+    // Create an image object from the Quartz image
+    UIImage *image = [UIImage imageWithCGImage:quartzImage];
+    
+    // Release the Quartz image
+    CGImageRelease(quartzImage);
+    
+    image = [image imageRotatedByDegrees:90.0];
+    return (image);
+
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
     NSLog(@"gesture state: %d", (int)gesture.state);
+    NSLog(@"camera transform: %@", NSStringFromCGAffineTransform(self.controller.cameraViewTransform));
     
     if (!self.longGesturePressed && gesture.state == UIGestureRecognizerStateBegan) {
         NSLog(@"long press gesture began");
@@ -1788,6 +1975,8 @@
         self.videoTimerCount -= timer.timeInterval;
         NSLog(@"video timer count: %f", self.videoTimerCount);
         
+        NSLog(@"camera %@", NSStringFromCGAffineTransform(self.controller.cameraViewTransform));
+        
         UILongPressGestureRecognizer *gesture = timer.userInfo[@"gesture"];
         [self.circularProgressView setProgress: MIN(1.0, (8.0 - self.videoTimerCount)/8.0) animated:YES];
         
@@ -1822,15 +2011,15 @@
 
 
 - (void)changeFlash {
-    if (self.controller.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
+    if (self.photoController.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
         self.flashImageView.image = [UIImage imageNamed:@"flashOn"];
         self.flashImageView.frame = CGRectMake(10, 10, 18, 30);
-        self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
+        self.photoController.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
     }
     else {
         self.flashImageView.image = [UIImage imageNamed:@"flashOff"];
         self.flashImageView.frame = CGRectMake(10, 10, 30, 37);
-        self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+        self.photoController.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
     }
 }
 
@@ -1845,9 +2034,11 @@
 
     if (self.controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
         self.controller.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+        self.photoController.cameraDevice = UIImagePickerControllerCameraDeviceRear;
     }
     else {
         self.controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+        self.photoController.cameraDevice = UIImagePickerControllerCameraDeviceFront;
     }
 }
 
@@ -1869,7 +2060,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     
     // change camera back to default camera mode
-    self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
+    //self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
     
     self.dismissButton.hidden = YES;
     self.dismissButton.enabled = NO;
@@ -1886,6 +2077,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.cancelButton.enabled = YES;
     self.panRecognizer.enabled = NO;
     
+    //if(picker == self.controller) {
     if([mediaType isEqualToString:(NSString *)kUTTypeMovie]) {
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -1942,7 +2134,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
 }
 
 - (void)cancelPressed {
-    self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
+    //self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
     [self.mediaScrollDelegate cancelPressed];
     [self cleanupView];
     self.info = nil;

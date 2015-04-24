@@ -129,6 +129,8 @@
 		45DF86B41A5C5DEB00DB85AE /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86AB1A5C5DEB00DB85AE /* AFURLSessionManager.m */; };
 		45F74FF21A5DA86500A5170F /* WGGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF11A5DA86500A5170F /* WGGroup.m */; };
 		45F74FF51A5E3F9100A5170F /* WGFollow.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF41A5E3F9100A5170F /* WGFollow.m */; };
+		9C9D66F11AE98E4200180958 /* WGCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F01AE98E4200180958 /* WGCameraViewController.m */; };
+		9C9D66F41AEAE94300180958 /* UIImage+Rotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F31AEAE94300180958 /* UIImage+Rotation.m */; };
 		C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
 		C12A110A19787BE700D53B1C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D6251923967D00361247 /* AppDelegate.m */; };
 		C12A110B19787BE700D53B1C /* SDWebImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A31961EADE00A01F50 /* SDWebImageManager.m */; };
@@ -648,6 +650,10 @@
 		45F74FF11A5DA86500A5170F /* WGGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGGroup.m; sourceTree = "<group>"; };
 		45F74FF31A5E3F9100A5170F /* WGFollow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGFollow.h; sourceTree = "<group>"; };
 		45F74FF41A5E3F9100A5170F /* WGFollow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGFollow.m; sourceTree = "<group>"; };
+		9C9D66EF1AE98E4200180958 /* WGCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGCameraViewController.h; sourceTree = "<group>"; };
+		9C9D66F01AE98E4200180958 /* WGCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGCameraViewController.m; sourceTree = "<group>"; };
+		9C9D66F21AEAE94300180958 /* UIImage+Rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Rotation.h"; sourceTree = "<group>"; };
+		9C9D66F31AEAE94300180958 /* UIImage+Rotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Rotation.m"; sourceTree = "<group>"; };
 		C12A11E119787BE700D53B1C /* Wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12A11E219787BE800D53B1C /* wigoBlade.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = wigoBlade.plist; sourceTree = "<group>"; };
 		C14AB1B51A8017670011C4E5 /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
@@ -1266,6 +1272,8 @@
 			children = (
 				45DF86951A5B1F8200DB85AE /* NSDate+WGDate.h */,
 				45DF86961A5B1F8200DB85AE /* NSDate+WGDate.m */,
+				9C9D66F21AEAE94300180958 /* UIImage+Rotation.h */,
+				9C9D66F31AEAE94300180958 /* UIImage+Rotation.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -1825,6 +1833,8 @@
 				E9D039C71A09886A00DEF094 /* MediaScrollView.m */,
 				E957CD681A928EBD00D0FF7C /* PrivateSwitchView.h */,
 				E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */,
+				9C9D66EF1AE98E4200180958 /* WGCameraViewController.h */,
+				9C9D66F01AE98E4200180958 /* WGCameraViewController.m */,
 			);
 			name = EventStory;
 			sourceTree = "<group>";
@@ -2435,6 +2445,7 @@
 				45D9FA9A1A781AFD00D08577 /* NSString+JSQMessages.m in Sources */,
 				45DF86AC1A5C5DEB00DB85AE /* AFHTTPRequestOperation.m in Sources */,
 				45D9FAB81A781AFD00D08577 /* JSQMessagesCollectionViewLayoutAttributes.m in Sources */,
+				9C9D66F41AEAE94300180958 /* UIImage+Rotation.m in Sources */,
 				4563F5661A3F875900F8C9C4 /* NSMutableDictionary+STHelper.m in Sources */,
 				E9706E1819C20EAE00A21DE0 /* WigoCustomCell.m in Sources */,
 				45DF86AF1A5C5DEB00DB85AE /* AFNetworkReachabilityManager.m in Sources */,
@@ -2444,6 +2455,7 @@
 				45D9FAAE1A781AFD00D08577 /* JSQMessagesMediaViewBubbleImageMasker.m in Sources */,
 				E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */,
 				E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */,
+				9C9D66F11AE98E4200180958 /* WGCameraViewController.m in Sources */,
 				45D9FADC1A781AFD00D08577 /* JSQMessagesLoadEarlierHeaderView.m in Sources */,
 				E96F07BD19BA654600E858D7 /* GKCropBorderView.m in Sources */,
 				45DF86B11A5C5DEB00DB85AE /* AFURLConnectionOperation.m in Sources */,

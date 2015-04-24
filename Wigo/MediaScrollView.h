@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
 #import "WGEvent.h"
 #import "Delegate.h"
 #import "LLACircularProgressView.h"
@@ -96,17 +97,21 @@
 @property (nonatomic, assign) id <MediaScrollViewDelegate> mediaScrollDelegate;
 @property (nonatomic, strong) UILabel *label;
 @property (nonatomic, strong) WGEventMessage *eventMessage;
-- (void)updateUI;
+
 @property (nonatomic, strong) UILabel *numberOfVotesLabel;
 @property (nonatomic, strong) UIButton *upVoteButton;
 @property (nonatomic, strong) UIImageView *upvoteImageView;
 @property (nonatomic, strong) UIView *touchableView;
 @property (nonatomic, strong) UIImageView *gradientBackgroundImageView;
-- (void)focusOnContent;
-- (void)doubleTapToLike;
+
 @property (nonatomic, assign) BOOL isFocusing;
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
+
+- (void)updateUI;
+- (void)focusOnContent;
+- (void)doubleTapToLike;
+
 @end
 
 
@@ -168,6 +173,8 @@
 @property (nonatomic, strong) LLACircularProgressView *circularProgressView ;
 @property (nonatomic, strong) NSTimer *videoTimer;
 
+@property (nonatomic, strong) UIImagePickerController *photoController;
+
 @property (nonatomic, strong) UIImageView *previewImageView;
 @property (nonatomic, strong) MPMoviePlayerController *previewMoviePlayer;
 @property (nonatomic, strong) UITapGestureRecognizer *tapRecognizer;
@@ -179,4 +186,10 @@
 @property (nonatomic, strong) UILabel *textLabel;
 @property (nonatomic, assign) CGPoint percentPoint;
 @property (nonatomic, assign) CGPoint startPoint;
+
+@property (nonatomic) BOOL isTakingPicture;
+@property (nonatomic,weak) AVCaptureSession *captureSession;
+
+- (void)cellDidDisappear;
+
 @end
