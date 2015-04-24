@@ -171,7 +171,7 @@ BOOL firstTimeLoading;
     UIImage *highlightImage = nil;
     self.createButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.createButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-    self.createButton.frame = CGRectMake(0.0, 0.0, 49.0f, 49.0f);
+    self.createButton.frame = CGRectMake(0.0, 0.0, 55.0f, 49.0f);
     [self.createButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
     [self.createButton setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
     [self.createButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
