@@ -9,8 +9,62 @@
 #import "TabBarAuxiliar.h"
 #import "Globals.h"
 
+static UIView *chatOrangeView;
+static UIView *friendsOrangeView;
+static UIView *profileOrangeView;
+
 @implementation TabBarAuxiliar
 
++ (UIView *)defaultChatOrangeView {
+    if (chatOrangeView == nil) {
+        float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfChats + 0.6f);
+        chatOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 16, 16)];
+        chatOrangeView.backgroundColor = [FontProperties getOrangeColor];
+        chatOrangeView.layer.borderColor = UIColor.clearColor.CGColor;
+        chatOrangeView.layer.borderWidth = 1.0f;
+        chatOrangeView.layer.cornerRadius = chatOrangeView.frame.size.width/2.0f;
+        chatOrangeView.hidden = YES;
+        [TabBarAuxiliar addViewToTabBar:chatOrangeView];
+    }
+    return chatOrangeView;
+}
+
++ (UIView *)defaultFriendsOrangeView {
+    if (friendsOrangeView == nil) {
+        float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfFriends + 0.6f);
+        friendsOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 16, 16)];
+        friendsOrangeView.backgroundColor = [FontProperties getOrangeColor];
+        friendsOrangeView.layer.borderColor = UIColor.clearColor.CGColor;
+        friendsOrangeView.layer.borderWidth = 1.0f;
+        friendsOrangeView.layer.cornerRadius = friendsOrangeView.frame.size.width/2.0f;
+        friendsOrangeView.hidden = YES;
+        [TabBarAuxiliar addViewToTabBar:friendsOrangeView];
+    }
+    return friendsOrangeView;
+}
+
++ (UIView *)defaultProfileOrangeView {
+    if (friendsOrangeView == nil) {
+        float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfProfile + 0.6f);
+        profileOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 16, 16)];
+        profileOrangeView.backgroundColor = [FontProperties getOrangeColor];
+        profileOrangeView.layer.borderColor = UIColor.clearColor.CGColor;
+        profileOrangeView.layer.borderWidth = 1.0f;
+        profileOrangeView.layer.cornerRadius = profileOrangeView.frame.size.width/2.0f;
+        profileOrangeView.hidden = YES;
+        [TabBarAuxiliar addViewToTabBar:profileOrangeView];
+    }
+    return profileOrangeView;
+}
+
+
++ (void)addViewToTabBar:(UIView *)view {
+    UINavigationController *navigationController = (UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController;
+    NSArray *viewControllers = navigationController.viewControllers;
+    UITabBarController *tabBarController = [viewControllers objectAtIndex:0];
+    UITabBar *tabBar = tabBarController.tabBar;
+    [tabBar addSubview:view];
+}
 
 + (void)checkIndex:(int)index ForDate:(NSDate *)date {
     //For chats
@@ -32,17 +86,15 @@
 }
 
 + (void)addNotificationTo:(int)index {
-    UINavigationController *navigationController = (UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController;
-    NSArray *viewControllers = navigationController.viewControllers;
-    UITabBarController *tabBarController = [viewControllers objectAtIndex:0];
-    float distance = [UIScreen mainScreen].bounds.size.width/5 * (index + 0.6f);
-    UITabBar *tabBar = tabBarController.tabBar;
-    UIView *orangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 16, 16)];
-    orangeView.backgroundColor = [FontProperties getOrangeColor];
-    orangeView.layer.borderColor = UIColor.clearColor.CGColor;
-    orangeView.layer.borderWidth = 1.0f;
-    orangeView.layer.cornerRadius = orangeView.frame.size.width/2.0f;
-    [tabBar addSubview:orangeView];
+    if (index == kIndexOfChats) {
+        [TabBarAuxiliar defaultChatOrangeView].hidden = NO;
+    }
+    else if (index == kIndexOfFriends) {
+        [TabBarAuxiliar defaultFriendsOrangeView].hidden = NO;
+    }
+    else {
+        [TabBarAuxiliar defaultProfileOrangeView].hidden = NO;
+    }
 }
 
 

@@ -15,4 +15,8 @@
 @interface TabBarAuxiliar : NSObject
 + (void)checkIndex:(int)index ForDate:(NSDate *)date;
 + (void)addNotificationTo:(int)index;
+
++ (UIView *)defaultChatOrangeView;
++ (UIView *)defaultFriendsOrangeView;
++ (UIView *)defaultProfileOrangeView;
 @end
