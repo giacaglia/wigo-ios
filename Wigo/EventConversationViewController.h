@@ -38,6 +38,7 @@
 @property (nonatomic, strong) UIButton *buttonTrash;
 @property (nonatomic, strong) UIImageView *backgroundBottom;
 @property (nonatomic, strong) UILabel *numberOfVotesLabel;
+@property (nonatomic, strong) UIImageView *downArrowImageView;
 @property (nonatomic, strong) UIButton *upVoteButton;
 @property (nonatomic, strong) UIImageView *upvoteImageView;
 @end

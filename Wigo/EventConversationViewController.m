@@ -396,7 +396,7 @@
     self.facesCollectionView.pagingEnabled = NO;
     
     self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, 8, 86, 66)];
-    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 0, 25, 25)];
+    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 0, 27, 27)];
     cancelImageView.image = [UIImage imageNamed:@"closeModalView"];
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -412,16 +412,20 @@
     self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 75, 8, 150, 20)];
     self.numberOfVotesLabel.textColor = UIColor.whiteColor;
     self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberOfVotesLabel.font = [FontProperties mediumFont:17.0f];
+    self.numberOfVotesLabel.font = [FontProperties mediumFont:20.0f];
     self.numberOfVotesLabel.layer.shadowOpacity = 1.0f;
     self.numberOfVotesLabel.layer.shadowColor = UIColor.blackColor.CGColor;
     self.numberOfVotesLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
     self.numberOfVotesLabel.layer.shadowRadius = 0.5;
     [self.view addSubview:self.numberOfVotesLabel];
     
+//    self.downArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 15, 28 + 8, 30, 15)];
+//    self.downArrowImageView.image = [UIImage imageNamed:@"downArrow"];
+//    [self.view addSubview:self.downArrowImageView];
+    
     self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 , 0, 56, 52)];
     [self.view addSubview:self.upVoteButton];
-    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(26, 16, 22, 18)];
+    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(16, 8, 30, 28)];
     self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
     [self.upVoteButton addSubview:self.upvoteImageView];
     [self.upVoteButton addTarget:self action:@selector(upvotePressed) forControlEvents:UIControlEventTouchUpInside];
