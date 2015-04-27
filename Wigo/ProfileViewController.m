@@ -353,8 +353,8 @@ BOOL blockShown;
     locationImgView.image = [UIImage imageNamed:@"locationIcon"];
     [_headerButtonView addSubview:locationImgView];
     
-    _locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 10, 0.7*self.view.frame.size.width, 12)];
-    _locationLabel.text = @"Boston, MA";
+    _locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 9, 0.7*self.view.frame.size.width, 14)];
+    _locationLabel.text = self.user.hometown;
     _locationLabel.font = [FontProperties mediumFont:12.0f];
     _locationLabel.textAlignment = NSTextAlignmentLeft;
     [_headerButtonView addSubview:_locationLabel];
@@ -363,8 +363,8 @@ BOOL blockShown;
     schoolImgView.image = [UIImage imageNamed:@"schoolIcon"];
     [_headerButtonView addSubview:schoolImgView];
     
-    _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 22 + 5, 0.7*self.view.frame.size.width, 11)];
-    _schoolLabel.text = @"Northeastern University";
+    _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 22 + 5 - 2, 0.7*self.view.frame.size.width, 14)];
+    _schoolLabel.text = self.user.education;
     _schoolLabel.font = [FontProperties mediumFont:12.0f];
     _schoolLabel.textAlignment = NSTextAlignmentLeft;
     [_headerButtonView addSubview:_schoolLabel];
@@ -373,8 +373,8 @@ BOOL blockShown;
     workImgView.image = [UIImage imageNamed:@"workIcon"];
     [_headerButtonView addSubview:workImgView];
     
-    _workLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 38 + 5, 0.7*self.view.frame.size.width, 11)];
-    _workLabel.text = @"Citizens Bank";
+    _workLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 38 + 5 - 2, 0.7*self.view.frame.size.width, 14)];
+    _workLabel.text = self.user.work;
     _workLabel.font = [FontProperties mediumFont:12.0f];
     _workLabel.textAlignment = NSTextAlignmentLeft;
     [_headerButtonView addSubview:_workLabel];

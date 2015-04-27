@@ -63,11 +63,14 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 @property NSDictionary* properties;
 @property NSArray* images;
-@property NSString *instaHandle;
-@property NSArray *triggers;
+@property NSString* instaHandle;
+@property NSString* hometown;
+@property NSString* work;
+@property NSString* education;
+@property NSArray* triggers;
 @property BOOL findReferrer;
-@property NSArray *arrayTooltipTracked;
-@property NSDictionary *events;
+@property NSArray* arrayTooltipTracked;
+@property NSDictionary* events;
 
 @property NSString* firstName;
 @property (nonatomic, assign) Gender gender;

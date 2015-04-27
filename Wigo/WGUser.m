@@ -37,8 +37,11 @@
 #define kLastNotificationReadKey @"last_notification_read"
 #define kLastUserReadKey @"last_user_read"
 
-#define kPropertiesKey @"properties" //: {},
+#define kPropertiesKey @"properties"
 #define kImagesKey @"images"
+#define kHometownKey @"hometown"
+#define kWorkKey @"work"
+#define kEducationKey @"education"
 #define kURLKey @"url"
 #define kSmallKey @"small"
 #define kCropKey @"crop"
@@ -322,6 +325,39 @@ static WGUser *currentUser = nil;
 - (void)setInstaHandle:(NSString *)instaHandle {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
     [properties setObject:instaHandle forKey:kInstaHandle];
+    self.properties = properties;
+}
+
+- (NSString *)hometown {
+    NSDictionary *properties = self.properties;
+    return [properties objectForKey:kHometownKey];
+}
+
+- (void)setHometown:(NSString *)hometown {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
+    [properties setObject:hometown forKey:kHometownKey];
+    self.properties = properties;
+}
+
+- (NSString *)work {
+    NSDictionary *properties = self.properties;
+    return [properties objectForKey:kWorkKey];
+}
+
+- (void)setWork:(NSString *)work {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
+    [properties setObject:work forKey:kWorkKey];
+    self.properties = properties;
+}
+
+- (NSString *)education {
+    NSDictionary *properties = self.properties;
+    return [properties objectForKey:kEducationKey];
+}
+
+- (void)setEducation:(NSString *)education {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
+    [properties setObject:education forKey:kEducationKey];
     self.properties = properties;
 }
 
