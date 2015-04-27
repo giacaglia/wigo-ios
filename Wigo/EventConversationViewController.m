@@ -89,9 +89,6 @@
         [myCell resetToInactive];
     });
 
-    
-    myCell.leftLineEnabled = (indexPath.row > 0);
-    myCell.rightLineEnabled = (indexPath.row < self.eventMessages.count - 1);
     if (indexPath.row + 1 == self.eventMessages.count &&
         self.eventMessages.hasNextPage.boolValue) {
         [self fetchNextMessages];
@@ -320,17 +317,8 @@
     page = MIN(page, self.eventMessages.count - 1);
     [self.mediaScrollView scrolledToPage:(int)page];
     dispatch_async(dispatch_get_main_queue(), ^{
-        // Content Offset to the middle (which is the first page minus the number of cells/2
-//        if (animated) {
-//            [UIView animateWithDuration:0.3f delay: 0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:animated];
-            [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:animated];
-//            } completion:nil];
-//        }
-//        else {
-//            [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:NO];
-//            [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:NO];
-//        }
+        [self.mediaScrollView setContentOffset:CGPointMake([[UIScreen mainScreen] bounds].size.width * page, 0.0f) animated:animated];
+        [self.facesCollectionView setContentOffset:CGPointMake((newSizeOfEachFaceCell) * (page - 1.5), 0.0f) animated:animated];
     });
     [self hideOrShowFacesForPage:(int)page];
 }
@@ -405,7 +393,7 @@
     self.backgroundBottom.image = [UIImage imageNamed:@"backgroundBottom"];
     [self.view addSubview:self.backgroundBottom];
 
-    self.facesCollectionView.backgroundColor = [UIColor clearColor];
+    self.facesCollectionView.backgroundColor = UIColor.clearColor;
     FaceFlowLayout *flow = [[FaceFlowLayout alloc] init];
     self.facesCollectionView.showsHorizontalScrollIndicator = NO;
     [self.facesCollectionView setCollectionViewLayout: flow];
@@ -759,16 +747,6 @@
     self.faceImageView.layer.cornerRadius = self.faceImageView.frame.size.width/2;
     [self.faceAndMediaTypeView addSubview: self.faceImageView];
     
-//    self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
-//    self.leftLine.alpha = 0.5f;
-//    self.leftLine.backgroundColor = UIColor.whiteColor;
-//    [self.contentView addSubview: self.leftLine];
-    
-//    self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 2)];
-//    self.rightLine.alpha = 0.5f;
-//    self.rightLine.backgroundColor = UIColor.whiteColor;
-//    [self.contentView addSubview: self.rightLine];
-    
     self.mediaTypeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.faceImageView.frame.origin.x + self.faceImageView.frame.size.width, sizeOfEachFaceCell/5, sizeOfEachFaceCell/6, sizeOfEachFaceCell/6)];
     self.mediaTypeImageView.layer.masksToBounds = YES;
     self.mediaTypeImageView.backgroundColor = [UIColor blackColor];
@@ -783,7 +761,7 @@
     self.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhite;
     [self.faceAndMediaTypeView addSubview:self.spinner];
     
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.contentView.frame.size.width, 20)];
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.faceImageView.frame.origin.y + self.faceImageView.frame.size.height, self.contentView.frame.size.width, 20)];
     self.timeLabel.center = CGPointMake(self.contentView.center.x, self.timeLabel.center.y);
     self.timeLabel.numberOfLines = 0;
     self.timeLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -891,8 +869,6 @@
 - (void)setToActiveWithNoAnimation {
     self.faceAndMediaTypeView.alpha = 1.0f;
     self.faceImageView.transform = CGAffineTransformIdentity;
-//    self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
-//    self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
     self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfEachFaceCell, 0.15*sizeOfEachFaceCell, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
     self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
 }
@@ -902,8 +878,6 @@
     self.faceImageView.transform = CGAffineTransformMakeScale(0.75, 0.75);
     self.mediaTypeImageView.frame = CGRectMake(0.6*sizeOfEachFaceCell, 0.25*sizeOfEachFaceCell, sizeOfEachFaceCell/6.6, sizeOfEachFaceCell/6.6);
     self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/14;
-//    self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
-//    self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 2);
 }
 
 - (void)setUser:(WGUser *)user {
