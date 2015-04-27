@@ -131,15 +131,15 @@
     if (!self.facesHidden) {
         [UIView animateWithDuration:0.5 animations:^{
             self.facesCollectionView.alpha = 0;
-            self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,-self.facesCollectionView.frame.size.height);
+            self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0, self.facesCollectionView.frame.size.height);
             self.buttonCancel.alpha = 0;
-            self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, self.buttonCancel.frame.size.height);
+            self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, -self.buttonCancel.frame.size.height);
 //            self.buttonTrash.alpha = 0;
 //            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, self.buttonTrash.frame.size.height);
             self.upVoteButton.alpha = 0;
-            self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, self.numberOfVotesLabel.frame.size.height);
+            self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, -self.numberOfVotesLabel.frame.size.height);
             self.numberOfVotesLabel.alpha = 0;
-            self.numberOfVotesLabel.transform = CGAffineTransformMakeTranslation(0, self.numberOfVotesLabel.frame.size.height);
+            self.numberOfVotesLabel.transform = CGAffineTransformMakeTranslation(0, -self.numberOfVotesLabel.frame.size.height);
             self.backgroundBottom.alpha = 0;
         } completion:^(BOOL finished) {
             self.facesHidden = YES;
@@ -389,8 +389,8 @@
     [self.view sendSubviewToBack:self.mediaScrollView];
     self.mediaScrollView.pagingEnabled = NO;
     
-    self.backgroundBottom = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 100, self.view.frame.size.width, 100)];
-    self.backgroundBottom.image = [UIImage imageNamed:@"backgroundBottom"];
+    self.backgroundBottom = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 100)];
+    self.backgroundBottom.image = [UIImage imageNamed:@"backgroundTop"];
     [self.view addSubview:self.backgroundBottom];
 
     self.facesCollectionView.backgroundColor = UIColor.clearColor;
@@ -401,8 +401,8 @@
     self.facesCollectionView.clipsToBounds = NO;
     self.facesCollectionView.pagingEnabled = NO;
     
-    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 74, 86, 66)];
-    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 41, 25, 25)];
+    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, 8, 86, 66)];
+    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 0, 25, 25)];
     cancelImageView.image = [UIImage imageNamed:@"closeModalView"];
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -415,7 +415,7 @@
 //    [self.buttonTrash addTarget:self action:@selector(trashPressed) forControlEvents:UIControlEventTouchUpInside];
 //    [self.view addSubview:self.buttonTrash];
     
-    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 75, self.view.frame.size.height - 28, 150, 20)];
+    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 75, 8, 150, 20)];
     self.numberOfVotesLabel.textColor = UIColor.whiteColor;
     self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
     self.numberOfVotesLabel.font = [FontProperties mediumFont:17.0f];
@@ -425,9 +425,9 @@
     self.numberOfVotesLabel.layer.shadowRadius = 0.5;
     [self.view addSubview:self.numberOfVotesLabel];
     
-    self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 , self.view.frame.size.height - 52, 56, 52)];
+    self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 , 0, 56, 52)];
     [self.view addSubview:self.upVoteButton];
-    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(26, 24, 22, 18)];
+    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(26, 16, 22, 18)];
     self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
     [self.upVoteButton addSubview:self.upvoteImageView];
     [self.upVoteButton addTarget:self action:@selector(upvotePressed) forControlEvents:UIControlEventTouchUpInside];
