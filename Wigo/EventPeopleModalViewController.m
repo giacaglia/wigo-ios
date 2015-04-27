@@ -328,11 +328,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
     self.imageButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
     self.imageButton.backgroundColor = UIColor.clearColor;
     [self.contentView addSubview:self.imageButton];
-    
-//    UIImageView *blackBackgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, imageWidth - kNameBarHeight + 15, imageWidth, kNameBarHeight - 15)];
-//    blackBackgroundImageView.image = [UIImage imageNamed:@"backgroundGradient"];
-//    [self.contentView addSubview:blackBackgroundImageView];
-    
+
     self.backgroundWhiteView = [[UIView alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, 120)];
     self.backgroundWhiteView.backgroundColor = UIColor.whiteColor;
     [self.contentView addSubview:self.backgroundWhiteView];
@@ -449,7 +445,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
     else {
         self.profileNameLabel.frame = CGRectMake(0, 5, imageWidth, kNameBarHeight - 25);
     }
-    self.profileNameLabel.text = [NSString stringWithFormat:@"%@, 22", user.fullName];
+    self.profileNameLabel.text = [NSString stringWithFormat:@"%@, %@", user.fullName, user.age];
     self.inviteView.user = user;
     [self reloadView];
 }

@@ -328,7 +328,7 @@ BOOL blockShown;
     
     _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 15, self.view.frame.size.width - 14, 50)];
     _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
-    _nameOfPersonLabel.text = [NSString stringWithFormat:@"%@, 22", self.user.fullName];
+    _nameOfPersonLabel.text = [NSString stringWithFormat:@"%@, %@", self.user.fullName, self.user.age];
     _nameOfPersonLabel.textColor = UIColor.whiteColor;
     _nameOfPersonLabel.font = [FontProperties lightFont:20.0f];
     [_nameView addSubview:_nameOfPersonLabel];

@@ -66,6 +66,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSString* hometown;
 @property NSString* work;
 @property NSString* education;
+@property NSString* birthday;
 @property NSArray* triggers;
 @property BOOL findReferrer;
 @property NSArray* arrayTooltipTracked;
@@ -96,6 +97,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(NSString *) genderName;
 +(Gender) genderFromName:(NSString *)name;
 -(NSString *) fullName;
+-(NSString *) age;
 
 -(State) state;
 

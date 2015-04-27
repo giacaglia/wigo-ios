@@ -42,6 +42,8 @@
 #define kHometownKey @"hometown"
 #define kWorkKey @"work"
 #define kEducationKey @"education"
+#define kAgeKey @"age"
+#define kBirthdayKey @"birthday"
 #define kURLKey @"url"
 #define kSmallKey @"small"
 #define kCropKey @"crop"
@@ -358,6 +360,30 @@ static WGUser *currentUser = nil;
 - (void)setEducation:(NSString *)education {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
     [properties setObject:education forKey:kEducationKey];
+    self.properties = properties;
+}
+
+-(NSString *) age{
+    NSString *birthday = self.birthday;
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
+    NSDate *dateFromString = [NSDate new];
+    dateFromString = [dateFormatter dateFromString:birthday];
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+
+    NSDateComponents *conversionInfo = [calendar components:NSYearCalendarUnit fromDate:dateFromString toDate:[NSDate date]  options:0];
+    return [NSString stringWithFormat:@"%d", [conversionInfo year]];
+}
+
+
+-(NSString *) birthday{
+    NSDictionary *properties = self.properties;
+    return [properties objectForKey:kBirthdayKey];
+}
+
+- (void)setBirthday:(NSString *)birthday {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
+    [properties setObject:birthday forKey:kBirthdayKey];
     self.properties = properties;
 }
 

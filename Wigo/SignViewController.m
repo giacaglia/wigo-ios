@@ -86,7 +86,6 @@
     _fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"];
     _accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
 
-
     NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
     if (!key || key.length <= 0) {
         if (!_fbID || !_accessToken) {
@@ -113,7 +112,7 @@
 }
 
 - (void)initializeFacebookSignButton {
-    _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"user_friends", @"user_photos"]];
+    _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"user_friends", @"user_photos", @"user_hometown", @"user_work_history", @"user_education_history"]];
     _loginView.loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
     _loginView.delegate = self;
     _loginView.frame = CGRectMake(0, self.view.frame.size.height - 50 - 50, 256, 50);
@@ -294,12 +293,21 @@
         _profilePic = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", [fbGraphUser objectForKey:@"id"]];
         _accessToken = [FBSession activeSession].accessTokenData.accessToken;
         
-        [WGProfile currentUser].firstName = fbGraphUser[@"first_name"];
-        [WGProfile currentUser].lastName = fbGraphUser[@"last_name"];
+        WGProfile.currentUser.firstName = fbGraphUser[@"first_name"];
+        WGProfile.currentUser.lastName = fbGraphUser[@"last_name"];
+        if (fbGraphUser[@"birthday"]) WGProfile.currentUser.birthday = fbGraphUser[@"birthday"];
+        if (fbGraphUser[@"education"]) {
+            NSDictionary *firstSchool = [((NSArray *)fbGraphUser[@"education"]) objectAtIndex:0];
+            WGProfile.currentUser.education = [[firstSchool objectForKey:@"school"] objectForKey:@"name"];
+        }
+        if (fbGraphUser[@"hometown"]) {
+            NSDictionary *hometownDict = fbGraphUser[@"hometown"];
+            WGProfile.currentUser.hometown = [hometownDict objectForKey:@"name"];
+        }
         
         NSDictionary *userResponse = (NSDictionary *) fbGraphUser;
         if ([[userResponse allKeys] containsObject:@"gender"]) {
-            [WGProfile currentUser].gender = [WGUser genderFromName:[userResponse objectForKey:@"gender"]];
+            WGProfile.currentUser.gender = [WGUser genderFromName:[userResponse objectForKey:@"gender"]];
         }
         
         if (!_alertShown && !self.fetchingProfilePictures) {
@@ -380,11 +388,10 @@
 - (void) loginUserAsynchronous {
     [Crashlytics setUserIdentifier:_fbID];
     
-    [WGProfile currentUser].facebookId = _fbID;
-    [WGProfile currentUser].facebookAccessToken = _accessToken;
+    WGProfile.currentUser.facebookId = _fbID;
+    WGProfile.currentUser.facebookAccessToken = _accessToken;
     
     [WGSpinnerView addDancingGToCenterView:self.view];
-
     __weak typeof(self) weakSelf = self;
     [WGProfile.currentUser login:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
