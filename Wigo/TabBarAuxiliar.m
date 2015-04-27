@@ -70,30 +70,31 @@ static UIView *profileOrangeView;
     //For chats
     if (index == kIndexOfChats) {
         if ([WGProfile.currentUser.lastMessageRead compare:date] == NSOrderedAscending) {
-            [TabBarAuxiliar addNotificationTo:kIndexOfChats];
+            [TabBarAuxiliar defaultChatOrangeView].hidden = NO;
         }
     }
     else if (index == kIndexOfFriends) {
         if ([WGProfile.currentUser.lastUserRead compare:date] == NSOrderedAscending) {
-            [TabBarAuxiliar addNotificationTo:kIndexOfFriends];
+            [TabBarAuxiliar defaultFriendsOrangeView].hidden = NO;
         }
     }
     else {
         if ([WGProfile.currentUser.lastNotificationRead compare:date] == NSOrderedAscending) {
-            [TabBarAuxiliar addNotificationTo:kIndexOfProfile];
+            [TabBarAuxiliar defaultProfileOrangeView].hidden = NO;
         }
     }
 }
 
-+ (void)addNotificationTo:(int)index {
+
++ (void)removeNotificationAt:(int)index {
     if (index == kIndexOfChats) {
-        [TabBarAuxiliar defaultChatOrangeView].hidden = NO;
+        [TabBarAuxiliar defaultChatOrangeView].hidden = YES;
     }
     else if (index == kIndexOfFriends) {
-        [TabBarAuxiliar defaultFriendsOrangeView].hidden = NO;
+        [TabBarAuxiliar defaultFriendsOrangeView].hidden = YES;
     }
     else {
-        [TabBarAuxiliar defaultProfileOrangeView].hidden = NO;
+        [TabBarAuxiliar defaultProfileOrangeView].hidden = YES;
     }
 }
 

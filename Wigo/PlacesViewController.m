@@ -1421,8 +1421,16 @@ BOOL firstTimeLoading;
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [EventCell height] - 20 - 4, self.frame.size.width + 10, 12)];
+    shadowImageView.image = [UIImage imageNamed:@"shadow"];
+    [self.contentView addSubview:shadowImageView];
+    
     self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, [EventCell height] - 20)];
     self.whiteView.backgroundColor = UIColor.whiteColor;
+//    self.whiteView.layer.shadowColor = RGBAlpha(0, 0, 0, 0.1f).CGColor;
+//    self.whiteView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
+//    self.whiteView.layer.shadowRadius = 4.0f;
+//    self.whiteView.layer.shadowOpacity = 1.0f;
     [self.contentView addSubview:self.whiteView];
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];
@@ -1676,8 +1684,16 @@ BOOL firstTimeLoading;
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, self.frame.size.height - 20 - 4, self.frame.size.width + 10, 12)];
+    shadowImageView.image = [UIImage imageNamed:@"shadow"];
+    [self.contentView addSubview:shadowImageView];
+    
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
     backgroundView.backgroundColor = UIColor.whiteColor;
+//    backgroundView.layer.shadowColor = RGBAlpha(0, 0, 0, 0.1f).CGColor;
+//    backgroundView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
+//    backgroundView.layer.shadowRadius = 4.0f;
+//    backgroundView.layer.shadowOpacity = 1.0f;
     [self.contentView addSubview:backgroundView];
     
     self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
