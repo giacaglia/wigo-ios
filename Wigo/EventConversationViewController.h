@@ -62,6 +62,7 @@
 @property (nonatomic, assign) CGRect startFrame;
 @property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
 @property (nonatomic, strong) UIView *holeView;
+@property (nonatomic, strong) WGEventMessage *eventMessage;
 @end
 
 @interface FaceFlowLayout : UICollectionViewFlowLayout

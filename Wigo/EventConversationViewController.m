@@ -85,7 +85,7 @@
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_barrier_async(dispatch_get_main_queue(), ^{
         [myCell resetToInactive];
     });
 
@@ -101,33 +101,7 @@
         [self fetchPreviousMessages];
     }
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
-    
-    WGUser *user = eventMessage.user;
-    
-    if ([eventMessage objectForKey:@"media_mime_type"] && ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType] ||
-        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
-        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost])
-        ) {
-        myCell.faceImageView.image = [UIImage imageNamed:@"plusStory"];
-        myCell.mediaTypeImageView.hidden = YES;
-        myCell.faceAndMediaTypeView.alpha = 0.4f;
-    } else {
-        myCell.faceAndMediaTypeView.alpha = 1.0f;
-        if (user) {
-            myCell.user = user;
-            myCell.eventConversationDelegate = self;
-        }
-        if ([eventMessage objectForKey:@"media_mime_type"] && [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
-            myCell.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
-            myCell.mediaTypeImageView.hidden = YES;
-        }
-        else if ([eventMessage objectForKey:@"media_mime_type"] && [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
-            myCell.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
-            myCell.mediaTypeImageView.hidden = YES;
-        }
-    }
-    
-    myCell.timeLabel.text = [eventMessage.created timeInLocaltimeString];
+    myCell.eventMessage = eventMessage;
     if ([indexPath isEqual:self.currentActiveCell]) {
         myCell.isActive = YES;
     } else {
@@ -143,17 +117,14 @@
         if (indexPath == self.currentActiveCell) {
             return;
         }
-        
         NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
         [WGAnalytics tagEvent:@"Event Conversation Face Tapped" withDetails: @{@"isPeeking": isPeekingString}];
-
         FaceCell *cell = (FaceCell *)[collectionView cellForItemAtIndexPath: indexPath];
-        
+        cell.eventConversationDelegate = self;
         if (![self.currentActiveCell isEqual:indexPath]) {
             [(FaceCell *)[collectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:NO];
         }
         [cell setIsActive: YES];
-        
         self.currentActiveCell = indexPath;
         [self highlightCellAtPage:indexPath.row animated:YES];
     }
@@ -675,15 +646,6 @@
 #pragma mark - EventConversationDelegate
 
 - (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages {
-//    WGEventMessage *newEventMessage = [WGEventMessage serialize:@{
-//                                                                  @"user": [WGProfile currentUser],
-//                                                                  @"created": [NSDate nowStringUTC],
-//                                                                  @"media_mime_type": kCameraType,
-//                                                                  @"media": @""
-//                                                                  }];
-//
-//    [self.eventMessages addObject:newEventMessage];
-    
     [self.facesCollectionView reloadData];
     self.mediaScrollView.eventMessages = self.eventMessages;
     [self.mediaScrollView reloadData];
@@ -901,20 +863,13 @@
 }
 
 
-//- (void)setRightLineEnabled:(BOOL)rightLineEnabled {
-//    self.rightLine.hidden = !rightLineEnabled;
-//}
-
-//- (void)setLeftLineEnabled:(BOOL)leftLineEnabled {
-//    self.leftLine.hidden = !leftLineEnabled;
-//}
 
 - (void) setIsActive:(BOOL)isActive {
     if (_isActive == isActive) {
         return;
     }
     if (isActive) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_barrier_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:0.5 delay: 0.0 options: UIViewAnimationOptionCurveLinear animations:^{
                 [self setToActiveWithNoAnimation];
                 self.timeLabel.alpha = 1.0f;
@@ -922,7 +877,7 @@
         });
 
     } else {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_barrier_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration: 0.5    animations:^{
                 self.timeLabel.alpha = 0.0f;
                 [self resetToInactive];
@@ -956,6 +911,34 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.faceImageView setSmallImageForUser:user completed:nil];
     });
+}
+
+- (void)setEventMessage:(WGEventMessage *)eventMessage {
+    _eventMessage = eventMessage;
+    if ([eventMessage objectForKey:@"media_mime_type"] && ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType] ||
+        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
+        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost])
+        ) {
+        self.faceImageView.image = [UIImage imageNamed:@"plusStory"];
+        self.mediaTypeImageView.hidden = YES;
+        self.faceAndMediaTypeView.alpha = 0.4f;
+    } else {
+        self.faceAndMediaTypeView.alpha = 1.0f;
+        WGUser *user = eventMessage.user;
+        if (user) {
+            self.user = user;
+        }
+        if ([eventMessage objectForKey:@"media_mime_type"] && [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
+            self.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
+            self.mediaTypeImageView.hidden = YES;
+        }
+        else if ([eventMessage objectForKey:@"media_mime_type"] && [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
+            self.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
+            self.mediaTypeImageView.hidden = YES;
+        }
+    }
+    
+    self.timeLabel.text = [eventMessage.created timeInLocaltimeString];
 }
 
 @end
