@@ -1666,7 +1666,7 @@ BOOL firstTimeLoading;
 @implementation HighlightOldEventCell
 
 + (CGFloat) height {
-    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 10 + ([UIScreen mainScreen].bounds.size.width - 10)/2 + 20;
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 10 + ([UIScreen mainScreen].bounds.size.width - 6)/2 + 20;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1690,15 +1690,11 @@ BOOL firstTimeLoading;
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
     backgroundView.backgroundColor = UIColor.whiteColor;
-//    backgroundView.layer.shadowColor = RGBAlpha(0, 0, 0, 0.1f).CGColor;
-//    backgroundView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
-//    backgroundView.layer.shadowRadius = 4.0f;
-//    backgroundView.layer.shadowOpacity = 1.0f;
     [self.contentView addSubview:backgroundView];
     
     self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
     [backgroundView addSubview:self.privacyLockButton];
-    
+
     self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 26.5 - 8., 12, 16)];
     self.privacyLockImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
     self.privacyLockImageView.hidden = YES;
@@ -1734,25 +1730,25 @@ BOOL firstTimeLoading;
     
     self.arrayOfImageViews = [NSMutableArray new];
     
-    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, (self.frame.size.width - 10)/2, (self.frame.size.width - 10)/2)];
+    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, (self.frame.size.width - 6)/2, (self.frame.size.width - 6)/2)];
     firstImageView.contentMode = UIViewContentModeScaleAspectFill;
     firstImageView.clipsToBounds = YES;
     [backgroundView addSubview:firstImageView];
     [self.arrayOfImageViews addObject:firstImageView];
     
-    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, (self.frame.size.width - 10)/2, (self.frame.size.width - 10)/2)];
+    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 6)/2 + 6, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, (self.frame.size.width - 6)/2, (self.frame.size.width - 6)/2)];
     secondImageView.contentMode = UIViewContentModeScaleAspectFill;
     secondImageView.clipsToBounds = YES;
     [backgroundView addSubview:secondImageView];
     [self.arrayOfImageViews addObject:secondImageView];
     
-    UIImageView *thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 10)/2 + 5, (self.frame.size.width - 10)/2, (self.frame.size.width - 10)/2)];
+    UIImageView *thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 6)/2 + 5, (self.frame.size.width - 6)/2, (self.frame.size.width - 6)/2)];
     thirdImageView.contentMode = UIViewContentModeScaleAspectFill;
     thirdImageView.clipsToBounds = YES;
     [backgroundView addSubview:thirdImageView];
     [self.arrayOfImageViews addObject:thirdImageView];
     
-    UIImageView *fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 10)/2 + 5, (self.frame.size.width - 10)/2, (self.frame.size.width - 10)/2)];
+    UIImageView *fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 6)/2 + 6, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 6)/2 + 5, (self.frame.size.width - 6)/2, (self.frame.size.width - 6)/2)];
     fourthImageView.contentMode = UIViewContentModeScaleAspectFill;
     fourthImageView.clipsToBounds = YES;
     [backgroundView addSubview:fourthImageView];
