@@ -592,7 +592,7 @@ BOOL firstTimeLoading;
         return [EventCell height];
     }
     else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
-        return [EventCell height];
+        return [HighlightOldEventCell height];
     }
     
     return 0;
@@ -611,8 +611,7 @@ BOOL firstTimeLoading;
         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
-        //Cleanup
-        cell.isOldEvent = NO;
+//        cell.isOldEvent = NO;
         cell.highlightsCollectionView.event = nil;
         cell.highlightsCollectionView.eventMessages = nil;
         [cell.highlightsCollectionView reloadData];
@@ -676,8 +675,8 @@ BOOL firstTimeLoading;
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
         }
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
-        EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
-        cell.isOldEvent = YES;
+        HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCell forIndexPath:indexPath];
+//        cell.isOldEvent = YES;
         cell.event = event;
         cell.placesDelegate = self;
         cell.eventPeopleScrollView.isPeeking = YES;
@@ -686,8 +685,6 @@ BOOL firstTimeLoading;
         if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
             cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
         }
-        cell.highlightsCollectionView.placesDelegate = self;
-        cell.highlightsCollectionView.isPeeking = [self isPeeking];
         return cell;
     }
     return nil;
@@ -859,7 +856,9 @@ BOOL firstTimeLoading;
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationViewController.event = event;
-    if ([self isPeeking] || (!WGProfile.currentUser.crossEventPhotosEnabled && ![[event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser])) {
+    if ([self isPeeking] ||
+        (!WGProfile.currentUser.crossEventPhotosEnabled && ![[event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) ||
+        event.isExpired.boolValue) {
     }
     else {
         eventMessages = [self eventMessagesWithCamera:eventMessages];
@@ -1659,7 +1658,7 @@ BOOL firstTimeLoading;
 @implementation HighlightOldEventCell
 
 + (CGFloat) height {
-    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 10;
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 10 + ([UIScreen mainScreen].bounds.size.width - 10)/2 + 20;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1671,18 +1670,14 @@ BOOL firstTimeLoading;
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell height]);
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [HighlightOldEventCell height]);
     self.contentView.frame = self.frame;
-    self.backgroundColor = RGB(210, 210, 210);
+    self.backgroundColor = RGB(237, 237, 237);
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
-    backgroundView.backgroundColor = RGB(230, 230, 230);
-    backgroundView.layer.shadowColor = RGBAlpha(0, 0, 0, 0.1f).CGColor;
-    backgroundView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
-    backgroundView.layer.shadowRadius = 4.0f;
-    backgroundView.layer.shadowOpacity = 1.0f;
+    backgroundView.backgroundColor = UIColor.whiteColor;
     [self.contentView addSubview:backgroundView];
     
     self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
@@ -1721,19 +1716,31 @@ BOOL firstTimeLoading;
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [backgroundView addSubview:self.eventPeopleScrollView];
     
-    self.numberOfHighlightsLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 15, self.frame.size.width, 20)];
-    self.numberOfHighlightsLabel.textAlignment = NSTextAlignmentLeft;
-    self.numberOfHighlightsLabel.textColor = RGB(119, 119, 119);
-    self.numberOfHighlightsLabel.font = [FontProperties lightFont:15.0f];
-    self.numberOfHighlightsLabel.alpha = 1.0f;
-    self.numberOfHighlightsLabel.text = @"The Buzz";
-    [backgroundView addSubview:self.numberOfHighlightsLabel];
+    self.arrayOfImageViews = [NSMutableArray new];
     
-    self.highlightsCollectionView = [[HighlightsCollectionView alloc]
-                                     initWithFrame:CGRectMake(0, self.numberOfHighlightsLabel.frame.origin.y + self.numberOfHighlightsLabel.frame.size.height + 5, self.frame.size.width, [HighlightCell height])
-                                     collectionViewLayout:[HighlightsFlowLayout new]];
-    [backgroundView addSubview:self.highlightsCollectionView];
+    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, (self.frame.size.width - 10)/2, (self.frame.size.width - 10)/2)];
+    firstImageView.contentMode = UIViewContentModeScaleAspectFill;
+    firstImageView.clipsToBounds = YES;
+    [backgroundView addSubview:firstImageView];
+    [self.arrayOfImageViews addObject:firstImageView];
     
+    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, (self.frame.size.width - 10)/2, (self.frame.size.width - 10)/2)];
+    secondImageView.contentMode = UIViewContentModeScaleAspectFill;
+    secondImageView.clipsToBounds = YES;
+    [backgroundView addSubview:secondImageView];
+    [self.arrayOfImageViews addObject:secondImageView];
+    
+    UIImageView *thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 10)/2 + 5, (self.frame.size.width - 10)/2, (self.frame.size.width - 10)/2)];
+    thirdImageView.contentMode = UIViewContentModeScaleAspectFill;
+    thirdImageView.clipsToBounds = YES;
+    [backgroundView addSubview:thirdImageView];
+    [self.arrayOfImageViews addObject:thirdImageView];
+    
+    UIImageView *fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width/2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 10)/2 + 5, (self.frame.size.width - 10)/2, (self.frame.size.width - 10)/2)];
+    fourthImageView.contentMode = UIViewContentModeScaleAspectFill;
+    fourthImageView.clipsToBounds = YES;
+    [backgroundView addSubview:fourthImageView];
+    [self.arrayOfImageViews addObject:fourthImageView];
 }
 
 - (void)loadConversation {
@@ -1742,14 +1749,11 @@ BOOL firstTimeLoading;
 
 - (void)setEvent:(WGEvent *)event {
     _event = event;
-    self.highlightsCollectionView.event = _event;
     self.eventNameLabel.text = _event.name;
     if (_event.numAttending.intValue > 0) {
-        self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ going", _event.numAttending];
+        self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ went", _event.numAttending];
     }
-    else {
-        self.numberOfPeopleGoingLabel.text = @"Going";
-    }
+
     CGSize size = [_event.name sizeWithAttributes:
                    @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1761,6 +1765,29 @@ BOOL firstTimeLoading;
         }
     });
     
+    self.privacyLockImageView.hidden = !_event.isPrivate;
+    self.privacyLockButton.enabled = _event.isPrivate;
+    self.eventPeopleScrollView.event = _event;
+    if (_event.isVerified) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.verifiedImageView.hidden = NO;
+            self.eventNameLabel.frame = CGRectMake(self.eventNameLabel.frame.origin.x + 23, self.eventNameLabel.frame.origin.y, self.eventNameLabel.frame.size.width, self.eventNameLabel.frame.size.height);
+        });
+    }
+    else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.verifiedImageView.hidden = YES;
+        });
+    }
+    for (int i = 0; i < MIN(4, event.messages.count); i++) {
+        WGEventMessage *eventMessage = (WGEventMessage *)[event.messages objectAtIndex:i];
+        UIImageView *imageView = [self.arrayOfImageViews objectAtIndex:i];
+        NSString *contentURL;
+        if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
+        else  contentURL = eventMessage.media;
+        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, contentURL]];
+        [imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {}];
+    }
 }
 
 

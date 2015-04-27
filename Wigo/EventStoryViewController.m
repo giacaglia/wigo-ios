@@ -355,12 +355,6 @@
     myCell.contentView.frame = CGRectMake(0, 0, sizeOfEachFaceCell, sizeOfEachFaceCell);
     myCell.faceAndMediaTypeView.frame = myCell.contentView.frame;
     
-    myCell.leftLine.backgroundColor = RGB(237, 237, 237);
-    myCell.leftLineEnabled = (indexPath.row %3 > 0) && (indexPath.row > 0);
-    
-    myCell.rightLine.backgroundColor = RGB(237, 237, 237);
-    myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < self.eventMessages.count - 1);
-    
     if ([indexPath row] + 1 == self.eventMessages.count && [self.eventMessages.hasNextPage boolValue]) {
         [self fetchEventMessages];
     }
@@ -369,9 +363,6 @@
     myCell.faceImageView.center = CGPointMake(myCell.contentView.center.x, myCell.faceImageView.center.y);
     myCell.timeLabel.center = CGPointMake(myCell.contentView.center.x, myCell.timeLabel.center.y);
     myCell.faceImageView.layer.borderColor = UIColor.blackColor.CGColor;
-    myCell.rightLine.frame = CGRectMake(myCell.contentView.center.x + myCell.faceImageView.frame.size.width/2, myCell.contentView.center.y, myCell.contentView.center.x - myCell.faceImageView.frame.size.width/2, 2);
-    myCell.leftLine.frame = CGRectMake(0, myCell.contentView.center.y, myCell.contentView.center.x - myCell.faceImageView.frame.size.width/2, 2);
-    
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
     WGUser *user = eventMessage.user;
     [myCell.mediaTypeImageView setSmallImageForUser:user completed:nil];

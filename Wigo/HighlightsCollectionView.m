@@ -67,8 +67,11 @@
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (![[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser] && _event.messages.count == 0 && !WGProfile.currentUser.crossEventPhotosEnabled) return;
     if (indexPath.section == kAddPhotoSection && self.isPeeking) return;
-    if (self.isPeeking){
-        indexPath = [NSIndexPath indexPathForItem:indexPath.item inSection:indexPath.section];
+    if (self.event.isExpired.boolValue) {
+        [self.placesDelegate showConversationForEvent:self.event
+                                    withEventMessages:self.event.messages
+                                              atIndex:indexPath.item];
+        return;
     }
     if (indexPath.section != kAddPhotoSection || !self.isPeeking || (WGProfile.currentUser.crossEventPhotosEnabled || [[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser])) {
         int index = indexPath.item + 1;
@@ -90,7 +93,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(NSInteger)collectionView:(UICollectionView *)collectionView
     numberOfItemsInSection:(NSInteger)section {
     if (section == kAddPhotoSection)  {
-        if (self.event.isExpired.boolValue) return 0;
+       if (self.event.isExpired.boolValue) return 0;
        return 1;
     }
     if (section == kHighlightSection) return self.event.messages.count;
@@ -114,18 +117,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         [self fetchEventMessages];
     }
     WGEventMessage *eventMessage = (WGEventMessage *)[self.event.messages objectAtIndex:[indexPath row]];
-    
-    NSString *contentURL;
-    if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
-    else  contentURL = eventMessage.media;
-    NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, contentURL]];
-    [cell.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {}];
-    
-    if (eventMessage.isRead) {
-        if (eventMessage.isRead.boolValue) [cell updateUIToRead:YES];
-        else [cell updateUIToRead:NO];
-    }
-    
+    cell.eventMessage = eventMessage;
     return cell;
 }
 
@@ -289,60 +281,31 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     self.orangeDotView.layer.borderWidth = 3;
     self.orangeDotView.layer.cornerRadius = 7.5;
     [self.contentView addSubview:self.orangeDotView];
-
-    _isActive = NO;
 }
 
-
-- (void) setIsActive:(BOOL)isActive {
-    if (_isActive == isActive) {
-        return;
-    }
-    if (isActive) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [UIView animateWithDuration:0.5 delay: 0.0 options: UIViewAnimationOptionCurveLinear animations:^{
-                [self setToActiveWithNoAnimation];
-            } completion:^(BOOL finished) {}];
-        });
-        
-    } else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [UIView animateWithDuration: 0.5    animations:^{
-                [self resetToInactive];
-            }];
-        });
-    }
-    _isActive = isActive;
-    
-}
-
-- (void)setToActiveWithNoAnimation {
-    
-    self.faceImageView.transform = CGAffineTransformIdentity;
-    
-}
-
-- (void) resetToInactive {
-//    self.faceAndMediaTypeView.alpha = 0.5f;
-//    
-//    self.faceImageView.transform = CGAffineTransformMakeScale(0.75, 0.75);
-}
 
 - (void)updateUIToRead:(BOOL)read {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (read) {
-//            self.faceImageView.alpha = 1.0f;
             self.orangeDotView.hidden = YES;
         } else {
-//            self.faceImageView.alpha = 1.0f;
             self.orangeDotView.hidden = NO;
         }
     });
 }
 
-- (void)setStateForUser:(WGUser *)user {
-    [self.faceImageView setSmallImageForUser:user completed:nil];
-    self.user = user;
+-(void) setEventMessage:(WGEventMessage *)eventMessage {
+    _eventMessage = eventMessage;
+    NSString *contentURL;
+    if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
+    else  contentURL = eventMessage.media;
+    NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, contentURL]];
+    [self.faceImageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {}];
+    
+    if (eventMessage.isRead) {
+        if (eventMessage.isRead.boolValue) [self updateUIToRead:YES];
+        else [self updateUIToRead:NO];
+    }
 }
 
 @end

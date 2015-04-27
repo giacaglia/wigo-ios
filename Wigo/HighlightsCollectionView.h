@@ -31,21 +31,19 @@
 @end
 
 @interface HighlightCell : UICollectionViewCell
-+ (CGFloat) height;
-- (void) resetToInactive;
-- (void)setToActiveWithNoAnimation;
++ (CGFloat)height;
 - (void)updateUIToRead:(BOOL)read;
-- (void)setStateForUser:(WGUser *)user;
 @property (nonatomic, strong) WGUser *user;
 @property (nonatomic, strong) UIView *orangeDotView;
 
-@property (nonatomic, assign) BOOL isActive;
 @property (nonatomic, strong) UIImageView *faceImageView;
 
 // For Transition
 @property (nonatomic, assign) CGFloat startYPosition;
 @property (nonatomic, assign) CGRect startFrame;
 @property (nonatomic, strong) UIView *holeView;
+
+@property (nonatomic, strong) WGEventMessage *eventMessage;
 @end
 
 @interface HighlightsFlowLayout : UICollectionViewFlowLayout

@@ -35,7 +35,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = self.event.name;
     
     [self loadScrollView];
 }
@@ -66,11 +65,6 @@
     [super viewWillDisappear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-}
-
 
 #pragma mark UICollectionViewDataSource
 

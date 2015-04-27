@@ -22,6 +22,7 @@
 @property (nonatomic, strong) NSNumber *index;
 @property (nonatomic, strong) NSNumber *numberOfPagesBefore;
 @property (nonatomic, assign) BOOL isFetchingMessages;
+@property (nonatomic, assign) BOOL isOldEvent;
 
 #pragma mark - Delegate objects
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
@@ -45,18 +46,12 @@
 - (void) resetToInactive;
 - (void)setToActiveWithNoAnimation;
 @property (nonatomic, strong) WGUser *user;
-@property (nonatomic, assign) BOOL rightLineEnabled;
-@property (nonatomic, assign) BOOL leftLineEnabled;
-
 @property (nonatomic, assign) BOOL isActive;
 @property (nonatomic, strong) UIView *faceAndMediaTypeView;
 @property (nonatomic, strong) UIImageView *faceImageView;
 @property (nonatomic, strong) UIImageView *mediaTypeImageView;
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
-@property (nonatomic, strong) UIView *leftLine;
-@property (nonatomic, strong) UIView *rightLine;
-
 // For Transition
 @property (nonatomic, assign) CGFloat startYPosition;
 @property (nonatomic, assign) CGRect startFrame;

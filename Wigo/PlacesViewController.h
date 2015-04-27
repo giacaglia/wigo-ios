@@ -115,7 +115,6 @@
 @interface HighlightOldEventCell : UITableViewCell
 @property (nonatomic, strong) UIImageView *privateIconImageView;
 @property (nonatomic, strong) UIImageView *highlightImageView;
-
 @property (nonatomic, strong) UILabel *oldEventLabel;
 + (CGFloat) height;
 
@@ -132,7 +131,7 @@
 @property (nonatomic, strong) UILabel *numberOfNewHighlightsLabel;
 @property (nonatomic, strong) UIButton *goingHereButton;
 @property (nonatomic, strong) UIView *grayView;
-@property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
+@property (nonatomic, strong) NSMutableArray *arrayOfImageViews;
 @property (nonatomic, strong) UIImageView *verifiedImageView;
 @end
 
