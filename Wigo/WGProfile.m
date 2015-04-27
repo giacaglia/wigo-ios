@@ -407,10 +407,13 @@ static BOOL isLocal = YES;
         }
         NSError *dataError;
         @try {
-            if ([jsonResponse objectForKey:kKeyKey]) {
-                self.key = [jsonResponse objectForKey:kKeyKey];
+            WGParser *parser = [[WGParser alloc] init];
+            NSDictionary *response = [parser replaceReferences:jsonResponse];
+            NSDictionary *userDictionary = [[response objectForKey:@"objects"] objectAtIndex:0];
+            if ([userDictionary objectForKey:kKeyKey]) {
+                self.key = [userDictionary objectForKey:kKeyKey];
             }
-            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:userDictionary];
             [self replaceReferences];
             [self.modifiedKeys removeAllObjects];
         }

@@ -592,14 +592,6 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kGroupKey];
 }
 
--(void) setEmailValidated:(NSNumber *)emailValidated {
-    [self setObject:emailValidated forKey:kEmailValidatedKey];
-}
-
--(NSNumber *) emailValidated {
-    return [self objectForKey:kEmailValidatedKey];
-}
-
 -(void) setEventAttending:(WGEvent *)eventAttending {
     [self setObject:eventAttending forKey:kIsAttendingKey];
 }

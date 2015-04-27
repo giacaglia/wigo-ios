@@ -144,24 +144,23 @@ UITextField *emailTextField;
             if (error) {
                 return;
             }
-            if ([[WGProfile currentUser].emailValidated boolValue]) {
-                [strongSelf.fetchTimer invalidate];
-                strongSelf.fetchTimer = nil;
-                if ([[WGProfile currentUser].group.locked boolValue]) {
+            [strongSelf.fetchTimer invalidate];
+            strongSelf.fetchTimer = nil;
+            if (WGProfile.currentUser.group.locked.boolValue) {
+                [strongSelf.navigationController setNavigationBarHidden:YES animated:NO];
+                BatteryViewController *batteryViewController = [BatteryViewController new];
+                batteryViewController.placesDelegate = strongSelf.placesDelegate;
+                [strongSelf.navigationController pushViewController:batteryViewController animated:NO];
+            } else {
+                if (!strongSelf.showOnboard) {
                     [strongSelf.navigationController setNavigationBarHidden:YES animated:NO];
-                    BatteryViewController *batteryViewController = [BatteryViewController new];
-                    batteryViewController.placesDelegate = strongSelf.placesDelegate;
-                    [strongSelf.navigationController pushViewController:batteryViewController animated:NO];
-                } else {
-                    if (!strongSelf.showOnboard) {
-                        [strongSelf.navigationController setNavigationBarHidden:YES animated:NO];
-                        [self dismissViewControllerAnimated:YES completion:nil];
+                    [self dismissViewControllerAnimated:YES completion:nil];
 
 //                        [strongSelf.navigationController pushViewController:[OnboardFollowViewController new] animated:YES];
-                        strongSelf.showOnboard = YES;
-                    }
+                    strongSelf.showOnboard = YES;
                 }
             }
+        
         }];
     }
 }

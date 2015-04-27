@@ -49,7 +49,6 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSNumber* isTapped;
 @property NSNumber* isBlocked;
 @property NSNumber* isBlocking;
-@property NSNumber* emailValidated;
 @property NSString* bio;
 @property NSString* image;
 @property NSDate* modified;

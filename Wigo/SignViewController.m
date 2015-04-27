@@ -386,7 +386,7 @@
     [WGSpinnerView addDancingGToCenterView:self.view];
 
     __weak typeof(self) weakSelf = self;
-    [[WGProfile currentUser] login:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser login:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         if (error) {
@@ -405,41 +405,32 @@
 }
 
 -(void) navigate {
-    if (![[WGProfile currentUser].emailValidated boolValue]) {
-        if (!_pushed) {
-            _pushed = YES;
-            EmailConfirmationViewController *emailConfirmationViewController = [EmailConfirmationViewController new];
-            emailConfirmationViewController.placesDelegate = self.placesDelegate;
-            [self.navigationController pushViewController:emailConfirmationViewController animated:YES];
-        }
-    } else {
-        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-        
-        currentInstallation[@"api_version"] = API_VERSION;
-        currentInstallation[@"wigo_id"] = [WGProfile currentUser].id;
-        [currentInstallation saveInBackground];
-        
-        if (!_pushed) {
-            _pushed = YES;
-            if ([[WGProfile currentUser].group.locked boolValue]) {
-                if (WGProfile.currentUser.findReferrer) {
-                    [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
-                    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                    [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
-                    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-                    WGProfile.currentUser.findReferrer = NO;
-                    [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
-                }
-                [self.navigationController setNavigationBarHidden:YES animated:NO];
-                BatteryViewController *batteryViewController = [BatteryViewController new];
-                batteryViewController.placesDelegate = self.placesDelegate;
-                [self.navigationController pushViewController:batteryViewController animated:NO];
-            } else {
-                [self loadMainViewController];
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    currentInstallation[@"api_version"] = API_VERSION;
+    currentInstallation[@"wigo_id"] = WGProfile.currentUser.id;
+    [currentInstallation saveInBackground];
+    
+    if (!_pushed) {
+        _pushed = YES;
+        if (WGProfile.currentUser.group.locked.boolValue) {
+            if (WGProfile.currentUser.findReferrer) {
+                [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
+                NSDateFormatter *dateFormatter = [NSDateFormatter new];
+                [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
+                [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+                WGProfile.currentUser.findReferrer = NO;
+                [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
             }
-            
+            [self.navigationController setNavigationBarHidden:YES animated:NO];
+            BatteryViewController *batteryViewController = [BatteryViewController new];
+            batteryViewController.placesDelegate = self.placesDelegate;
+            [self.navigationController pushViewController:batteryViewController animated:NO];
+        } else {
+            [self loadMainViewController];
         }
+        
     }
+    
 }
 
 
