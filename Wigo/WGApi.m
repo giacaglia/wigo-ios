@@ -48,7 +48,7 @@ dispatch_queue_t postQueue;
 //static NSString *baseURLString = @"https://api.wigo.us/api/%@";
 //#endif
 
-static NSString *baseURLString = @"https://wigo2-dev.herokuapp.com/api/%@";
+static NSString *baseURLString = @"https://wigo2.herokuapp.com/api/%@";
 
 static CLLocationManager *locationManager;
 

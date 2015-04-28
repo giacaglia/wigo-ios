@@ -159,7 +159,6 @@
 
 - (void)fetchEventMeta {
     [self.event getMeta:^(WGCollection *collection, NSError *error) {
-        NSLog(@"here");
     }];
 }
 

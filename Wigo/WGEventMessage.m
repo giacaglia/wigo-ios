@@ -123,9 +123,16 @@
 }
 
 -(NSNumber *) vote {
-    NSDictionary *eventDict = [[WGCache sharedCache] objectForKey:kEventMessagesKey];
-    NSDictionary *metaDict = [eventDict objectForKey:self.id.stringValue];
-    return [metaDict objectForKey:kVoteKey];
+    NSDictionary *timeToMessagesDict = [[WGCache sharedCache] objectForKey:kEventMessagesKey];
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    NSString *timeString = [dateFormatter stringFromDate:self.created];
+    NSDictionary *eventMessagesToProperties = [timeToMessagesDict objectForKey:timeString];
+    if ([eventMessagesToProperties objectForKey:self.id.stringValue]) {
+        NSDictionary *metaDict = [eventMessagesToProperties objectForKey:self.id.stringValue];
+        return [metaDict objectForKey:kVoteKey];
+    }
+    return @0;
 }
 
 -(void) setUpVotes:(NSNumber *)upVotes {
@@ -133,9 +140,17 @@
 }
 
 -(NSNumber *) upVotes {
-    NSDictionary *eventDict = [[WGCache sharedCache] objectForKey:kEventMessagesKey];
-    NSDictionary *metaDict = [eventDict objectForKey:self.id.stringValue];
-    return [metaDict objectForKey:kNumVotesKey];
+    NSDictionary *timeToMessagesDict = [[WGCache sharedCache] objectForKey:kEventMessagesKey];
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    NSString *timeString = [dateFormatter stringFromDate:self.created];
+    NSDictionary *eventMessagesToProperties = [timeToMessagesDict objectForKey:timeString];
+    if ([eventMessagesToProperties objectForKey:self.id.stringValue]) {
+        NSDictionary *metaDict = [eventMessagesToProperties objectForKey:self.id.stringValue];
+        return [metaDict objectForKey:kNumVotesKey];
+    }
+    return @0;
+
 }
 
 -(void) setUser:(WGUser *)user {

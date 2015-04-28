@@ -838,16 +838,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)inviteTapped {
-//    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
-//    [WGAnalytics tagEvent:@"Tap User" withDetails:options];
     [WGAnalytics tagAction:@"tap"
                     atView:@"profile"
             withTargetUser:self.user];
     
     self.user.isTapped = @YES;
-    [[WGProfile currentUser] tapUser:self.user withHandler:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser tapUser:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionPost];
             return;
         }

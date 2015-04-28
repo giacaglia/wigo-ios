@@ -230,15 +230,74 @@
 }
 
 -(void) getMeta:(WGCollectionResultBlock)handler {
+    __weak typeof(self) weakSelf = self;
     [WGApi get:[NSString stringWithFormat:@"events/%@/messages/meta/", self.id]
    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       __strong typeof(weakSelf) strongSelf = weakSelf;
        if (error) {
            handler(nil, error);
            return;
        }
-       [[WGCache sharedCache] setObject:jsonResponse forKey:kEventMessagesKey];
-       
+       [strongSelf addMetaInfo:jsonResponse];
     }];
+}
+
+// The format of the dictionary is going to be like
+// {
+//    "2015-04-28" :  590430140402: {"num_votes": 1, "voted" : 1} },
+//    "2015-04-27" :
+//      { 481374382733: {"num_votes": 10, "voted" : 0}, 481374382733 : {{"num_votes": 10, "voted" : 0}  },
+// }
+-(void)addMetaInfo:(NSDictionary *)meta {
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    NSString *timeString = [dateFormatter stringFromDate:self.created];
+    NSDictionary *toDictionary = @{timeString: meta};
+    NSDictionary *fromDictionary = [[WGCache sharedCache] objectForKey:kEventMessagesKey];
+    NSMutableDictionary *resultingDictionary = [WGEvent addDictionary:fromDictionary
+                                                         toDictionary:toDictionary];
+    [[WGCache sharedCache] setObject:resultingDictionary forKey:kEventMessagesKey];
+}
+
+
+// addedDictionary:  {
+//                     "2015-04-28" : { 590430140402: {"num_votes": 1, "voted" : 1} }
+//                   }
+//    toDictionary:  {
+//                     "2015-04-28" : { 139204923003: {"num_votes": 1, "voted" : 1} }
+//                   }
+//
+//         returns:  {
+//                     "2015-04-28" : { 590430140402: {"num_votes": 1, "voted" : 1},
+//                                      139204923003: {"num_votes": 1, "voted" : 1} }
+//                   }
++ (NSMutableDictionary *)addDictionary:(NSDictionary *)fromDictionary
+                   toDictionary:(NSDictionary *)toDictionary {
+    if (!fromDictionary) return [NSMutableDictionary dictionaryWithDictionary:toDictionary];
+    if ([fromDictionary isEqual:toDictionary]) return [NSMutableDictionary dictionaryWithDictionary:fromDictionary];
+    NSMutableDictionary *resultDictionary = [NSMutableDictionary new];
+    for (NSString *key in fromDictionary.allKeys) {
+        if ([toDictionary.allKeys containsObject:key]) {
+            id toObject = [toDictionary objectForKey:key];
+            if ([toObject isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *fromObject = [fromDictionary objectForKey:key];
+                NSMutableDictionary *subDictionary = [WGEvent addDictionary:fromObject toDictionary:toObject];
+                [resultDictionary setObject:subDictionary forKey:key];
+            }
+            else {
+                
+            }
+        }
+        else {
+            [resultDictionary setObject:[toDictionary objectForKey:key] forKey:key];
+        }
+    }
+    for (NSString *key in toDictionary.allKeys) {
+        if (![resultDictionary.allKeys containsObject:key]) {
+            [resultDictionary setObject:[toDictionary objectForKey:key] forKey:key];
+        }
+    }
+    return resultDictionary;
 }
 
 -(void) getInvites:(WGCollectionResultBlock)handler {
