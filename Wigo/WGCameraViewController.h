@@ -11,14 +11,17 @@
 #import <AVFoundation/AVFoundation.h>
 
 
+@protocol WGCameraViewControllerDelegate;
+
 @class CIDetector;
 
-@interface WGCameraViewController : UIViewController <UIGestureRecognizerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface WGCameraViewController : UIViewController <UIGestureRecognizerDelegate, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureFileOutputRecordingDelegate>
 {
     IBOutlet UIView *previewView;
     IBOutlet UISegmentedControl *camerasControl;
     AVCaptureVideoPreviewLayer *previewLayer;
     AVCaptureVideoDataOutput *videoDataOutput;
+    
     BOOL detectFaces;
     dispatch_queue_t videoDataOutputQueue;
     AVCaptureStillImageOutput *stillImageOutput;
@@ -30,12 +33,29 @@
     CGFloat effectiveScale;
 }
 
+@property(nonatomic,weak) id <WGCameraViewControllerDelegate> delegate;
+
 @property (nonatomic,strong) UIView *cameraOverlayView;
 
-- (IBAction)takePicture:(id)sender;
-- (IBAction)switchCameras:(id)sender;
+@property (nonatomic,strong) AVCaptureMovieFileOutput *movieFileOutput;
+@property (nonatomic,strong) AVCaptureSession *captureSession;
+
+- (void)takePictureWithCompletion:(void (^)(UIImage *image, NSDictionary *attachments, NSError *error))completion;
+- (void)startRecordingVideo;
+- (void)stopRecording;
+
+- (void)switchCameras:(id)sender;
 - (IBAction)handlePinchGesture:(UIGestureRecognizer *)sender;
 - (IBAction)toggleFaceDetection:(id)sender;
 
+
+@end
+
+
+@protocol WGCameraViewControllerDelegate<NSObject>
+@optional
+
+- (void)cameraController:(WGCameraViewController *)controller didFinishPickingMediaWithInfo:(NSDictionary *)info;
+- (void)cameraControllerDidCancel:(WGCameraViewController *)picker;
 
 @end

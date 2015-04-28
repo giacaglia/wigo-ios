@@ -13,6 +13,8 @@
 #import "EventMessagesConstants.h"
 #import "WGEventMessage.h"
 #import "WGCollection.h"
+
+#import "WGCameraViewController.h"
 #import "UIImage+Rotation.h"
 
 #import <AVFoundation/AVFoundation.h>
@@ -33,6 +35,8 @@
 @property (nonatomic, assign) BOOL shownCurrentImage;
 
 @property (nonatomic, strong) NSMutableSet *moviePlayerPool;
+
+@property (nonatomic, strong) WGCameraViewController *internalCameraController;
 
 @end
 
@@ -70,6 +74,10 @@
     self.videoIsWaitingToPrepare = NO;
     
     self.videoMetaDataInternal = [NSMutableDictionary dictionary];
+    
+    
+    
+    self.internalCameraController = [[WGCameraViewController alloc] init];
     
 }
 
@@ -128,6 +136,7 @@
         } else {
             CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
             cameraCell.mediaScrollDelegate = self;
+            [cameraCell setupCameraController:self.internalCameraController];
             if ([cameraCell.info.allKeys containsObject:UIImagePickerControllerMediaType]) {
                 NSString *typeString = [cameraCell.info objectForKey:UIImagePickerControllerMediaType];
                 if ([typeString isEqual:@"public.movie"]) {
@@ -136,7 +145,7 @@
                     [cameraCell.previewMoviePlayer play];
                 }
             }
-            [self.pageViews setObject:cameraCell.controller atIndexedSubscript:indexPath.row];
+            [self.pageViews setObject:cameraCell atIndexedSubscript:indexPath.row];
             return cameraCell;
         }
     }
@@ -156,10 +165,12 @@
                 [myCell.imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                          NSURL *realURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
+                        NSLog(@"image URL: %@", realURL.absoluteString);
                         [weakCell.spinner startAnimating];
                         [weakCell.imageView setImageWithURL:realURL
                                            placeholderImage:image
                                                   completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                                                      NSLog(@"image size: %@", NSStringFromCGSize(image.size));
                                                     [weakCell.spinner stopAnimating];
                                                 }];
                     });
@@ -456,6 +467,10 @@
 //    return ret;
 }
 
+- (WGCameraViewController *)cameraController {
+    return self.internalCameraController;
+}
+
 - (void)freeMoviePlayer:(MPMoviePlayerController *)moviePlayer {
     [self.moviePlayerPool addObject:moviePlayer];
 }
@@ -605,6 +620,7 @@
 //    return UIImageJPEGRepresentation(flippedImage, jpegQuality);
 
 }
+
 
 - (void)mediaPickerController:(UIImagePickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info {
@@ -1542,22 +1558,22 @@
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     
     self.isTakingPicture = NO;
-
-    self.controller = [[UIImagePickerController alloc] init];
-    self.controller.sourceType = UIImagePickerControllerSourceTypeCamera;
-    self.controller.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-    self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
-    self.controller.videoQuality = UIImagePickerControllerQualityType640x480;
-    self.controller.delegate = self;
-    self.controller.showsCameraControls = NO;
     
-    self.photoController = [[UIImagePickerController alloc] init];
-    self.photoController.sourceType = UIImagePickerControllerSourceTypeCamera;
-    self.photoController.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-    self.photoController.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
-    self.photoController.videoQuality = UIImagePickerControllerQualityTypeMedium;
-    self.photoController.delegate = self;
-    self.photoController.showsCameraControls = NO;
+//    self.controller = [[UIImagePickerController alloc] init];
+//    self.controller.sourceType = UIImagePickerControllerSourceTypeCamera;
+//    self.controller.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+//    self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+//    self.controller.videoQuality = UIImagePickerControllerQualityType640x480;
+    self.controller.delegate = self;
+//    self.controller.showsCameraControls = NO;
+//    
+//    self.photoController = [[UIImagePickerController alloc] init];
+//    self.photoController.sourceType = UIImagePickerControllerSourceTypeCamera;
+//    self.photoController.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+//    self.photoController.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+//    self.photoController.videoQuality = UIImagePickerControllerQualityTypeMedium;
+//    self.photoController.delegate = self;
+//    self.photoController.showsCameraControls = NO;
     
     
     CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
@@ -1573,12 +1589,16 @@
     
     self.photoController.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeImage, nil];
     self.controller.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeMovie, nil];
-    [self.contentView addSubview:self.controller.view];
+    //[self.contentView addSubview:self.controller.view];
     
+    
+    //[self.contentView addSubview:self.cameraController.view];
     
 
     self.overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
-    self.controller.cameraOverlayView = self.overlayView;
+    //self.controller.cameraOverlayView = self.overlayView;
+    
+    //self.cameraController.cameraOverlayView = self.overlayView;
     
     self.pictureButton = [[UIButton alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     self.captureImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.pictureButton.frame.size.width/2 - 36, self.pictureButton.frame.size.height - 72 - 5, 72, 72)];
@@ -1717,14 +1737,14 @@
     [self.overlayView addSubview:self.textLabel];
     [self.overlayView bringSubviewToFront:self.textLabel];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(cameraIsReady:)
-                                                 name:AVCaptureSessionDidStartRunningNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(cameraStopped:)
-                                                 name:AVCaptureSessionDidStopRunningNotification
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(cameraIsReady:)
+//                                                 name:AVCaptureSessionDidStartRunningNotification object:nil];
+//    
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(cameraStopped:)
+//                                                 name:AVCaptureSessionDidStopRunningNotification
+//                                               object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerThumbnailsLoaded:) name:MPMoviePlayerThumbnailImageRequestDidFinishNotification object:self.previewMoviePlayer];
     
@@ -1733,16 +1753,27 @@
     
 }
 
+- (void)setupCameraController:(WGCameraViewController *)cameraController {
+    self.cameraController = cameraController;
+    [self.contentView addSubview:self.cameraController.view];
+    self.cameraController.cameraOverlayView = self.overlayView;
+    self.cameraController.delegate = self;
+}
+
 - (void)cellDidDisappear {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)cameraIsReady:(NSNotification *)notification {
     NSLog(@"camera is ready");
-    if(notification.object && [notification.object isKindOfClass:[AVCaptureSession class]]) {
-        self.captureSession = notification.object;
-    }
-    
+//    if(notification.object && [notification.object isKindOfClass:[AVCaptureSession class]]) {
+//        self.captureSession = notification.object;
+//        if (![self.captureSession canSetSessionPreset:AVCaptureSessionPreset1280x720]) {
+//            NSLog(@"cannot set preset %@", AVCaptureSessionPreset1280x720);
+//        }
+//        [self.captureSession setSessionPreset:AVCaptureSessionPreset1280x720];
+//    }
+//    
 //    if(self.isTakingPicture) {
 //        self.isTakingPicture = NO;
 //        [self.photoController takePicture];
@@ -1764,6 +1795,7 @@
 - (void)takePicture {
     NSLog(@"capture mode: %d", (int)self.controller.cameraCaptureMode);
     NSLog(@"taking picture");
+    
     
     //self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
     if (self.photoController.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn &&
@@ -1802,6 +1834,16 @@
     
     //[self.photoController takePicture];
     
+    [self.cameraController takePictureWithCompletion:^(UIImage *image, NSDictionary *attachments, NSError *error) {
+        
+        NSDictionary *mediaDict = @{UIImagePickerControllerMediaMetadata:attachments,
+                                    UIImagePickerControllerMediaType:@"public.image",
+                                    UIImagePickerControllerOriginalImage:image};
+        [self imagePickerController:self.controller
+      didFinishPickingMediaWithInfo:mediaDict];
+        
+    }];
+    
     for(AVCaptureInput *input in self.captureSession.inputs) {
         NSLog(@"input: %@", input.description);
     }
@@ -1825,40 +1867,40 @@
 //    NSDictionary* outputSettings = [NSDictionary dictionaryWithObject:value forKey:key];
 //    
 //    [newStillImageOutput setOutputSettings:outputSettings];
-    
-    AVCaptureConnection *videoConnection = nil;
-    for (AVCaptureConnection *connection in stillImageOutput.connections) {
-        for (AVCaptureInputPort *port in [connection inputPorts]) {
-            if ([[port mediaType] isEqual:AVMediaTypeVideo] ) {
-                videoConnection = connection;
-                break;
-            }
-        }
-        if (videoConnection) { break; }
-    }
-    
-    [stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:
-     ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
-         CFDictionaryRef exifAttachments =
-         CMGetAttachment(imageSampleBuffer, kCGImagePropertyExifDictionary, NULL);
-         
-         if (exifAttachments) {
-             // Do something with the attachments.
-         }
-         
-         UIImage *image = [self imageFromSampleBuffer:imageSampleBuffer];
-
-         if(image) {
-             
-             NSDictionary *mediaDict = @{UIImagePickerControllerMediaMetadata:(__bridge NSDictionary *)exifAttachments,
-                                         UIImagePickerControllerMediaType:@"public.image",
-                                         UIImagePickerControllerOriginalImage:image};
-             [self imagePickerController:self.controller
-           didFinishPickingMediaWithInfo:mediaDict];
-         }
-         
-         // Continue as appropriate.
-     }];
+//    
+//    AVCaptureConnection *videoConnection = nil;
+//    for (AVCaptureConnection *connection in stillImageOutput.connections) {
+//        for (AVCaptureInputPort *port in [connection inputPorts]) {
+//            if ([[port mediaType] isEqual:AVMediaTypeVideo] ) {
+//                videoConnection = connection;
+//                break;
+//            }
+//        }
+//        if (videoConnection) { break; }
+//    }
+//    
+//    [stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:
+//     ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+//         CFDictionaryRef exifAttachments =
+//         CMGetAttachment(imageSampleBuffer, kCGImagePropertyExifDictionary, NULL);
+//         
+//         if (exifAttachments) {
+//             // Do something with the attachments.
+//         }
+//         
+//         UIImage *image = [self imageFromSampleBuffer:imageSampleBuffer];
+//
+//         if(image) {
+//             
+//             NSDictionary *mediaDict = @{UIImagePickerControllerMediaMetadata:(__bridge NSDictionary *)exifAttachments,
+//                                         UIImagePickerControllerMediaType:@"public.image",
+//                                         UIImagePickerControllerOriginalImage:image};
+//             [self imagePickerController:self.controller
+//           didFinishPickingMediaWithInfo:mediaDict];
+//         }
+//         
+//         // Continue as appropriate.
+//     }];
 
 }
 
@@ -1946,7 +1988,8 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 NSLog(@"starting video capture");
-                [self.controller startVideoCapture];
+                [self.cameraController startRecordingVideo];
+                //[self.controller startVideoCapture];
                 self.isRecording = YES;
                 CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 0.0); //This slots the preview exactly in the middle of the screen
 //                self.controller.cameraViewTransform = CGAffineTransformScale(translate, 1.0, 1.0);
@@ -1998,7 +2041,8 @@
     
     if (self.isRecording) {
         [self.videoTimer invalidate];
-        [self.controller stopVideoCapture];
+        [self.cameraController stopRecording];
+        //[self.controller stopVideoCapture];
         self.circularProgressView.hidden = YES;
         [self.circularProgressView setProgress:0.1f];
         self.longGesturePressed = NO;
@@ -2045,6 +2089,14 @@
 - (void)dismissPressed {
     [self.mediaScrollDelegate dismissView];
 }
+
+
+// WGCameraViewControllerDelegate methods
+
+- (void)cameraController:(WGCameraViewController *)controller didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    [self imagePickerController:nil didFinishPickingMediaWithInfo:info];
+}
+
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker; {
     NSLog(@"image picker cancelled");

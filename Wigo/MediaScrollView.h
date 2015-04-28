@@ -17,6 +17,9 @@
 #define UIMediaPickerPercentage @"UIMediaPickerPercentage"
 
 @class VideoCell;
+@class WGCameraViewController;
+
+@protocol WGCameraViewControllerDelegate;
 
 @protocol MediaScrollViewDelegate
 - (void)focusOnContent;
@@ -155,10 +158,12 @@
 @interface CameraCell : UICollectionViewCell<UINavigationControllerDelegate,
                                             UIImagePickerControllerDelegate,
                                             UIGestureRecognizerDelegate,
-                                            UITextFieldDelegate>
+                                            UITextFieldDelegate,
+                                            WGCameraViewControllerDelegate>
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, assign) id <MediaScrollViewDelegate> mediaScrollDelegate;
 @property (nonatomic, strong) UIImagePickerController *controller;
+@property (nonatomic, strong) WGCameraViewController *cameraController;
 @property (nonatomic, strong) UIButton *dismissButton;
 @property (nonatomic, strong) UIButton *flashButton;
 @property (nonatomic, strong) UIImageView *flashImageView;
@@ -191,5 +196,7 @@
 @property (nonatomic,weak) AVCaptureSession *captureSession;
 
 - (void)cellDidDisappear;
+
+- (void)setupCameraController:(WGCameraViewController *)cameraController;
 
 @end

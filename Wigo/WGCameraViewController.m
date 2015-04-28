@@ -141,58 +141,75 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 
 - (void)setupAVCapture
 {
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
+                   ^{
     NSError *error = nil;
     
-    AVCaptureSession *session = [AVCaptureSession new];
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
-        [session setSessionPreset:AVCaptureSessionPreset640x480];
-    else
-        [session setSessionPreset:AVCaptureSessionPresetPhoto];
+    self.captureSession = [AVCaptureSession new];
+                       
+    if ([self.captureSession canSetSessionPreset:AVCaptureSessionPreset1280x720]) {
+       [self.captureSession setSessionPreset:AVCaptureSessionPreset1280x720];
+    }
+    else {
+       [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
+    }
+    
     
     // Select a video device, make an input
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
     if(error == nil) {
-
+        NSLog(@"1");
+        isUsingFrontFacingCamera = NO;
+        if ( [self.captureSession canAddInput:deviceInput] )
+            [self.captureSession addInput:deviceInput];
+        
+        // Make a still image output
+        stillImageOutput = [AVCaptureStillImageOutput new];
+        [stillImageOutput addObserver:self forKeyPath:@"capturingStillImage" options:NSKeyValueObservingOptionNew context:(__bridge void *)((NSString *)AVCaptureStillImageIsCapturingStillImageContext)];
+        if ( [self.captureSession canAddOutput:stillImageOutput] )
+        [self.captureSession addOutput:stillImageOutput];
+        
+        _movieFileOutput = [AVCaptureMovieFileOutput new];
+        
     
-    isUsingFrontFacingCamera = NO;
-    if ( [session canAddInput:deviceInput] )
-        [session addInput:deviceInput];
-    
-    // Make a still image output
-    stillImageOutput = [AVCaptureStillImageOutput new];
-    [stillImageOutput addObserver:self forKeyPath:@"capturingStillImage" options:NSKeyValueObservingOptionNew context:(__bridge void *)((NSString *)AVCaptureStillImageIsCapturingStillImageContext)];
-    if ( [session canAddOutput:stillImageOutput] )
-        [session addOutput:stillImageOutput];
-    
-    // Make a video data output
-    videoDataOutput = [AVCaptureVideoDataOutput new];
-    
-    // we want BGRA, both CoreGraphics and OpenGL work well with 'BGRA'
-    NSDictionary *rgbOutputSettings = [NSDictionary dictionaryWithObject:
-                                       [NSNumber numberWithInt:kCMPixelFormat_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
-    [videoDataOutput setVideoSettings:rgbOutputSettings];
-    [videoDataOutput setAlwaysDiscardsLateVideoFrames:YES]; // discard if the data output queue is blocked (as we process the still image)
-    
-    // create a serial dispatch queue used for the sample buffer delegate as well as when a still image is captured
-    // a serial dispatch queue must be used to guarantee that video frames will be delivered in order
-    // see the header doc for setSampleBufferDelegate:queue: for more information
-    videoDataOutputQueue = dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
-    [videoDataOutput setSampleBufferDelegate:self queue:videoDataOutputQueue];
-    
-    if ( [session canAddOutput:videoDataOutput] )
-        [session addOutput:videoDataOutput];
-    [[videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:NO];
-    
-    effectiveScale = 1.0;
-    previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
-    [previewLayer setBackgroundColor:[[UIColor blackColor] CGColor]];
-    [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspect];
-    CALayer *rootLayer = [previewView layer];
-    [rootLayer setMasksToBounds:YES];
-    [previewLayer setFrame:[rootLayer bounds]];
-    [rootLayer addSublayer:previewLayer];
-    [session startRunning];
+        // Make a video data output
+        videoDataOutput = [AVCaptureVideoDataOutput new];
+        
+        // we want BGRA, both CoreGraphics and OpenGL work well with 'BGRA'
+        NSDictionary *rgbOutputSettings = [NSDictionary dictionaryWithObject:
+                                           [NSNumber numberWithInt:kCMPixelFormat_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+        [videoDataOutput setVideoSettings:rgbOutputSettings];
+        [videoDataOutput setAlwaysDiscardsLateVideoFrames:YES]; // discard if the data output queue is blocked (as we process the still image)
+        
+        // create a serial dispatch queue used for the sample buffer delegate as well as when a still image is captured
+        // a serial dispatch queue must be used to guarantee that video frames will be delivered in order
+        // see the header doc for setSampleBufferDelegate:queue: for more information
+        videoDataOutputQueue = dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
+        [videoDataOutput setSampleBufferDelegate:self queue:videoDataOutputQueue];
+        
+        if ( [self.captureSession canAddOutput:videoDataOutput] )
+            [self.captureSession addOutput:videoDataOutput];
+        [[videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:NO];
+        NSLog(@"2");
+        
+        dispatch_async(dispatch_get_main_queue(),
+                       ^{
+                           effectiveScale = 1.0;
+                           previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
+                           [previewLayer setBackgroundColor:[[UIColor blackColor] CGColor]];
+                           [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspect];
+                           CALayer *rootLayer = [previewView layer];
+                           [rootLayer setMasksToBounds:YES];
+                           [previewLayer setFrame:[rootLayer bounds]];
+                           [rootLayer addSublayer:previewLayer];
+                           NSLog(@"3");
+                           dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
+                                          ^{
+                                              [self.captureSession startRunning];
+                                          });
+                       });
     }
     else {
     
@@ -209,6 +226,8 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
             [self teardownAVCapture];
         }
     }
+                       
+                   });
 }
 
 // clean up capture setup
@@ -221,6 +240,8 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     //[stillImageOutput release];
     [previewLayer removeFromSuperlayer];
     //[previewLayer release];
+    
+    self.captureSession = nil;
 }
 
 // perform a flash bulb animation using KVO to monitor the value of the capturingStillImage property of the AVCaptureStillImageOutput class
@@ -379,9 +400,7 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     });
 }
 
-// main action method to take a still image -- if face detection has been turned on and a face has been detected
-// the square overlay will be composited on top of the captured image and saved to the camera roll
-- (IBAction)takePicture:(id)sender
+- (void)takePictureWithCompletion:(void (^)(UIImage *image, NSDictionary *attachments, NSError *error))completion
 {
     // Find out the current orientation and tell the still image output.
     AVCaptureConnection *stillImageConnection = [stillImageOutput connectionWithMediaType:AVMediaTypeVideo];
@@ -390,90 +409,65 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     [stillImageConnection setVideoOrientation:avcaptureOrientation];
     [stillImageConnection setVideoScaleAndCropFactor:effectiveScale];
     
-    BOOL doingFaceDetection = detectFaces && (effectiveScale == 1.0);
-    
-    // set the appropriate pixel format / image type output setting depending on if we'll need an uncompressed image for
-    // the possiblity of drawing the red square over top or if we're just writing a jpeg to the camera roll which is the trival case
-    if (doingFaceDetection)
-        [stillImageOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCMPixelFormat_32BGRA]
-                                                                        forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
-    else
-        [stillImageOutput setOutputSettings:[NSDictionary dictionaryWithObject:AVVideoCodecJPEG
+
+
+    [stillImageOutput setOutputSettings:[NSDictionary dictionaryWithObject:AVVideoCodecJPEG
                                                                         forKey:AVVideoCodecKey]];
     
     [stillImageOutput captureStillImageAsynchronouslyFromConnection:stillImageConnection
-                                                  completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
-                                                      if (error) {
-                                                          [self displayErrorOnMainQueue:error withMessage:@"Take picture failed"];
-                                                      }
-                                                      else {
-                                                          if (doingFaceDetection) {
-                                                              // Got an image.
-                                                              CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(imageDataSampleBuffer);
-                                                              CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, imageDataSampleBuffer, kCMAttachmentMode_ShouldPropagate);
-                                                              CIImage *ciImage = [[CIImage alloc] initWithCVPixelBuffer:pixelBuffer options:(__bridge NSDictionary *)attachments];
-                                                              if (attachments)
-                                                                  CFRelease(attachments);
-                                                              
-                                                              NSDictionary *imageOptions = nil;
-                                                              NSNumber *orientation = (__bridge NSNumber *)(CMGetAttachment(imageDataSampleBuffer, kCGImagePropertyOrientation, NULL));
-                                                              if (orientation) {
-                                                                  imageOptions = [NSDictionary dictionaryWithObject:orientation forKey:CIDetectorImageOrientation];
-                                                              }
-                                                              
-                                                              // when processing an existing frame we want any new frames to be automatically dropped
-                                                              // queueing this block to execute on the videoDataOutputQueue serial queue ensures this
-                                                              // see the header doc for setSampleBufferDelegate:queue: for more information
-                                                              dispatch_sync(videoDataOutputQueue, ^(void) {
-                                                                  
-                                                                  // get the array of CIFeature instances in the given image with a orientation passed in
-                                                                  // the detection will be done based on the orientation but the coordinates in the returned features will
-                                                                  // still be based on those of the image.
-                                                                  NSArray *features = [faceDetector featuresInImage:ciImage options:imageOptions];
-                                                                  CGImageRef srcImage = NULL;
-                                                                  OSStatus err = CreateCGImageFromCVPixelBuffer(CMSampleBufferGetImageBuffer(imageDataSampleBuffer), &srcImage);
-                                                                  check(!err);
-                                                                  
-                                                                  CGImageRef cgImageResult = [self newSquareOverlayedImageForFeatures:features
-                                                                                                                            inCGImage:srcImage
-                                                                                                                      withOrientation:curDeviceOrientation
-                                                                                                                          frontFacing:isUsingFrontFacingCamera];
-                                                                  if (srcImage)
-                                                                      CFRelease(srcImage);
-                                                                  
-                                                                  CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault,
-                                                                                                                              imageDataSampleBuffer,
-                                                                                                                              kCMAttachmentMode_ShouldPropagate);
-                                                                  [self writeCGImageToCameraRoll:cgImageResult withMetadata:(__bridge id)attachments];
-                                                                  if (attachments)
-                                                                      CFRelease(attachments);
-                                                                  if (cgImageResult)
-                                                                      CFRelease(cgImageResult);
-                                                                  
-                                                              });
-                                                              
-                                                              //[ciImage release];
-                                                          }
-                                                          else {
-                                                              // trivial simple JPEG case
-                                                              NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-                                                              CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault,
-                                                                                                                          imageDataSampleBuffer,
-                                                                                                                          kCMAttachmentMode_ShouldPropagate);
-                                                              ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
-                                                              [library writeImageDataToSavedPhotosAlbum:jpegData metadata:(__bridge id)attachments completionBlock:^(NSURL *assetURL, NSError *error) {
-                                                                  if (error) {
-                                                                      [self displayErrorOnMainQueue:error withMessage:@"Save to camera roll failed"];
-                                                                  }
-                                                              }];
-                                                              
-                                                              if (attachments)
-                                                                  CFRelease(attachments);
-                                                              //[library release];
-                                                          }
-                                                      }
-                                                  }
+     
+      completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+          if (error) {
+              completion(nil, nil, error);
+          }
+          else {
+              
+              // trivial simple JPEG case
+              NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+              UIImage *ret = [[UIImage alloc] initWithData:jpegData];
+              
+              CFDictionaryRef attachmentsCF = CMCopyDictionaryOfAttachments(kCFAllocatorDefault,
+                                                                          imageDataSampleBuffer,
+                                                                          kCMAttachmentMode_ShouldPropagate);
+              
+              NSDictionary *attachments = (__bridge NSDictionary *)attachmentsCF;
+              
+              if (attachments) {
+                  CFRelease(attachmentsCF);
+              }
+              completion (ret, attachments, nil);
+          }
+      }
      ];
+}
+
+- (void)startRecordingVideo {
+    
+//    AVCaptureConnection *videoConnection = [videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
+//    UIDeviceOrientation curDeviceOrientation = [[UIDevice currentDevice] orientation];
+//    AVCaptureVideoOrientation avcaptureOrientation = [self avOrientationForDeviceOrientation:curDeviceOrientation];
+//    [stillImageConnection setVideoOrientation:avcaptureOrientation];
+//    [stillImageConnection setVideoScaleAndCropFactor:effectiveScale];
+    
+    
+    if ([self.captureSession canAddOutput:self.movieFileOutput]) {
+        [self.captureSession addOutput:self.movieFileOutput];
+        
+        NSURL *fileURL = [WGCameraViewController tempVideoURL];
+        
+        [self.movieFileOutput startRecordingToOutputFileURL:fileURL
+                                          recordingDelegate:self];
+        
+    }
+    else {
+        // Handle the failure.
+        NSLog(@"error starting recording");
+    }
+    
+}
+
+- (void)stopRecording {
+    [self.movieFileOutput stopRecording];
 }
 
 // turn on/off face detection
@@ -757,7 +751,9 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    NSLog(@"setting up av capture");
     [self setupAVCapture];
+    NSLog(@"av capture setup complete");
     square = [UIImage imageNamed:@"squarePNG"];
     NSDictionary *detectorOptions = [[NSDictionary alloc] initWithObjectsAndKeys:CIDetectorAccuracyLow, CIDetectorAccuracy, nil];
     faceDetector = [CIDetector detectorOfType:CIDetectorTypeFace context:nil options:detectorOptions];
@@ -834,6 +830,73 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 }
 
 
+#pragma mark AVCaptureFileOutputRecordingDelegate methods
+
+- (void)captureOutput:(AVCaptureFileOutput *)captureOutput
+didStartRecordingToOutputFileAtURL:(NSURL *)fileURL
+      fromConnections:(NSArray *)connections {
+    NSLog(@"started recording");
+}
+
+- (void)captureOutput:(AVCaptureFileOutput *)captureOutput
+didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
+      fromConnections:(NSArray *)connections
+                error:(NSError *)error {
+    
+    BOOL recordedSuccessfully = YES;
+    if ([error code] != noErr) {
+        // A problem occurred: Find out if the recording was successful.
+        id value = [[error userInfo] objectForKey:AVErrorRecordingSuccessfullyFinishedKey];
+        if (value) {
+            recordedSuccessfully = [value boolValue];
+            
+        }
+    }
+    
+    if(recordedSuccessfully) {
+        NSDictionary *dict = @{UIImagePickerControllerMediaType:(NSString *)kUTTypeMovie,
+                               UIImagePickerControllerMediaURL:outputFileURL};
+        
+        
+        [self.delegate cameraController:self
+          didFinishPickingMediaWithInfo:dict];
+    }
+    else {
+        
+    }
+
+}
+
+// random string for tmp file name
+// (hat tip http://stackoverflow.com/questions/2633801/generate-a-random-alphanumeric-string-in-cocoa )
+
++ (NSURL *)tempVideoURL {
+    
+    NSString *tempDirectory;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    if ([paths count] > 0) {
+        tempDirectory = [paths objectAtIndex:0];
+        
+        NSString *randomString = [WGCameraViewController randomStringWithLength:8];
+        return [NSURL fileURLWithPath:[tempDirectory stringByAppendingFormat:@"/%@.mp4", randomString]];
+    }
+    
+    return nil;
+}
+
++ (NSString *)randomStringWithLength:(int)length {
+    
+    NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    NSMutableString *randomString = [NSMutableString stringWithCapacity:length];
+    
+    for (int i = 0; i < length; i++) {
+        [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((uint)[letters length])]];
+    }
+    
+    return [NSString stringWithString:randomString];
+    
+}
 
 
 @end
