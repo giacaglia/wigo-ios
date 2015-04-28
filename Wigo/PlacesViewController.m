@@ -31,7 +31,8 @@
 #import "WhereAreYouViewController.h"
 
 #define kEventCellName @"EventCell"
-#define kHighlightOldEventCell @"HighlightOldEventCell"
+#define kMoreThan2PhotosOldEventCell @"MoreThan2PhotosOldEventCell"
+#define kLessThan2PhotosOldEventCell @"LessThan2PhotosOldEventCell"
 #define kOldEventCellName @"OldEventCell"
 
 #define kOldEventShowHighlightsCellName @"OldEventShowHighlightsCellName"
@@ -99,6 +100,7 @@ BOOL firstTimeLoading;
 //    [NetworkFetcher.defaultGetter fetchMessages];
     [NetworkFetcher.defaultGetter fetchSuggestions];
     [NetworkFetcher.defaultGetter fetchMeta];
+    [NetworkFetcher.defaultGetter fetchFriendsIds];
 //    [NetworkFetcher.defaultGetter fetchNotifications];
 //    [NetworkFetcher.defaultGetter fetchUserNames];
 }
@@ -375,7 +377,8 @@ BOOL firstTimeLoading;
     self.placesTableView.showsVerticalScrollIndicator = NO;
     [self.placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
-    [self.placesTableView registerClass:[HighlightOldEventCell class] forCellReuseIdentifier:kHighlightOldEventCell];
+    [self.placesTableView registerClass:[MoreThan2PhotosOldEventCell class] forCellReuseIdentifier:kMoreThan2PhotosOldEventCell];
+    [self.placesTableView registerClass:[LessThan2PhotosOldEventCell class] forCellReuseIdentifier:kLessThan2PhotosOldEventCell];
     [self.placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
     self.placesTableView.backgroundColor = RGB(237, 237, 237);
     self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -593,7 +596,15 @@ BOOL firstTimeLoading;
         return [EventCell height];
     }
     else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
-        return [HighlightOldEventCell height];
+        NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
+        NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
+        WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
+//        if (event.messages.count > 2) {
+//           [MoreThan2PhotosOldEventCell height];
+//        }
+//        else {
+            return [LessThan2PhotosOldEventCell height];
+//        }
     }
     
     return 0;
@@ -612,7 +623,6 @@ BOOL firstTimeLoading;
         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
         EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
-//        cell.isOldEvent = NO;
         cell.highlightsCollectionView.event = nil;
         cell.highlightsCollectionView.eventMessages = nil;
         [cell.highlightsCollectionView reloadData];
@@ -676,8 +686,13 @@ BOOL firstTimeLoading;
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
         }
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
-        HighlightOldEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kHighlightOldEventCell forIndexPath:indexPath];
-//        cell.isOldEvent = YES;
+        HighlightOldEventCell *cell;
+//        if (event.messages.count > 2) {
+//            cell = (MoreThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kMoreThan2PhotosOldEventCell forIndexPath:indexPath];
+//        }
+//        else {
+            cell = (LessThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kLessThan2PhotosOldEventCell forIndexPath:indexPath];
+//        }
         cell.event = event;
         cell.placesDelegate = self;
         cell.eventPeopleScrollView.isPeeking = YES;
@@ -1666,20 +1681,7 @@ BOOL firstTimeLoading;
 
 @implementation HighlightOldEventCell
 
-+ (CGFloat) height {
-    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 10 + ([UIScreen mainScreen].bounds.size.width - 6)/2 + 20;
-}
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self setup];
-    }
-    return self;
-}
-
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [HighlightOldEventCell height]);
     self.contentView.frame = self.frame;
     self.backgroundColor = RGB(237, 237, 237);
     self.clipsToBounds = YES;
@@ -1746,12 +1748,14 @@ BOOL firstTimeLoading;
     UIImageView *thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 6)/2 + 5, (self.frame.size.width - 6)/2, (self.frame.size.width - 6)/2)];
     thirdImageView.contentMode = UIViewContentModeScaleAspectFill;
     thirdImageView.clipsToBounds = YES;
+    thirdImageView.hidden = YES;
     [backgroundView addSubview:thirdImageView];
     [self.arrayOfImageViews addObject:thirdImageView];
     
     UIImageView *fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 6)/2 + 6, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 6)/2 + 5, (self.frame.size.width - 6)/2, (self.frame.size.width - 6)/2)];
     fourthImageView.contentMode = UIViewContentModeScaleAspectFill;
     fourthImageView.clipsToBounds = YES;
+    fourthImageView.hidden = YES;
     [backgroundView addSubview:fourthImageView];
     [self.arrayOfImageViews addObject:fourthImageView];
 }
@@ -1803,7 +1807,49 @@ BOOL firstTimeLoading;
     }
 }
 
+@end
 
+@implementation MoreThan2PhotosOldEventCell
+
++ (CGFloat)height {
+//    NSLog(@"here");
+    return 500.0f;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void)setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [MoreThan2PhotosOldEventCell height]);
+    [super setup];
+}
+
+@end
+
+@implementation LessThan2PhotosOldEventCell
+
++ (CGFloat)height {
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + ([UIScreen mainScreen].bounds.size.width - 6)/2 + 20;
+}
+
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void)setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [LessThan2PhotosOldEventCell height]);
+    [super setup];
+}
 
 @end
 

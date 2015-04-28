@@ -42,7 +42,7 @@
 #define kHometownKey @"hometown"
 #define kWorkKey @"work"
 #define kEducationKey @"education"
-#define kAgeKey @"age"
+#define kFriendsIdsKey @"friends_ids"
 #define kBirthdayKey @"birthday"
 #define kURLKey @"url"
 #define kSmallKey @"small"
@@ -363,7 +363,7 @@ static WGUser *currentUser = nil;
     self.properties = properties;
 }
 
--(NSString *) age{
+-(NSString *)age {
     NSString *birthday = self.birthday;
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     [dateFormatter setDateFormat:@"MM/dd/yyyy"];
@@ -375,8 +375,17 @@ static WGUser *currentUser = nil;
     return [NSString stringWithFormat:@"%d", [conversionInfo year]];
 }
 
+-(NSArray *)friendsIds {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kFriendsIdsKey];
+}
 
--(NSString *) birthday{
+
+-(void) setFriendsIds:(NSArray *)friendsIds {
+    [[NSUserDefaults standardUserDefaults] setObject:friendsIds forKey:kFriendsIdsKey];
+}
+
+
+-(NSString *)birthday {
     NSDictionary *properties = self.properties;
     return [properties objectForKey:kBirthdayKey];
 }
@@ -647,6 +656,10 @@ static WGUser *currentUser = nil;
 }
 
 -(NSNumber *) isFriend {
+    if (WGProfile.currentUser.friendsIds &&
+        [WGProfile.currentUser.friendsIds containsObject:self.id]) {
+        return @YES;
+    }
     return [self objectForKey:kIsFriendKey];
 }
 

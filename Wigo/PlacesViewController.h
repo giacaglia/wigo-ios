@@ -116,9 +116,7 @@
 @property (nonatomic, strong) UIImageView *privateIconImageView;
 @property (nonatomic, strong) UIImageView *highlightImageView;
 @property (nonatomic, strong) UILabel *oldEventLabel;
-+ (CGFloat) height;
-
-// Properties from Event Cell
+ // Properties from Event Cell
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 
@@ -133,6 +131,14 @@
 @property (nonatomic, strong) UIView *grayView;
 @property (nonatomic, strong) NSMutableArray *arrayOfImageViews;
 @property (nonatomic, strong) UIImageView *verifiedImageView;
+@end
+
+@interface MoreThan2PhotosOldEventCell : HighlightOldEventCell
++(CGFloat)height;
+@end
+
+@interface LessThan2PhotosOldEventCell : HighlightOldEventCell
++(CGFloat)height;
 @end
 
 @interface OldEventShowHighlightsCell : UITableViewCell

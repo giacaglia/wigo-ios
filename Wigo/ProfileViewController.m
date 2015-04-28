@@ -950,8 +950,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         [self.lastNotificationRead compare:WGProfile.currentUser.lastNotificationRead] == NSOrderedDescending ||
         !WGProfile.currentUser.lastNotificationRead) {
         WGProfile.currentUser.lastNotificationRead = self.lastNotificationRead;
-        [TabBarAuxiliar checkIndex:kIndexOfProfile ForDate:self.lastNotificationRead];
     }
+    [TabBarAuxiliar checkIndex:kIndexOfProfile ForDate:self.lastNotificationRead];
 }
 
 - (void)updateBadge {

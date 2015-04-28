@@ -24,4 +24,6 @@
 
 - (void)fetchNotifications;
 @property (nonatomic, strong) WGCollection *notifications;
+
+- (void)fetchFriendsIds;
 @end

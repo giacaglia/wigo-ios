@@ -93,5 +93,11 @@
     return [[dateFormatter dateFromString:timeString] dateByAddingTimeInterval:timeZoneSeconds];
 }
 
+- (void)fetchFriendsIds {
+    [WGApi get:@"users/me/friends/ids/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        WGProfile.currentUser.friendsIds = (NSArray *)jsonResponse;
+    }];
+
+}
 
 @end
