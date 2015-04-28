@@ -292,12 +292,13 @@ NSIndexPath *userIndex;
     if (!user.isCurrentUser) {
         [cell.profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
     }
-    
-    if (self.lastUserRead && [user.created compare:self.lastUserRead] != NSOrderedDescending ) {
+    if (WGProfile.currentUser.lastUserRead && [user.created compare:WGProfile.currentUser.lastUserRead] != NSOrderedDescending ) {
         cell.orangeNewView.hidden = YES;
     }
     else {
-        self.lastUserRead = user.created;
+        if ([self.lastUserRead compare:user.created] == NSOrderedAscending) {
+            self.lastUserRead = user.created;
+        }
         cell.orangeNewView.hidden = YES;
 
     }

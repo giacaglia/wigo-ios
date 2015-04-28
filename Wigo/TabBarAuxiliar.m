@@ -73,8 +73,8 @@ static UIView *profileOrangeView;
             NSLog(@"hrueh");
         }
         NSDate *lastMsgRead = WGProfile.currentUser.lastMessageRead;
-        NSLog(@"date:: %@, last msg read: %@", date, lastMsgRead);
-        NSLog(@"%d", [date compare:lastMsgRead]);
+//        NSLog(@"date:: %@, last msg read: %@", date, lastMsgRead);
+//        NSLog(@"%d", [date compare:lastMsgRead]);
         if (!WGProfile.currentUser.lastMessageRead ||
             [WGProfile.currentUser.lastMessageRead compare:date] == NSOrderedAscending) {
             [TabBarAuxiliar defaultChatOrangeView].hidden = NO;
