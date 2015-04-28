@@ -84,6 +84,7 @@ NSIndexPath *userIndex;
     if ([self.lastUserRead compare:WGProfile.currentUser.lastUserRead] == NSOrderedDescending ||
         !WGProfile.currentUser.lastUserRead) {
         WGProfile.currentUser.lastUserRead = self.lastUserRead;
+        [TabBarAuxiliar checkIndex:kIndexOfFriends ForDate:self.lastUserRead];
     }
 }
 

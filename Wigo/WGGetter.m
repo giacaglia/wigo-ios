@@ -88,11 +88,9 @@
 
 +(NSDate *)getDateFromString:(NSString *)timeString {
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSS"];
-    NSDate *dateFromString = [[NSDate alloc] init];
-    dateFromString = [dateFormatter dateFromString:timeString];
-    return dateFromString;
+    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+    return [[dateFormatter dateFromString:timeString] dateByAddingTimeInterval:timeZoneSeconds];
 }
 
 

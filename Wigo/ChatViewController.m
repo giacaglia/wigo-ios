@@ -42,9 +42,10 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if ([self.lastMessageRead compare:WGProfile.currentUser.lastMessageRead] == NSOrderedDescending ||
-        !WGProfile.currentUser.lastMessageRead) {
+    if (!WGProfile.currentUser.lastMessageRead ||
+        [self.lastMessageRead compare:WGProfile.currentUser.lastMessageRead] == NSOrderedDescending) {
         WGProfile.currentUser.lastMessageRead = self.lastMessageRead;
+        [TabBarAuxiliar checkIndex:kIndexOfChats ForDate:self.lastMessageRead];
     }
     self.tabBarController.navigationItem.titleView = nil;
 }
@@ -185,7 +186,7 @@
     if (indexPath.row == self.messages.count - 1) [self fetchNextPage];
     if (self.messages.count  == 0) return cell;
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.row];
-    if (self.lastMessageRead && [message.date compare:self.lastMessageRead] != NSOrderedDescending ) {
+    if (self.lastMessageRead && [message.created compare:self.lastMessageRead] != NSOrderedDescending ) {
         cell.lastMessageLabel.textColor = RGB(208, 208, 208);
         cell.orangeNewView.hidden = YES;
     }

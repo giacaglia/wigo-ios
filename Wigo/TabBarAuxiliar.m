@@ -69,32 +69,37 @@ static UIView *profileOrangeView;
 + (void)checkIndex:(int)index ForDate:(NSDate *)date {
     //For chats
     if (index == kIndexOfChats) {
-        if ([WGProfile.currentUser.lastMessageRead compare:date] == NSOrderedAscending) {
+        if ([WGProfile.currentUser.lastMessageRead compare:date] == NSOrderedSame) {
+            NSLog(@"hrueh");
+        }
+        NSDate *lastMsgRead = WGProfile.currentUser.lastMessageRead;
+        NSLog(@"date:: %@, last msg read: %@", date, lastMsgRead);
+        NSLog(@"%d", [date compare:lastMsgRead]);
+        if (!WGProfile.currentUser.lastMessageRead ||
+            [WGProfile.currentUser.lastMessageRead compare:date] == NSOrderedAscending) {
             [TabBarAuxiliar defaultChatOrangeView].hidden = NO;
         }
+        else {
+            [TabBarAuxiliar defaultChatOrangeView].hidden = YES;
+        }
     }
     else if (index == kIndexOfFriends) {
-        if ([WGProfile.currentUser.lastUserRead compare:date] == NSOrderedAscending) {
+        if (!WGProfile.currentUser.lastUserRead ||
+            [WGProfile.currentUser.lastUserRead compare:date] == NSOrderedAscending) {
             [TabBarAuxiliar defaultFriendsOrangeView].hidden = NO;
         }
-    }
-    else {
-        if ([WGProfile.currentUser.lastNotificationRead compare:date] == NSOrderedAscending) {
-            [TabBarAuxiliar defaultProfileOrangeView].hidden = NO;
+        else {
+            [TabBarAuxiliar defaultFriendsOrangeView].hidden = YES;
         }
     }
-}
-
-
-+ (void)removeNotificationAt:(int)index {
-    if (index == kIndexOfChats) {
-        [TabBarAuxiliar defaultChatOrangeView].hidden = YES;
-    }
-    else if (index == kIndexOfFriends) {
-        [TabBarAuxiliar defaultFriendsOrangeView].hidden = YES;
-    }
     else {
-        [TabBarAuxiliar defaultProfileOrangeView].hidden = YES;
+        if (!WGProfile.currentUser.lastNotificationRead ||
+            [WGProfile.currentUser.lastNotificationRead compare:date] == NSOrderedAscending) {
+            [TabBarAuxiliar defaultProfileOrangeView].hidden = NO;
+        }
+        else {
+            [TabBarAuxiliar defaultProfileOrangeView].hidden = YES;
+        }
     }
 }
 

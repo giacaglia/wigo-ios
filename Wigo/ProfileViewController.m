@@ -1,4 +1,3 @@
-
 //  ParallaxProfileViewController.m
 //  Wigo
 //
@@ -149,8 +148,6 @@ BOOL blockShown;
     [super viewWillAppear:animated];
     self.tabBarController.navigationItem.titleView = nil;
     [self initializeRightBarButton];
-
-    self.lastNotificationRead = WGProfile.currentUser.lastNotificationRead;
 
 
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
@@ -703,9 +700,14 @@ BOOL blockShown;
         if (!notification.fromUser.id) return notificationCell;
         if ([notification.type isEqual:@"group.unlocked"]) return notificationCell;
         notificationCell.notification = notification;
-        if (self.lastNotificationRead &&
-            [notification.created compare:self.lastNotificationRead] != NSOrderedDescending ) {
-            self.lastNotificationRead = notification.created;
+        if (WGProfile.currentUser.lastNotificationRead && [notification.created compare:WGProfile.currentUser.lastNotificationRead] != NSOrderedDescending ) {
+            notificationCell.orangeNewView.hidden = YES;
+        }
+        else {
+            if ([self.lastNotificationRead compare:notification.created] == NSOrderedAscending) {
+                self.lastNotificationRead = notification.created;
+            }
+            notificationCell.orangeNewView.hidden = NO;
         }
         return notificationCell;
     }
@@ -944,9 +946,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)updateLastNotificationsRead {
-    if ([self.lastNotificationRead compare:WGProfile.currentUser.lastNotificationRead] == NSOrderedDescending ||
+    if (!WGProfile.currentUser.lastNotificationRead ||
+        [self.lastNotificationRead compare:WGProfile.currentUser.lastNotificationRead] == NSOrderedDescending ||
         !WGProfile.currentUser.lastNotificationRead) {
         WGProfile.currentUser.lastNotificationRead = self.lastNotificationRead;
+        [TabBarAuxiliar checkIndex:kIndexOfProfile ForDate:self.lastNotificationRead];
     }
 }
 
@@ -1113,19 +1117,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)setNotification:(WGNotification *)notification {
     _notification = notification;
     WGUser *user = notification.fromUser;
-//    if (notification.id.longLongValue > WGProfile.currentUser.lastNotificationRead.longLongValue) {
-//        self.orangeNewView.hidden = NO;
-//    } else {
-        self.orangeNewView.hidden = YES;
-//    }
-    if (user) {
-        [self.profileImageView setSmallImageForUser:user completed:nil];
-        self.descriptionLabel.text = [NSString stringWithFormat:@"%@ %@", user.firstName, notification.message];
-    }
-    else {
-        self.profileImageView.image = [UIImage imageNamed:@"grayIcon"];
-        self.descriptionLabel.text = notification.message;
-    }
+    if (user) [self.profileImageView setSmallImageForUser:user completed:nil];
+    else self.profileImageView.image = [UIImage imageNamed:@"grayIcon"];
+    self.descriptionLabel.text = notification.message;
 }
 
 @end
