@@ -94,6 +94,7 @@ BOOL firstTimeLoading;
     
     self.spinnerAtCenter = YES;
     [self initializeWhereView];
+    [TabBarAuxiliar startTabBarItems];
     [self addCenterButton];
 //    [NetworkFetcher.defaultGetter fetchMessages];
     [NetworkFetcher.defaultGetter fetchSuggestions];

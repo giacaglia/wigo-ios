@@ -18,7 +18,7 @@ static UIView *profileOrangeView;
 + (UIView *)defaultChatOrangeView {
     if (chatOrangeView == nil) {
         float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfChats + 0.6f);
-        chatOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 16, 16)];
+        chatOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 12, 12)];
         chatOrangeView.backgroundColor = [FontProperties getOrangeColor];
         chatOrangeView.layer.borderColor = UIColor.clearColor.CGColor;
         chatOrangeView.layer.borderWidth = 1.0f;
@@ -32,7 +32,7 @@ static UIView *profileOrangeView;
 + (UIView *)defaultFriendsOrangeView {
     if (friendsOrangeView == nil) {
         float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfFriends + 0.6f);
-        friendsOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 16, 16)];
+        friendsOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 12, 12)];
         friendsOrangeView.backgroundColor = [FontProperties getOrangeColor];
         friendsOrangeView.layer.borderColor = UIColor.clearColor.CGColor;
         friendsOrangeView.layer.borderWidth = 1.0f;
@@ -46,7 +46,7 @@ static UIView *profileOrangeView;
 + (UIView *)defaultProfileOrangeView {
     if (friendsOrangeView == nil) {
         float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfProfile + 0.6f);
-        profileOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 16, 16)];
+        profileOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 12, 12)];
         profileOrangeView.backgroundColor = [FontProperties getOrangeColor];
         profileOrangeView.layer.borderColor = UIColor.clearColor.CGColor;
         profileOrangeView.layer.borderWidth = 1.0f;
@@ -66,15 +66,31 @@ static UIView *profileOrangeView;
     [tabBar addSubview:view];
 }
 
++ (void)startTabBarItems {
+    UINavigationController *navigationController = (UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController;
+    NSArray *viewControllers = navigationController.viewControllers;
+    UITabBarController *tabBarController = [viewControllers objectAtIndex:0];
+    UITabBar *tabBar = tabBarController.tabBar;
+    UITabBarItem *firstItem = [tabBar.items objectAtIndex:0];
+    firstItem.image = [[UIImage imageNamed:@"homeIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    firstItem.selectedImage = [UIImage imageNamed:@"blueHomeIcon"];
+    UITabBarItem *secondItem =  [tabBar.items objectAtIndex:1];
+    secondItem.image = [[UIImage imageNamed:@"chatTabIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    secondItem.selectedImage = [UIImage imageNamed:@"blueChatsIcon"];
+    UITabBarItem *thirdItem = [tabBar.items objectAtIndex:3];
+    thirdItem.image = [[UIImage imageNamed:@"friendsIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    thirdItem.selectedImage = [UIImage imageNamed:@"blueFriendsIcon"];
+    UITabBarItem *fourthItem = [tabBar.items objectAtIndex:4];
+    fourthItem.image = [[UIImage imageNamed:@"profileIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    fourthItem.selectedImage = [UIImage imageNamed:@"blueProfileIcon"];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : RGB(200, 200, 200) } forState:UIControlStateNormal];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName :[FontProperties getBlueColor] } forState:UIControlStateSelected];
+
+}
+
 + (void)checkIndex:(int)index ForDate:(NSDate *)date {
     //For chats
     if (index == kIndexOfChats) {
-        if ([WGProfile.currentUser.lastMessageRead compare:date] == NSOrderedSame) {
-            NSLog(@"hrueh");
-        }
-        NSDate *lastMsgRead = WGProfile.currentUser.lastMessageRead;
-//        NSLog(@"date:: %@, last msg read: %@", date, lastMsgRead);
-//        NSLog(@"%d", [date compare:lastMsgRead]);
         if (!WGProfile.currentUser.lastMessageRead ||
             [WGProfile.currentUser.lastMessageRead compare:date] == NSOrderedAscending) {
             [TabBarAuxiliar defaultChatOrangeView].hidden = NO;
