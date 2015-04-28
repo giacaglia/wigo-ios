@@ -50,6 +50,7 @@ typedef enum  {
 @property (nonatomic, assign) int widthOfEachCell;
 @property (nonatomic, assign) int rowOfEvent;
 @property (nonatomic, assign) BOOL isPeeking;
+@property (nonatomic, assign) BOOL isOld;
 
 @property (nonatomic, strong) UIButton *hiddenInviteButton;
 @property (nonatomic, assign) AnimationState animationState;

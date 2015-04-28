@@ -695,7 +695,7 @@ BOOL firstTimeLoading;
 //        }
         cell.event = event;
         cell.placesDelegate = self;
-        cell.eventPeopleScrollView.isPeeking = YES;
+        cell.eventPeopleScrollView.isOld = YES;
         cell.eventPeopleScrollView.groupID = self.groupNumberID;
         cell.eventPeopleScrollView.placesDelegate = self;
         if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
