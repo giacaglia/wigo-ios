@@ -704,7 +704,7 @@ BOOL blockShown;
             notificationCell.orangeNewView.hidden = YES;
         }
         else {
-            if ([self.lastNotificationRead compare:notification.created] == NSOrderedAscending) {
+            if (!self.lastNotificationRead || [self.lastNotificationRead compare:notification.created] == NSOrderedAscending) {
                 self.lastNotificationRead = notification.created;
             }
             notificationCell.orangeNewView.hidden = NO;

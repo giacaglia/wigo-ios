@@ -44,7 +44,7 @@ static UIView *profileOrangeView;
 }
 
 + (UIView *)defaultProfileOrangeView {
-    if (friendsOrangeView == nil) {
+    if (profileOrangeView == nil) {
         float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfProfile + 0.6f);
         profileOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 12, 12)];
         profileOrangeView.backgroundColor = [FontProperties getOrangeColor];

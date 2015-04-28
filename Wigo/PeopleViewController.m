@@ -296,7 +296,7 @@ NSIndexPath *userIndex;
         cell.orangeNewView.hidden = YES;
     }
     else {
-        if ([self.lastUserRead compare:user.created] == NSOrderedAscending) {
+        if (!self.lastUserRead || [self.lastUserRead compare:user.created] == NSOrderedAscending) {
             self.lastUserRead = user.created;
         }
         cell.orangeNewView.hidden = YES;

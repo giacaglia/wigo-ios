@@ -191,7 +191,7 @@
         cell.orangeNewView.hidden = YES;
     }
     else {
-        if ([self.lastMessageRead compare:message.created] == NSOrderedAscending) {
+        if (!self.lastMessageRead || [self.lastMessageRead compare:message.created] == NSOrderedAscending) {
             self.lastMessageRead = message.created;
         }
         cell.lastMessageLabel.textColor = UIColor.blackColor;
