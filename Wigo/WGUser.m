@@ -681,7 +681,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setIsTapped:(NSNumber *)isTapped {
-    NSMutableDictionary *userToTapped = [[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryTappedList];
+    NSMutableDictionary *userToTapped = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryTappedList]];
     if (!userToTapped) userToTapped = [NSMutableDictionary new];
     [userToTapped setObject:isTapped forKey:self.id.stringValue];
     [[NSUserDefaults standardUserDefaults] setObject:userToTapped forKey:kDictionaryTappedList];
