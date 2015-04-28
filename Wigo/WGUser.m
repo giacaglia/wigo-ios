@@ -87,6 +87,7 @@
 
 #define kFriendRequestSent @"sent"
 #define kFriendRequestReceived @"received"
+#define kDictionaryTappedList @"is_tapped_dictionary"
 
 static WGUser *currentUser = nil;
 
@@ -680,11 +681,19 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setIsTapped:(NSNumber *)isTapped {
-    [self setObject:isTapped forKey:kIsTappedKey];
+    NSMutableDictionary *userToTapped = [[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryTappedList];
+    if (!userToTapped) userToTapped = [NSMutableDictionary new];
+    [userToTapped setObject:isTapped forKey:self.id.stringValue];
+    [[NSUserDefaults standardUserDefaults] setObject:userToTapped forKey:kDictionaryTappedList];
 }
 
 -(NSNumber *) isTapped {
-    return [self objectForKey:kIsTappedKey];
+    NSMutableDictionary *userToTapped = [[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryTappedList];
+    if (!userToTapped) return nil;
+    if ([userToTapped.allKeys containsObject:self.id.stringValue]) {
+        return [userToTapped objectForKey:self.id.stringValue];
+    }
+    return nil;
 }
 
 -(void) setNumUnreadConversations:(NSNumber *)numUnreadConversations {
@@ -913,7 +922,13 @@ static WGUser *currentUser = nil;
            return;
        }
        for (NSString *key in jsonResponse) {
-           [self setObject:[jsonResponse objectForKey:key] forKey:key];
+           if ([key isEqual:@"is_tapped"]) {
+               BOOL isTapped = [[jsonResponse objectForKey:key] boolValue];
+               [self setIsTapped:[NSNumber numberWithBool:isTapped]];
+           }
+           else {
+               [self setObject:[jsonResponse objectForKey:key] forKey:key];
+           }
        }
        handler(YES, nil);
    }];
