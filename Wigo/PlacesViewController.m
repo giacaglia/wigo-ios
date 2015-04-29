@@ -889,10 +889,10 @@ BOOL firstTimeLoading;
     WGCollection *newEventMessages =  [[WGCollection alloc] initWithType:[WGEventMessage class]];
     [newEventMessages addObjectsFromCollection:eventMessages];
     WGEventMessage *eventMessage = [WGEventMessage serialize:@{
-                                                               @"user": WGProfile.currentUser,
-                                                               @"created": [NSDate nowStringUTC],
-                                                               @"media_mime_type": kCameraType,
-                                                               @"media": @""
+                                                               @"user" : WGProfile.currentUser,
+                                                               @"created" : [NSDate nowStringUTC],
+                                                               kMediaMimeTypeKey : kCameraType,
+                                                               @"media" : @""
                                                                }];
     
     [newEventMessages insertObject:eventMessage atIndex:0];

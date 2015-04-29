@@ -126,21 +126,6 @@
 
         return myCell;
     }
-    else if ([mimeType isEqualToString:kFaceImage]) {
-        PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
-        [myCell.imageView setCoverImageForUser:WGProfile.currentUser completed:nil];
-        myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet! You're going out to: %@", [self.event name]];
-        myCell.subtitleTextLabel.text = @"Post a selfie to build the buzz!";
-        myCell.subtitleTextLabel.alpha = 0.7f;
-        myCell.actionButton.backgroundColor = [FontProperties getOrangeColor];
-        [myCell.actionButton setTitle:@"POST" forState:UIControlStateNormal];
-        [myCell.actionButton.titleLabel setFont: [FontProperties scMediumFont: 16.0]];
-        [myCell.actionButton addTarget:self action:@selector(promptCamera) forControlEvents:UIControlEventTouchUpInside];
-        [myCell.avoidAction addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
-        myCell.isPeeking = self.isPeeking;
-        self.eventConversationDelegate.buttonCancel.hidden = YES;
-        return myCell;
-    }
     else if ([mimeType isEqualToString:kNotAbleToPost]) {
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
         [myCell.imageView setImageWithURL:[WGProfile currentUser].coverImageURL];
@@ -203,11 +188,6 @@
 - (void)dismissView {
     [self.eventConversationDelegate dismissView];
 }
-
-- (void)promptCamera {
-    [self.eventConversationDelegate promptCamera];
-}
-
 
 -(void)scrolledToPage:(int)page {
     NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
@@ -590,7 +570,9 @@
                 return;
             }
             [strongSelf.eventConversationDelegate showCompletedMessage];
-
+            NSMutableDictionary *newObjDict = [[NSMutableDictionary alloc] initWithDictionary:strongSelf.object.deserialize];
+            if (![newObjDict.allKeys containsObject:@"user"]) [newObjDict setObject:WGProfile.currentUser forKey:@"user"];
+            if (![newObjDict.allKeys containsObject:@"created"]) [newObjDict setObject:[NSDate date] forKey:@"created"];
             if (!strongSelf.shownCurrentImage) {
                 [strongSelf.eventMessages insertObject:strongSelf.object atIndex:1];
                 [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];

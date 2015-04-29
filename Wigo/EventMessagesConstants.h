@@ -12,6 +12,7 @@
 
 extern NSString *const kImageEventType;
 extern NSString *const kVideoEventType;
+extern NSString *const kMediaMimeTypeKey;
 extern NSString *const kCameraType;
 extern NSString *const kAddStory;
 extern NSString *const kFaceImage;

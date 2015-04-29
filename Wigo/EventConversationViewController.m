@@ -610,27 +610,6 @@
 }
 
 
-- (void)promptCamera {
-    self.mediaScrollView.cameraPromptAddToStory = true;
-    [WGAnalytics tagEvent: @"Go Here, Then Add to Story Tapped"];
-    
-    [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kGoHereState];
-    // TODO: Does this need to be saved???
-    WGEventMessage *newEventMessage = [WGEventMessage serialize:@{
-                                                                  @"user": [WGProfile currentUser],
-                                                                  @"created": [NSDate nowStringUTC],
-                                                                  @"media_mime_type": kCameraType,
-                                                                  @"media": @""
-                                                                  }];
-    [self.eventMessages replaceObjectAtIndex:(self.eventMessages.count - 1) withObject:newEventMessage];
-    [self.facesCollectionView reloadData];
-    self.mediaScrollView.eventMessages = self.eventMessages;
-    [self.mediaScrollView reloadData];
-    
-    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
-    [self hideOrShowFacesForPage:(int)page];
-}
-
 #pragma mark - EventConversationDelegate
 
 - (void)reloadUIForEventMessages:(NSMutableArray *)eventMessages {
@@ -889,24 +868,25 @@
 
 - (void)setEventMessage:(WGEventMessage *)eventMessage {
     _eventMessage = eventMessage;
-    if ([eventMessage objectForKey:@"media_mime_type"] && ([[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kCameraType] ||
-        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kFaceImage] ||
-        [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kNotAbleToPost])
+    if ([eventMessage objectForKey:kMediaMimeTypeKey] && ([[eventMessage objectForKey:kMediaMimeTypeKey] isEqualToString:kCameraType] ||
+        [[eventMessage objectForKey:kMediaMimeTypeKey] isEqualToString:kFaceImage] ||
+        [[eventMessage objectForKey:kMediaMimeTypeKey] isEqualToString:kNotAbleToPost])
         ) {
-        self.faceImageView.image = [UIImage imageNamed:@"plusStory"];
+        [self.faceImageView setImageWithURL:[NSURL URLWithString:@""] placeholderImage:[UIImage imageNamed:@"plusStory"]];
         self.mediaTypeImageView.hidden = YES;
         self.faceAndMediaTypeView.alpha = 0.4f;
     } else {
         self.faceAndMediaTypeView.alpha = 1.0f;
         WGUser *user = eventMessage.user;
-        if (user) {
-            self.user = user;
-        }
-        if ([eventMessage objectForKey:@"media_mime_type"] && [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kImageEventType]) {
+        if (user) self.user = user;
+        else self.user = WGProfile.currentUser;
+        if ([eventMessage objectForKey:kMediaMimeTypeKey] &&
+            [[eventMessage objectForKey:kMediaMimeTypeKey] isEqualToString:kImageEventType]) {
             self.mediaTypeImageView.image = [UIImage imageNamed:@"imageType"];
             self.mediaTypeImageView.hidden = YES;
         }
-        else if ([eventMessage objectForKey:@"media_mime_type"] && [[eventMessage objectForKey:@"media_mime_type"] isEqualToString:kVideoEventType]) {
+        else if ([eventMessage objectForKey:kMediaMimeTypeKey] &&
+                 [[eventMessage objectForKey:kMediaMimeTypeKey] isEqualToString:kVideoEventType]) {
             self.mediaTypeImageView.image = [UIImage imageNamed:@"videoType"];
             self.mediaTypeImageView.hidden = YES;
         }
@@ -950,4 +930,3 @@
 
 
 @end
-

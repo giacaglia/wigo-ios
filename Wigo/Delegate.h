@@ -68,7 +68,6 @@ typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
 - (void)showErrorMessage;
 - (void)showCompletedMessage;
 - (void)dismissView;
-- (void)promptCamera;
 - (void)presentUser:(WGUser *)user
            withView:(UIView *)view
       withStartFrame:(CGRect)startFrame;
