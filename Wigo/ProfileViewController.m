@@ -287,18 +287,19 @@ BOOL blockShown;
 }
 
 - (void) initializeRightBarButton {
-    _rightBarBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
-    [_rightBarBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
-    
-    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] initWithCustomView:_rightBarBt];
-    // self.navigationItem.rightBarButtonItem = barItem;
-    [self.navigationItem setRightBarButtonItem:barItem animated:NO];
-    UIBarButtonItem *tabBarBt =  [[UIBarButtonItem alloc] initWithCustomView:_rightBarBt];
-//    [tabBarBt setCustomView:_rightBarBt];
-    self.tabBarController.navigationItem.rightBarButtonItem = tabBarBt;
+    if (!_rightBarBt) {
+        _rightBarBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
+        [_rightBarBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
+        
+        UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] initWithCustomView:_rightBarBt];
+        // self.navigationItem.rightBarButtonItem = barItem;
+        [self.navigationItem setRightBarButtonItem:barItem animated:NO];
+        UIBarButtonItem *tabBarBt =  [[UIBarButtonItem alloc] initWithCustomView:_rightBarBt];
+        //    [tabBarBt setCustomView:_rightBarBt];
+        self.tabBarController.navigationItem.rightBarButtonItem = tabBarBt;
+    }
 }
-
 
 - (void) morePressed {
     [[RWBlurPopover instance] presentViewController:[[MoreViewController alloc] initWithUser:self.user] withOrigin:0 andHeight:self.view.frame.size.height fromViewController:self.navigationController];
