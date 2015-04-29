@@ -137,18 +137,22 @@
     }];
 }
 
--(void) sendMessage:(BoolResultBlock)handler {
+-(void) sendMessage:(WGMessageResultBlock)handler {
     [WGApi post:@"messages/"
  withParameters:@{@"to_user_id": self.toUser.id,
                     @"user_id": self.user.id,
                     @"message": self.message  }
      andHandler:^(NSDictionary *jsonResponse, NSError *error) {
          if (error) {
-             handler(NO, error);
+             handler(nil, error);
              return;
          }
-         handler(YES, error);
-    }];
+         WGParser *parser = [[WGParser alloc] init];
+         NSDictionary *response = [parser replaceReferences:jsonResponse];
+         NSDictionary *messageResponse = [[response objectForKey:@"objects"] objectAtIndex:0];
+         WGMessage *message = [[WGMessage alloc] initWithJSON:messageResponse];
+         handler(message, error);
+     }];
 }
 
 -(void) deleteConversation:(BoolResultBlock)handler {

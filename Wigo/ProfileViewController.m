@@ -118,6 +118,8 @@ BOOL blockShown;
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     self.tabBarController.navigationItem.titleView = nil;
     [self initializeRightBarButton];
+    [self.imageScrollView.scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [self.user.imagesURL count] - 10, [[UIScreen mainScreen] bounds].size.width)];
+
     
     if (self.user.state == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if (self.user.isCurrentUser) {

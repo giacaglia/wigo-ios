@@ -292,7 +292,7 @@ ProfileViewController *profileViewController;
     message.toUser = self.user;
     message.user = WGProfile.currentUser;
     __weak typeof(self) weakSelf = self;
-    [message sendMessage:^(BOOL success, NSError *error) {
+    [message sendMessage:^(WGMessage *newMessage, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             [strongSelf.messages removeObject:message];
@@ -300,6 +300,7 @@ ProfileViewController *profileViewController;
             return;
         }
         dispatch_async(dispatch_get_main_queue(), ^{
+            WGProfile.currentUser.lastMessageRead = newMessage.created;
             [strongSelf.collectionView reloadData];
             [strongSelf scrollToBottomAnimated:YES];
         });

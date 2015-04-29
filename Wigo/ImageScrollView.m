@@ -13,7 +13,7 @@
     CGPoint _currentPoint;
     NSInteger _currentPage;
 }
-@property (nonatomic, strong) UIScrollView *scrollView;
+
 @property (nonatomic, strong) NSMutableArray *imageViews;
 
 @end
