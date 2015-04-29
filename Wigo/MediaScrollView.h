@@ -52,9 +52,9 @@
 @property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) WGCollection *eventMessages;
-@property (nonatomic, strong) id<MediaScrollViewDelegate> mediaDelegate;
-@property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
-@property (nonatomic, strong) id<StoryDelegate> storyDelegate;
+@property (nonatomic, weak) id<MediaScrollViewDelegate> mediaDelegate;
+@property (nonatomic, weak) id<EventConversationDelegate> eventConversationDelegate;
+@property (nonatomic, weak) id<StoryDelegate> storyDelegate;
 @property (nonatomic, assign) int minPage;
 @property (nonatomic, strong) NSNumber *index;
 @property (nonatomic, assign) int maxPage;
@@ -97,7 +97,7 @@
 @end
 
 @interface MediaCell : UICollectionViewCell
-@property (nonatomic, assign) id <MediaScrollViewDelegate> mediaScrollDelegate;
+@property (nonatomic, weak) id <MediaScrollViewDelegate> mediaScrollDelegate;
 @property (nonatomic, strong) UILabel *label;
 @property (nonatomic, strong) WGEventMessage *eventMessage;
 
@@ -161,9 +161,9 @@
                                             UITextFieldDelegate,
                                             WGCameraViewControllerDelegate>
 @property (nonatomic, strong) UIView *overlayView;
-@property (nonatomic, assign) id <MediaScrollViewDelegate> mediaScrollDelegate;
+@property (nonatomic, weak) id <MediaScrollViewDelegate> mediaScrollDelegate;
 @property (nonatomic, strong) UIImagePickerController *controller;
-@property (nonatomic, strong) WGCameraViewController *cameraController;
+@property (nonatomic, weak) WGCameraViewController *cameraController;
 @property (nonatomic, strong) UIButton *dismissButton;
 @property (nonatomic, strong) UIButton *flashButton;
 @property (nonatomic, strong) UIImageView *flashImageView;
