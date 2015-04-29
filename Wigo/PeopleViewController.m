@@ -710,19 +710,15 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void) setup {
     [super setup];
-    self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 60, [TablePersonCell height] / 2 - 19, 60, 37.5)];
+    self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 52, [TablePersonCell height] / 2 - 19, 52, 38)];
     [self.contentView addSubview:self.followPersonButton];
 }
 
 - (void)setUser:(WGUser *)user {
     super.user = user;
     self.followPersonButton.backgroundColor = UIColor.clearColor;
-    if (user.gender == FEMALE) {
-        [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"womanFollowPersonIcon"] forState:UIControlStateNormal];
-    }
-    else {
-        [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-    }    [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
+    [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+    [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
     
     if (!user.isCurrentUser) {
         self.followPersonButton.hidden = NO;

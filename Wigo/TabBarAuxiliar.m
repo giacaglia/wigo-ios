@@ -71,6 +71,7 @@ static UIView *profileOrangeView;
     NSArray *viewControllers = navigationController.viewControllers;
     UITabBarController *tabBarController = [viewControllers objectAtIndex:0];
     UITabBar *tabBar = tabBarController.tabBar;
+    tabBar.translucent = NO;
     UITabBarItem *firstItem = [tabBar.items objectAtIndex:0];
     firstItem.image = [[UIImage imageNamed:@"homeIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     firstItem.selectedImage = [UIImage imageNamed:@"blueHomeIcon"];
