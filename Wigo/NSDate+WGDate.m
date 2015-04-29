@@ -130,6 +130,12 @@
     return [differenceDateComponents day] == 1;
 }
 
+-(NSString *)getDayString {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    return [dateFormatter stringFromDate:self];
+}
+
 -(NSString *) deserialize {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSS"];

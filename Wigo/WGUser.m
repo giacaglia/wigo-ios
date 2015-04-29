@@ -682,14 +682,27 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setIsTapped:(NSNumber *)isTapped {
+    NSDate* todayDate = [NSDate date];
+    NSString *dayString = [todayDate getDayString];
     NSMutableDictionary *userToTapped = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryTappedList]];
-    if (!userToTapped) userToTapped = [NSMutableDictionary new];
-    [userToTapped setObject:isTapped forKey:self.id.stringValue];
+    if (!userToTapped) userToTapped = [[NSMutableDictionary alloc] initWithDictionary:@{ dayString :@{}}];
+    NSMutableDictionary *mutableDayDict =  [NSMutableDictionary dictionaryWithDictionary:[userToTapped objectForKey:dayString]];
+    [mutableDayDict setObject:isTapped forKey:self.id.stringValue];
+    [userToTapped setObject:mutableDayDict forKey:dayString];
     [[NSUserDefaults standardUserDefaults] setObject:userToTapped forKey:kDictionaryTappedList];
 }
 
 -(NSNumber *) isTapped {
-    NSMutableDictionary *userToTapped = [[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryTappedList];
+    NSDate* todayDate = [NSDate date];
+    NSString *dayString = [todayDate getDayString];
+    NSMutableDictionary *dayTouserToTapped = [[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryTappedList];
+    for (NSString *key in dayTouserToTapped.allKeys) {
+        if (![key isEqual:dayString]) {
+            [dayTouserToTapped removeObjectForKey:key];
+        }
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:dayTouserToTapped forKey:kDictionaryTappedList];
+    NSDictionary *userToTapped = [dayTouserToTapped objectForKey:dayString];
     if (!userToTapped) return nil;
     if ([userToTapped.allKeys containsObject:self.id.stringValue]) {
         return [userToTapped objectForKey:self.id.stringValue];

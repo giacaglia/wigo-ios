@@ -22,7 +22,7 @@
 -(BOOL) isFromLastDay;
 -(BOOL) isSameDayWithDate:(NSDate*)date;
 -(BOOL) isNextDayWithDate:(NSDate*)date;
-
+-(NSString *)getDayString;
 -(NSString *) deserialize;
 +(NSDate *) serialize:(NSString *)dateString;
 

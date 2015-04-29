@@ -29,8 +29,8 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.blueBannerView.hidden = NO;
-    CGRect frame =  self.navigationController.navigationBar.frame;
-    self.navigationController.navigationBar.frame =  CGRectMake(frame.origin.x, 20, frame.size.width, frame.size.height);
+//    CGRect frame =  self.navigationController.navigationBar.frame;
+//    self.navigationController.navigationBar.frame =  CGRectMake(frame.origin.x, 20, frame.size.width, frame.size.height);
     self.navigationController.navigationBar.backgroundColor = UIColor.clearColor;
     [self updateBarButtonItems:1.0f];
 }
