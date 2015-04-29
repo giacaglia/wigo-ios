@@ -120,7 +120,7 @@ BOOL blockShown;
     [self initializeRightBarButton];
     [self.imageScrollView.scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [self.user.imagesURL count] - 10, [[UIScreen mainScreen] bounds].size.width)];
 
-    
+    self.tableView.contentOffset = CGPointMake(0, 0);
     if (self.user.state == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if (self.user.isCurrentUser) {
         [self fetchUserInfo];
@@ -314,7 +314,7 @@ BOOL blockShown;
 #pragma mark Name View
 - (void)initializeNameOfPerson {
     _nameView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
-    
+     
     _nameViewBackground = [[UIImageView alloc] initWithFrame: _nameView.bounds];
     _nameViewBackground.contentMode = UIViewContentModeBottom;
     _nameViewBackground.clipsToBounds = NO;
