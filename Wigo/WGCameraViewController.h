@@ -33,7 +33,8 @@
     CGFloat effectiveScale;
 }
 
-@property(nonatomic,weak) id <WGCameraViewControllerDelegate> delegate;
+@property (nonatomic,weak) id <WGCameraViewControllerDelegate> delegate;
+@property (nonatomic,weak) AVCaptureDeviceInput *videoDeviceInput;
 
 @property (nonatomic,strong) UIView *cameraOverlayView;
 

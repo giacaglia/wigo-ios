@@ -5,6 +5,8 @@
 //  Created by Gabriel Mahoney on 4/23/15.
 //  Copyright (c) 2015 Gabriel Mahoney. All rights reserved.
 //  Based on Apple's SquareCam sample app - https://developer.apple.com/library/ios/samplecode/SquareCam/Introduction/Intro.html
+
+//  Additional help came from this page - http://www.ios-developer.net/iphone-ipad-programmer/development/camera/record-video-with-avcapturesession-2
 //
 
 #import "WGCameraViewController.h"
@@ -13,6 +15,9 @@
 #import <ImageIO/ImageIO.h>
 #import <AssertMacros.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+
+#define kWGVideoAverageBitRate  937500
+#define kWGVideoInputMinFrameDuration  CMTimeMake(1,30)
 
 
 #pragma mark-
@@ -134,6 +139,8 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 
 @interface WGCameraViewController ()
 
+@property (nonatomic,strong) AVAssetWriter *videoWriter;
+
 @end
 
 @implementation WGCameraViewController
@@ -158,12 +165,50 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     
     // Select a video device, make an input
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
+    self.videoDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
     if(error == nil) {
         NSLog(@"1");
+        
+        
+//        NSError *configLockErr = nil;
+//        [device lockForConfiguration:&configLockErr];
+//        if(configLockErr) {
+//            NSLog(@"Error locking device configuration: %@", configLockErr.localizedDescription);
+//        }
+//        else {
+//            device.activeVideoMinFrameDuration = CMTimeMake(1, 5);
+//            [device unlockForConfiguration];
+//        }
+        
+        
+        NSLog(@"max duration: %lld, %d", device.activeVideoMaxFrameDuration.value, device.activeVideoMaxFrameDuration.timescale);
+        
+        NSLog(@"min duration: %lld, %d", device.activeVideoMaxFrameDuration.value, device.activeVideoMinFrameDuration.timescale);
+        
+        
+
+        
+        
         isUsingFrontFacingCamera = NO;
-        if ( [self.captureSession canAddInput:deviceInput] )
-            [self.captureSession addInput:deviceInput];
+        if ( [self.captureSession canAddInput:self.videoDeviceInput] )
+            [self.captureSession addInput:self.videoDeviceInput];
+        
+        
+        error = nil;
+        AVCaptureDevice *mic = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+        AVCaptureDeviceInput *micInput = [AVCaptureDeviceInput deviceInputWithDevice:mic error:&error];
+        
+        if(!error) {
+            if([self.captureSession canAddInput:micInput]) {
+                [self.captureSession addInput:micInput];
+            }
+            else {
+                NSLog(@"unable to add microphone input");
+            }
+        }
+        else {
+            NSLog(@"error adding mic: %@", error.localizedDescription);
+        }
         
         // Make a still image output
         stillImageOutput = [AVCaptureStillImageOutput new];
@@ -236,7 +281,8 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     //[videoDataOutput release];
     //if (videoDataOutputQueue)
     //    dispatch_release(videoDataOutputQueue);
-    [stillImageOutput removeObserver:self forKeyPath:@"isCapturingStillImage"];
+    //if([stillImageOutput])
+    [stillImageOutput removeObserver:self forKeyPath:@"capturingStillImage"];
     //[stillImageOutput release];
     [previewLayer removeFromSuperlayer];
     //[previewLayer release];
@@ -452,6 +498,34 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     
     if ([self.captureSession canAddOutput:self.movieFileOutput]) {
         [self.captureSession addOutput:self.movieFileOutput];
+        
+        
+//        if (CaptureConnection.supportsVideoMinFrameDuration)
+//            CaptureConnection.videoMinFrameDuration = CMTimeMake(1, CAPTURE_FRAMES_PER_SECOND);
+//        if (CaptureConnection.supportsVideoMaxFrameDuration)
+//            CaptureConnection.videoMaxFrameDuration = CMTimeMake(1, CAPTURE_FRAMES_PER_SECOND);
+//        
+//        CMTimeShow(CaptureConnection.videoMinFrameDuration);
+//        CMTimeShow(CaptureConnection.videoMaxFrameDuration);
+        
+        
+        AVCaptureDevice *device = self.videoDeviceInput.device;
+        
+        CMTimeShow(device.activeVideoMinFrameDuration);
+        CMTimeShow(device.activeVideoMaxFrameDuration);
+        
+        NSError *configLockErr = nil;
+        [device lockForConfiguration:&configLockErr];
+        if(configLockErr) {
+            NSLog(@"Error locking device configuration: %@", configLockErr.localizedDescription);
+        }
+        else {
+            device.activeVideoMinFrameDuration = kWGVideoInputMinFrameDuration;
+            [device unlockForConfiguration];
+        }
+        
+        CMTimeShow(device.activeVideoMinFrameDuration);
+        CMTimeShow(device.activeVideoMaxFrameDuration);
         
         NSURL *fileURL = [WGCameraViewController tempVideoURL];
         
@@ -696,6 +770,7 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 
 - (void)dealloc
 {
+    
     [self teardownAVCapture];
     // [faceDetector release];
     // [square release];
@@ -760,12 +835,6 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     //[detectorOptions release];
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -836,12 +905,35 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 didStartRecordingToOutputFileAtURL:(NSURL *)fileURL
       fromConnections:(NSArray *)connections {
     NSLog(@"started recording");
+    
+    NSLog(@"connections: %@", connections.description);
 }
 
 - (void)captureOutput:(AVCaptureFileOutput *)captureOutput
 didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
       fromConnections:(NSArray *)connections
                 error:(NSError *)error {
+    
+    [self.captureSession removeOutput:self.movieFileOutput];
+    
+    if(error) {
+        NSLog(@"error finishing movie");
+        
+        // signal delegate that an error occurred
+        [self.delegate cameraControllerDidCancel:self];
+        return;
+    }
+    
+    AVCaptureDevice *device = self.videoDeviceInput.device;
+    
+    NSError *configLockErr;
+    [device lockForConfiguration:&configLockErr];
+    if(!configLockErr) {
+        device.activeVideoMinFrameDuration = kCMTimeInvalid;
+    }
+    else {
+        NSLog(@"config lock error: %@", configLockErr.localizedDescription);
+    }
     
     BOOL recordedSuccessfully = YES;
     if ([error code] != noErr) {
@@ -854,18 +946,182 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
     }
     
     if(recordedSuccessfully) {
-        NSDictionary *dict = @{UIImagePickerControllerMediaType:(NSString *)kUTTypeMovie,
-                               UIImagePickerControllerMediaURL:outputFileURL};
+        
+        NSURL *fileURL = [WGCameraViewController tempVideoURL];
+        
+        NSData *fileData = [NSData dataWithContentsOfURL:outputFileURL];
+        NSLog(@"original file length: %ld", (long)fileData.length);
+        
+        [self convertVideoToLowQuailtyWithInputURL:outputFileURL
+                                         outputURL:fileURL];
+        
+//        NSDictionary *dict = @{UIImagePickerControllerMediaType:(NSString *)kUTTypeMovie,
+//                               UIImagePickerControllerMediaURL:outputFileURL};
+//        
+//        
+//        [self.delegate cameraController:self
+//          didFinishPickingMediaWithInfo:dict];
         
         
-        [self.delegate cameraController:self
-          didFinishPickingMediaWithInfo:dict];
     }
     else {
         
     }
 
 }
+
+
+
+- (void)convertVideoToLowQuailtyWithInputURL:(NSURL*)inputURL
+                                   outputURL:(NSURL*)outputURL
+{
+    //setup video writer
+    AVAsset *videoAsset = [[AVURLAsset alloc] initWithURL:inputURL options:nil];
+    
+    AVAssetTrack *videoTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    
+    CGSize videoSize = videoTrack.naturalSize;
+    videoSize = CGSizeMake(videoSize.width*0.75, videoSize.height*0.75);
+    
+    NSDictionary *videoWriterCompressionSettings =  [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:kWGVideoAverageBitRate], AVVideoAverageBitRateKey, nil];
+    
+    
+    NSDictionary *videoWriterSettings = @{AVVideoCodecKey:AVVideoCodecH264,
+                                          AVVideoCompressionPropertiesKey:videoWriterCompressionSettings,
+                                          AVVideoWidthKey:[NSNumber numberWithFloat:videoSize.width],
+                                          AVVideoHeightKey:[NSNumber numberWithFloat:videoSize.height]};
+    
+    
+    AVAssetWriterInput* videoWriterInput = [AVAssetWriterInput
+                                            assetWriterInputWithMediaType:AVMediaTypeVideo
+                                            outputSettings:videoWriterSettings];
+    
+    videoWriterInput.expectsMediaDataInRealTime = YES;
+    
+    videoWriterInput.transform = videoTrack.preferredTransform;
+    
+    self.videoWriter = [[AVAssetWriter alloc] initWithURL:outputURL fileType:AVFileTypeQuickTimeMovie error:nil];
+    
+    [self.videoWriter addInput:videoWriterInput];
+    
+    //setup video reader
+    NSDictionary *videoReaderSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+    
+    AVAssetReaderTrackOutput *videoReaderOutput = [[AVAssetReaderTrackOutput alloc] initWithTrack:videoTrack outputSettings:videoReaderSettings];
+    
+    AVAssetReader *videoReader = [[AVAssetReader alloc] initWithAsset:videoAsset error:nil];
+    
+    [videoReader addOutput:videoReaderOutput];
+    
+    //setup audio writer
+    AVAssetWriterInput* audioWriterInput = [AVAssetWriterInput
+                                            assetWriterInputWithMediaType:AVMediaTypeAudio
+                                            outputSettings:nil];
+    
+    audioWriterInput.expectsMediaDataInRealTime = NO;
+    
+    [self.videoWriter addInput:audioWriterInput];
+    
+    //setup audio reader
+    AVAssetTrack* audioTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+    
+    AVAssetReaderOutput *audioReaderOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:audioTrack outputSettings:nil];
+    
+    AVAssetReader *audioReader = [AVAssetReader assetReaderWithAsset:videoAsset error:nil];
+    
+    [audioReader addOutput:audioReaderOutput];
+    
+    [self.videoWriter startWriting];
+    
+    //start writing from video reader
+    [videoReader startReading];
+    
+    [self.videoWriter startSessionAtSourceTime:kCMTimeZero];
+    
+    dispatch_queue_t processingQueue = dispatch_queue_create("processingQueue1", NULL);
+    
+    [videoWriterInput requestMediaDataWhenReadyOnQueue:processingQueue usingBlock:
+     ^{
+         
+         while ([videoWriterInput isReadyForMoreMediaData]) {
+             
+             CMSampleBufferRef sampleBuffer;
+             
+             if ((sampleBuffer = [videoReaderOutput copyNextSampleBuffer])) {
+                 
+                 [videoWriterInput appendSampleBuffer:sampleBuffer];
+                 CFRelease(sampleBuffer);
+             }
+             
+             else {
+                 
+                 [videoWriterInput markAsFinished];
+                 
+                 if ([videoReader status] == AVAssetReaderStatusCompleted) {
+                     
+                     dispatch_async(dispatch_get_main_queue(),
+                                    ^{
+                                        
+                                    
+                     //start writing from audio reader
+                     [audioReader startReading];
+                     
+                     [self.videoWriter startSessionAtSourceTime:kCMTimeZero];
+                     
+                     dispatch_queue_t processingQueue = dispatch_queue_create("processingQueue2", NULL);
+                     
+                     [audioWriterInput requestMediaDataWhenReadyOnQueue:processingQueue usingBlock:^{
+                         
+                         while (audioWriterInput.readyForMoreMediaData) {
+                             
+                             CMSampleBufferRef sampleBuffer;
+                             
+                             if ((sampleBuffer = [audioReaderOutput copyNextSampleBuffer])) {
+                                 
+                                 [audioWriterInput appendSampleBuffer:sampleBuffer];
+                                 CFRelease(sampleBuffer);
+                             }
+                             
+                             else {
+                                 
+                                 [audioWriterInput markAsFinished];
+                                 
+                                 if ([audioReader status] == AVAssetReaderStatusCompleted) {
+                                     
+                                     [self.videoWriter finishWritingWithCompletionHandler:^(){
+                                         //[self sendMovieFileAtURL:outputURL];
+                                         
+                                         
+                                         dispatch_async(dispatch_get_main_queue(),
+                                                        ^{
+                                                            NSLog(@"video writer status: %ld", (long)self.videoWriter.status);
+                                                            
+                                                            NSDictionary *dict = @{UIImagePickerControllerMediaType:(NSString *)kUTTypeMovie,
+                                                                                   UIImagePickerControllerMediaURL:outputURL};
+                                                            
+                                                            
+                                                            [self.delegate cameraController:self
+                                                              didFinishPickingMediaWithInfo:dict];
+                                                        });
+                                         
+                                     }];
+                                     
+                                 }
+                             }
+                         }
+                         
+                     }];
+                                    });
+                 }
+             }
+         }
+     }
+     ];
+}
+
+
+
+
 
 // random string for tmp file name
 // (hat tip http://stackoverflow.com/questions/2633801/generate-a-random-alphanumeric-string-in-cocoa )
