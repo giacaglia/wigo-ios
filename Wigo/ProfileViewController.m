@@ -68,6 +68,8 @@ BOOL blockShown;
     [self initializeLeftBarButton];
     [self initializeNameOfPerson];
     [self initializeHeaderButtonView];
+    [self initializeRightBarButton];
+
 
     [self setNeedsStatusBarAppearanceUpdate];
 }
@@ -116,11 +118,12 @@ BOOL blockShown;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
-    self.tabBarController.navigationItem.titleView = nil;
     [self initializeRightBarButton];
+    self.tabBarController.navigationItem.titleView = nil;
     [self.imageScrollView.scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [self.user.imagesURL count] - 10, [[UIScreen mainScreen] bounds].size.width)];
 
     self.tableView.contentOffset = CGPointMake(0, 0);
+    [self reloadViewForUserState];
     if (self.user.state == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
     if (self.user.isCurrentUser) {
         [self fetchUserInfo];
@@ -149,7 +152,7 @@ BOOL blockShown;
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.tabBarController.navigationItem.titleView = nil;
-    [self initializeRightBarButton];
+    [self reloadViewForUserState];
 
 
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
@@ -287,18 +290,17 @@ BOOL blockShown;
 }
 
 - (void) initializeRightBarButton {
-    if (!_rightBarBt) {
-        _rightBarBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
+//    if (!_rightBarBt) {
+        _rightBarBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
         [_rightBarBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
         
         UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] initWithCustomView:_rightBarBt];
-        // self.navigationItem.rightBarButtonItem = barItem;
         [self.navigationItem setRightBarButtonItem:barItem animated:NO];
         UIBarButtonItem *tabBarBt =  [[UIBarButtonItem alloc] initWithCustomView:_rightBarBt];
-        //    [tabBarBt setCustomView:_rightBarBt];
         self.tabBarController.navigationItem.rightBarButtonItem = tabBarBt;
-    }
+        [self reloadViewForUserState];
+//    }
 }
 
 - (void) morePressed {
