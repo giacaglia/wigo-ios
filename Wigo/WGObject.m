@@ -150,7 +150,10 @@
         
         NSError *dataError;
         @try {
-            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            WGParser *parser = [[WGParser alloc] init];
+            NSDictionary *response = [parser replaceReferences:jsonResponse];
+            NSDictionary *userDictionary = [[response objectForKey:@"objects"] objectAtIndex:0];
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:userDictionary];
             [self replaceReferences];
             [self.modifiedKeys removeAllObjects];
         }
