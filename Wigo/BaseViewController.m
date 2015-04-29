@@ -19,7 +19,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self initializeTopBlue];
+    [self updateBarButtonItems:1.0f];
+    self.blueBannerView.hidden = NO;
+    CGRect frame =  self.navigationController.navigationBar.frame ;
+    self.navigationController.navigationBar.frame =  CGRectMake(frame.origin.x, 20, frame.size.width, frame.size.height);
 }
+
 
 - (void)initializeTopBlue {
     self.navigationController.navigationBar.shadowImage = [UIImage new];
