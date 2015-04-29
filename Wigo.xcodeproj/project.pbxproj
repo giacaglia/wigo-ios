@@ -129,6 +129,7 @@
 		45DF86B41A5C5DEB00DB85AE /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86AB1A5C5DEB00DB85AE /* AFURLSessionManager.m */; };
 		45F74FF21A5DA86500A5170F /* WGGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF11A5DA86500A5170F /* WGGroup.m */; };
 		45F74FF51A5E3F9100A5170F /* WGFollow.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF41A5E3F9100A5170F /* WGFollow.m */; };
+		9C531A671AF16BDF0004F264 /* WGCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F01AE98E4200180958 /* WGCameraViewController.m */; };
 		9C9D66F11AE98E4200180958 /* WGCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F01AE98E4200180958 /* WGCameraViewController.m */; };
 		9C9D66F41AEAE94300180958 /* UIImage+Rotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F31AEAE94300180958 /* UIImage+Rotation.m */; };
 		C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
@@ -2279,6 +2280,7 @@
 				45D9FAB91A781AFD00D08577 /* JSQMessagesCollectionViewLayoutAttributes.m in Sources */,
 				45D9FAE31A781AFD00D08577 /* JSQMessagesToolbarContentView.m in Sources */,
 				C12A110D19787BE700D53B1C /* UIImageCrop.m in Sources */,
+				9C531A671AF16BDF0004F264 /* WGCameraViewController.m in Sources */,
 				45D9FA9B1A781AFD00D08577 /* NSString+JSQMessages.m in Sources */,
 				E96F07C019BA654600E858D7 /* GKImageCropOverlayView.m in Sources */,
 				45D9FBB91A8003EF00D08577 /* UIView+ViewToImage.m in Sources */,
