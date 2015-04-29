@@ -427,19 +427,22 @@ referenceSizeForFooterInSection:(NSInteger)section {
         });
         
     }];
-    [user getNumMutualFriends:^(NSNumber *numMutualFriends, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            if (numMutualFriends.intValue == 1) {
-                strongSelf.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friend", numMutualFriends];
-            }
-            else {
-                strongSelf.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", numMutualFriends];
-            }
-        });
-    }];
+    if (user.isFriend && !user.isFriend.boolValue) {
+        [user getNumMutualFriends:^(NSNumber *numMutualFriends, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                __strong typeof(weakSelf) strongSelf = weakSelf;
+                if (numMutualFriends.intValue == 1) {
+                    strongSelf.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friend", numMutualFriends];
+                }
+                else {
+                    strongSelf.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", numMutualFriends];
+                }
+            });
+        }];
+    }
+  
     
-    if (user.isCurrentUser) {
+    if (user.isCurrentUser || (user.isFriend && user.isFriend.boolValue)) {
         self.profileNameLabel.frame = CGRectMake(self.profileNameLabel.frame.origin.x, 25 - self.profileNameLabel.frame.size.height/2, self.profileNameLabel.frame.size.width, self.profileNameLabel.frame.size.height);
     }
     else {
