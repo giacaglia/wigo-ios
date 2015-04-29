@@ -18,11 +18,21 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     [self initializeTopBlue];
     [self updateBarButtonItems:1.0f];
     self.blueBannerView.hidden = NO;
-    CGRect frame =  self.navigationController.navigationBar.frame ;
+    CGRect frame =  self.navigationController.navigationBar.frame;
     self.navigationController.navigationBar.frame =  CGRectMake(frame.origin.x, 20, frame.size.width, frame.size.height);
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.blueBannerView.hidden = NO;
+    CGRect frame =  self.navigationController.navigationBar.frame;
+    self.navigationController.navigationBar.frame =  CGRectMake(frame.origin.x, 20, frame.size.width, frame.size.height);
+    self.navigationController.navigationBar.backgroundColor = UIColor.clearColor;
+    [self updateBarButtonItems:1.0f];
 }
 
 
@@ -42,12 +52,6 @@
     [self.view addSubview:self.blueBannerView];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-//    self.navigationController.navigationBar.frame = CGRectMake(self.navigationController.navigationBar.frame.origin.x, 20, self.navigationController.navigationBar.frame.size.width, self.navigationController.navigationBar.frame.size.height);
-    self.navigationController.navigationBar.backgroundColor = UIColor.clearColor;
-    [self updateBarButtonItems:1.0f];
-}
 
 - (UIImage *)imageWithColor:(UIColor *)color
 {
@@ -119,7 +123,6 @@
         item.customView.alpha = alpha;
     }];
     self.tabBarController.navigationItem.titleView.alpha = alpha;
-    //    self.navigationController.navigationBar.tintColor = [self.navigationController.navigationBar.tintColor colorWithAlphaComponent:alpha];
 }
 
 - (void)stoppedScrolling

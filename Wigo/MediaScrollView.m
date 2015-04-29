@@ -603,26 +603,7 @@
                 strongSelf.shownCurrentImage = NO;
             }
         }];
-//        [self.object create:^(BOOL success, NSError *error) {
-//            __strong typeof(weakSelf) strongSelf = weakSelf;
-//            if (strongSelf.error) {
-//                [strongSelf.eventConversationDelegate showErrorMessage];
-//                return;
-//            }
-//            [strongSelf.eventConversationDelegate showCompletedMessage];
-//          
-//            if (!strongSelf.shownCurrentImage) {
-//                [strongSelf.eventMessages insertObject:strongSelf.object atIndex:1];
-//                [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
-//                [strongSelf.eventConversationDelegate highlightCellAtPage:1 animated:NO];
-//                strongSelf.shownCurrentImage = YES;
-//            }
-//            else {
-//                [strongSelf.eventMessages replaceObjectAtIndex:1 withObject:strongSelf.object];
-//                [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
-//                strongSelf.shownCurrentImage = NO;
-//            }
-//        }];
+
         NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
 
         [mutableDict addEntriesFromDictionary:@{

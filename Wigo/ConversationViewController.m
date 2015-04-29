@@ -105,8 +105,6 @@ ProfileViewController *profileViewController;
     [WGAnalytics tagView:@"conversation"];
 }
 
-
-
 -(void) textChanged:(id)sender {
     if ([self.inputToolbar.contentView.textView.text hasSuffix:@"\n"] && self.inputToolbar.contentView.rightBarButtonItem.enabled) {
         [self.inputToolbar.contentView.textView resignFirstResponder];

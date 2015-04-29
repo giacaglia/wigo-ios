@@ -66,6 +66,11 @@
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
+-(void) viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+}
+
 #pragma mark UICollectionViewDataSource
 
 -(NSInteger)numberOfSectionsInCollectionView: (UICollectionView *)collectionView
@@ -173,7 +178,6 @@
         __strong typeof(self) strongSelf = weakSelf;
         strongSelf.isFetchingMessages = NO;
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
@@ -502,7 +506,6 @@
         if ([eventMessage objectForKey:@"id"]) {
             [eventMessage remove:^(BOOL success, NSError *error) {
                 if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionDelete retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionDelete];
                     return;
                 }
