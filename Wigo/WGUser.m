@@ -366,6 +366,7 @@ static WGUser *currentUser = nil;
 
 -(NSString *)age {
     NSString *birthday = self.birthday;
+    if (!birthday) return @"";
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     [dateFormatter setDateFormat:@"MM/dd/yyyy"];
     NSDate *dateFromString = [NSDate new];
@@ -901,6 +902,7 @@ static WGUser *currentUser = nil;
 
 -(void) getNumMutualFriends:(WGNumResultBlock)handler {
     __weak typeof(self) weakSelf = self;
+    if ([WGProfile.currentUser.id isEqual:self.id]) return;
     [WGApi get:[NSString stringWithFormat:@"users/%@/friends/common/%@/count/", WGProfile.currentUser.id, self.id]
    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
        if (error) {
