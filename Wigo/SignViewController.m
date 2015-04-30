@@ -300,9 +300,19 @@
             NSDictionary *firstSchool = [((NSArray *)fbGraphUser[@"education"]) objectAtIndex:0];
             WGProfile.currentUser.education = [[firstSchool objectForKey:@"school"] objectForKey:@"name"];
         }
-        if (fbGraphUser[@"hometown"]) {
-            NSDictionary *hometownDict = fbGraphUser[@"hometown"];
-            WGProfile.currentUser.hometown = [hometownDict objectForKey:@"name"];
+        if (fbGraphUser[@"work"]) {
+            NSArray *workArray = fbGraphUser[@"work"];
+            if (workArray.count > 0) {
+                NSDictionary *employerDict = [workArray objectAtIndex:0];
+                if (employerDict && [employerDict isKindOfClass:[NSDictionary class]]) {
+                    NSDictionary *details = [employerDict objectForKey:@"employer"];
+                    if (details && [details isKindOfClass:[NSDictionary class]]) {
+                        if ([details.allKeys containsObject:@"name"]) {
+                            WGProfile.currentUser.work = [details objectForKey:@"name"];
+                        }
+                    }
+                }
+            }
         }
         
         NSDictionary *userResponse = (NSDictionary *) fbGraphUser;
