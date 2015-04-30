@@ -42,7 +42,7 @@
 #define kHometownKey @"hometown"
 #define kWorkKey @"work"
 #define kEducationKey @"education"
-#define kFriendsIdsKey @"friends_ids"
+#define kFriendsMetaKey @"friends_meta"
 #define kBirthdayKey @"birthday"
 #define kURLKey @"url"
 #define kSmallKey @"small"
@@ -378,13 +378,47 @@ static WGUser *currentUser = nil;
     return [NSString stringWithFormat:@"%d", [conversionInfo year]];
 }
 
--(NSArray *)friendsIds {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kFriendsIdsKey];
+-(NSDictionary *)friendsMetaDict {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kFriendsMetaKey];
 }
 
 
--(void) setFriendsIds:(NSArray *)friendsIds {
-    [[NSUserDefaults standardUserDefaults] setObject:friendsIds forKey:kFriendsIdsKey];
+-(void) setFriendsMetaDict:(NSDictionary *)friendsMetaDict {
+    [[NSUserDefaults standardUserDefaults] setObject:friendsMetaDict forKey:kFriendsMetaKey];
+}
+
+-(void) setMetaObject:(id)object forKey:(NSString *)key {
+    if (WGProfile.currentUser.friendsMetaDict) {
+        NSMutableDictionary *mutFriendsMetaDict = [NSMutableDictionary dictionaryWithDictionary:WGProfile.currentUser.friendsMetaDict];
+        if ([mutFriendsMetaDict.allKeys containsObject:self.id.stringValue]) {
+            NSMutableDictionary *userDict = [NSMutableDictionary dictionaryWithDictionary:[mutFriendsMetaDict objectForKey:self.id.stringValue]];
+            [userDict setObject:object forKey:key];
+            [mutFriendsMetaDict setObject:userDict forKey:self.id.stringValue];
+        }
+        else {
+            NSDictionary *userDict = @{key : object};
+            [mutFriendsMetaDict setObject:userDict forKey:self.id.stringValue];
+        }
+        WGProfile.currentUser.friendsMetaDict = mutFriendsMetaDict;
+    }
+    else {
+        NSMutableDictionary *mutFriendsMetaDict = [NSMutableDictionary new];
+        NSDictionary *userDict = @{key : object};
+        [mutFriendsMetaDict setObject:userDict forKey:self.id.stringValue];
+        WGProfile.currentUser.friendsMetaDict = mutFriendsMetaDict;
+    }
+
+}
+
+-(id) metaObjectForKey:(NSString *)key {
+    NSDictionary *friendsMetaDict = WGProfile.currentUser.friendsMetaDict;
+    if (friendsMetaDict) {
+        if ([friendsMetaDict.allKeys containsObject:self.id.stringValue]) {
+            NSDictionary *userDict = [friendsMetaDict objectForKey:self.id.stringValue];
+            if ([userDict.allKeys containsObject:key]) return [userDict objectForKey:key];
+        }
+    }
+    return nil;
 }
 
 
@@ -655,23 +689,26 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setIsFriend:(NSNumber *)isFriend {
-    [self setObject:isFriend forKey:kIsFriendKey];
+    [self setMetaObject:isFriend forKey:kIsFriendKey];
 }
 
 -(NSNumber *) isFriend {
-    if (WGProfile.currentUser.friendsIds &&
-        [WGProfile.currentUser.friendsIds containsObject:self.id]) {
-        return @YES;
-    }
-    return [self objectForKey:kIsFriendKey];
+    return [self metaObjectForKey:kIsFriendKey];
 }
 
 -(void) setFriendRequest:(NSString *)friendRequest {
-    [self setObject:friendRequest forKey:kFriendRequestKey];
+    [self setMetaObject:friendRequest forKey:kFriendRequestKey];
 }
 
 -(NSString *) friendRequest {
-    return [self objectForKey:kFriendRequestKey];
+    return [self metaObjectForKey:kFriendRequestKey];
+}
+
+-(void) setFriendsIds:(NSArray*)friendsIds {
+    for (NSString *friendID in friendsIds) {
+        WGUser *user = [[WGUser alloc] initWithJSON:@{@"id": friendID}];
+        [user setIsFriend:@YES];
+    }
 }
 
 -(void) setIsGoingOut:(NSNumber *)isGoingOut {

@@ -50,8 +50,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSString* bio;
 @property NSString* image;
 @property NSDate* modified;
-@property NSNumber* isFriend;
-@property NSString* friendRequest;
+
 @property NSString* lastName;
 @property NSNumber* isGoingOut;
 @property NSDate* lastMessageRead;
@@ -86,8 +85,17 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSNumber* numUnreadNotifications;
 @property NSNumber* numUnreadUsers;
 @property NSNumber *numMutualFriends;
-@property NSArray *friendsIds;
+
+@property NSDictionary *friendsMetaDict;
 @property UIImageView *avatarView;
+
+// meta properties
+- (void)setFriendsIds:(NSArray*)friendsIds;
+@property NSNumber* isFriend;
+@property NSString* friendRequest;
+- (void)setMetaObject:(id)object forKey:(NSString *)key;
+- (id)metaObjectForKey:(NSString *)key;
+
 
 +(WGUser *)serialize:(NSDictionary *)json;
 
