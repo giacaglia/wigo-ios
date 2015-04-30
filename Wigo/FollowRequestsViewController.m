@@ -116,12 +116,11 @@
     [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
     
-#warning TODO: Check if the isFriend is dealt properly
     if (user.isFriend.boolValue) {
         followBackPersonButton.tag = 100;
         [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
     }
-    if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+    if (user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
         [followBackPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
         [followBackPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
         [followBackPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -173,24 +172,15 @@
             }];
         }
         else if (buttonSender.tag == -100) {
-            if (user.privacy == PRIVATE) {
-                [buttonSender setBackgroundImage:nil forState:UIControlStateNormal];
-                [buttonSender setTitle:@"Pending" forState:UIControlStateNormal];
-                [buttonSender setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-                buttonSender.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-                buttonSender.titleLabel.textAlignment = NSTextAlignmentCenter;
-                buttonSender.layer.borderWidth = 1;
-                buttonSender.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-                buttonSender.layer.cornerRadius = 3;
-#warning TODO: Check if the isFriend is dealt properly
-//                user.isFollowingRequested = @YES;
-            }
-            else {
-                
-                [buttonSender setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-#warning TODO: Check if the isFriend is dealt properly
-                user.isFriend = @YES;
-            }
+            [buttonSender setBackgroundImage:nil forState:UIControlStateNormal];
+            [buttonSender setTitle:@"Pending" forState:UIControlStateNormal];
+            [buttonSender setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            buttonSender.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+            buttonSender.titleLabel.textAlignment = NSTextAlignmentCenter;
+            buttonSender.layer.borderWidth = 1;
+            buttonSender.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            buttonSender.layer.cornerRadius = 3;
+            user.friendRequest = kFriendRequestSent;
             buttonSender.tag = 100;
             [WGProfile.currentUser friendUser:user withHandler:^(BOOL success, NSError *error) {
                 if (error) {

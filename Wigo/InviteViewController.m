@@ -746,7 +746,7 @@ heightForHeaderInSection:(NSInteger)section
             [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
             [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
         }
-        if (user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+        if (user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
             [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
             [self.followPersonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];

@@ -239,7 +239,7 @@ int imageWidth;
     if (self.isPeeking) {
         attendeeCell.chatButton.hidden = YES;
         attendeeCell.inviteView.alpha = 0.0f;
-        attendeeCell.followButton.hidden = YES;
+        attendeeCell.addFriendButton.hidden = YES;
     }
     
     return attendeeCell;
@@ -374,20 +374,20 @@ referenceSizeForFooterInSection:(NSInteger)section {
     [self.backgroundWhiteView addSubview:self.inviteView];
     
     //Follow button
-    self.followButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 50, imageWidth, 70)];
-    self.followButton.backgroundColor = [FontProperties getOrangeColor];
-    [self.followButton addTarget:self action:@selector(followPressed:) forControlEvents:UIControlEventTouchUpInside];
+    self.addFriendButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 50, imageWidth, 70)];
+    self.addFriendButton.backgroundColor = [FontProperties getOrangeColor];
+    [self.addFriendButton addTarget:self action:@selector(followPressed:) forControlEvents:UIControlEventTouchUpInside];
     UIImageView *whiteOrangeFollowImage = [[UIImageView alloc] initWithFrame:CGRectMake(imageWidth/2 - 60, 35 - 15, 30, 30)];
     whiteOrangeFollowImage.image = [UIImage imageNamed:@"whiteOrangeFollow"];
-    [self.followButton addSubview:whiteOrangeFollowImage];
+    [self.addFriendButton addSubview:whiteOrangeFollowImage];
     UILabel *addFriendLabel = [[UILabel alloc] initWithFrame:CGRectMake(imageWidth/2 - 20, 35 - 12.5f, 90, 25)];
     addFriendLabel.text = @"Add Friend";
     addFriendLabel.textColor = UIColor.whiteColor;
     addFriendLabel.textAlignment = NSTextAlignmentLeft;
     addFriendLabel.font = [FontProperties mediumFont:18.0f];
-    [self.followButton addSubview:addFriendLabel];
-    [self.backgroundWhiteView addSubview:self.followButton];
-    [self.backgroundWhiteView bringSubviewToFront: self.followButton];
+    [self.addFriendButton addSubview:addFriendLabel];
+    [self.backgroundWhiteView addSubview:self.addFriendButton];
+    [self.backgroundWhiteView bringSubviewToFront: self.addFriendButton];
     
     self.pendingLabel = [[UILabel alloc] initWithFrame: CGRectMake(0, 50, imageWidth, 70)];
     self.pendingLabel.backgroundColor = RGB(247, 247, 247);
@@ -399,9 +399,9 @@ referenceSizeForFooterInSection:(NSInteger)section {
 }
 
 - (void)followPressed:(id)sender {
-    self.followButton.hidden = YES;
-    self.followButton.enabled = NO;
-    self.user.isFriend = @YES;
+    self.addFriendButton.hidden = YES;
+    self.addFriendButton.enabled = NO;
+    self.user.friendRequest = kFriendRequestSent;
     [WGProfile.currentUser friendUser:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionPost];
@@ -454,7 +454,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
 
 
 - (void)reloadView {
-    self.followButton.hidden = YES;
+    self.addFriendButton.hidden = YES;
     self.chatButton.hidden = YES;
     self.inviteView.alpha = 0.0f;
     self.pendingLabel.hidden = YES;
@@ -463,22 +463,18 @@ referenceSizeForFooterInSection:(NSInteger)section {
     if (self.user.isCurrentUser || self.user.state == OTHER_SCHOOL_USER_STATE) {
         // Don't show anything
     }
-    else if (self.user.state == FOLLOWING_USER_STATE ||
-             self.user.state == ATTENDING_EVENT_FOLLOWING_USER_STATE ||
-             self.user.state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE ||
-             self.user.state == PUBLIC_STATE ||
-             self.user.state == PRIVATE_STATE) {
+    else if (self.user.state == FRIEND_USER_STATE ||
+             self.user.state == CURRENT_USER_STATE) {
         self.dividerLineView.hidden = NO;
         self.chatButton.hidden = NO;
         self.inviteView.alpha = 1.0f;
     }
-    else if (self.user.state == NOT_FOLLOWING_PUBLIC_USER_STATE ||
-             self.user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
+    else if (self.user.state == NOT_FRIEND_STATE ||
              self.user.state == BLOCKED_USER_STATE) {
-        self.followButton.hidden = NO;
+        self.addFriendButton.hidden = NO;
         self.mutualFriendsLabel.hidden = NO;
     }
-    else if (self.user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+    else if (self.user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
         self.pendingLabel.hidden = NO;
     }
 }

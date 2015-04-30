@@ -49,10 +49,7 @@ UIButton *cancelButton;
     once = YES;
     [super viewDidLoad];
     
-    if (state == FOLLOWING_USER_STATE ||
-        state == ACCEPTED_PRIVATE_USER_STATE ||
-        state == ATTENDING_EVENT_FOLLOWING_USER_STATE ||
-        state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE) {
+    if (state == FRIEND_USER_STATE) {
         unfollowButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60 - 2*54, self.view.frame.size.width - 70, 42)];
         unfollowButton.backgroundColor = RGB(246, 143, 30);
         [unfollowButton setTitle:@"UNFOLLOW" forState:UIControlStateNormal];

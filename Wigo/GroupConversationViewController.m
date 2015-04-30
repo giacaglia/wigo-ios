@@ -341,9 +341,9 @@ ProfileViewController *profileViewController;
 
 - (void)fetchFirstPageMessages {
     self.isFetching = NO;
-    
-    [WGSpinnerView addDancingGToCenterView:self.view];
-    __weak typeof(self) weakSelf = self;
+//    
+//    [WGSpinnerView addDancingGToCenterView:self.view];
+//    __weak typeof(self) weakSelf = self;
 }
 
 - (void)fetchMessages:(BOOL)scrollToBottom {

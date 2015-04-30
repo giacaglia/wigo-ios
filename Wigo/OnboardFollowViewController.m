@@ -378,7 +378,7 @@ UIImageView *searchIconImageView;
             [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
             [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
         }
-        else if (user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+        else if (user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
             [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
             [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
             [self.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];

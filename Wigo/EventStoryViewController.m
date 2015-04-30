@@ -66,10 +66,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear: animated];
-
-    NSString *isPeekingString = ([self isPeeking]) ? @"Yes" : @"No";
-    
+    [super viewWillAppear: animated];    
     
     self.eventMessages = nil;
     if (_loadViewFromFront) [self fetchEventMessages];

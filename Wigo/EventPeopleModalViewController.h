@@ -38,7 +38,7 @@
 @property (nonatomic, strong) UILabel *mutualFriendsLabel;
 @property (nonatomic, strong) InviteView *inviteView;
 @property (nonatomic, strong) UIButton *chatButton;
-@property (nonatomic, strong) UIButton *followButton;
+@property (nonatomic, strong) UIButton *addFriendButton;
 @property (nonatomic, strong) UILabel *pendingLabel;
 @property (nonatomic, assign) id<EventPeopleModalDelegate> eventPeopleModalDelegate;
 @property (nonatomic, strong) UIView *dividerLineView;

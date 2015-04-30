@@ -521,25 +521,21 @@ BOOL blockShown;
         self.userState == OTHER_SCHOOL_USER_STATE) {
         // Don't show anything
     }
-    else if (self.userState == FOLLOWING_USER_STATE ||
-        self.userState == ATTENDING_EVENT_FOLLOWING_USER_STATE ||
-        self.userState == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE ||
-        self.userState == PUBLIC_STATE ||
-        self.userState == PRIVATE_STATE) {
+    else if (self.userState == FRIEND_USER_STATE ||
+        self.userState == CURRENT_USER_STATE) {
         _rightBarBt.hidden = NO;
         _rightProfileButton.hidden = NO;
         _chatButton.hidden = NO;
-        if (self.userState == PRIVATE_STATE) {
+        if (self.user.privacy == PRIVATE) {
             _privateLogoImageView.hidden = NO;
         }
     }
-    else if (self.userState == NOT_FOLLOWING_PUBLIC_USER_STATE ||
-             self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
+    else if (self.userState == NOT_FRIEND_STATE ||
              self.userState == BLOCKED_USER_STATE) {
         _rightBarBt.hidden = NO;
         _followButton.hidden = NO;
     }
-    else if (self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+    else if (self.userState == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
         _rightBarBt.hidden = NO;
         [_followButton setImage:nil forState:UIControlStateNormal];
         [_followButton setTitle:@"Pending" forState:UIControlStateNormal];
@@ -547,7 +543,7 @@ BOOL blockShown;
         _followButton.backgroundColor = UIColor.grayColor;
     }
     
-    if (self.userState == PRIVATE_STATE || self.userState == PUBLIC_STATE) {
+    if (self.userState == CURRENT_USER_STATE) {
         [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];
         [_rightBarBt removeTarget:nil
                            action:NULL
@@ -562,9 +558,7 @@ BOOL blockShown;
     }
     [_rightBarBt sizeToFit];
     
-    if ((self.userState == ACCEPTED_PRIVATE_USER_STATE ||
-         self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE ||
-         self.userState == PRIVATE_STATE)) {
+    if (self.user.privacy == PRIVATE) {
         _privateLogoImageView.hidden = NO;
     }
     else _privateLogoImageView.hidden = YES;
@@ -635,9 +629,7 @@ BOOL blockShown;
 - (BOOL) shouldShowInviteCell {
     if ([self.user isCurrentUser] ||
         self.userState == NOT_LOADED_STATE ||
-        self.userState ==  NOT_FOLLOWING_PUBLIC_USER_STATE ||
-        self.userState == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
-        self.userState == NOT_YET_ACCEPTED_PRIVATE_USER_STATE ||
+        self.userState == NOT_FRIEND_STATE ||
         self.userState == BLOCKED_USER_STATE ||
         self.userState == OTHER_SCHOOL_USER_STATE) {
         return NO;
@@ -648,7 +640,7 @@ BOOL blockShown;
 
 
 - (NSInteger) notificationCount {
-    if (self.userState == PUBLIC_STATE || self.userState == PRIVATE_STATE) {
+    if (self.userState == CURRENT_USER_STATE) {
         return self.notifications.count + 1;
     }
     return [self shouldShowInviteCell] ? 1 : 0;
@@ -671,8 +663,7 @@ BOOL blockShown;
         return [self notificationCount];
     }
     if (section == kMutualFriendsSection) {
-        if (self.user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE ||
-            self.user.state == NOT_FOLLOWING_PUBLIC_USER_STATE) {
+        if (self.user.state == NOT_FRIEND_STATE) {
             return 1;
         }
         return 0;
@@ -805,8 +796,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
             [notification.type isEqualToString:@"follow.accepted"] ||
             [notification.type isEqualToString:@"facebook.follow"]) {
             [self presentUser:user];
-        } else if (user.state != NOT_YET_ACCEPTED_PRIVATE_USER_STATE &&
-                   user.state != NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
+        } else if (user.state != SENT_OR_RECEIVED_REQUEST_USER_STATE &&
+                   user.state != NOT_FRIEND_STATE) {
             if (![user.eventAttending.id isEqual:notification.eventID]) return;
             if (user.eventAttending) [self presentEvent:user.eventAttending];
             else [self presentUser:user];

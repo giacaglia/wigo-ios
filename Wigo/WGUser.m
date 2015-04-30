@@ -783,37 +783,19 @@ static WGUser *currentUser = nil;
 }
 
 
-#warning TODO: Check if the isFriend is dealt properly
 -(State) state {
     if (self.isCurrentUser) {
-        if (self.privacy == PRIVATE) return PRIVATE_STATE;
-        else return PUBLIC_STATE;
+        return CURRENT_USER_STATE;
     }
     if (self.isBlocked.boolValue) return BLOCKED_USER_STATE;
-    if (self.privacy == PRIVATE) {
-        if ([self.friendRequest isEqual:kFriendRequestSent] ||
-            [self.friendRequest isEqual:kFriendRequestReceived]) {
-            return NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
-        }
-        if (self.isFriend.boolValue) {
-            if (self.eventAttending) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
-            return FOLLOWING_USER_STATE;
-        }
-        else return NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
+    if (self.isFriend.boolValue) return FRIEND_USER_STATE;
+    
+    if ([self.friendRequest isEqual:kFriendRequestSent] ||
+        [self.friendRequest isEqual:kFriendRequestReceived]) {
+        return SENT_OR_RECEIVED_REQUEST_USER_STATE;
     }
-    if (!self.isFriend.boolValue) {
-        if ([self.friendRequest isEqual:kFriendRequestSent]) {
-            return SENT_REQUEST_USER_STATE;
-        }
-        else if ([self.friendRequest isEqual:kFriendRequestReceived]) {
-            return RECEIVED_REQUEST_USER_STATE;
-        }
-    }
-    if (self.isFriend.boolValue) {
-        if (self.eventAttending) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
-        return FOLLOWING_USER_STATE;
-    }
-    return NOT_FOLLOWING_PUBLIC_USER_STATE;
+   
+    return NOT_FRIEND_STATE;
 }
 
 -(void) followUser {
@@ -827,27 +809,16 @@ static WGUser *currentUser = nil;
         }];
     }
     else {
-#warning TODO: Check if the isFriend is dealt properly
-//        if (self.isFollowing.boolValue || self.isFollowingRequested.boolValue) {
         if (self.isFriend.boolValue) {
-        // If it's following user
             self.isFriend = @NO;
             [WGProfile.currentUser unfollow:self withHandler:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] logError:error forAction:WGActionDelete];
                 }
             }];
-            
         }
         else  {
-#warning TODO: Check if the isFriend is dealt properly
-            if (self.privacy == PRIVATE) {
-                // If it's not following and it's private
-//                self.isFollowingRequested = @YES;
-            } else {
-                // If it's not following and it's public
-                self.isFriend = @YES;
-            }
+            self.friendRequest = kFriendRequestSent;
             [WGProfile.currentUser friendUser:self withHandler:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] logError:error forAction:WGActionPost];
