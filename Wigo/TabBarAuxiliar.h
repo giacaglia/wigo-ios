@@ -13,9 +13,12 @@
 #define kIndexOfProfile 4
 
 @interface TabBarAuxiliar : NSObject
-+ (void)checkIndex:(int)index ForDate:(NSDate *)date;
++ (void)checkIndex:(int)index forDate:(NSDate *)date;
++ (void)clearIndex:(int)index;
 + (void)startTabBarItems;
 + (UIView *)defaultChatOrangeView;
 + (UIView *)defaultFriendsOrangeView;
 + (UIView *)defaultProfileOrangeView;
++ (NSDate *)biggestFriendsDate;
++ (void)setBiggestFriendsDate:(NSDate *)date;
 @end

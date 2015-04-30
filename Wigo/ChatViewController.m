@@ -42,7 +42,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [TabBarAuxiliar checkIndex:kIndexOfChats ForDate:self.lastMessageRead];
+    [TabBarAuxiliar checkIndex:kIndexOfChats forDate:self.lastMessageRead];
     
     self.tabBarController.navigationItem.titleView = nil;
 }

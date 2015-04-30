@@ -12,8 +12,17 @@
 static UIView *chatOrangeView;
 static UIView *friendsOrangeView;
 static UIView *profileOrangeView;
+static NSDate *biggestDate;
 
 @implementation TabBarAuxiliar
+
++ (NSDate *)biggestFriendsDate {
+    return biggestDate;
+}
+
++ (void)setBiggestFriendsDate:(NSDate *)date {
+    biggestDate = date;
+}
 
 + (UIView *)defaultChatOrangeView {
     if (chatOrangeView == nil) {
@@ -89,7 +98,7 @@ static UIView *profileOrangeView;
 
 }
 
-+ (void)checkIndex:(int)index ForDate:(NSDate *)date {
++ (void)checkIndex:(int)index forDate:(NSDate *)date {
     //For chats
     if (index == kIndexOfChats) {
         if (!WGProfile.currentUser.lastMessageRead ||
@@ -108,6 +117,7 @@ static UIView *profileOrangeView;
         else {
             [TabBarAuxiliar defaultFriendsOrangeView].hidden = YES;
         }
+        [TabBarAuxiliar setBiggestFriendsDate:date];
     }
     else {
         if (!WGProfile.currentUser.lastNotificationRead ||
@@ -117,6 +127,14 @@ static UIView *profileOrangeView;
         else {
             [TabBarAuxiliar defaultProfileOrangeView].hidden = YES;
         }
+    }
+}
+
++ (void)clearIndex:(int)index {
+    if (index == kIndexOfFriends) {
+        if ([TabBarAuxiliar biggestFriendsDate] == nil) return;
+        WGProfile.currentUser.lastUserRead = [TabBarAuxiliar biggestFriendsDate];
+        [TabBarAuxiliar defaultFriendsOrangeView].hidden = YES;
     }
 }
 

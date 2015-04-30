@@ -70,17 +70,17 @@
         if ([jsonResponse objectForKey:@"last_notification"]) {
             NSString *notificationString = [jsonResponse objectForKey:@"last_notification"];
             NSDate *lastNotification = [WGGetter getDateFromString:notificationString];
-            [TabBarAuxiliar checkIndex:kIndexOfProfile ForDate:lastNotification];
+            [TabBarAuxiliar checkIndex:kIndexOfProfile forDate:lastNotification];
         }
         if ([jsonResponse objectForKey:@"last_message"]) {
             NSString *messageString = [jsonResponse objectForKey:@"last_message"];
             NSDate *lastMessage = [WGGetter getDateFromString:messageString];
-            [TabBarAuxiliar checkIndex:kIndexOfChats ForDate:lastMessage];
+            [TabBarAuxiliar checkIndex:kIndexOfChats forDate:lastMessage];
         }
         if ([jsonResponse objectForKey:@"last_friend_request"]) {
             NSString *userString = [jsonResponse objectForKey:@"last_friend_request"];
             NSDate *lastUser = [WGGetter getDateFromString:userString];
-            [TabBarAuxiliar checkIndex:kIndexOfFriends ForDate:lastUser];
+            [TabBarAuxiliar checkIndex:kIndexOfFriends forDate:lastUser];
         }
         [WGProfile setNumFriends:[jsonResponse objectForKey:@"num_friends"]];
     }];

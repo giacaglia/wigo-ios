@@ -953,7 +953,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         !WGProfile.currentUser.lastNotificationRead) {
         WGProfile.currentUser.lastNotificationRead = self.lastNotificationRead;
     }
-    [TabBarAuxiliar checkIndex:kIndexOfProfile ForDate:self.lastNotificationRead];
+    [TabBarAuxiliar checkIndex:kIndexOfProfile forDate:self.lastNotificationRead];
 }
 
 - (void)updateBadge {
