@@ -27,6 +27,8 @@ static const NSString *AVCaptureStillImageIsCapturingStillImageContext = @"AVCap
 
 static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 
+static int64_t frameNumber;
+
 static void ReleaseCVPixelBuffer(void *pixel, const void *data, size_t size);
 static void ReleaseCVPixelBuffer(void *pixel, const void *data, size_t size)
 {
@@ -139,7 +141,18 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 
 @interface WGCameraViewController ()
 
+
+
+@property (nonatomic,strong) AVCaptureSession *captureSession;
+
 @property (nonatomic,strong) AVAssetWriter *videoWriter;
+@property (nonatomic,strong) AVAssetWriterInput* videoWriterInput;
+@property (nonatomic,strong) AVCaptureMovieFileOutput *movieFileOutput;
+@property (nonatomic,strong) AVCaptureVideoDataOutput *videoDataOutput;
+@property (nonatomic,strong) dispatch_queue_t videoDataOutputQueue;
+@property (nonatomic,strong) AVAssetWriterInputPixelBufferAdaptor *pixelBufferAdaptor;
+
+@property (nonatomic,copy) NSURL *videoOutputURL;
 
 @end
 
@@ -148,6 +161,9 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 
 - (void)setupAVCapture
 {
+    
+    
+    _isRecording = NO;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
                    ^{
@@ -220,23 +236,37 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
         
     
         // Make a video data output
-        videoDataOutput = [AVCaptureVideoDataOutput new];
+        self.videoDataOutput = [AVCaptureVideoDataOutput new];
+        AVCaptureConnection *videoConnection = [self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
+        [videoConnection setEnabled:NO];
+        
+        /*
+         UIDeviceOrientation curDeviceOrientation = [[UIDevice currentDevice] orientation];
+         AVCaptureVideoOrientation avcaptureOrientation = [self avOrientationForDeviceOrientation:curDeviceOrientation];
+         [stillImageConnection setVideoOrientation:avcaptureOrientation];
+         */
+        
         
         // we want BGRA, both CoreGraphics and OpenGL work well with 'BGRA'
         NSDictionary *rgbOutputSettings = [NSDictionary dictionaryWithObject:
                                            [NSNumber numberWithInt:kCMPixelFormat_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
-        [videoDataOutput setVideoSettings:rgbOutputSettings];
-        [videoDataOutput setAlwaysDiscardsLateVideoFrames:YES]; // discard if the data output queue is blocked (as we process the still image)
+        [self.videoDataOutput setVideoSettings:rgbOutputSettings];
+        
+        
+        
+//        UIDeviceOrientation curDeviceOrientation = [[UIDevice currentDevice] orientation];
+//        AVCaptureVideoOrientation avcaptureOrientation = [self avOrientationForDeviceOrientation:curDeviceOrientation];
+//        [videoConnection setVideoOrientation:avcaptureOrientation];
+        
+        //[videoDataOutput setAlwaysDiscardsLateVideoFrames:YES]; // discard if the data output queue is blocked (as we process the still image)
         
         // create a serial dispatch queue used for the sample buffer delegate as well as when a still image is captured
         // a serial dispatch queue must be used to guarantee that video frames will be delivered in order
         // see the header doc for setSampleBufferDelegate:queue: for more information
-        videoDataOutputQueue = dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
-        [videoDataOutput setSampleBufferDelegate:self queue:videoDataOutputQueue];
         
-        if ( [self.captureSession canAddOutput:videoDataOutput] )
-            [self.captureSession addOutput:videoDataOutput];
-        [[videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:NO];
+        self.videoDataOutputQueue = dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
+        [self.videoDataOutput setSampleBufferDelegate:self queue:self.videoDataOutputQueue];
+        
         NSLog(@"2");
         
         dispatch_async(dispatch_get_main_queue(),
@@ -288,6 +318,8 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     //[previewLayer release];
     
     self.captureSession = nil;
+    
+    _isRecording = NO;
 }
 
 // perform a flash bulb animation using KVO to monitor the value of the capturingStillImage property of the AVCaptureStillImageOutput class
@@ -335,116 +367,9 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     return result;
 }
 
-// utility routine to create a new image with the red square overlay with appropriate orientation
-// and return the new composited image which can be saved to the camera roll
-- (CGImageRef)newSquareOverlayedImageForFeatures:(NSArray *)features
-                                       inCGImage:(CGImageRef)backgroundImage
-                                 withOrientation:(UIDeviceOrientation)orientation
-                                     frontFacing:(BOOL)isFrontFacing
-{
-    CGImageRef returnImage = NULL;
-    CGRect backgroundImageRect = CGRectMake(0., 0., CGImageGetWidth(backgroundImage), CGImageGetHeight(backgroundImage));
-    CGContextRef bitmapContext = CreateCGBitmapContextForSize(backgroundImageRect.size);
-    CGContextClearRect(bitmapContext, backgroundImageRect);
-    CGContextDrawImage(bitmapContext, backgroundImageRect, backgroundImage);
-    CGFloat rotationDegrees = 0.;
-    
-    switch (orientation) {
-        case UIDeviceOrientationPortrait:
-            rotationDegrees = -90.;
-            break;
-        case UIDeviceOrientationPortraitUpsideDown:
-            rotationDegrees = 90.;
-            break;
-        case UIDeviceOrientationLandscapeLeft:
-            if (isFrontFacing) rotationDegrees = 180.;
-            else rotationDegrees = 0.;
-            break;
-        case UIDeviceOrientationLandscapeRight:
-            if (isFrontFacing) rotationDegrees = 0.;
-            else rotationDegrees = 180.;
-            break;
-        case UIDeviceOrientationFaceUp:
-        case UIDeviceOrientationFaceDown:
-        default:
-            break; // leave the layer in its last known orientation
-    }
-    UIImage *rotatedSquareImage = [square imageRotatedByDegrees:rotationDegrees];
-    
-    // features found by the face detector
-    for ( CIFaceFeature *ff in features ) {
-        CGRect faceRect = [ff bounds];
-        CGContextDrawImage(bitmapContext, faceRect, [rotatedSquareImage CGImage]);
-    }
-    returnImage = CGBitmapContextCreateImage(bitmapContext);
-    CGContextRelease (bitmapContext);
-    
-    return returnImage;
-}
 
-// utility routine used after taking a still image to write the resulting image to the camera roll
-- (BOOL)writeCGImageToCameraRoll:(CGImageRef)cgImage withMetadata:(NSDictionary *)metadata
-{
-    CFMutableDataRef destinationData = CFDataCreateMutable(kCFAllocatorDefault, 0);
-    CGImageDestinationRef destination = CGImageDestinationCreateWithData(destinationData,
-                                                                         CFSTR("public.jpeg"),
-                                                                         1,
-                                                                         NULL);
-    BOOL success = (destination != NULL);
-    if(success) {
-        
-        // require(success, bail);
-        
-        const float JPEGCompQuality = 0.85f; // JPEGHigherQuality
-        CFMutableDictionaryRef optionsDict = NULL;
-        CFNumberRef qualityNum = NULL;
-        
-        qualityNum = CFNumberCreate(0, kCFNumberFloatType, &JPEGCompQuality);
-        if ( qualityNum ) {
-            optionsDict = CFDictionaryCreateMutable(0, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-            if ( optionsDict )
-                CFDictionarySetValue(optionsDict, kCGImageDestinationLossyCompressionQuality, qualityNum);
-            CFRelease( qualityNum );
-        }
-        
-        CGImageDestinationAddImage( destination, cgImage, optionsDict );
-        success = CGImageDestinationFinalize( destination );
-        
-        if ( optionsDict )
-            CFRelease(optionsDict);
-        
-        //require(success, bail);
-        if(success) {
-            
-            CFRetain(destinationData);
-            ALAssetsLibrary *library = [ALAssetsLibrary new];
-            [library writeImageDataToSavedPhotosAlbum:(__bridge id)destinationData metadata:metadata completionBlock:^(NSURL *assetURL, NSError *error) {
-                if (destinationData)
-                    CFRelease(destinationData);
-            }];
-            //[library release];
-        }
-    }
-    
-    if (destinationData)
-        CFRelease(destinationData);
-    if (destination)
-        CFRelease(destination);
-    return success;
-}
 
-// utility routine to display error aleart if takePicture fails
-- (void)displayErrorOnMainQueue:(NSError *)error withMessage:(NSString *)message
-{
-    dispatch_async(dispatch_get_main_queue(), ^(void) {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"%@ (%d)", message, (int)[error code]]
-                                                            message:[error localizedDescription]
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"Dismiss"
-                                                  otherButtonTitles:nil];
-        [alertView show];
-    });
-}
+
 
 - (void)takePictureWithCompletion:(void (^)(UIImage *image, NSDictionary *attachments, NSError *error))completion
 {
@@ -487,286 +412,20 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
      ];
 }
 
-- (void)startRecordingVideo {
-    
-//    AVCaptureConnection *videoConnection = [videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
-//    UIDeviceOrientation curDeviceOrientation = [[UIDevice currentDevice] orientation];
-//    AVCaptureVideoOrientation avcaptureOrientation = [self avOrientationForDeviceOrientation:curDeviceOrientation];
-//    [stillImageConnection setVideoOrientation:avcaptureOrientation];
-//    [stillImageConnection setVideoScaleAndCropFactor:effectiveScale];
-    
-    
-    if ([self.captureSession canAddOutput:self.movieFileOutput]) {
-        [self.captureSession addOutput:self.movieFileOutput];
-        
-        
-//        if (CaptureConnection.supportsVideoMinFrameDuration)
-//            CaptureConnection.videoMinFrameDuration = CMTimeMake(1, CAPTURE_FRAMES_PER_SECOND);
-//        if (CaptureConnection.supportsVideoMaxFrameDuration)
-//            CaptureConnection.videoMaxFrameDuration = CMTimeMake(1, CAPTURE_FRAMES_PER_SECOND);
-//        
-//        CMTimeShow(CaptureConnection.videoMinFrameDuration);
-//        CMTimeShow(CaptureConnection.videoMaxFrameDuration);
-        
-        
-        AVCaptureDevice *device = self.videoDeviceInput.device;
-        
-        CMTimeShow(device.activeVideoMinFrameDuration);
-        CMTimeShow(device.activeVideoMaxFrameDuration);
-        
-        NSError *configLockErr = nil;
-        [device lockForConfiguration:&configLockErr];
-        if(configLockErr) {
-            NSLog(@"Error locking device configuration: %@", configLockErr.localizedDescription);
-        }
-        else {
-            device.activeVideoMinFrameDuration = kWGVideoInputMinFrameDuration;
-            [device unlockForConfiguration];
-        }
-        
-        CMTimeShow(device.activeVideoMinFrameDuration);
-        CMTimeShow(device.activeVideoMaxFrameDuration);
-        
-        NSURL *fileURL = [WGCameraViewController tempVideoURL];
-        
-        [self.movieFileOutput startRecordingToOutputFileURL:fileURL
-                                          recordingDelegate:self];
-        
-    }
-    else {
-        // Handle the failure.
-        NSLog(@"error starting recording");
-    }
-    
-}
-
-- (void)stopRecording {
-    [self.movieFileOutput stopRecording];
-}
-
 // turn on/off face detection
 - (IBAction)toggleFaceDetection:(id)sender
 {
-    detectFaces = [(UISwitch *)sender isOn];
-    [[videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:detectFaces];
-    if (!detectFaces) {
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            // clear out any squares currently displaying.
-            [self drawFaceBoxesForFeatures:[NSArray array] forVideoBox:CGRectZero orientation:UIDeviceOrientationPortrait];
-        });
-    }
+//    detectFaces = [(UISwitch *)sender isOn];
+//    [[videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:detectFaces];
+//    if (!detectFaces) {
+//        dispatch_async(dispatch_get_main_queue(), ^(void) {
+//            // clear out any squares currently displaying.
+//            [self drawFaceBoxesForFeatures:[NSArray array] forVideoBox:CGRectZero orientation:UIDeviceOrientationPortrait];
+//        });
+//    }
 }
 
-// find where the video box is positioned within the preview layer based on the video size and gravity
-+ (CGRect)videoPreviewBoxForGravity:(NSString *)gravity frameSize:(CGSize)frameSize apertureSize:(CGSize)apertureSize
-{
-    CGFloat apertureRatio = apertureSize.height / apertureSize.width;
-    CGFloat viewRatio = frameSize.width / frameSize.height;
-    
-    CGSize size = CGSizeZero;
-    if ([gravity isEqualToString:AVLayerVideoGravityResizeAspectFill]) {
-        if (viewRatio > apertureRatio) {
-            size.width = frameSize.width;
-            size.height = apertureSize.width * (frameSize.width / apertureSize.height);
-        } else {
-            size.width = apertureSize.height * (frameSize.height / apertureSize.width);
-            size.height = frameSize.height;
-        }
-    } else if ([gravity isEqualToString:AVLayerVideoGravityResizeAspect]) {
-        if (viewRatio > apertureRatio) {
-            size.width = apertureSize.height * (frameSize.height / apertureSize.width);
-            size.height = frameSize.height;
-        } else {
-            size.width = frameSize.width;
-            size.height = apertureSize.width * (frameSize.width / apertureSize.height);
-        }
-    } else if ([gravity isEqualToString:AVLayerVideoGravityResize]) {
-        size.width = frameSize.width;
-        size.height = frameSize.height;
-    }
-    
-    CGRect videoBox;
-    videoBox.size = size;
-    if (size.width < frameSize.width)
-        videoBox.origin.x = (frameSize.width - size.width) / 2;
-    else
-        videoBox.origin.x = (size.width - frameSize.width) / 2;
-    
-    if ( size.height < frameSize.height )
-        videoBox.origin.y = (frameSize.height - size.height) / 2;
-    else
-        videoBox.origin.y = (size.height - frameSize.height) / 2;
-    
-    return videoBox;
-}
 
-// called asynchronously as the capture output is capturing sample buffers, this method asks the face detector (if on)
-// to detect features and for each draw the red square in a layer and set appropriate orientation
-- (void)drawFaceBoxesForFeatures:(NSArray *)features forVideoBox:(CGRect)clap orientation:(UIDeviceOrientation)orientation
-{
-    NSArray *sublayers = [NSArray arrayWithArray:[previewLayer sublayers]];
-    NSInteger sublayersCount = [sublayers count], currentSublayer = 0;
-    NSInteger featuresCount = [features count], currentFeature = 0;
-    
-    [CATransaction begin];
-    [CATransaction setValue:(id)kCFBooleanTrue forKey:kCATransactionDisableActions];
-    
-    // hide all the face layers
-    for ( CALayer *layer in sublayers ) {
-        if ( [[layer name] isEqualToString:@"FaceLayer"] )
-            [layer setHidden:YES];
-    }
-    
-    if ( featuresCount == 0 || !detectFaces ) {
-        [CATransaction commit];
-        return; // early bail.
-    }
-    
-    CGSize parentFrameSize = [previewView frame].size;
-    NSString *gravity = [previewLayer videoGravity];
-    BOOL isMirrored = [previewLayer.connection isVideoMirrored];
-    CGRect previewBox = [WGCameraViewController videoPreviewBoxForGravity:gravity
-                                                                 frameSize:parentFrameSize
-                                                              apertureSize:clap.size];
-    
-    for ( CIFaceFeature *ff in features ) {
-        // find the correct position for the square layer within the previewLayer
-        // the feature box originates in the bottom left of the video frame.
-        // (Bottom right if mirroring is turned on)
-        CGRect faceRect = [ff bounds];
-        
-        // flip preview width and height
-        CGFloat temp = faceRect.size.width;
-        faceRect.size.width = faceRect.size.height;
-        faceRect.size.height = temp;
-        temp = faceRect.origin.x;
-        faceRect.origin.x = faceRect.origin.y;
-        faceRect.origin.y = temp;
-        // scale coordinates so they fit in the preview box, which may be scaled
-        CGFloat widthScaleBy = previewBox.size.width / clap.size.height;
-        CGFloat heightScaleBy = previewBox.size.height / clap.size.width;
-        faceRect.size.width *= widthScaleBy;
-        faceRect.size.height *= heightScaleBy;
-        faceRect.origin.x *= widthScaleBy;
-        faceRect.origin.y *= heightScaleBy;
-        
-        if ( isMirrored )
-            faceRect = CGRectOffset(faceRect, previewBox.origin.x + previewBox.size.width - faceRect.size.width - (faceRect.origin.x * 2), previewBox.origin.y);
-        else
-            faceRect = CGRectOffset(faceRect, previewBox.origin.x, previewBox.origin.y);
-        
-        CALayer *featureLayer = nil;
-        
-        // re-use an existing layer if possible
-        while ( !featureLayer && (currentSublayer < sublayersCount) ) {
-            CALayer *currentLayer = [sublayers objectAtIndex:currentSublayer++];
-            if ( [[currentLayer name] isEqualToString:@"FaceLayer"] ) {
-                featureLayer = currentLayer;
-                [currentLayer setHidden:NO];
-            }
-        }
-        
-        // create a new one if necessary
-        if ( !featureLayer ) {
-            featureLayer = [CALayer new];
-            [featureLayer setContents:(id)[square CGImage]];
-            [featureLayer setName:@"FaceLayer"];
-            [previewLayer addSublayer:featureLayer];
-            //[featureLayer release];
-        }
-        [featureLayer setFrame:faceRect];
-        
-        switch (orientation) {
-            case UIDeviceOrientationPortrait:
-                [featureLayer setAffineTransform:CGAffineTransformMakeRotation(DegreesToRadians(0.))];
-                break;
-            case UIDeviceOrientationPortraitUpsideDown:
-                [featureLayer setAffineTransform:CGAffineTransformMakeRotation(DegreesToRadians(180.))];
-                break;
-            case UIDeviceOrientationLandscapeLeft:
-                [featureLayer setAffineTransform:CGAffineTransformMakeRotation(DegreesToRadians(90.))];
-                break;
-            case UIDeviceOrientationLandscapeRight:
-                [featureLayer setAffineTransform:CGAffineTransformMakeRotation(DegreesToRadians(-90.))];
-                break;
-            case UIDeviceOrientationFaceUp:
-            case UIDeviceOrientationFaceDown:
-            default:
-                break; // leave the layer in its last known orientation
-        }
-        currentFeature++;
-    }
-    
-    [CATransaction commit];
-}
-
-- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
-{
-    // got an image
-    CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-    CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate);
-    CIImage *ciImage = [[CIImage alloc] initWithCVPixelBuffer:pixelBuffer options:(__bridge NSDictionary *)attachments];
-    if (attachments)
-        CFRelease(attachments);
-    NSDictionary *imageOptions = nil;
-    UIDeviceOrientation curDeviceOrientation = [[UIDevice currentDevice] orientation];
-    int exifOrientation;
-    
-    /* kCGImagePropertyOrientation values
-     The intended display orientation of the image. If present, this key is a CFNumber value with the same value as defined
-     by the TIFF and EXIF specifications -- see enumeration of integer constants. 
-     The value specified where the origin (0,0) of the image is located. If not present, a value of 1 is assumed.
-     
-     used when calling featuresInImage: options: The value for this key is an integer NSNumber from 1..8 as found in kCGImagePropertyOrientation.
-     If present, the detection will be done based on that orientation but the coordinates in the returned features will still be based on those of the image. */
-    
-    enum {
-        PHOTOS_EXIF_0ROW_TOP_0COL_LEFT			= 1, //   1  =  0th row is at the top, and 0th column is on the left (THE DEFAULT).
-        PHOTOS_EXIF_0ROW_TOP_0COL_RIGHT			= 2, //   2  =  0th row is at the top, and 0th column is on the right.  
-        PHOTOS_EXIF_0ROW_BOTTOM_0COL_RIGHT      = 3, //   3  =  0th row is at the bottom, and 0th column is on the right.  
-        PHOTOS_EXIF_0ROW_BOTTOM_0COL_LEFT       = 4, //   4  =  0th row is at the bottom, and 0th column is on the left.  
-        PHOTOS_EXIF_0ROW_LEFT_0COL_TOP          = 5, //   5  =  0th row is on the left, and 0th column is the top.  
-        PHOTOS_EXIF_0ROW_RIGHT_0COL_TOP         = 6, //   6  =  0th row is on the right, and 0th column is the top.  
-        PHOTOS_EXIF_0ROW_RIGHT_0COL_BOTTOM      = 7, //   7  =  0th row is on the right, and 0th column is the bottom.  
-        PHOTOS_EXIF_0ROW_LEFT_0COL_BOTTOM       = 8  //   8  =  0th row is on the left, and 0th column is the bottom.  
-    };
-    
-    switch (curDeviceOrientation) {
-        case UIDeviceOrientationPortraitUpsideDown:  // Device oriented vertically, home button on the top
-            exifOrientation = PHOTOS_EXIF_0ROW_LEFT_0COL_BOTTOM;
-            break;
-        case UIDeviceOrientationLandscapeLeft:       // Device oriented horizontally, home button on the right
-            if (isUsingFrontFacingCamera)
-                exifOrientation = PHOTOS_EXIF_0ROW_BOTTOM_0COL_RIGHT;
-            else
-                exifOrientation = PHOTOS_EXIF_0ROW_TOP_0COL_LEFT;
-            break;
-        case UIDeviceOrientationLandscapeRight:      // Device oriented horizontally, home button on the left
-            if (isUsingFrontFacingCamera)
-                exifOrientation = PHOTOS_EXIF_0ROW_TOP_0COL_LEFT;
-            else
-                exifOrientation = PHOTOS_EXIF_0ROW_BOTTOM_0COL_RIGHT;
-            break;
-        case UIDeviceOrientationPortrait:            // Device oriented vertically, home button on the bottom
-        default:
-            exifOrientation = PHOTOS_EXIF_0ROW_RIGHT_0COL_TOP;
-            break;
-    }
-    
-    imageOptions = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:exifOrientation] forKey:CIDetectorImageOrientation];
-    NSArray *features = [faceDetector featuresInImage:ciImage options:imageOptions];
-    //[ciImage release];
-    
-    // get the clean aperture
-    // the clean aperture is a rectangle that defines the portion of the encoded pixel dimensions
-    // that represents image data valid for display.
-    CMFormatDescriptionRef fdesc = CMSampleBufferGetFormatDescription(sampleBuffer);
-    CGRect clap = CMVideoFormatDescriptionGetCleanAperture(fdesc, false /*originIsTopLeft == false*/);
-    
-    dispatch_async(dispatch_get_main_queue(), ^(void) {
-        [self drawFaceBoxesForFeatures:features forVideoBox:clap orientation:curDeviceOrientation];
-    });
-}
 
 - (void)dealloc
 {
@@ -862,44 +521,181 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
-{
-    if ( [gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]] ) {
-        beginGestureScale = effectiveScale;
-    }
-    return YES;
-}
 
-// scale image depending on users pinch gesture
-- (IBAction)handlePinchGesture:(UIPinchGestureRecognizer *)recognizer
-{
-    BOOL allTouchesAreOnThePreviewLayer = YES;
-    NSUInteger numTouches = [recognizer numberOfTouches], i;
-    for ( i = 0; i < numTouches; ++i ) {
-        CGPoint location = [recognizer locationOfTouch:i inView:previewView];
-        CGPoint convertedLocation = [previewLayer convertPoint:location fromLayer:previewLayer.superlayer];
-        if ( ! [previewLayer containsPoint:convertedLocation] ) {
-            allTouchesAreOnThePreviewLayer = NO;
-            break;
+#pragma mark Video Recording
+
+- (void)startRecordingVideo {
+    
+    //    AVCaptureConnection *videoConnection = [videoDataOutput connectionWithMediaType:AVMediaTypeVideo];
+    //    UIDeviceOrientation curDeviceOrientation = [[UIDevice currentDevice] orientation];
+    //    AVCaptureVideoOrientation avcaptureOrientation = [self avOrientationForDeviceOrientation:curDeviceOrientation];
+    //    [stillImageConnection setVideoOrientation:avcaptureOrientation];
+    //    [stillImageConnection setVideoScaleAndCropFactor:effectiveScale];
+    
+    
+//    if ([self.captureSession canAddOutput:self.movieFileOutput]) {
+//        [self.captureSession addOutput:self.movieFileOutput];
+    
+        
+        //        if (CaptureConnection.supportsVideoMinFrameDuration)
+        //            CaptureConnection.videoMinFrameDuration = CMTimeMake(1, CAPTURE_FRAMES_PER_SECOND);
+        //        if (CaptureConnection.supportsVideoMaxFrameDuration)
+        //            CaptureConnection.videoMaxFrameDuration = CMTimeMake(1, CAPTURE_FRAMES_PER_SECOND);
+        //
+        //        CMTimeShow(CaptureConnection.videoMinFrameDuration);
+        //        CMTimeShow(CaptureConnection.videoMaxFrameDuration);
+        
+        
+        AVCaptureDevice *device = self.videoDeviceInput.device;
+        
+        CMTimeShow(device.activeVideoMinFrameDuration);
+        CMTimeShow(device.activeVideoMaxFrameDuration);
+        
+        NSError *configLockErr = nil;
+        [device lockForConfiguration:&configLockErr];
+        if(configLockErr) {
+            NSLog(@"Error locking device configuration: %@", configLockErr.localizedDescription);
         }
+        else {
+            device.activeVideoMinFrameDuration = kWGVideoInputMinFrameDuration;
+            [device unlockForConfiguration];
+        }
+        
+        CMTimeShow(device.activeVideoMinFrameDuration);
+        CMTimeShow(device.activeVideoMaxFrameDuration);
+    
+    
+    if ( [self.captureSession canAddOutput:self.videoDataOutput] ) {
+        [self.captureSession addOutput:self.videoDataOutput];
     }
     
-    if ( allTouchesAreOnThePreviewLayer ) {
-        effectiveScale = beginGestureScale * recognizer.scale;
-        if (effectiveScale < 1.0)
-            effectiveScale = 1.0;
-        CGFloat maxScaleAndCropFactor = [[stillImageOutput connectionWithMediaType:AVMediaTypeVideo] videoMaxScaleAndCropFactor];
-        if (effectiveScale > maxScaleAndCropFactor)
-            effectiveScale = maxScaleAndCropFactor;
-        [CATransaction begin];
-        [CATransaction setAnimationDuration:.025];
-        [previewLayer setAffineTransform:CGAffineTransformMakeScale(effectiveScale, effectiveScale)];
-        [CATransaction commit];
-    }
+    
+        self.videoOutputURL = [WGCameraViewController tempVideoURL];
+        
+//        [self.movieFileOutput startRecordingToOutputFileURL:fileURL
+//                                          recordingDelegate:self];
+    
+//    }
+//    else {
+//        // Handle the failure.
+//        NSLog(@"error starting recording");
+//    }
+    
+    
+    //videoDataOutput
+    
+    NSDictionary *recommendedSettings = [self.videoDataOutput recommendedVideoSettingsForAssetWriterWithOutputFileType:AVFileTypeMPEG4];
+    
+    NSNumber *videoWidth = recommendedSettings[AVVideoWidthKey];
+    NSNumber *videoHeight= recommendedSettings[AVVideoHeightKey];
+    
+    NSDictionary *videoWriterCompressionSettings =  [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:kWGVideoAverageBitRate], AVVideoAverageBitRateKey, nil];
+    
+    
+    NSDictionary *videoWriterSettings = @{AVVideoCodecKey:AVVideoCodecH264,
+                                          AVVideoCompressionPropertiesKey:videoWriterCompressionSettings,
+                                          AVVideoWidthKey:videoWidth,
+                                          AVVideoHeightKey:videoHeight};
+    
+    
+    self.videoWriterInput = [AVAssetWriterInput
+                                            assetWriterInputWithMediaType:AVMediaTypeVideo
+                                            outputSettings:videoWriterSettings];
+    
+    self.videoWriterInput.expectsMediaDataInRealTime = YES;
+    
+    // rotate video to portrait mode
+    self.videoWriterInput.transform = CGAffineTransformMake(0.0,1.0,-1.0,0.0,[videoHeight floatValue],0.0);
+    
+    
+    /* I'm going to push pixel buffers to it, so will need a
+     AVAssetWriterPixelBufferAdaptor, to expect the same 32BGRA input as I've
+     asked the AVCaptureVideDataOutput to supply */
+    
+    self.pixelBufferAdaptor =
+    [[AVAssetWriterInputPixelBufferAdaptor alloc]
+     initWithAssetWriterInput:self.videoWriterInput
+     sourcePixelBufferAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      [NSNumber numberWithInt:kCVPixelFormatType_32BGRA],
+      kCVPixelBufferPixelFormatTypeKey,
+      nil]];
+    
+    NSError *videoWriterError;
+    
+    [[self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:YES];
+    
+    self.videoWriter = [[AVAssetWriter alloc]
+                                  initWithURL:self.videoOutputURL
+                                  fileType:AVFileTypeMPEG4
+                                  error:&videoWriterError];
+    
+    [self.videoWriter addInput:self.videoWriterInput];
+    
+    
+    frameNumber = 0;
+    
+    [self.videoWriter startWriting];
+    [self.videoWriter startSessionAtSourceTime:kCMTimeZero];
+    
+    
 }
+
+- (void)stopRecording {
+    //[self.movieFileOutput stopRecording];
+    
+    [[self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:NO];
+    [self.videoWriterInput markAsFinished];
+    
+    [self.captureSession removeOutput:self.videoDataOutput];
+    
+    [self.videoWriter finishWritingWithCompletionHandler:^{
+        
+        dispatch_async(dispatch_get_main_queue(),
+                       ^{
+                           NSLog(@"video writer status: %ld", (long)self.videoWriter.status);
+                           
+                           NSDictionary *dict = @{UIImagePickerControllerMediaType:(NSString *)kUTTypeMovie,
+                                                  UIImagePickerControllerMediaURL:self.videoOutputURL};
+                           
+                           
+                           [self.delegate cameraController:self
+                             didFinishPickingMediaWithInfo:dict];
+                       });
+        
+    }];
+}
+
+
 
 
 #pragma mark AVCaptureFileOutputRecordingDelegate methods
+
+
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
+{
+    
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    
+    if(self.videoWriterInput.readyForMoreMediaData) {
+        [self.pixelBufferAdaptor appendPixelBuffer:imageBuffer
+                              withPresentationTime:CMTimeMake(frameNumber, 30)];
+        //NSLog(@"appending frame %lld", frameNumber);
+        frameNumber++;
+        
+    }
+}
+
+- (void)captureOutput:(AVCaptureOutput *)captureOutput
+  didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer
+       fromConnection:(AVCaptureConnection *)connection
+{
+    
+    NSLog(@"dropped sample buffer");
+    
+    
+}
+
 
 - (void)captureOutput:(AVCaptureFileOutput *)captureOutput
 didStartRecordingToOutputFileAtURL:(NSURL *)fileURL
@@ -1153,6 +949,7 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
     return [NSString stringWithString:randomString];
     
 }
+
 
 
 @end

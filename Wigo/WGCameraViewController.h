@@ -20,10 +20,9 @@
     IBOutlet UIView *previewView;
     IBOutlet UISegmentedControl *camerasControl;
     AVCaptureVideoPreviewLayer *previewLayer;
-    AVCaptureVideoDataOutput *videoDataOutput;
     
     BOOL detectFaces;
-    dispatch_queue_t videoDataOutputQueue;
+    
     AVCaptureStillImageOutput *stillImageOutput;
     UIView *flashView;
     UIImage *square;
@@ -38,8 +37,7 @@
 
 @property (nonatomic,strong) UIView *cameraOverlayView;
 
-@property (nonatomic,strong) AVCaptureMovieFileOutput *movieFileOutput;
-@property (nonatomic,strong) AVCaptureSession *captureSession;
+@property (nonatomic,readonly) BOOL isRecording;
 
 - (void)takePictureWithCompletion:(void (^)(UIImage *image, NSDictionary *attachments, NSError *error))completion;
 - (void)startRecordingVideo;
