@@ -513,7 +513,7 @@ BOOL blockShown;
     _chatButton.hidden = YES;
     _followButton.hidden = YES;
     _followButton.hidden = YES;
-    
+    _followButton.layer.cornerRadius = 0.0f;
     [_followButton setImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [_followButton setTitle:nil forState:UIControlStateNormal];
 
@@ -537,10 +537,15 @@ BOOL blockShown;
     }
     else if (self.userState == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
         _rightBarBt.hidden = NO;
+        _followButton.hidden = NO;
         [_followButton setImage:nil forState:UIControlStateNormal];
         [_followButton setTitle:@"Pending" forState:UIControlStateNormal];
         [_followButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-        _followButton.backgroundColor = UIColor.grayColor;
+        _followButton.titleLabel.font = [FontProperties mediumFont:15.0f];
+        _followButton.backgroundColor = RGB(226, 226, 226);
+        _followButton.layer.borderColor = UIColor.clearColor.CGColor;
+        _followButton.layer.cornerRadius = 10.0f;
+        _followButton.layer.borderWidth = 2.0f;
     }
     
     if (self.userState == CURRENT_USER_STATE) {
@@ -892,7 +897,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [WGProfile reload:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.user = WGProfile.currentUser;
-        strongSelf.numberOfFriendsLabel.text = [WGProfile numFriends].stringValue;
+        strongSelf.numberOfFriendsLabel.text = WGProfile.numFriends.stringValue;
         strongSelf.imageScrollView.user = WGProfile.currentUser;
         strongSelf.pageControl.numberOfPages = strongSelf.user.images.count;
         [strongSelf reloadViewForUserState];
@@ -1176,13 +1181,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)setUser:(WGUser *)user {
     _user = user;
-   
-    if (user.isCurrentUser || self.user.state == OTHER_SCHOOL_USER_STATE) {
+    if (user.state != FRIEND_USER_STATE) {
         self.tapButton.hidden = YES;
         self.chatButton.hidden = YES;
         return;
     }
-    
     self.tapButton.hidden = NO;
     self.chatButton.hidden = NO;
     if (user.isTapped.boolValue) {
