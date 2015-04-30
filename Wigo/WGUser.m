@@ -88,6 +88,7 @@
 #define kFriendRequestSent @"sent"
 #define kFriendRequestReceived @"received"
 #define kDictionaryTappedList @"is_tapped_dictionary"
+#define kDictionaryIsFriendRequestList @"is_friend_request_read_list"
 
 static WGUser *currentUser = nil;
 
@@ -693,9 +694,10 @@ static WGUser *currentUser = nil;
 }
 
 -(NSNumber *) isTapped {
+    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:kDictionaryTappedList];
     NSDate* todayDate = [NSDate date];
     NSString *dayString = [todayDate getDayString];
-    NSMutableDictionary *dayTouserToTapped = [[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryTappedList];
+    NSMutableDictionary *dayTouserToTapped = [[NSMutableDictionary alloc] initWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryTappedList]];
     for (NSString *key in dayTouserToTapped.allKeys) {
         if (![key isEqual:dayString]) {
             [dayTouserToTapped removeObjectForKey:key];
@@ -708,6 +710,17 @@ static WGUser *currentUser = nil;
         return [userToTapped objectForKey:self.id.stringValue];
     }
     return nil;
+}
+
+-(void) setIsFriendRequestRead:(BOOL)isFriendRequestRead {
+    NSMutableArray *listOfFriendRequestRead = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryIsFriendRequestList]];
+    if (isFriendRequestRead && ![listOfFriendRequestRead containsObject:self.id.stringValue]) [listOfFriendRequestRead addObject:self.id.stringValue];
+    [[NSUserDefaults standardUserDefaults] setObject:listOfFriendRequestRead forKey:kDictionaryIsFriendRequestList];
+}
+
+-(BOOL) isFriendRequestRead {
+    NSArray *listOfFriendRequestRead = [[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryIsFriendRequestList];
+    return [listOfFriendRequestRead containsObject:self.id.stringValue];
 }
 
 -(void) setNumUnreadConversations:(NSNumber *)numUnreadConversations {
@@ -770,6 +783,7 @@ static WGUser *currentUser = nil;
 }
 
 
+#warning TODO: Check if the isFriend is dealt properly
 -(State) state {
     if (self.isCurrentUser) {
         if (self.privacy == PRIVATE) return PRIVATE_STATE;
@@ -787,9 +801,15 @@ static WGUser *currentUser = nil;
         }
         else return NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
     }
-#warning TODO: Check if the isFriend is dealt properly
+    if (!self.isFriend.boolValue) {
+        if ([self.friendRequest isEqual:kFriendRequestSent]) {
+            return SENT_REQUEST_USER_STATE;
+        }
+        else if ([self.friendRequest isEqual:kFriendRequestReceived]) {
+            return RECEIVED_REQUEST_USER_STATE;
+        }
+    }
     if (self.isFriend.boolValue) {
-//    if (self.isFriend.boolValue || [self.isFollowingRequested boolValue]) {
         if (self.eventAttending) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
         return FOLLOWING_USER_STATE;
     }

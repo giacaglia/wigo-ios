@@ -42,11 +42,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if (!WGProfile.currentUser.lastMessageRead ||
-        [self.lastMessageRead compare:WGProfile.currentUser.lastMessageRead] == NSOrderedDescending) {
-        WGProfile.currentUser.lastMessageRead = self.lastMessageRead;
-        [TabBarAuxiliar checkIndex:kIndexOfChats ForDate:self.lastMessageRead];
-    }
+    [TabBarAuxiliar checkIndex:kIndexOfChats ForDate:self.lastMessageRead];
+    
     self.tabBarController.navigationItem.titleView = nil;
 }
 

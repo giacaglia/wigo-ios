@@ -402,7 +402,6 @@ referenceSizeForFooterInSection:(NSInteger)section {
     self.followButton.hidden = YES;
     self.followButton.enabled = NO;
     self.user.isFriend = @YES;
-//    self.user.isFollowingRequested = @YES;
     [WGProfile.currentUser friendUser:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionPost];

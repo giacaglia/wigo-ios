@@ -77,8 +77,8 @@
             NSDate *lastMessage = [WGGetter getDateFromString:messageString];
             [TabBarAuxiliar checkIndex:kIndexOfChats ForDate:lastMessage];
         }
-        if ([jsonResponse objectForKey:@"last_user"]) {
-            NSString *userString = [jsonResponse objectForKey:@"last_user"];
+        if ([jsonResponse objectForKey:@"last_friend_request"]) {
+            NSString *userString = [jsonResponse objectForKey:@"last_friend_request"];
             NSDate *lastUser = [WGGetter getDateFromString:userString];
             [TabBarAuxiliar checkIndex:kIndexOfFriends ForDate:lastUser];
         }

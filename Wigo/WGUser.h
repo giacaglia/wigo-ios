@@ -11,6 +11,8 @@
 #import "WGGroup.h"
 #import "JSQMessagesViewController/JSQMessages.h"
 
+#define kFriendRequestSent @"sent"
+#define kFriendRequestReceived @"received"
 @class WGEvent;
 
 typedef enum Gender {
@@ -37,7 +39,9 @@ typedef enum State {
     ACCEPTED_PRIVATE_USER_STATE,
     ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE,
     BLOCKED_USER_STATE,
-    OTHER_SCHOOL_USER_STATE
+    OTHER_SCHOOL_USER_STATE,
+    SENT_REQUEST_USER_STATE,
+    RECEIVED_REQUEST_USER_STATE
 } State;
 
 @interface WGUser : WGObject <JSQMessageAvatarImageDataSource>
@@ -47,6 +51,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSString* key;
 @property (nonatomic, assign) Privacy privacy;
 @property NSNumber* isTapped;
+@property BOOL isFriendRequestRead;
 @property NSNumber* isBlocked;
 @property NSNumber* isBlocking;
 @property NSString* bio;

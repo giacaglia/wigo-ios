@@ -81,11 +81,16 @@ NSIndexPath *userIndex;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if ([self.lastUserRead compare:WGProfile.currentUser.lastUserRead] == NSOrderedDescending ||
-        !WGProfile.currentUser.lastUserRead) {
-        WGProfile.currentUser.lastUserRead = self.lastUserRead;
-        [TabBarAuxiliar checkIndex:kIndexOfFriends ForDate:self.lastUserRead];
+    if ([self.currentTab isEqual:@2]) {
+        for (WGUser *user in self.friendRequestUsers) {
+            user.isFriendRequestRead = YES;
+        }
     }
+//    if ([self.lastUserRead compare:WGProfile.currentUser.lastUserRead] == NSOrderedDescending ||
+//        !WGProfile.currentUser.lastUserRead) {
+//        WGProfile.currentUser.lastUserRead = self.lastUserRead;
+//        [TabBarAuxiliar checkIndex:kIndexOfFriends ForDate:self.lastUserRead];
+//    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -292,16 +297,6 @@ NSIndexPath *userIndex;
     if (!user.isCurrentUser) {
         [cell.profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
     }
-    if (WGProfile.currentUser.lastUserRead && [user.created compare:WGProfile.currentUser.lastUserRead] != NSOrderedDescending ) {
-        cell.orangeNewView.hidden = YES;
-    }
-    else {
-        if (!self.lastUserRead || [self.lastUserRead compare:user.created] == NSOrderedAscending) {
-            self.lastUserRead = user.created;
-        }
-        cell.orangeNewView.hidden = YES;
-
-    }
     return cell;
 }
 
@@ -404,11 +399,14 @@ viewForHeaderInSection:(NSInteger)section
 - (void)acceptPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:buttonSender.tag];
+    user.friendRequest = kFriendRequestSent;
     [WGProfile.currentUser acceptFriendRequestFromUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
         }
     }];
+    FollowPeopleCell *cell = (FollowPeopleCell *)[buttonSender superview];
+    cell.user = user;
 }
 
 - (void)rejectPressed:(id)sender {
@@ -682,7 +680,6 @@ viewForHeaderInSection:(NSInteger)section
     self.orangeNewView.layer.cornerRadius = self.orangeNewView.frame.size.width/2;
     self.orangeNewView.layer.borderColor = UIColor.clearColor.CGColor;
     self.orangeNewView.layer.borderWidth = 1.0f;
-    self.orangeNewView.hidden = YES;
     [self.contentView addSubview:self.orangeNewView];
 }
 
@@ -711,6 +708,7 @@ viewForHeaderInSection:(NSInteger)section
 - (void) setup {
     [super setup];
     self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 52, [TablePersonCell height] / 2 - 19, 52, 38)];
+    self.orangeNewView.hidden = YES;
     [self.contentView addSubview:self.followPersonButton];
 }
 
@@ -817,6 +815,13 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void)setUser:(WGUser *)user {
     super.user = user;
+    if (user.state == SENT_REQUEST_USER_STATE || user.state == RECEIVED_REQUEST_USER_STATE) {
+        self.acceptButton.hidden = YES;
+        self.rejectButton.hidden = YES;
+    }
+    self.acceptButton.hidden = NO;
+    self.rejectButton.hidden = NO;
+    self.orangeNewView.hidden = user.isFriendRequestRead;
 }
 
 @end
