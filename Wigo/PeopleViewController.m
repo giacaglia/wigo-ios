@@ -395,24 +395,32 @@ viewForHeaderInSection:(NSInteger)section
 - (void)acceptPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:buttonSender.tag];
-    user.friendRequest = kFriendRequestSent;
+    user.isFriend = @YES;
     [WGProfile.currentUser acceptFriendRequestFromUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            user.isFriend = nil;
+            user.friendRequest = kFriendRequestReceived;
         }
     }];
-    FollowPeopleCell *cell = (FollowPeopleCell *)[buttonSender superview];
-    cell.user = user;
+    [self.friendRequestUsers replaceObjectAtIndex:buttonSender.tag withObject:user];
+    [self.tableViewOfPeople reloadData];
 }
 
 - (void)rejectPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:buttonSender.tag];
+    user.isFriend = @NO;
+    user.friendRequest = nil;
     [WGProfile.currentUser rejectFriendRequestForUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            user.isFriend = nil;
+            user.friendRequest = kFriendRequestReceived;
         }
     }];
+    [self.friendRequestUsers replaceObjectAtIndex:buttonSender.tag withObject:user];
+    [self.tableViewOfPeople reloadData];
 }
 
 
@@ -811,13 +819,14 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void)setUser:(WGUser *)user {
     super.user = user;
-    if (user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
+    self.orangeNewView.hidden = user.isFriendRequestRead;
+    if (user.isFriend) {
         self.acceptButton.hidden = YES;
         self.rejectButton.hidden = YES;
+        return;
     }
     self.acceptButton.hidden = NO;
     self.rejectButton.hidden = NO;
-    self.orangeNewView.hidden = user.isFriendRequestRead;
 }
 
 @end
