@@ -117,7 +117,6 @@ BOOL blockShown;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     [self initializeRightBarButton];
     self.tabBarController.navigationItem.titleView = nil;
     [self.imageScrollView.scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [self.user.imagesURL count] - 10, [[UIScreen mainScreen] bounds].size.width)];
@@ -151,6 +150,7 @@ BOOL blockShown;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     self.tabBarController.navigationItem.titleView = nil;
     [self reloadViewForUserState];
 
