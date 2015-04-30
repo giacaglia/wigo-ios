@@ -13,6 +13,8 @@
 
 #define kFriendRequestSent @"sent"
 #define kFriendRequestReceived @"received"
+#define kPropertiesKey @"properties"
+
 @class WGEvent;
 
 typedef enum Gender {

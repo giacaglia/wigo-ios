@@ -94,7 +94,8 @@
 }
 
 - (void)fetchFriendsIds {
-    [WGApi get:@"users/me/friends/ids/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {        
+    [WGApi get:@"users/me/friends/ids/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!WGProfile.currentUser || error) return;
         [WGProfile.currentUser setFriendsIds:(NSArray *)jsonResponse];
     }];
 

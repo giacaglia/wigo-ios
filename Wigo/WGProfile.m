@@ -395,6 +395,9 @@ static BOOL isLocal = YES;
     if (self.email) {
         [parameters setObject:self.email forKey:kEmailKey];
     }
+    if (self.properties) {
+        [parameters setObject:self.properties forKey:kPropertiesKey];
+    }
     
     [WGApi post:@"login" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {

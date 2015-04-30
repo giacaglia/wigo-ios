@@ -37,7 +37,6 @@
 #define kLastNotificationReadKey @"last_notification_read"
 #define kLastUserReadKey @"last_user_read"
 
-#define kPropertiesKey @"properties"
 #define kImagesKey @"images"
 #define kHometownKey @"hometown"
 #define kWorkKey @"work"
@@ -388,6 +387,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setMetaObject:(id)object forKey:(NSString *)key {
+    if (!self.id) return;
     if (WGProfile.currentUser.friendsMetaDict) {
         NSMutableDictionary *mutFriendsMetaDict = [NSMutableDictionary dictionaryWithDictionary:WGProfile.currentUser.friendsMetaDict];
         if ([mutFriendsMetaDict.allKeys containsObject:self.id.stringValue]) {
@@ -411,6 +411,7 @@ static WGUser *currentUser = nil;
 }
 
 -(id) metaObjectForKey:(NSString *)key {
+    if (!self.id) return nil;
     NSDictionary *friendsMetaDict = WGProfile.currentUser.friendsMetaDict;
     if (friendsMetaDict) {
         if ([friendsMetaDict.allKeys containsObject:self.id.stringValue]) {
