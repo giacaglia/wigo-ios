@@ -1726,33 +1726,33 @@ BOOL firstTimeLoading;
     [backgroundView addSubview:self.numberOfPeopleGoingLabel];
     
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
+    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[UIScreen mainScreen].bounds.size.width/(float)5.5;
     self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 60 + 9, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [backgroundView addSubview:self.eventPeopleScrollView];
     
     self.arrayOfImageViews = [NSMutableArray new];
     
-    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, (self.frame.size.width - 6)/2, (self.frame.size.width - 6)/2)];
+    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     firstImageView.contentMode = UIViewContentModeScaleAspectFill;
     firstImageView.clipsToBounds = YES;
     [backgroundView addSubview:firstImageView];
     [self.arrayOfImageViews addObject:firstImageView];
     
-    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 6)/2 + 6, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, (self.frame.size.width - 6)/2, (self.frame.size.width - 6)/2)];
+    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     secondImageView.contentMode = UIViewContentModeScaleAspectFill;
     secondImageView.clipsToBounds = YES;
     [backgroundView addSubview:secondImageView];
     [self.arrayOfImageViews addObject:secondImageView];
     
-    UIImageView *thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 6)/2 + 5, (self.frame.size.width - 6)/2, (self.frame.size.width - 6)/2)];
+    UIImageView *thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 2)/2 + 5, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     thirdImageView.contentMode = UIViewContentModeScaleAspectFill;
     thirdImageView.clipsToBounds = YES;
     thirdImageView.hidden = YES;
     [backgroundView addSubview:thirdImageView];
     [self.arrayOfImageViews addObject:thirdImageView];
     
-    UIImageView *fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 6)/2 + 6, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 6)/2 + 5, (self.frame.size.width - 6)/2, (self.frame.size.width - 6)/2)];
+    UIImageView *fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 2)/2 + 5, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     fourthImageView.contentMode = UIViewContentModeScaleAspectFill;
     fourthImageView.clipsToBounds = YES;
     fourthImageView.hidden = YES;
@@ -1834,7 +1834,8 @@ BOOL firstTimeLoading;
 @implementation LessThan2PhotosOldEventCell
 
 + (CGFloat)height {
-    return 20 + 64 + [EventPeopleScrollView containerHeight] + ([UIScreen mainScreen].bounds.size.width - 6)/2 + 20;
+    CGFloat width = [UIScreen mainScreen].bounds.size.width;
+    return 109 + 0.9*(width/(float)5.5) + (width - 2)/2 + 20;
 }
 
 
