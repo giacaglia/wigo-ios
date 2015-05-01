@@ -238,6 +238,7 @@
         NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
         myCell.videoURL = videoURL;
         
+        NSLog(@"video URL: %@", videoURL.absoluteString);
         
 //        if (self.firstCell) {
 //            [myCell.moviePlayer play];
@@ -2014,11 +2015,11 @@
 - (void) videoCaptureTimerFired:(NSTimer *) timer {
     dispatch_async(dispatch_get_main_queue(), ^{
         
-        NSLog(@"video fire (%f)", timer.timeInterval);
+        //NSLog(@"video fire (%f)", timer.timeInterval);
         self.videoTimerCount -= timer.timeInterval;
-        NSLog(@"video timer count: %f", self.videoTimerCount);
+        //NSLog(@"video timer count: %f", self.videoTimerCount);
         
-        NSLog(@"camera %@", NSStringFromCGAffineTransform(self.controller.cameraViewTransform));
+        //NSLog(@"camera %@", NSStringFromCGAffineTransform(self.controller.cameraViewTransform));
         
         UILongPressGestureRecognizer *gesture = timer.userInfo[@"gesture"];
         [self.circularProgressView setProgress: MIN(1.0, (8.0 - self.videoTimerCount)/8.0) animated:YES];
