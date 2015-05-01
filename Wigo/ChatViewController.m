@@ -183,7 +183,10 @@
     if (indexPath.row == self.messages.count - 1) [self fetchNextPage];
     if (self.messages.count  == 0) return cell;
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.row];
-    if (WGProfile.currentUser.lastMessageRead && [message.created compare:WGProfile.currentUser.lastMessageRead] != NSOrderedDescending ) {
+    if (WGProfile.currentUser.lastMessageRead &&
+        ([message.created compare:WGProfile.currentUser.lastMessageRead] == NSOrderedDescending ||
+        [message.created compare:WGProfile.currentUser.lastMessageRead] == NSOrderedSame)
+        ) {
         cell.lastMessageLabel.textColor = RGB(208, 208, 208);
         cell.orangeNewView.hidden = YES;
     }
