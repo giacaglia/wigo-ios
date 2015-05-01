@@ -99,6 +99,7 @@ static NSDate *biggestDate;
 }
 
 + (void)checkIndex:(int)index forDate:(NSDate *)date {
+    if (!date) return;
     //For chats
     if (index == kIndexOfChats) {
         if (!WGProfile.currentUser.lastMessageRead ||

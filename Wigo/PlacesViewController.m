@@ -603,7 +603,7 @@ BOOL firstTimeLoading;
 //           [MoreThan2PhotosOldEventCell height];
 //        }
 //        else {
-            return [LessThan2PhotosOldEventCell height];
+            return [MoreThan2PhotosOldEventCell height];
 //        }
     }
     
@@ -691,7 +691,7 @@ BOOL firstTimeLoading;
 //            cell = (MoreThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kMoreThan2PhotosOldEventCell forIndexPath:indexPath];
 //        }
 //        else {
-            cell = (LessThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kLessThan2PhotosOldEventCell forIndexPath:indexPath];
+            cell = (MoreThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kMoreThan2PhotosOldEventCell forIndexPath:indexPath];
 //        }
         cell.event = event;
         cell.placesDelegate = self;
@@ -1687,75 +1687,56 @@ BOOL firstTimeLoading;
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, self.frame.size.height - 20 - 4, self.frame.size.width + 10, 12)];
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, self.frame.size.height - 20 - 8, self.frame.size.width + 10, 12)];
     shadowImageView.image = [UIImage imageNamed:@"shadow"];
     [self.contentView addSubview:shadowImageView];
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
     backgroundView.backgroundColor = UIColor.whiteColor;
+    backgroundView.layer.borderColor = UIColor.clearColor.CGColor;
+    backgroundView.layer.borderWidth = 1.0f;
+    backgroundView.layer.cornerRadius = 15.0f;
+    backgroundView.clipsToBounds = YES;
     [self.contentView addSubview:backgroundView];
     
-    self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
-    [backgroundView addSubview:self.privacyLockButton];
-
-    self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 26.5 - 8., 12, 16)];
-    self.privacyLockImageView.image = [UIImage imageNamed:@"veryBlueLockClosed"];
-    self.privacyLockImageView.hidden = YES;
-    [self.privacyLockButton addSubview:self.privacyLockImageView];
-    
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 16.5, self.frame.size.width - 40, 20)];
-    self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 16.5, self.frame.size.width, 20)];
+    self.eventNameLabel.textAlignment = NSTextAlignmentCenter;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.font = [FontProperties semiboldFont:18.0f];
-    self.eventNameLabel.textColor = UIColor.blackColor;
+    self.eventNameLabel.textColor = [FontProperties getBlueColor];
     [backgroundView addSubview:self.eventNameLabel];
-    
-    self.verifiedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 16.5, 20, 20)];
-    self.verifiedImageView.image = [UIImage imageNamed:@"dancingG-0"];
-    self.verifiedImageView.hidden = YES;
-    [self.contentView addSubview:self.verifiedImageView];
-    
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
-    lineView.backgroundColor = RGB(215, 215, 215);
-    [backgroundView addSubview:lineView];
-    
-    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 40 + 20, self.frame.size.width, 20)];
+
+    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20 + 20, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
-    self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
+    self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentCenter;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
     [backgroundView addSubview:self.numberOfPeopleGoingLabel];
     
-    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[UIScreen mainScreen].bounds.size.width/(float)5.5;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 60 + 9, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
-    self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
-    [backgroundView addSubview:self.eventPeopleScrollView];
-    
     self.arrayOfImageViews = [NSMutableArray new];
     
-    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.numberOfPeopleGoingLabel.frame.origin.y + self.numberOfPeopleGoingLabel.frame.size.height + 10, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     firstImageView.contentMode = UIViewContentModeScaleAspectFill;
     firstImageView.clipsToBounds = YES;
     [backgroundView addSubview:firstImageView];
     [self.arrayOfImageViews addObject:firstImageView];
     
-    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.numberOfPeopleGoingLabel.frame.origin.y + self.numberOfPeopleGoingLabel.frame.size.height + 10, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     secondImageView.contentMode = UIViewContentModeScaleAspectFill;
     secondImageView.clipsToBounds = YES;
     [backgroundView addSubview:secondImageView];
     [self.arrayOfImageViews addObject:secondImageView];
     
-    UIImageView *thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 2)/2 + 5, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    UIImageView *thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.numberOfPeopleGoingLabel.frame.origin.y + self.numberOfPeopleGoingLabel.frame.size.height + 10 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     thirdImageView.contentMode = UIViewContentModeScaleAspectFill;
     thirdImageView.clipsToBounds = YES;
-    thirdImageView.hidden = YES;
+//    thirdImageView.hidden = YES;
     [backgroundView addSubview:thirdImageView];
     [self.arrayOfImageViews addObject:thirdImageView];
     
-    UIImageView *fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5 + (self.frame.size.width - 2)/2 + 5, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    UIImageView *fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.numberOfPeopleGoingLabel.frame.origin.y + self.numberOfPeopleGoingLabel.frame.size.height + 10 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     fourthImageView.contentMode = UIViewContentModeScaleAspectFill;
     fourthImageView.clipsToBounds = YES;
-    fourthImageView.hidden = YES;
+//    fourthImageView.hidden = YES;
     [backgroundView addSubview:fourthImageView];
     [self.arrayOfImageViews addObject:fourthImageView];
 }
@@ -1775,10 +1756,10 @@ BOOL firstTimeLoading;
                    @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
     dispatch_async(dispatch_get_main_queue(), ^{
         if (size.width > self.eventNameLabel.frame.size.width) {
-            self.eventNameLabel.frame = CGRectMake(10, 3, self.frame.size.width - 40, 50);
+            self.eventNameLabel.frame = CGRectMake(0, 3, self.frame.size.width, 50);
         }
         else {
-            self.eventNameLabel.frame = CGRectMake(10, 16.5, self.frame.size.width - 40, 20);
+            self.eventNameLabel.frame = CGRectMake(0, 16.5, self.frame.size.width, 20);
         }
     });
     
@@ -1812,8 +1793,8 @@ BOOL firstTimeLoading;
 @implementation MoreThan2PhotosOldEventCell
 
 + (CGFloat)height {
-//    NSLog(@"here");
-    return 500.0f;
+    CGFloat width = [UIScreen mainScreen].bounds.size.width;
+    return 75 + (width - 2);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1835,7 +1816,7 @@ BOOL firstTimeLoading;
 
 + (CGFloat)height {
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    return 109 + 0.9*(width/(float)5.5) + (width - 2)/2 + 20;
+    return 75 + (width - 2)/2;
 }
 
 
