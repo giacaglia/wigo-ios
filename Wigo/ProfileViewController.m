@@ -357,7 +357,7 @@ BOOL blockShown;
     locationImgView.image = [UIImage imageNamed:@"locationIcon"];
     [_headerButtonView addSubview:locationImgView];
     
-    _locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 9, 0.7*self.view.frame.size.width - 30, 14)];
+    _locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 9, 0.75*self.view.frame.size.width - 30, 14)];
     _locationLabel.text = self.user.group.name;
     _locationLabel.font = [FontProperties mediumFont:12.0f];
     _locationLabel.textAlignment = NSTextAlignmentLeft;
@@ -367,7 +367,7 @@ BOOL blockShown;
     schoolImgView.image = [UIImage imageNamed:@"schoolIcon"];
     [_headerButtonView addSubview:schoolImgView];
     
-    _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 22 + 5 - 2, 0.7*self.view.frame.size.width - 30, 14)];
+    _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 22 + 5 - 2, 0.75*self.view.frame.size.width - 30, 14)];
     _schoolLabel.text = self.user.education;
     _schoolLabel.font = [FontProperties mediumFont:12.0f];
     _schoolLabel.textAlignment = NSTextAlignmentLeft;
@@ -377,7 +377,7 @@ BOOL blockShown;
     workImgView.image = [UIImage imageNamed:@"workIcon"];
     [_headerButtonView addSubview:workImgView];
     
-    _workLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 38 + 5 - 2, 0.7*self.view.frame.size.width - 30, 14)];
+    _workLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 38 + 5 - 2, 0.75*self.view.frame.size.width - 30, 14)];
     _workLabel.text = self.user.work;
     _workLabel.font = [FontProperties mediumFont:12.0f];
     _workLabel.textAlignment = NSTextAlignmentLeft;
@@ -387,13 +387,13 @@ BOOL blockShown;
     locationImgView.center = CGPointMake(schoolImgView.center.x, locationImgView.center.y);
     workImgView.center = CGPointMake(schoolImgView.center.x, workImgView.center.y);
     
-    UIView *lineDividerView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width*0.7 - 1, 5, 0.5, 60)];
+    UIView *lineDividerView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width*0.75 - 1, 5, 0.5, 60)];
     lineDividerView.backgroundColor = RGB(205, 205, 205);
     [_headerButtonView addSubview:lineDividerView];
     
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(friendsPressed) forControlEvents:UIControlEventTouchUpInside];
-    _rightProfileButton.frame = CGRectMake(self.view.frame.size.width*0.7, 0, self.view.frame.size.width*0.3, 70);
+    _rightProfileButton.frame = CGRectMake(self.view.frame.size.width*0.75, 0, self.view.frame.size.width*0.25, 70);
     self.numberOfFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 15, _rightProfileButton.frame.size.width, 25)];
     self.numberOfFriendsLabel.textColor = RGB(80, 80, 80);
     self.numberOfFriendsLabel.font = [FontProperties mediumFont:20.0f];

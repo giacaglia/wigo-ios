@@ -1373,8 +1373,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
         else {
             [self.textField endEditing:YES];
             self.textField.hidden = YES;
+            if (self.textField.text.length == 0) return;
             self.textLabel.hidden = NO;
-            self.textLabel.text = self.textField.text;
+            self.textLabel.text = self.textField.text;            
         }
     }
 }
