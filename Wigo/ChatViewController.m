@@ -30,6 +30,8 @@
     [super viewWillAppear:animated];
     self.lastMessageRead = WGProfile.currentUser.lastMessageRead;
     [self fetchMessages];
+    [self initializeTitleView];
+    [self initializeRightBarButtonItem];
 }
 
 

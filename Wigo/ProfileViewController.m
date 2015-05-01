@@ -119,7 +119,7 @@ BOOL blockShown;
     [super viewDidAppear:animated];
     [self initializeRightBarButton];
     self.tabBarController.navigationItem.titleView = nil;
-    [self.imageScrollView.scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [self.user.imagesURL count] - 10, [[UIScreen mainScreen] bounds].size.width)];
+    [self.imageScrollView.scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [self.user.imagesURL count] - 10, [UIScreen mainScreen].bounds.size.width)];
 
     self.tableView.contentOffset = CGPointMake(0, 0);
     [self reloadViewForUserState];
@@ -317,10 +317,12 @@ BOOL blockShown;
 #pragma mark Name View
 - (void)initializeNameOfPerson {
     _nameView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.width - 80, self.view.frame.size.width, 80)];
+    _nameView.userInteractionEnabled = NO;
      
     _nameViewBackground = [[UIImageView alloc] initWithFrame: _nameView.bounds];
     _nameViewBackground.contentMode = UIViewContentModeBottom;
     _nameViewBackground.clipsToBounds = NO;
+    _nameViewBackground.userInteractionEnabled = NO;
     _nameViewBackground.alpha = 0;
     [_nameView addSubview: _nameViewBackground];
     
@@ -333,9 +335,9 @@ BOOL blockShown;
     _nameOfPersonLabel.text = [NSString stringWithFormat:@"%@, %@", self.user.fullName, self.user.age];
     _nameOfPersonLabel.textColor = UIColor.whiteColor;
     _nameOfPersonLabel.font = [FontProperties lightFont:20.0f];
+    _nameOfPersonLabel.userInteractionEnabled = NO;
     [_nameView addSubview:_nameOfPersonLabel];
 
-    
     _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 9, 16, 22)];
     _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
     [_nameView addSubview:_privateLogoImageView];

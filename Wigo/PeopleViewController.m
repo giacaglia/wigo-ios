@@ -56,7 +56,7 @@ NSIndexPath *userIndex;
 }
 
 
-- (void) viewWillAppear:(BOOL)animated {
+-(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     self.lastUserRead = WGProfile.currentUser.lastUserRead;
     if (!didProfileSegue) {
@@ -75,7 +75,14 @@ NSIndexPath *userIndex;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.title = self.user.firstName;
+    [self initializeRightBarButton];
+
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     if ([self.currentTab isEqual:@2]) {
         for (WGUser *user in self.friendRequestUsers) {
@@ -85,7 +92,7 @@ NSIndexPath *userIndex;
     [TabBarAuxiliar clearIndex:kIndexOfFriends];
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
+-(void) viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;

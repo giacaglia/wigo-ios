@@ -23,7 +23,6 @@
 
 - (id)initWithFrame: (CGRect) frame andUser:(WGUser *)user {
     if (self = [super initWithFrame: frame]) {
-        
         self.scrollView = [[UIScrollView alloc] initWithFrame: frame];
         self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.scrollView.autoresizesSubviews = YES;
