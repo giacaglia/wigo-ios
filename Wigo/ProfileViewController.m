@@ -396,14 +396,15 @@ BOOL blockShown;
     self.numberOfFriendsLabel.textColor = RGB(80, 80, 80);
     self.numberOfFriendsLabel.font = [FontProperties mediumFont:20.0f];
     self.numberOfFriendsLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberOfFriendsLabel.text = [WGProfile numFriends].stringValue;
+    self.numberOfFriendsLabel.text = WGProfile.numFriends.stringValue;
     [_rightProfileButton addSubview:self.numberOfFriendsLabel];
     
     UILabel *friendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _rightProfileButton.frame.size.width, 20)];
     friendsLabel.textColor = RGB(137, 137, 137);
     friendsLabel.font = [FontProperties scMediumFont:16.0F];
     friendsLabel.textAlignment = NSTextAlignmentCenter;
-    friendsLabel.text = @"Friends";
+    if (WGProfile.numFriends.intValue == 0 || WGProfile.numFriends.intValue == 1) friendsLabel.text = @"Friend";
+    else friendsLabel.text = @"Friends";
     [_rightProfileButton addSubview:friendsLabel];
     [_headerButtonView addSubview:_rightProfileButton];
     
