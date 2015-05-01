@@ -55,26 +55,22 @@ NSIndexPath *userIndex;
     [self initializeTableOfPeople];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear: animated];
     self.lastUserRead = WGProfile.currentUser.lastUserRead;
+    if (!didProfileSegue) {
+        if (!self.currentTab) self.currentTab = @2;
+        [self loadTableView];
+    }
     if ([self.currentTab isEqualToNumber:@2]) {
         [WGAnalytics tagView:@"school_people"];
     }
     else if ([self.currentTab isEqualToNumber:@3]) {
         [WGAnalytics tagView:@"friends"];
     }
-    [self initializeRightBarButton];
     self.title = self.user.firstName;
-}
-
-- (void) viewWillAppear:(BOOL)animated {
-    [super viewWillAppear: animated];
-    
-    if (!didProfileSegue) {
-        if (!self.currentTab) self.currentTab = @2;
-        [self loadTableView];
-    }
+    [self initializeRightBarButton];
     didProfileSegue = NO;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
 }

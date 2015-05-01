@@ -16,14 +16,8 @@ typedef void (^WGEventMessageResultBlock)(WGEventMessage *object, NSError *error
 @property WGUser *user;
 
 @property NSNumber *eventOwner;
-@property NSNumber *isRead;
 
 @property NSDictionary *properties;
-
-@property NSNumber *vote;
-@property NSNumber *downVotes;
-@property NSNumber *upVotes;
-
 @property NSString *message;
 @property NSString *thumbnail;
 @property NSString *media;
@@ -39,4 +33,10 @@ typedef void (^WGEventMessageResultBlock)(WGEventMessage *object, NSError *error
 
 -(void) vote:(BOOL)upVote forEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler;
 
+// Properties saved in the client
+@property NSNumber *isRead;
+@property NSNumber *vote;
+@property NSNumber *upVotes;
+- (NSString *)dayString;
+@property NSDictionary *metaEventMessageProperties;
 @end

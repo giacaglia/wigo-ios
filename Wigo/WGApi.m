@@ -27,7 +27,7 @@ dispatch_queue_t postQueue;
 
 #define kWigoApiKey @"oi34u53205ju34ik23"
 #define kDeviceType @"iphone"
-#define kWigoApiVersion @"1.0.10 (enable_refs)"
+#define kWigoApiVersion @"2.0.0"
 #define kGZip @"gzip"
 #define kTrue @"true"
 #define kPOST @"POST"
@@ -42,14 +42,7 @@ dispatch_queue_t postQueue;
 #define kReferenceIdKey @"$id"
 #define kReferenceKey @"$ref"
 
-//#ifdef DEBUG
-//static NSString *baseURLString = @"https://dev-api.wigo.us/api/%@";
-//#else
-//static NSString *baseURLString = @"https://api.wigo.us/api/%@";
-//#endif
-
-static NSString *baseURLString = @"https://wigo2.herokuapp.com/api/%@";
-
+static NSString *baseURLString = @"https://api2.wigo.us/api/%@";
 static CLLocationManager *locationManager;
 
 
