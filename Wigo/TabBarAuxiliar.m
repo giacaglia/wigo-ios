@@ -26,8 +26,8 @@ static NSDate *biggestDate;
 
 + (UIView *)defaultChatOrangeView {
     if (chatOrangeView == nil) {
-        float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfChats + 0.6f);
-        chatOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance + 2, 3, 10, 10)];
+        float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfChats + 0.65f);
+        chatOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 10, 10)];
         chatOrangeView.backgroundColor = [FontProperties getOrangeColor];
         chatOrangeView.layer.borderColor = UIColor.clearColor.CGColor;
         chatOrangeView.layer.borderWidth = 1.0f;
@@ -40,8 +40,8 @@ static NSDate *biggestDate;
 
 + (UIView *)defaultFriendsOrangeView {
     if (friendsOrangeView == nil) {
-        float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfFriends + 0.6f);
-        friendsOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance + 2, 3, 10, 10)];
+        float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfFriends + 0.65f);
+        friendsOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 10, 10)];
         friendsOrangeView.backgroundColor = [FontProperties getOrangeColor];
         friendsOrangeView.layer.borderColor = UIColor.clearColor.CGColor;
         friendsOrangeView.layer.borderWidth = 1.0f;
@@ -54,8 +54,8 @@ static NSDate *biggestDate;
 
 + (UIView *)defaultProfileOrangeView {
     if (profileOrangeView == nil) {
-        float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfProfile + 0.6f);
-        profileOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance + 2, 3, 10, 10)];
+        float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfProfile + 0.65f);
+        profileOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 10, 10)];
         profileOrangeView.backgroundColor = [FontProperties getOrangeColor];
         profileOrangeView.layer.borderColor = UIColor.clearColor.CGColor;
         profileOrangeView.layer.borderWidth = 1.0f;
