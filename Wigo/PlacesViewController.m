@@ -368,7 +368,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)initializeWhereView {
-    self.placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20) style: UITableViewStyleGrouped];
+    self.placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20 - 49) style: UITableViewStyleGrouped];
     self.placesTableView.sectionHeaderHeight = 0;
     self.placesTableView.sectionFooterHeight = 0;
     [self.view addSubview:self.placesTableView];

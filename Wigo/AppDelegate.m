@@ -408,16 +408,16 @@ forRemoteNotification:(NSDictionary *)userInfo
             if (error) {
                 return;
             }
-            [WGProfile currentUser].cdnPrefix = cdnPrefix;
-            [WGProfile currentUser].googleAnalyticsEnabled = googleAnalyticsEnabled;
-            [WGProfile currentUser].schoolStatistics = schoolStatistics;
-            [WGProfile currentUser].privateEvents = privateEvents;
-            [WGProfile currentUser].videoEnabled = videoEnabled;
-            [WGProfile currentUser].crossEventPhotosEnabled = crossEventPhotosEnabled;
+            WGProfile.currentUser.cdnPrefix = cdnPrefix;
+            WGProfile.currentUser.googleAnalyticsEnabled = googleAnalyticsEnabled;
+            WGProfile.currentUser.schoolStatistics = schoolStatistics;
+            WGProfile.currentUser.privateEvents = privateEvents;
+            WGProfile.currentUser.videoEnabled = videoEnabled;
+            WGProfile.currentUser.crossEventPhotosEnabled = crossEventPhotosEnabled;
             NSNumber *imageMultiple = [imageProperties objectForKey:kImageMultiple];
             NSNumber *imageQuality = [imageProperties objectForKey:kImageQuality];
-            [WGProfile currentUser].imageMultiple = [imageMultiple floatValue];
-            [WGProfile currentUser].imageQuality = [imageQuality floatValue];
+            WGProfile.currentUser.imageMultiple = [imageMultiple floatValue];
+            WGProfile.currentUser.imageQuality = [imageQuality floatValue];
         }];
     }
 }
