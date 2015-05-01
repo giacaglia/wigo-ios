@@ -103,8 +103,6 @@
     return [self objectForKey:kEventOwnerKey];
 }
 
-
-
 -(void) setUser:(WGUser *)user {
     [self setObject:user forKey:kUserKey];
 }
@@ -248,14 +246,13 @@
     return nil;
 }
 
-
-- (NSString *)dayString {
+-(NSString *) dayString {
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     [dateFormatter setDateFormat:@"yyyy-MM-dd"];
     return [dateFormatter stringFromDate:self.created];
 }
 
--(NSDictionary *)metaEventMessageProperties {
+-(NSDictionary *) metaEventMessageProperties {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kMetaEventMessagesProperties];
 }
 

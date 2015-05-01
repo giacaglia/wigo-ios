@@ -16,7 +16,6 @@ typedef void (^WGEventMessageResultBlock)(WGEventMessage *object, NSError *error
 @property WGUser *user;
 
 @property NSNumber *eventOwner;
-
 @property NSDictionary *properties;
 @property NSString *message;
 @property NSString *thumbnail;
