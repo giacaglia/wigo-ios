@@ -1443,10 +1443,6 @@ BOOL firstTimeLoading;
     
     self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, [EventCell height] - 20)];
     self.whiteView.backgroundColor = UIColor.whiteColor;
-//    self.whiteView.layer.shadowColor = RGBAlpha(0, 0, 0, 0.1f).CGColor;
-//    self.whiteView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
-//    self.whiteView.layer.shadowRadius = 4.0f;
-//    self.whiteView.layer.shadowOpacity = 1.0f;
     [self.contentView addSubview:self.whiteView];
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];
@@ -1468,10 +1464,18 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
     [self.whiteView addSubview:self.eventNameLabel];
     
-    self.verifiedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 16.5, 20, 20)];
-    self.verifiedImageView.image = [UIImage imageNamed:@"dancingG-0"];
-    self.verifiedImageView.hidden = YES;
-    [self.contentView addSubview:self.verifiedImageView];
+    self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 40, 20, 10)];
+    self.verifiedView.hidden = YES;
+    UIImageView *verifiedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+    verifiedImageView.image = [UIImage imageNamed:@"verifiedImage"];
+    [self.verifiedView addSubview:verifiedImageView];
+    UILabel *verifiedLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 100, 10)];
+    verifiedLabel.text = @"Wigo Verified";
+    verifiedLabel.textAlignment = NSTextAlignmentLeft;
+    verifiedLabel.textColor = RGB(165, 165, 165);
+    verifiedLabel.font = [FontProperties mediumFont:10.0f];
+    [self.verifiedView addSubview:verifiedLabel];
+    [self.contentView addSubview:self.verifiedView];
     
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
     lineView.backgroundColor = RGB(215, 215, 215);
@@ -1522,13 +1526,13 @@ BOOL firstTimeLoading;
     self.eventPeopleScrollView.event = _event;
     if (_event.isVerified) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.verifiedImageView.hidden = NO;
+            self.verifiedView.hidden = NO;
             self.eventNameLabel.frame = CGRectMake(self.eventNameLabel.frame.origin.x + 23, self.eventNameLabel.frame.origin.y, self.eventNameLabel.frame.size.width, self.eventNameLabel.frame.size.height);
         });
     }
     else {
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.verifiedImageView.hidden = YES;
+            self.verifiedView.hidden = YES;
         });
     }
 }
@@ -1766,17 +1770,6 @@ BOOL firstTimeLoading;
     self.privacyLockImageView.hidden = !_event.isPrivate;
     self.privacyLockButton.enabled = _event.isPrivate;
     self.eventPeopleScrollView.event = _event;
-    if (_event.isVerified) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.verifiedImageView.hidden = NO;
-            self.eventNameLabel.frame = CGRectMake(self.eventNameLabel.frame.origin.x + 23, self.eventNameLabel.frame.origin.y, self.eventNameLabel.frame.size.width, self.eventNameLabel.frame.size.height);
-        });
-    }
-    else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.verifiedImageView.hidden = YES;
-        });
-    }
     for (int i = 0; i < MIN(4, event.messages.count); i++) {
         WGEventMessage *eventMessage = (WGEventMessage *)[event.messages objectAtIndex:i];
         UIImageView *imageView = [self.arrayOfImageViews objectAtIndex:i];

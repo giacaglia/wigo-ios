@@ -424,6 +424,7 @@
 -(void) navigate {
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     currentInstallation[@"api_version"] = API_VERSION;
+    [currentInstallation setObject:@2.0f forKey:@"api_version_num"];
     currentInstallation[@"wigo_id"] = WGProfile.currentUser.id;
     [currentInstallation saveInBackground];
     

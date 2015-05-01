@@ -962,6 +962,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         currentInstallation.badge = total;
         [currentInstallation setValue:@"ios" forKey:@"deviceType"];
         currentInstallation[@"api_version"] = API_VERSION;
+        [currentInstallation setObject:@2.0f forKey:@"api_version_num"];
         [currentInstallation saveEventually];
         [[UIApplication sharedApplication] setApplicationIconBadgeNumber:total];
     }

@@ -74,7 +74,7 @@
 @property (nonatomic, strong) UIButton *goingHereButton;
 @property (nonatomic, strong) UIView *grayView;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
-@property (nonatomic, strong) UIImageView *verifiedImageView;
+@property (nonatomic, strong) UIView *verifiedView;
 @property (nonatomic, assign) BOOL isOldEvent;
 @end
 
@@ -128,7 +128,7 @@
 @property (nonatomic, strong) UIButton *goingHereButton;
 @property (nonatomic, strong) UIView *grayView;
 @property (nonatomic, strong) NSMutableArray *arrayOfImageViews;
-@property (nonatomic, strong) UIImageView *verifiedImageView;
+@property (nonatomic, strong) UIImageView *verifiedView;
 @end
 
 @interface MoreThan2PhotosOldEventCell : HighlightOldEventCell
