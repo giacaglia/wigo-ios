@@ -352,7 +352,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
     self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 50, imageWidth/2, 70)];
     [self.chatButton addTarget:self action:@selector(chatPressed:) forControlEvents:UIControlEventTouchUpInside];
     self.chatButton.backgroundColor = UIColor.whiteColor;
-    UIImageView *blueChatImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.chatButton.frame.size.width/2 - 20, 5, 40, 40)];
+    UIImageView *blueChatImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.chatButton.frame.size.width/2 - 18, 5, 36, 36)];
     blueChatImageView.image = [UIImage imageNamed:@"blueCardChat"];
     [self.chatButton addSubview:blueChatImageView];
     UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35 + 10, self.chatButton.frame.size.width, 20)];
