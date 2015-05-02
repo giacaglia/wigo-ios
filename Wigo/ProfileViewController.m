@@ -328,6 +328,7 @@ BOOL blockShown;
     
     UIImageView *gradientBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
     gradientBackground.image = [UIImage imageNamed:@"backgroundGradient"];
+    gradientBackground.userInteractionEnabled = NO;
     [_nameView addSubview:gradientBackground];
     
     _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 15, self.view.frame.size.width - 14, 50)];
@@ -340,7 +341,9 @@ BOOL blockShown;
 
     _privateLogoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(12, 80 - 40 - 9, 16, 22)];
     _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
+    _privateLogoImageView.userInteractionEnabled = NO;
     [_nameView addSubview:_privateLogoImageView];
+    
 }
 
 #pragma mark Header Button View
@@ -869,6 +872,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     self.pageControl.alpha = _privateLogoImageView.alpha;
     _gradientImageView.alpha = _privateLogoImageView.alpha;
+    
     
     _nameViewBackground.alpha = MIN(1.0, lengthFraction);
     _nameViewBackground.alpha  = 1 - MAX(_nameViewBackground.alpha, 0);
