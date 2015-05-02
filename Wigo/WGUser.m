@@ -374,7 +374,7 @@ static WGUser *currentUser = nil;
     NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
 
     NSDateComponents *conversionInfo = [calendar components:NSYearCalendarUnit fromDate:dateFromString toDate:[NSDate date]  options:0];
-    return [NSString stringWithFormat:@"%d", [conversionInfo year]];
+    return [NSString stringWithFormat:@"%ld", (long)[conversionInfo year]];
 }
 
 -(NSDictionary *)friendsMetaDict {

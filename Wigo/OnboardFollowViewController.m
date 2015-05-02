@@ -176,7 +176,7 @@ UIImageView *searchIconImageView;
 
 - (void) followedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    int row = buttonSender.tag;
+    int row = (int)buttonSender.tag;
     WGUser *user = (WGUser *)[self.presentedUsers objectAtIndex:buttonSender.tag];
     [user followUser];
     [self.presentedUsers replaceObjectAtIndex:row withObject:user];

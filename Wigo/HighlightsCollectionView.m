@@ -70,11 +70,11 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (self.event.isExpired.boolValue) {
         [self.placesDelegate showConversationForEvent:self.event
                                     withEventMessages:self.event.messages
-                                              atIndex:indexPath.item];
+                                              atIndex:(int)indexPath.item];
         return;
     }
     if (indexPath.section != kAddPhotoSection || !self.isPeeking || (WGProfile.currentUser.crossEventPhotosEnabled || [[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser])) {
-        int index = indexPath.item + 1;
+        int index = (int)indexPath.item + 1;
         if (indexPath.section == kAddPhotoSection) index -= 1;
         [self.placesDelegate showConversationForEvent:self.event
                                     withEventMessages:self.event.messages

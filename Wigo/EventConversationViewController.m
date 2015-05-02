@@ -192,7 +192,7 @@
     if (self.isFetchingMessages) return;
     self.isFetchingMessages = YES;
     
-    self.numberOfPagesBefore = [NSNumber numberWithInt:self.eventMessages.count];
+    self.numberOfPagesBefore = [NSNumber numberWithUnsignedInteger:self.eventMessages.count];
     __weak typeof(self) weakSelf = self;
     [self.eventMessages addPreviousPage:^(BOOL success, NSError *error) {
         __strong typeof(self) strongSelf = weakSelf;
@@ -206,8 +206,8 @@
         [strongSelf.mediaScrollView reloadData];
         [strongSelf.facesCollectionView reloadData];
         
-        int indexBefore = [strongSelf getPageForScrollView:strongSelf.mediaScrollView toLeft:YES];
-        int differenceOfPages = strongSelf.eventMessages.count - strongSelf.numberOfPagesBefore.intValue;
+        int indexBefore = (int)[strongSelf getPageForScrollView:strongSelf.mediaScrollView toLeft:YES];
+        int differenceOfPages = (int)(strongSelf.eventMessages.count - strongSelf.numberOfPagesBefore.intValue);
         int newIndex = indexBefore + differenceOfPages;
         strongSelf.index = @(newIndex);
         [strongSelf highlightCellAtPage:newIndex animated:NO];

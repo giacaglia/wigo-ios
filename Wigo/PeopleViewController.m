@@ -395,7 +395,7 @@ viewForHeaderInSection:(NSInteger)section
 - (void) followedPersonPressed:(id)sender {
 ///TODO: UPDATE THE NUMBER OF USERS BEING FOLLOWED BY THE PROFILE.USER
     UIButton *buttonSender = (UIButton *)sender;
-    int row = buttonSender.tag;
+    int row = (int)buttonSender.tag;
     WGUser *user = (WGUser *)[self.users objectAtIndex:buttonSender.tag];
     [user followUser];
     [self.users replaceObjectAtIndex:row withObject:user];

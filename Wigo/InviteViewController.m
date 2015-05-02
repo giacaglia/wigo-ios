@@ -311,7 +311,7 @@
 
 - (void)followedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    int row = buttonSender.tag;
+    int row = (int)buttonSender.tag;
     WGUser *user = (WGUser *)[self.presentedSuggestions objectAtIndex:buttonSender.tag];
     [user followUser];
     [self.presentedSuggestions replaceObjectAtIndex:row withObject:user];
