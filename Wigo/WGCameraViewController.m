@@ -266,6 +266,14 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
                                            [NSNumber numberWithInt:kCMPixelFormat_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
         [self.videoDataOutput setVideoSettings:rgbOutputSettings];
         
+        if ( [self.captureSession canAddOutput:self.videoDataOutput] ) {
+            [self.captureSession addOutput:self.videoDataOutput];
+        }
+        
+        if ( [self.captureSession canAddOutput:self.audioDataOutput] ) {
+            [self.captureSession addOutput:self.audioDataOutput];
+        }
+        
         
         //[videoDataOutput setAlwaysDiscardsLateVideoFrames:YES]; // discard if the data output queue is blocked (as we process the still image)
         
@@ -322,11 +330,16 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     //if (videoDataOutputQueue)
     //    dispatch_release(videoDataOutputQueue);
     //if([stillImageOutput])
+    
+    [self.captureSession removeOutput:self.audioDataOutput];
+    [self.captureSession removeOutput:self.videoDataOutput];
+    
     [stillImageOutput removeObserver:self forKeyPath:@"capturingStillImage"];
     //[stillImageOutput release];
     [previewLayer removeFromSuperlayer];
     //[previewLayer release];
     
+    [self.captureSession stopRunning];
     self.captureSession = nil;
     
     _isRecording = NO;
@@ -536,28 +549,11 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 
 - (void)startRecordingVideo {
     
-    if ( [self.captureSession canAddOutput:self.videoDataOutput] ) {
-        [self.captureSession addOutput:self.videoDataOutput];
-    }
-    
-    if ( [self.captureSession canAddOutput:self.audioDataOutput] ) {
-        [self.captureSession addOutput:self.audioDataOutput];
-    }
+    _startTime = kCMTimeZero;
     
     
-        self.videoOutputURL = [WGCameraViewController tempVideoURL];
-        
-//        [self.movieFileOutput startRecordingToOutputFileURL:fileURL
-//                                          recordingDelegate:self];
+    self.videoOutputURL = [WGCameraViewController tempVideoURL];
     
-//    }
-//    else {
-//        // Handle the failure.
-//        NSLog(@"error starting recording");
-//    }
-    
-    
-    //videoDataOutput
     
     NSDictionary *recommendedSettings = [self.videoDataOutput recommendedVideoSettingsForAssetWriterWithOutputFileType:AVFileTypeMPEG4];
     
@@ -664,8 +660,6 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     [[self.audioDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:NO];
     [[self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:NO];
     
-    
-    
     [self.videoWriter finishWritingWithCompletionHandler:^{
         
         
@@ -682,8 +676,7 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
                              didFinishPickingMediaWithInfo:dict];
                        });
         
-        [self.captureSession removeOutput:self.audioDataOutput];
-        [self.captureSession removeOutput:self.videoDataOutput];
+        
         
     }];
 }
@@ -698,6 +691,10 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 {
     
     //NSLog(@"video writer status: %d", (int)self.videoWriter.status);
+    
+    if(!self.isRecording) {
+        return;
+    }
     
     switch (self.videoWriter.status) {
         case AVAssetWriterStatusUnknown:
@@ -811,10 +808,10 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 {
     
     if(captureOutput == self.videoDataOutput) {
-        NSLog(@"dropped video sample buffer");
+        NSLog(@"dropped video sample buffer - writer status: %ld", self.videoWriter.status);
     }
     else if(captureOutput == self.audioDataOutput) {
-        NSLog(@"dropped audio sample buffer");
+        NSLog(@"dropped audio sample buffer - writer status: %ld", self.videoWriter.status);
     }
     
 }
