@@ -375,6 +375,7 @@ BOOL firstTimeLoading;
     self.placesTableView.dataSource = self;
     self.placesTableView.delegate = self;
     self.placesTableView.showsVerticalScrollIndicator = NO;
+    self.placesTableView.showsHorizontalScrollIndicator = NO;
     [self.placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [self.placesTableView registerClass:[MoreThan2PhotosOldEventCell class] forCellReuseIdentifier:kMoreThan2PhotosOldEventCell];
