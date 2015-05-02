@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Delegate.h"
 
-@interfacep SignViewController : UIViewController <FBLoginViewDelegate, UIAlertViewDelegate>
+@interface SignViewController : UIViewController <FBLoginViewDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
 -(void) reloadedUserInfo:(BOOL)success andError:(NSError *)error;
