@@ -85,6 +85,7 @@ ProfileViewController *profileViewController;
     [super viewWillAppear:animated];
     
     // Title setup
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:UIColor.whiteColor, NSFontAttributeName:[FontProperties getTitleFont]};
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     self.navigationController.navigationBar.tintColor = UIColor.whiteColor;
@@ -92,8 +93,7 @@ ProfileViewController *profileViewController;
     self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:UIColor.whiteColor forKey:NSForegroundColorAttributeName];
     
     self.title = self.user.fullName;
-    
-    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     self.navigationController.navigationBar.translucent = NO;
     
     [self fetchFirstPageMessages];

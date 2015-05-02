@@ -501,10 +501,10 @@ BOOL blockShown;
         ChatViewController *chatViewController = [ChatViewController new];
         chatViewController.view.backgroundColor = UIColor.whiteColor;
         [self.navigationController pushViewController:chatViewController animated:YES];
-    } else {
-        [self.navigationController pushViewController: [[ConversationViewController alloc] initWithUser:self.user] animated:YES];
+        return;
     }
-   
+ 
+    [self.navigationController pushViewController:[[ConversationViewController alloc] initWithUser:self.user] animated:YES];
 }
 
 
@@ -1180,7 +1180,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 + (CGFloat)height {
-    return 130;
+    return [UIScreen mainScreen].bounds.size.height - [UIScreen mainScreen].bounds.size.width;
 }
 
 - (void)setUser:(WGUser *)user {

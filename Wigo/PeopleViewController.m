@@ -143,18 +143,25 @@ NSIndexPath *userIndex;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)tappedButton:(id)sender {
+-(void)followChoosePerson:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    int tag = (int)buttonSender.tag;
+    if (tag >= self.friendRequestUsers.count) return;
+    WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:tag];
+    [self presentUser:user];
+}
+
+-(void) choosePerson:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
     WGUser *user = [self getUserAtIndex:tag];
-    if (user) {
-        didProfileSegue = YES;
-        userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
-        [self presentUser:user];
-    }
+    if (!user) return;
+    didProfileSegue = YES;
+    userIndex = [NSIndexPath indexPathForRow:tag inSection:1];
+    [self presentUser:user];
 }
 
-- (void)presentUser:(WGUser *)user {
+-(void) presentUser:(WGUser *)user {
     ProfileViewController *profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     profileViewController.user = user;
     [self.navigationController pushViewController:profileViewController animated:YES];
@@ -252,23 +259,25 @@ NSIndexPath *userIndex;
             return seeMoreCell;
         }
         else {
-            FollowPeopleCell *followPeopleCell = [tableView dequeueReusableCellWithIdentifier:kFollowPeopleCell forIndexPath:indexPath];
+            FollowPeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kFollowPeopleCell forIndexPath:indexPath];
             WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:indexPath.item];
-            if (!user) return followPeopleCell;
-            followPeopleCell.user = user;
-            [followPeopleCell.acceptButton addTarget:self
+            if (!user) return cell;
+            cell.user = user;
+            [cell.acceptButton addTarget:self
                                               action:@selector(acceptPressed:)
                                     forControlEvents:UIControlEventTouchUpInside];
-            [followPeopleCell.rejectButton addTarget:self
+            [cell.rejectButton addTarget:self
                                               action:@selector(rejectPressed:)
                                     forControlEvents:UIControlEventTouchUpInside];
-            return followPeopleCell;
+            cell.profileButton.tag = (int)indexPath.row;
+            [cell.profileButton addTarget:self action:@selector(followChoosePerson:) forControlEvents:UIControlEventTouchUpInside];
+            return cell;
         }
     }
     PeopleCell *cell = [tableView dequeueReusableCellWithIdentifier:kPeopleCellName forIndexPath:indexPath];
     cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, [self tableView:tableView heightForRowAtIndexPath:indexPath]);
 
-    int tag = (int)[indexPath row];
+    int tag = (int)indexPath.row;
     if ([self isThereANextPage] && tag == self.users.count - 5) {
         [self loadNextPage];
     }
@@ -290,10 +299,10 @@ NSIndexPath *userIndex;
     }
     cell.user = user;
    
-    cell.profileButton.tag = tag;
     cell.followPersonButton.tag = tag;
     [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    [cell.profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
+    cell.profileButton.tag = tag;
+    [cell.profileButton addTarget:self action:@selector(choosePerson:) forControlEvents:UIControlEventTouchUpInside];
     return cell;
 }
 
