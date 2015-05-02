@@ -445,7 +445,7 @@ BOOL blockShown;
         blockShown = YES;
         if (![sentUser isCurrentUser]) {
             __weak typeof(self) weakSelf = self;
-            [[WGProfile currentUser] block:sentUser withType:blockType andHandler:^(BOOL success, NSError *error) {
+            [WGProfile.currentUser block:sentUser withType:blockType andHandler:^(BOOL success, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];

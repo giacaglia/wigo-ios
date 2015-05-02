@@ -1527,7 +1527,7 @@ BOOL firstTimeLoading;
     if (_event.isVerified) {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.verifiedView.hidden = NO;
-            self.eventNameLabel.frame = CGRectMake(self.eventNameLabel.frame.origin.x + 23, self.eventNameLabel.frame.origin.y, self.eventNameLabel.frame.size.width, self.eventNameLabel.frame.size.height);
+            self.eventNameLabel.frame = CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y - 30, self.eventNameLabel.frame.size.width, self.eventNameLabel.frame.size.height);
         });
     }
     else {

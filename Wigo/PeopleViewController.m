@@ -293,9 +293,7 @@ NSIndexPath *userIndex;
     cell.profileButton.tag = tag;
     cell.followPersonButton.tag = tag;
     [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    if (!user.isCurrentUser) {
-        [cell.profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
-    }
+    [cell.profileButton addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
     return cell;
 }
 
@@ -671,16 +669,16 @@ viewForHeaderInSection:(NSInteger)section
     self.profileButton.center = CGPointMake(self.profileButton.center.x, self.center.y);
     [self.contentView addSubview:self.profileButton];
     
-    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 15, 150, 20)];
+    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 15, 150, 20)];
     self.nameLabel.font = [FontProperties mediumFont:15.0f];
     self.nameLabel.textAlignment = NSTextAlignmentLeft;
-    self.nameLabel.userInteractionEnabled = YES;
-    [self.contentView addSubview:self.nameLabel];
+    self.nameLabel.userInteractionEnabled = NO;
+    [self.profileButton addSubview:self.nameLabel];
     
-    self.mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 38, 150, 20)];
+    self.mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 38, 150, 20)];
     self.mutualFriendsLabel.font = [FontProperties lightFont:13.0f];
     self.mutualFriendsLabel.textColor = RGB(181, 181, 181);
-    [self.contentView addSubview:self.mutualFriendsLabel];
+    [self.profileButton addSubview:self.mutualFriendsLabel];
     
     self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(6, 6, 12, 12)];
     self.orangeNewView.backgroundColor = [FontProperties getOrangeColor];
@@ -737,7 +735,7 @@ viewForHeaderInSection:(NSInteger)section
             self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
             self.followPersonButton.layer.cornerRadius = 8;
         } else {
-            if (user.isFriend.boolValue) {
+            if (user.state == FRIEND_USER_STATE) {
                 [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
                 [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
             }
