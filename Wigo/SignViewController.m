@@ -230,13 +230,23 @@
 
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
     WGProfile.currentUser.images = profilePictures;
-    [WGSpinnerView removeDancingGFromCenterView:self.view];
     if (!_pushed) {
         _pushed = YES;
         self.fetchingProfilePictures = NO;
-        SignUpViewController *signUpViewController = [SignUpViewController new];
-        signUpViewController.placesDelegate = self.placesDelegate;
-        [self.navigationController pushViewController:signUpViewController animated:YES];
+        [WGSpinnerView removeDancingGFromCenterView:self.view];
+        __weak typeof(self) weakSelf = self;
+        [WGProfile.currentUser save:^(BOOL success, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionSave];
+                return;
+            }
+            [strongSelf dismissViewControllerAnimated:YES completion:nil];
+        }];
+
+        
     }
 }
 
