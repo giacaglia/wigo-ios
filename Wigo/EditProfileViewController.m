@@ -49,17 +49,18 @@ UIViewController *webViewController;
     [self initializePrivacySection];
     [self initializeWiGoSection];
     
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [WGAnalytics tagView:@"edit_profile"];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    
+    self.initialUserDict = WGProfile.currentUser.deserialize;
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
     self.navigationController.navigationBar.backgroundColor = RGB(235, 235, 235);
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
@@ -84,13 +85,18 @@ UIViewController *webViewController;
 }
 
 - (void)saveDataAndGoBack {
-    [WGSpinnerView showOrangeSpinnerAddedTo:self.view];
-    WGProfile.currentUser.instaHandle = _instaTextField.text;
-    WGProfile.currentUser.privacy = _privacySwitch.on ? PRIVATE : PUBLIC;
-    [WGProfile.currentUser save:^(BOOL success, NSError *error) {
-        [WGSpinnerView hideSpinnerForView:self.view];
-        [self dismissViewControllerAnimated:YES  completion: nil];
-    }];
+    if ([self.initialUserDict isEqual:WGProfile.currentUser.deserialize]) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+    else {
+        [WGSpinnerView showOrangeSpinnerAddedTo:self.view];
+        WGProfile.currentUser.instaHandle = _instaTextField.text;
+        WGProfile.currentUser.privacy = _privacySwitch.on ? PRIVATE : PUBLIC;
+        [WGProfile.currentUser save:^(BOOL success, NSError *error) {
+            [WGSpinnerView hideSpinnerForView:self.view];
+            [self dismissViewControllerAnimated:YES  completion: nil];
+        }];
+    }
 }
 
 
@@ -102,7 +108,8 @@ UIViewController *webViewController;
     [_scrollView addSubview:photosLabel];
     
     _photosScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 110)];
-    _photosScrollView.backgroundColor = [UIColor whiteColor];
+    _photosScrollView.backgroundColor = UIColor.whiteColor;
+    _photosScrollView.showsHorizontalScrollIndicator = NO;
     [self updatePhotos];
     
     UILabel *coverLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 90, 70, 15)];
