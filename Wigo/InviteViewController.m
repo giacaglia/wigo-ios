@@ -237,12 +237,11 @@
         cell.profileImageView.image = nil;
         cell.nameLabel.text = nil;
         if (self.presentedSuggestions.count == 0) return cell;
-        if (indexPath.row < self.presentedSuggestions.count) {
-            WGUser *user = (WGUser *)[self.presentedSuggestions objectAtIndex:indexPath.row];
-            cell.followPersonButton.tag = (int)indexPath.row;
-            [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-            cell.user = user;
-        }
+        if (indexPath.row >=  self.presentedSuggestions.count) return cell;
+        WGUser *user = (WGUser *)[self.presentedSuggestions objectAtIndex:indexPath.row];
+        cell.followPersonButton.tag = (int)indexPath.row;
+        [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        cell.user = user;
         return cell;
     }
 //    else  {
@@ -693,33 +692,29 @@ heightForHeaderInSection:(NSInteger)section
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [FollowCell height]);
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [FollowCell height]);
     self.contentView.frame = self.frame;
     self.contentView.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
- 
-    self.profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-    self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.profileImageView.clipsToBounds = YES;
-    [self.contentView addSubview:self.profileImageView];
     
-    self.profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, PEOPLEVIEW_HEIGHT_OF_CELLS/2 - 30, self.contentView.frame.size.width - 15 - 79 - 15, 60)];
+    self.profileButton = [[UIButton alloc] initWithFrame:CGRectMake(15, 0, self.contentView.frame.size.width - 15 - 79 - 15, 60)];
     self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
     self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.profileImageView.clipsToBounds = YES;
-    self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width/2;
-    self.profileImageView.layer.borderWidth = 1.0f;
     self.profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
+    self.profileImageView.layer.borderWidth = 1.0f;
+    self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width/2;
     [self.profileButton addSubview:self.profileImageView];
+    self.profileButton.center = CGPointMake(self.profileButton.center.x, self.center.y);
     [self.contentView addSubview:self.profileButton];
     
-    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-    self.nameLabel.font = [FontProperties mediumFont:18.0f];
+    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 15, 150, 20)];
+    self.nameLabel.font = [FontProperties getSubtitleFont];
     self.nameLabel.textAlignment = NSTextAlignmentLeft;
-    self.nameLabel.userInteractionEnabled = YES;
+    self.nameLabel.userInteractionEnabled = NO;
     [self.contentView addSubview:self.nameLabel];
-    
-    self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 49, PEOPLEVIEW_HEIGHT_OF_CELLS / 2 - 15, 49, 30)];
+
+    self.followPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 21 - 49, [FollowCell height] / 2 - 15, 42, 30)];
     [self.contentView addSubview:self.followPersonButton];
 }
 
