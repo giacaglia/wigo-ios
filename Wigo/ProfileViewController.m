@@ -701,8 +701,6 @@ BOOL blockShown;
         NotificationCell *notificationCell = [tableView dequeueReusableCellWithIdentifier:kNotificationCellName forIndexPath:indexPath];
         if (indexPath.row >= self.notifications.count) return notificationCell;
         WGNotification *notification = (WGNotification *)[self.notifications objectAtIndex:indexPath.row];
-        if (!notification.fromUser.id) return notificationCell;
-        if ([notification.type isEqual:@"group.unlocked"]) return notificationCell;
         notificationCell.notification = notification;
         if (WGProfile.currentUser.lastNotificationRead && [notification.created compare:WGProfile.currentUser.lastNotificationRead] != NSOrderedDescending ) {
             notificationCell.orangeNewView.hidden = YES;
@@ -1120,7 +1118,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     _notification = notification;
     WGUser *user = notification.fromUser;
     if (user) [self.profileImageView setSmallImageForUser:user completed:nil];
-    else self.profileImageView.image = [UIImage imageNamed:@"grayIcon"];
+    else self.profileImageView.image = [UIImage imageNamed:@"wigoSystem"];
     self.descriptionLabel.text = notification.message;
 }
 
