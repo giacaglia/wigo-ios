@@ -830,7 +830,7 @@ viewForHeaderInSection:(NSInteger)section
 - (void)setUser:(WGUser *)user {
     super.user = user;
     self.orangeNewView.hidden = user.isFriendRequestRead;
-    if (user.isFriend) {
+    if (user.isFriend.boolValue) {
         self.acceptButton.hidden = YES;
         self.rejectButton.hidden = YES;
         return;

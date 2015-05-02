@@ -11,6 +11,7 @@
 #import "MessageViewController.h"
 #import "ConversationViewController.h"
 #import "UIButtonAligned.h"
+#import "GroupConversationViewController.h"
 
 @implementation ChatViewController
 
@@ -187,6 +188,12 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ChatCell *cell = [tableView dequeueReusableCellWithIdentifier:kChatCellName forIndexPath:indexPath];
+//    if (indexPath.section == kSectionEventChat) {
+//        cell.profileImageView.image = [UIImage imageNamed:@"wigoSystem"];
+//        cell.nameLabel.text = WGProfile.currentUser.fullName;
+//        cell.lastMessageLabel.text = WGProfile.currentUser.group.name;
+//        return cell;
+//    }
     if (indexPath.row == self.messages.count - 1) [self fetchNextPage];
     if (self.messages.count  == 0) return cell;
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.row];
@@ -219,13 +226,16 @@
 
 #pragma mark - Table View Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == kSectionEventChat) {
+        [self.navigationController pushViewController:[GroupConversationViewController new] animated:YES];
+        return;
+    }
     if (self.messages.count == 0) return;
     
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
     message.isRead = @YES;
     WGUser *user = message.otherUser;
-    ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithUser:user];
-    [self.navigationController pushViewController:conversationViewController animated:YES];
+    [self.navigationController pushViewController:[[ConversationViewController alloc] initWithUser:user] animated:YES];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {

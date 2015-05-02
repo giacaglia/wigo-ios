@@ -129,21 +129,25 @@ BOOL blockShown;
         self.lastNotificationRead = WGProfile.currentUser.lastNotificationRead;
     }
     else {
-        if (self.user.isTapped == nil ||self.user.isFriend == nil ) {
-            __weak typeof(self) weakSelf = self;
+        __weak typeof(self) weakSelf = self;
+        [self.user getMeta:^(BOOL success, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (error) return;
+            strongSelf.userState = strongSelf.user.state;
+            [strongSelf reloadViewForUserState];
+        }];
+
+        if (self.user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
             [self.user getMutualFriends:^(WGCollection *collection, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
                 if (error) return;
                 strongSelf.mutualFriends = collection;
                 [strongSelf.tableView reloadData];
             }];
-            [self.user getMeta:^(BOOL success, NSError *error) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                if (error) return;
-                strongSelf.userState = strongSelf.user.state;
-                [strongSelf reloadViewForUserState];
-            }];
+  
         }
+      
+        
     }
 }
 

@@ -25,7 +25,7 @@ ProfileViewController *profileViewController;
 {
     self = [super init];
     if (self) {
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -86,10 +86,6 @@ ProfileViewController *profileViewController;
     [self fetchFirstPageMessages];
 }
 
-- (void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-}
 
 -(void) textChanged:(id)sender {
     if ([self.inputToolbar.contentView.textView.text hasSuffix:@"\n"] && self.inputToolbar.contentView.rightBarButtonItem.enabled) {

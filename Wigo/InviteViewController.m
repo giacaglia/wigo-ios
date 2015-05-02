@@ -726,7 +726,8 @@ heightForHeaderInSection:(NSInteger)section
     [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
     self.followPersonButton.backgroundColor = UIColor.clearColor;
 
-    if (!user.isCurrentUser) {
+    if (user.isCurrentUser) return;
+   
     if (user.state == BLOCKED_USER_STATE) {
         [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
         [self.followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
@@ -736,23 +737,24 @@ heightForHeaderInSection:(NSInteger)section
         self.followPersonButton.layer.borderWidth = 1;
         self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
         self.followPersonButton.layer.cornerRadius = 3;
-    } else {
-        if (user.isFriend.boolValue) {
-            [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
-        }
-        if (user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
-            [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-            [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
-            [self.followPersonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-            self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-            self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            self.followPersonButton.backgroundColor = RGB(223, 223, 223);
-            self.followPersonButton.layer.borderWidth = 1;
-            self.followPersonButton.layer.borderColor = UIColor.clearColor.CGColor;
-            self.followPersonButton.layer.cornerRadius = 3;
-        }
+        return;
     }
+    if (user.state == FRIEND_USER_STATE) {
+        [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+        [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
+        return;
+    }
+    if (user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
+        [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+        [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+        [self.followPersonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+        self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        self.followPersonButton.backgroundColor = RGB(223, 223, 223);
+        self.followPersonButton.layer.borderWidth = 1;
+        self.followPersonButton.layer.borderColor = UIColor.clearColor.CGColor;
+        self.followPersonButton.layer.cornerRadius = 3;
+        return;
     }
 }
 @end
