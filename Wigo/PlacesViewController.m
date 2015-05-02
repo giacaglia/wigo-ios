@@ -1777,7 +1777,17 @@ BOOL firstTimeLoading;
         if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
         else  contentURL = eventMessage.media;
         NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, contentURL]];
-        [imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {}];
+        __weak UIImageView *weakImgView = imageView;
+        __weak WGEventMessage *weakEventMsg = eventMessage;
+        [imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                __strong UIImageView *strongImgView = weakImgView;
+                __strong WGEventMessage *strongEventMsg = weakEventMsg;
+                NSURL *bigImageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, strongEventMsg.media]];
+                [strongImgView setImageWithURL:bigImageURL];
+            });
+            
+        }];
     }
 }
 
