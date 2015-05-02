@@ -13,6 +13,8 @@
 #define kIndexOfProfile 4
 
 @interface TabBarAuxiliar : NSObject
+
++ (void)clearOutAllNotifications;
 + (void)checkIndex:(int)index forDate:(NSDate *)date;
 + (void)clearIndex:(int)index;
 + (void)startTabBarItems;

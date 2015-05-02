@@ -16,15 +16,21 @@ static NSDate *biggestDate;
 
 @implementation TabBarAuxiliar
 
-+ (NSDate *)biggestFriendsDate {
++(void) clearOutAllNotifications {
+    WGProfile.currentUser.lastMessageRead = [NSDate date];
+    WGProfile.currentUser.lastUserRead = [NSDate date];
+    WGProfile.currentUser.lastNotificationRead = [NSDate date];
+}
+
++(NSDate *) biggestFriendsDate {
     return biggestDate;
 }
 
-+ (void)setBiggestFriendsDate:(NSDate *)date {
++(void) setBiggestFriendsDate:(NSDate *)date {
     biggestDate = date;
 }
 
-+ (UIView *)defaultChatOrangeView {
++(UIView *) defaultChatOrangeView {
     if (chatOrangeView == nil) {
         float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfChats + 0.65f);
         chatOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 10, 10)];
@@ -38,7 +44,7 @@ static NSDate *biggestDate;
     return chatOrangeView;
 }
 
-+ (UIView *)defaultFriendsOrangeView {
++(UIView *) defaultFriendsOrangeView {
     if (friendsOrangeView == nil) {
         float distance = [UIScreen mainScreen].bounds.size.width/5 * (kIndexOfFriends + 0.65f);
         friendsOrangeView = [[UIView alloc] initWithFrame:CGRectMake(distance, 3, 10, 10)];

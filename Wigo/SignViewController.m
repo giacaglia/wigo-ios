@@ -14,6 +14,7 @@
 #import "FacebookHelper.h"
 #import <Parse/Parse.h>
 #import "ReferalViewController.h"
+#import "TabBarAuxiliar.h"
 
 #import <Crashlytics/Crashlytics.h>
 
@@ -243,6 +244,7 @@
                 [[WGError sharedInstance] logError:error forAction:WGActionSave];
                 return;
             }
+            
             [strongSelf dismissViewControllerAnimated:YES completion:nil];
         }];
 
@@ -427,6 +429,7 @@
             [[WGError sharedInstance] logError:error forAction:WGActionLogin];
             return;
         }
+        [TabBarAuxiliar clearOutAllNotifications];
         [strongSelf navigate];
     }];
 }
@@ -454,13 +457,12 @@
             batteryViewController.placesDelegate = self.placesDelegate;
             [self.navigationController pushViewController:batteryViewController animated:NO];
         } else {
-            [self loadMainViewController];
+            [self dismissViewControllerAnimated:NO  completion:nil];
         }
         
     }
     
 }
-
 
 - (void)reloadedUserInfo:(BOOL)success andError:(NSError *)error {
     [WGSpinnerView removeDancingGFromCenterView:self.view];
@@ -473,11 +475,6 @@
         return;
     }
     [self navigate];
-}
-
-
-- (void)loadMainViewController {
-    [self dismissViewControllerAnimated:NO  completion:nil];
 }
 
 @end
