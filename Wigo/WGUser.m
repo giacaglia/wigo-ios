@@ -837,33 +837,27 @@ static WGUser *currentUser = nil;
 }
 
 -(void) followUser {
-    // If it's blocked
     if (self.isBlocked.boolValue) {
         self.isBlocked = @NO;
         [WGProfile.currentUser unblock:self withHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-            }
+            if (error) [[WGError sharedInstance] logError:error forAction:WGActionDelete];
         }];
+        return;
     }
-    else {
-        if (self.isFriend.boolValue) {
-            self.isFriend = @NO;
-            [WGProfile.currentUser unfollow:self withHandler:^(BOOL success, NSError *error) {
-                if (error) {
-                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-                }
-            }];
-        }
-        else  {
-            self.friendRequest = kFriendRequestSent;
-            [WGProfile.currentUser friendUser:self withHandler:^(BOOL success, NSError *error) {
-                if (error) {
-                    [[WGError sharedInstance] logError:error forAction:WGActionPost];
-                }
-            }];
-        }
+    if (self.isFriend.boolValue) {
+        self.isFriend = @NO;
+        [WGProfile.currentUser unfollow:self withHandler:^(BOOL success, NSError *error) {
+            if (error) [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+        }];
+        return;
     }
+    
+    
+    self.friendRequest = kFriendRequestSent;
+    [WGProfile.currentUser friendUser:self withHandler:^(BOOL success, NSError *error) {
+        if (error) [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+    }];
+
     
 }
 
@@ -1422,7 +1416,7 @@ static WGUser *currentUser = nil;
 -(void) friendUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi post:[NSString stringWithFormat:@"users/me/friends/"] withParameters:@{ @"friend_id": user.id} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isFriend = @YES;
+            user.isFriendRequestRead = kFriendRequestSent;
         }
         handler(error == nil, error);
     }];
