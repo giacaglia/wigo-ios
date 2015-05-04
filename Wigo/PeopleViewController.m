@@ -122,20 +122,7 @@ NSIndexPath *userIndex;
         self.tabBarController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:inviteButton];
     }
     else {
-        CGRect profileFrame = CGRectMake(0, 0, 30, 30);
-        UIButtonAligned *profileButton = [[UIButtonAligned alloc] initWithFrame:profileFrame andType:@3];
-        profileButton.userInteractionEnabled = NO;
-        UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:profileFrame];
-        profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-        profileImageView.clipsToBounds = YES;
-        profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
-        profileImageView.layer.borderWidth = 1.0f;
-        profileImageView.layer.cornerRadius = profileFrame.size.width/2;
-        [profileImageView setSmallImageForUser:self.user completed:nil];
-        [profileButton addSubview:profileImageView];
-        [profileButton setShowsTouchWhenHighlighted:YES];
-        UIBarButtonItem *profileBarButton =[[UIBarButtonItem alloc] initWithCustomView:profileButton];
-        self.navigationItem.rightBarButtonItem = profileBarButton;
+        self.navigationItem.rightBarButtonItem = nil;
     }
 }
 
