@@ -146,15 +146,6 @@
                           } completion:^(BOOL finished) {
                               if (finished) [strongSelf.loadingView removeFromSuperview];
                               [strongSelf.navigationController popViewControllerAnimated:YES];
-                              __weak typeof(strongSelf) weakOfStrong = strongSelf;
-                              [WGProfile.currentUser goingToEvent:object withHandler:^(BOOL success, NSError *error) {
-                                  __strong typeof(weakOfStrong) strongOfStrong = weakOfStrong;
-                                  if (error) {
-                                      [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-                                      [[WGError sharedInstance] logError:error forAction:WGActionSave];
-                                      return;
-                                  }
-//
 //                                  [strongOfStrong removeProfileUserFromAnyOtherEvent];
 //                                  [strongOfStrong dismissKeyboard];
 //                                  
@@ -175,7 +166,6 @@
 //                                      }
 //                                  }
 //                                  [strongOfStrong fetchEventsFirstPage];
-                              }];
                           }];
                       }];
 }
