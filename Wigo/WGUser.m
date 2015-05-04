@@ -1521,4 +1521,7 @@ static WGUser *currentUser = nil;
     handler(NO, [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : @"cannot delete user" }]);
 }
 
+#pragma mark - Meta objects
+
+
 @end
