@@ -70,11 +70,14 @@ UIButton *cancelButton;
 }
 
 -(void) goBack {
-    [self.navigationController setNavigationBarHidden:NO animated:NO];
-    [self willMoveToParentViewController:nil];
-    [self.view removeFromSuperview];
-    [self removeFromParentViewController];
-
+    [UIView animateWithDuration:0.15 animations:^{
+        self.view.alpha = 0.0f;
+    } completion:^(BOOL finished) {
+        [self.navigationController setNavigationBarHidden:NO animated:NO];
+        [self willMoveToParentViewController:nil];
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+    }];
 }
 
 -(void) unfollowPressed {
@@ -92,7 +95,6 @@ UIButton *cancelButton;
 - (void)blockButtonPressed {
     [UIView animateWithDuration:1 animations:^(void) {
         if (unfollowButton) unfollowButton.alpha = 1.0f;
-        
     } completion:^(BOOL finished){
         if (unfollowButton) unfollowButton.alpha = 0.0f;
         [self addOptions];
