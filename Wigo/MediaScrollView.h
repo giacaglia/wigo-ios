@@ -195,6 +195,7 @@
 @property (nonatomic) BOOL isTakingPicture;
 @property (nonatomic,weak) AVCaptureSession *captureSession;
 
+- (void)cellWillAppear;
 - (void)cellDidDisappear;
 
 - (void)setupCameraController:(WGCameraViewController *)cameraController;

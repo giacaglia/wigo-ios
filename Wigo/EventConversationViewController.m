@@ -152,8 +152,10 @@
         if([cell isKindOfClass:[VideoCell class]]) {
             //[(VideoCell*)cell prepareVideo];
         }
+        else if([cell isKindOfClass:[CameraCell class]]) {
+            [(CameraCell *)cell cellWillAppear];
+        }
     }
-    
 }
 
 - (void)collectionView:(UICollectionView *)collectionView
