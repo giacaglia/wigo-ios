@@ -554,6 +554,9 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     
     self.videoOutputURL = [WGCameraViewController tempVideoURL];
     
+    [[self.audioDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:YES];
+    [[self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:YES];
+    
     
     NSDictionary *recommendedSettings = [self.videoDataOutput recommendedVideoSettingsForAssetWriterWithOutputFileType:AVFileTypeMPEG4];
     
@@ -638,13 +641,11 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     
     _isRecording = YES;
     
-    [[self.audioDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:YES];
-    [[self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:YES];
-    
     [self.videoWriter addInput:self.videoWriterInput];
     [self.videoWriter addInput:self.audioWriterInput];
     
-//    [self.videoWriter startWriting];
+    NSLog(@"starting writing");
+    [self.videoWriter startWriting];
 //    [self.videoWriter startSessionAtSourceTime:kCMTimeZero];
     
     
@@ -699,22 +700,20 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     switch (self.videoWriter.status) {
         case AVAssetWriterStatusUnknown:
             
-            if (_startTime.value == 0) {
-                _startTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-            }
             
-            if(captureOutput == self.audioDataOutput) {
-                NSLog(@"starting audio with time - ");
-                CMTimeShow(_startTime);
-            }
-            else if(captureOutput == self.videoDataOutput) {
-                NSLog(@"starting video with time - ");
-                CMTimeShow(_startTime);
-            }
+            
+//            if(captureOutput == self.audioDataOutput) {
+//                NSLog(@"starting audio with time - ");
+//                CMTimeShow(_startTime);
+//            }
+//            else if(captureOutput == self.videoDataOutput) {
+//                NSLog(@"starting video with time - ");
+//                CMTimeShow(_startTime);
+//            }
 
             
-            [self.videoWriter startWriting];
-            [self.videoWriter startSessionAtSourceTime:_startTime];
+            //[self.videoWriter startWriting];
+            
             //[self.videoWriter startSessionAtSourceTime:kCMTimeZero];
             
             
@@ -728,6 +727,11 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
             
         case AVAssetWriterStatusWriting:
             
+            if (_startTime.value == 0) {
+                _startTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+                [self.videoWriter startSessionAtSourceTime:_startTime];
+            }
+            
             if(captureOutput == self.videoDataOutput) {
                 
                 @try {
@@ -736,7 +740,7 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
                         break;
                     }
                     
-                    NSLog(@"writing video");
+                    //NSLog(@"writing video");
 //
 //                    if(! [self.videoWriterInput appendSampleBuffer:sampleBuffer]) {
 //                        NSLog(@"Video writing error");
@@ -750,9 +754,9 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
                     CMTime pt = CMTimeMake(frameNumber,30);
                     pt = CMTimeAdd(pt, _startTime);
                     
-                    NSLog(@"sample buffer time");
-                    CMTimeShow(CMSampleBufferGetPresentationTimeStamp(sampleBuffer));
-                    CMTimeShow(pt);
+//                    NSLog(@"sample buffer time");
+//                    CMTimeShow(CMSampleBufferGetPresentationTimeStamp(sampleBuffer));
+//                    CMTimeShow(pt);
                     
                     if(! [self.pixelBufferAdaptor appendPixelBuffer:imageBuffer
                                                withPresentationTime:pt]) {
@@ -778,7 +782,7 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 //                    pt = CMTimeSubtract(pt, _startTime);
 //                    CMSampleBufferSetOutputPresentationTimeStamp(sampleBuffer, pt);
                     
-                    NSLog(@"writing audio");
+                    //NSLog(@"writing audio");
                     if(! [self.audioWriterInput appendSampleBuffer:sampleBuffer]) {
                         NSLog(@"Audio writing error");
                     }
@@ -807,11 +811,21 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
        fromConnection:(AVCaptureConnection *)connection
 {
     
+    NSString *droppedReason = @"";
+    
+    CFDictionaryRef attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer,  kCMAttachmentMode_ShouldPropagate);
+    
+    
+    if(attachments) {
+        NSDictionary *dict = (__bridge NSDictionary *)attachments;
+        droppedReason = dict[(NSString *)kCMSampleBufferAttachmentKey_DroppedFrameReason];
+    }
+    
     if(captureOutput == self.videoDataOutput) {
-        NSLog(@"dropped video sample buffer - writer status: %ld", self.videoWriter.status);
+        NSLog(@"dropped video sample buffer - writer status: %ld, reason: %@", self.videoWriter.status, droppedReason);
     }
     else if(captureOutput == self.audioDataOutput) {
-        NSLog(@"dropped audio sample buffer - writer status: %ld", self.videoWriter.status);
+        NSLog(@"dropped audio sample buffer - writer status: %ld, reason: %@", self.videoWriter.status, droppedReason);
     }
     
 }
