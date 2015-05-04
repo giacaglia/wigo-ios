@@ -309,8 +309,15 @@
         WGProfile.currentUser.lastName = fbGraphUser[@"last_name"];
         if (fbGraphUser[@"birthday"]) WGProfile.currentUser.birthday = fbGraphUser[@"birthday"];
         if (fbGraphUser[@"education"]) {
-            NSDictionary *firstSchool = [((NSArray *)fbGraphUser[@"education"]) objectAtIndex:0];
-            WGProfile.currentUser.education = [[firstSchool objectForKey:@"school"] objectForKey:@"name"];
+            NSArray *schoolArray = ((NSArray *)fbGraphUser[@"education"]);
+            NSArray *filteredArray = [schoolArray filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id object, NSDictionary *bindings) {
+                FBGraphObject *school = (FBGraphObject *)object;
+                return ([school[@"type"] isEqual:@"College"]);
+            }]];
+            if (filteredArray.count > 0) {
+                FBGraphObject *firstSchool = [filteredArray objectAtIndex:0];
+                WGProfile.currentUser.education = [[firstSchool objectForKey:@"school"] objectForKey:@"name"];
+            }
         }
         if (fbGraphUser[@"work"]) {
             NSArray *workArray = fbGraphUser[@"work"];
