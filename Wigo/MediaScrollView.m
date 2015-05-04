@@ -1762,13 +1762,9 @@
 }
 
 - (void)cellWillAppear {
-    [[UIApplication sharedApplication] setStatusBarHidden:YES
-                                            withAnimation:UIStatusBarAnimationSlide];
 }
 
 - (void)cellDidDisappear {
-    [[UIApplication sharedApplication] setStatusBarHidden:NO
-                                            withAnimation:UIStatusBarAnimationSlide];
 }
 
 - (void)dealloc {

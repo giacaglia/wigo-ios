@@ -153,7 +153,10 @@
             //[(VideoCell*)cell prepareVideo];
         }
         else if([cell isKindOfClass:[CameraCell class]]) {
-            [(CameraCell *)cell cellWillAppear];
+            
+            [[UIApplication sharedApplication] setStatusBarHidden:YES
+                                                    withAnimation:UIStatusBarAnimationSlide];
+            
         }
     }
 }
@@ -167,7 +170,13 @@
             [videoCell unloadVideoCell];
         }
         else if([cell isKindOfClass:[CameraCell class]]) {
-            [(CameraCell *)cell cellDidDisappear];
+            
+            // unhide status bar unless we're displaying a loading/posted message
+            
+            if(!self.loadingBanner || self.loadingBanner.hidden) {
+                [[UIApplication sharedApplication] setStatusBarHidden:NO
+                                                        withAnimation:UIStatusBarAnimationSlide];
+            }
         }
     }
 }
@@ -627,6 +636,8 @@
 #pragma mark -  EventConversation Delegate methods
 
 - (void)addLoadingBanner {
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
+
     self.loadingBanner = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 20)];
     self.loadingBanner.backgroundColor = UIColor.blackColor;
     [self.view addSubview:self.loadingBanner];
@@ -681,6 +692,8 @@
     [UIView animateWithDuration:15 animations:^{} completion:^(BOOL finished) {
         self.loadingBanner.hidden = YES;
         self.postingLabel.hidden = YES;
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+
     }];
 }
 
