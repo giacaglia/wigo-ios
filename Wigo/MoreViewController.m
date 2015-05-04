@@ -73,7 +73,10 @@ UIButton *cancelButton;
     [UIView animateWithDuration:0.15 animations:^{
         self.view.alpha = 0.0f;
     } completion:^(BOOL finished) {
-        [self.navigationController setNavigationBarHidden:NO animated:NO];
+        self.navigationController.navigationBar.alpha = 1.0f;
+        [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                      forBarMetrics:UIBarMetricsDefault];
+        self.navigationController.navigationBar.shadowImage = [UIImage new];
         [self willMoveToParentViewController:nil];
         [self.view removeFromSuperview];
         [self removeFromParentViewController];

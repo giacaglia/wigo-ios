@@ -306,11 +306,10 @@ BOOL blockShown;
 }
 
 - (void) morePressed {
-    
     UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
     UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     visualEffectView.frame = self.view.bounds;
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    self.navigationController.navigationBar.alpha = 0.0f;
     MoreViewController *moreVc = [MoreViewController new];
     moreVc.user = self.user;
     moreVc.view.alpha = 0.0f;
