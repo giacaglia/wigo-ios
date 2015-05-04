@@ -69,19 +69,24 @@ UIButton *cancelButton;
     [self.view sendSubviewToBack:self.bgView];
 }
 
--(void) unfollowPressed {
+-(void) goBack {
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
     [self willMoveToParentViewController:nil];
     [self.view removeFromSuperview];
     [self removeFromParentViewController];
+
+}
+
+-(void) unfollowPressed {
+    [self goBack];
 }
 
 -(void) submitBlockPressed {
     int type = (int)((int)blockButton.tag / 10)  - 1;
     NSDictionary *userInfo = @{@"user": self.user.deserialize, @"type":[NSNumber numberWithInt:type]};
     [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil userInfo:userInfo];
-    [self willMoveToParentViewController:nil];
-    [self.view removeFromSuperview];
-    [self removeFromParentViewController];
+    
+    [self goBack];
 }
 
 - (void)blockButtonPressed {
@@ -97,9 +102,7 @@ UIButton *cancelButton;
 }
 
 - (void)cancelPressed {
-    [self willMoveToParentViewController:nil];
-    [self.view removeFromSuperview];
-    [self removeFromParentViewController];
+    [self goBack];
 }
 
 - (void)addOptions {
