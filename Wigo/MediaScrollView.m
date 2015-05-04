@@ -1613,14 +1613,14 @@
 //    tapGestureRecognizer.numberOfTapsRequired = 1;
 //    [self.pictureButton addGestureRecognizer:tapGestureRecognizer];
     
-    if (WGProfile.currentUser.videoEnabled) {
+//    if (WGProfile.currentUser.videoEnabled) {
         UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
         longGesture.cancelsTouchesInView = NO;
         longGesture.delaysTouchesBegan = YES;
         [self.pictureButton addGestureRecognizer:longGesture];
 //        [longGesture requireGestureRecognizerToFail:tapGestureRecognizer];
 //        [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
-    }
+//    }
     
     self.circularProgressView = [[LLACircularProgressView alloc] initWithFrame:self.captureImageView.frame];
     // Optionally set the current progress
