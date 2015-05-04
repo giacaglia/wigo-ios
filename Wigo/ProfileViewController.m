@@ -294,22 +294,34 @@ BOOL blockShown;
 }
 
 - (void) initializeRightBarButton {
-//    if (!_rightBarBt) {
-        _rightBarBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
-        [_rightBarBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
-        
-        UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] initWithCustomView:_rightBarBt];
-        [self.navigationItem setRightBarButtonItem:barItem animated:NO];
-        UIBarButtonItem *tabBarBt =  [[UIBarButtonItem alloc] initWithCustomView:_rightBarBt];
-        self.tabBarController.navigationItem.rightBarButtonItem = tabBarBt;
-        [self reloadViewForUserState];
-//    }
+    _rightBarBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
+    [_rightBarBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    _rightBarBt.titleLabel.font = [FontProperties getSubtitleFont];
+    
+    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] initWithCustomView:_rightBarBt];
+    [self.navigationItem setRightBarButtonItem:barItem animated:NO];
+    UIBarButtonItem *tabBarBt =  [[UIBarButtonItem alloc] initWithCustomView:_rightBarBt];
+    self.tabBarController.navigationItem.rightBarButtonItem = tabBarBt;
+    [self reloadViewForUserState];
 }
 
 - (void) morePressed {
-    [[RWBlurPopover instance] presentViewController:[[MoreViewController alloc] initWithUser:self.user] withOrigin:0 andHeight:self.view.frame.size.height fromViewController:self.navigationController];
+    
+    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    visualEffectView.frame = self.view.bounds;
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    MoreViewController *moreVc = [MoreViewController new];
+    moreVc.user = self.user;
+    moreVc.view.alpha = 0.0f;
+    moreVc.bgView = visualEffectView;
+    [self addChildViewController:moreVc];
+    [self.view addSubview:moreVc.view];
+    [UIView animateWithDuration:0.3 animations:^{
+        moreVc.view.alpha = 1.0f;
+    }];
 }
+
 - (void) editPressed {
     EditProfileViewController *editProfileViewController = [[EditProfileViewController alloc] init];
     editProfileViewController.view.backgroundColor = RGB(235, 235, 235);

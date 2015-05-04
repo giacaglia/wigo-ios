@@ -10,8 +10,6 @@
 #import "WGUser.h"
 
 @interface MoreViewController : UIViewController
-
--(id)initWithState:(State)state;
--(id)initWithUser:(WGUser *)newUser;
-
+@property (nonatomic, strong) WGUser *user;
+@property (nonatomic, strong) UIView *bgView;
 @end
