@@ -1660,14 +1660,18 @@ BOOL firstTimeLoading;
     if (weekday < 0) weekday += 7;
     NSString *dayName = [dateFormat weekdaySymbols][weekday];
     
-    UIView *lineView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width, 0.5f)];
-    lineView.center = CGPointMake(lineView.center.x, self.center.y - 10);
-    lineView.backgroundColor = RGB(210, 210, 210);
-    [self addSubview: lineView];
+    UIView *leftLineView = [[UIView alloc] initWithFrame: CGRectMake(0, 0, self.frame.size.width/2 - 70.0f, 1.0f)];
+    leftLineView.center = CGPointMake(leftLineView.center.x, self.center.y - 10);
+    leftLineView.backgroundColor = RGB(210, 210, 210);
+    [self addSubview: leftLineView];
+    
+    UIView *rightLineView = [[UIView alloc] initWithFrame: CGRectMake(self.frame.size.width/2 + 70.0f, 0, self.frame.size.width/2 - 70.0f, 1.0f)];
+    rightLineView.center = CGPointMake(rightLineView.center.x, self.center.y - 10);
+    rightLineView.backgroundColor = RGB(210, 210, 210);
+    [self addSubview: rightLineView];
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame: CGRectMake(self.frame.size.width/2 - 70.0f, 0, 140, self.frame.size.height - 23.5)];
     titleLabel.center = CGPointMake(titleLabel.center.x, self.center.y - 10);
-    titleLabel.backgroundColor = self.backgroundColor;
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.font = [FontProperties scMediumFont: 18.0f];
     titleLabel.textColor = RGB(155, 155, 155);
