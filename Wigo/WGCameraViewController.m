@@ -150,6 +150,8 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 
 @property (nonatomic,strong) AVCaptureSession *captureSession;
 
+@property (nonatomic,strong) AVCaptureDeviceInput *videoDeviceInput;
+
 @property (nonatomic,strong) AVAssetWriter *videoWriter;
 @property (nonatomic,strong) AVAssetWriterInput* videoWriterInput;
 @property (nonatomic,strong) AVCaptureMovieFileOutput *movieFileOutput;
@@ -460,7 +462,7 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 }
 
 // use front/back camera
-- (IBAction)switchCameras:(id)sender
+- (void)switchCameras:(id)sender
 {
     AVCaptureDevicePosition desiredPosition;
     if (isUsingFrontFacingCamera)
@@ -470,13 +472,13 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     
     for (AVCaptureDevice *d in [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
         if ([d position] == desiredPosition) {
-            [[previewLayer session] beginConfiguration];
-            AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:d error:nil];
-            for (AVCaptureInput *oldInput in [[previewLayer session] inputs]) {
-                [[previewLayer session] removeInput:oldInput];
-            }
-            [[previewLayer session] addInput:input];
-            [[previewLayer session] commitConfiguration];
+            [self.captureSession beginConfiguration];
+            
+            [self.captureSession removeInput:self.videoDeviceInput];
+            self.videoDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:d error:nil];
+            [self.captureSession addInput:self.videoDeviceInput];
+            
+            [self.captureSession commitConfiguration];
             break;
         }
     }

@@ -33,7 +33,6 @@
 }
 
 @property (nonatomic,weak) id <WGCameraViewControllerDelegate> delegate;
-@property (nonatomic,weak) AVCaptureDeviceInput *videoDeviceInput;
 
 @property (nonatomic,strong) UIView *cameraOverlayView;
 
@@ -44,9 +43,6 @@
 - (void)stopRecording;
 
 - (void)switchCameras:(id)sender;
-- (IBAction)handlePinchGesture:(UIGestureRecognizer *)sender;
-- (IBAction)toggleFaceDetection:(id)sender;
-
 
 @end
 

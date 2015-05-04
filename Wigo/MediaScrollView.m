@@ -2075,6 +2075,7 @@
 }
 
 - (void)switchCamera {
+    
     [UIView animateWithDuration:.15f animations:^{
         self.cameraImageView.transform = CGAffineTransformMakeScale(1.5,1.5);
     }completion:^(BOOL finished) {
@@ -2082,15 +2083,8 @@
             self.cameraImageView.transform = CGAffineTransformMakeScale(1.0,1.0);
         }];
     }];
-
-    if (self.controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
-        self.controller.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-        self.photoController.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-    }
-    else {
-        self.controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-        self.photoController.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-    }
+    
+    [self.cameraController switchCameras:self];
 }
 
 - (void)dismissPressed {
