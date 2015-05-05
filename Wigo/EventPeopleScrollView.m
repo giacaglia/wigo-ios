@@ -194,6 +194,7 @@
     scrollCell.imgViewLabel.hidden = YES;
     scrollCell.imgView.layer.borderColor = UIColor.clearColor.CGColor;
     if (indexPath.section == kInviteSection) {
+        if (self.event.attendees.count == 0) return scrollCell;
         if ([[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) {
             [scrollCell.imageButton removeTarget:nil
                                           action:NULL
