@@ -9,7 +9,6 @@
 #import "Globals.h"
 
 #import "SignViewController.h"
-#import "BatteryViewController.h"
 #import "KeychainItemWrapper.h"
 #import "FacebookHelper.h"
 #import <Parse/Parse.h>
@@ -460,9 +459,7 @@
                 [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
             }
             [self.navigationController setNavigationBarHidden:YES animated:NO];
-            BatteryViewController *batteryViewController = [BatteryViewController new];
-            batteryViewController.placesDelegate = self.placesDelegate;
-            [self.navigationController pushViewController:batteryViewController animated:NO];
+//            [self.navigationController pushViewController:[ new] animated:NO];
         } else {
             [self dismissViewControllerAnimated:NO  completion:nil];
         }

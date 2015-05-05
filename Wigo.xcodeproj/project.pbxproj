@@ -144,7 +144,6 @@
 		C12A111519787BE700D53B1C /* MessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E93DE529195C82B900079074 /* MessageViewController.m */; };
 		C12A111619787BE700D53B1C /* UIImage+WebP.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2AE1961EADE00A01F50 /* UIImage+WebP.m */; };
 		C12A111719787BE700D53B1C /* SignViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D906C719255BB000E39FC8 /* SignViewController.m */; };
-		C12A111819787BE700D53B1C /* EmailConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */; };
 		C12A111919787BE700D53B1C /* UIPageControlAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */; };
 		C12A111B19787BE700D53B1C /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B01961EADE00A01F50 /* UIImageView+HighlightedWebCache.m */; };
 		C12A111D19787BE700D53B1C /* SDWebImageDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C29D1961EADE00A01F50 /* SDWebImageDecoder.m */; };
@@ -166,7 +165,6 @@
 		C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A81961EADE00A01F50 /* UIButton+WebCache.m */; };
 		C12A113619787BE700D53B1C /* EditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AAAFBF193D0E4A0069F700 /* EditProfileViewController.m */; };
 		C12A113719787BE700D53B1C /* SignNavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2581961B96000A01F50 /* SignNavigationViewController.m */; };
-		C12A113819787BE700D53B1C /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */; };
 		C12A113919787BE700D53B1C /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */; };
 		C12A113A19787BE700D53B1C /* MKAnnotationView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2951961EADE00A01F50 /* MKAnnotationView+WebCache.m */; };
 		C12A113E19787BE700D53B1C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */; };
@@ -251,8 +249,14 @@
 		E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B01961EADE00A01F50 /* UIImageView+HighlightedWebCache.m */; };
 		E900C2C31961EADE00A01F50 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B21961EADE00A01F50 /* UIImageView+WebCache.m */; };
 		E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */; };
-		E9012AAC1AF86746007DC769 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AAB1AF86746007DC769 /* FBSDKShareKit.framework */; };
-		E9012AAD1AF86746007DC769 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AAB1AF86746007DC769 /* FBSDKShareKit.framework */; };
+		E9012AAF1AF91160007DC769 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AAE1AF91160007DC769 /* FBSDKShareKit.framework */; };
+		E9012AB01AF91160007DC769 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AAE1AF91160007DC769 /* FBSDKShareKit.framework */; };
+		E9012AB21AF91169007DC769 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AB11AF91169007DC769 /* FBSDKCoreKit.framework */; };
+		E9012AB31AF91169007DC769 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AB11AF91169007DC769 /* FBSDKCoreKit.framework */; };
+		E9012AB51AF91173007DC769 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AB41AF91173007DC769 /* FBSDKLoginKit.framework */; };
+		E9012AB61AF91173007DC769 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AB41AF91173007DC769 /* FBSDKLoginKit.framework */; };
+		E9012AB81AF91189007DC769 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AB71AF91189007DC769 /* Bolts.framework */; };
+		E9012AB91AF91189007DC769 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AB71AF91189007DC769 /* Bolts.framework */; };
 		E9096D551ADD5F1100386AC2 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = E9096D481ADD5F1100386AC2 /* .gitkeep */; };
 		E9096D561ADD5F1100386AC2 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = E9096D481ADD5F1100386AC2 /* .gitkeep */; };
 		E9096D571ADD5F1100386AC2 /* FSCalendar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */; };
@@ -295,8 +299,6 @@
 		E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */; };
 		E94408CA1ABA55DA00E3378D /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E94408C91ABA55DA00E3378D /* PlacesViewController.m */; };
 		E94408CB1ABA55DA00E3378D /* PlacesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E94408C91ABA55DA00E3378D /* PlacesViewController.m */; };
-		E9444C0819F00FCC004E7925 /* OnboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9444C0719F00FCC004E7925 /* OnboardViewController.m */; };
-		E9444C0919F00FCC004E7925 /* OnboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9444C0719F00FCC004E7925 /* OnboardViewController.m */; };
 		E957CD6A1A928EBD00D0FF7C /* PrivateSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */; };
 		E957CD6B1A928EBD00D0FF7C /* PrivateSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */; };
 		E957CD6D1A938B8400D0FF7C /* openLock.gif in Resources */ = {isa = PBXBuildFile; fileRef = E957CD6C1A938B8400D0FF7C /* openLock.gif */; };
@@ -395,8 +397,6 @@
 		E9C1AD5F1A939BDF009BCFDC /* closeLock.gif in Resources */ = {isa = PBXBuildFile; fileRef = E9C1AD5D1A939BDF009BCFDC /* closeLock.gif */; };
 		E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */; };
 		E9C3057019F8341600F9564D /* KeychainItemWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */; };
-		E9C3401E1A96482100AB069F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C3401D1A96482100AB069F /* Bolts.framework */; };
-		E9C3401F1A96482100AB069F /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C3401D1A96482100AB069F /* Bolts.framework */; };
 		E9C340211A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9C340201A96A82B00AB069F /* Whitney-Semibold.ttf */; };
 		E9C340221A96A82B00AB069F /* Whitney-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9C340201A96A82B00AB069F /* Whitney-Semibold.ttf */; };
 		E9C340291A97986500AB069F /* HighlightsCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9C340281A97986500AB069F /* HighlightsCollectionView.m */; };
@@ -462,15 +462,8 @@
 		E9D906DF19255DCD00E39FC8 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9D906DE19255DCD00E39FC8 /* SystemConfiguration.framework */; };
 		E9DBB050197813F900DDACDE /* UIScrollView+GifPullToRefresh.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */; };
 		E9DE130C196F06B100AFA05A /* WGSpinnerView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DE130B196F06B100AFA05A /* WGSpinnerView.m */; };
-		E9DFE16F1A001142003C5779 /* BatteryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DFE16E1A001142003C5779 /* BatteryViewController.m */; };
-		E9DFE1701A001142003C5779 /* BatteryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9DFE16E1A001142003C5779 /* BatteryViewController.m */; };
 		E9E22DE51AEE8F64009325C2 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9E22DE41AEE8F64009325C2 /* FacebookSDK.framework */; };
 		E9E22DE61AEE8F64009325C2 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9E22DE41AEE8F64009325C2 /* FacebookSDK.framework */; };
-		E9E22DE91AEE8F82009325C2 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9E22DE71AEE8F82009325C2 /* FBSDKCoreKit.framework */; };
-		E9E22DEA1AEE8F82009325C2 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9E22DE71AEE8F82009325C2 /* FBSDKCoreKit.framework */; };
-		E9E22DEB1AEE8F82009325C2 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9E22DE81AEE8F82009325C2 /* FBSDKLoginKit.framework */; };
-		E9E22DEC1AEE8F82009325C2 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9E22DE81AEE8F82009325C2 /* FBSDKLoginKit.framework */; };
-		E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */; };
 		E9E6A568199917BE003B590C /* OnboardFollowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E6A567199917BE003B590C /* OnboardFollowViewController.m */; };
 		E9E6A569199917BE003B590C /* OnboardFollowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9E6A567199917BE003B590C /* OnboardFollowViewController.m */; };
 		E9EA951819E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951519E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m */; };
@@ -479,7 +472,6 @@
 		E9EA951B19E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */; };
 		E9F406021A8436570043F07F /* ReferalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F406011A8436570043F07F /* ReferalViewController.m */; };
 		E9F406031A8436570043F07F /* ReferalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F406011A8436570043F07F /* ReferalViewController.m */; };
-		E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */; };
 		E9F7995219D4C727001D5BFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A695C619B0C7840071067B /* CoreData.framework */; };
 		E9F7995319D4C733001D5BFC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A695C619B0C7840071067B /* CoreData.framework */; };
 		E9F7995519D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9F7995419D4C762001D5BFC /* libGoogleAnalyticsServices.a */; };
@@ -742,7 +734,10 @@
 		E900C2B21961EADE00A01F50 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		E900C2B31961EADE00A01F50 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		E900C2B41961EADE00A01F50 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
-		E9012AAB1AF86746007DC769 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
+		E9012AAE1AF91160007DC769 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
+		E9012AB11AF91169007DC769 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		E9012AB41AF91173007DC769 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		E9012AB71AF91189007DC769 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		E9096D481ADD5F1100386AC2 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		E9096D491ADD5F1100386AC2 /* FSCalendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSCalendar.h; sourceTree = "<group>"; };
 		E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSCalendar.m; sourceTree = "<group>"; };
@@ -789,8 +784,6 @@
 		E93F84FA1940B3AC00B3B448 /* UIPageControlAligned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIPageControlAligned.h; sourceTree = "<group>"; };
 		E93F84FB1940B3AC00B3B448 /* UIPageControlAligned.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPageControlAligned.m; sourceTree = "<group>"; };
 		E94408C91ABA55DA00E3378D /* PlacesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlacesViewController.m; sourceTree = "<group>"; };
-		E9444C0619F00FCC004E7925 /* OnboardViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardViewController.h; sourceTree = "<group>"; };
-		E9444C0719F00FCC004E7925 /* OnboardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardViewController.m; sourceTree = "<group>"; };
 		E957CD681A928EBD00D0FF7C /* PrivateSwitchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrivateSwitchView.h; sourceTree = "<group>"; };
 		E957CD691A928EBD00D0FF7C /* PrivateSwitchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateSwitchView.m; sourceTree = "<group>"; };
 		E957CD6C1A938B8400D0FF7C /* openLock.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = openLock.gif; sourceTree = "<group>"; };
@@ -888,7 +881,6 @@
 		E9C1AD5D1A939BDF009BCFDC /* closeLock.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = closeLock.gif; sourceTree = "<group>"; };
 		E9C3056D19F8341600F9564D /* KeychainItemWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainItemWrapper.h; sourceTree = "<group>"; };
 		E9C3056E19F8341600F9564D /* KeychainItemWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainItemWrapper.m; sourceTree = "<group>"; };
-		E9C3401D1A96482100AB069F /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		E9C340201A96A82B00AB069F /* Whitney-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Semibold.ttf"; sourceTree = "<group>"; };
 		E9C340271A97986500AB069F /* HighlightsCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HighlightsCollectionView.h; sourceTree = "<group>"; };
 		E9C340281A97986500AB069F /* HighlightsCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HighlightsCollectionView.m; path = Wigo/HighlightsCollectionView.m; sourceTree = SOURCE_ROOT; };
@@ -947,13 +939,7 @@
 		E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+GifPullToRefresh.m"; sourceTree = "<group>"; };
 		E9DE130A196F06B100AFA05A /* WGSpinnerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGSpinnerView.h; sourceTree = "<group>"; };
 		E9DE130B196F06B100AFA05A /* WGSpinnerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGSpinnerView.m; sourceTree = "<group>"; };
-		E9DFE16D1A001142003C5779 /* BatteryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryViewController.h; sourceTree = "<group>"; };
-		E9DFE16E1A001142003C5779 /* BatteryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatteryViewController.m; sourceTree = "<group>"; };
 		E9E22DE41AEE8F64009325C2 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
-		E9E22DE71AEE8F82009325C2 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
-		E9E22DE81AEE8F82009325C2 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
-		E9E618FB193625BB00A224C0 /* EmailConfirmationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmailConfirmationViewController.h; sourceTree = "<group>"; };
-		E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmailConfirmationViewController.m; sourceTree = "<group>"; };
 		E9E6A566199917BE003B590C /* OnboardFollowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardFollowViewController.h; sourceTree = "<group>"; };
 		E9E6A567199917BE003B590C /* OnboardFollowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardFollowViewController.m; sourceTree = "<group>"; };
 		E9EA951419E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSStickyHeaderFlowLayout.h; sourceTree = "<group>"; };
@@ -962,8 +948,6 @@
 		E9EA951719E9F9C6003C79F0 /* CSStickyHeaderFlowLayoutAttributes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSStickyHeaderFlowLayoutAttributes.m; sourceTree = "<group>"; };
 		E9F406001A8436570043F07F /* ReferalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReferalViewController.h; sourceTree = "<group>"; };
 		E9F406011A8436570043F07F /* ReferalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReferalViewController.m; sourceTree = "<group>"; };
-		E9F59E1D192D09DF00BB8FDD /* SignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignUpViewController.h; sourceTree = "<group>"; };
-		E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignUpViewController.m; sourceTree = "<group>"; };
 		E9F7994819D4C646001D5BFC /* GAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAI.h; sourceTree = "<group>"; };
 		E9F7994919D4C646001D5BFC /* GAIDictionaryBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIDictionaryBuilder.h; sourceTree = "<group>"; };
 		E9F7994A19D4C646001D5BFC /* GAIEcommerceFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GAIEcommerceFields.h; sourceTree = "<group>"; };
@@ -1021,24 +1005,24 @@
 			files = (
 				C12A114419787BE700D53B1C /* CoreLocation.framework in Frameworks */,
 				E9F7995219D4C727001D5BFC /* CoreData.framework in Frameworks */,
+				E9012AB31AF91169007DC769 /* FBSDKCoreKit.framework in Frameworks */,
 				E998C25E19C9F7FB0012BF51 /* ParseFacebookUtils.framework in Frameworks */,
 				E9ACCA2919C4CD1700F3EB20 /* AddressBook.framework in Frameworks */,
 				E9CD53881993C2D700206B75 /* ImageIO.framework in Frameworks */,
 				E9798F9919901EC100A97AE9 /* Social.framework in Frameworks */,
 				E9A31E481980AB9B008A711B /* libsqlite3.dylib in Frameworks */,
 				E9A31E461980AB25008A711B /* AdSupport.framework in Frameworks */,
-				E9C3401F1A96482100AB069F /* Bolts.framework in Frameworks */,
+				E9012AB91AF91189007DC769 /* Bolts.framework in Frameworks */,
 				E998C25C19C9F7FB0012BF51 /* Parse.framework in Frameworks */,
 				C12A113E19787BE700D53B1C /* SystemConfiguration.framework in Frameworks */,
 				C12A113F19787BE700D53B1C /* Crashlytics.framework in Frameworks */,
+				E9012AB61AF91173007DC769 /* FBSDKLoginKit.framework in Frameworks */,
 				C12A114019787BE700D53B1C /* Security.framework in Frameworks */,
 				C12A114119787BE700D53B1C /* QuartzCore.framework in Frameworks */,
-				E9012AAD1AF86746007DC769 /* FBSDKShareKit.framework in Frameworks */,
+				E9012AB01AF91160007DC769 /* FBSDKShareKit.framework in Frameworks */,
 				E9F7995619D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */,
 				C12A114219787BE700D53B1C /* MobileCoreServices.framework in Frameworks */,
-				E9E22DEA1AEE8F82009325C2 /* FBSDKCoreKit.framework in Frameworks */,
 				C12A114319787BE700D53B1C /* libz.dylib in Frameworks */,
-				E9E22DEC1AEE8F82009325C2 /* FBSDKLoginKit.framework in Frameworks */,
 				C12A114619787BE700D53B1C /* CFNetwork.framework in Frameworks */,
 				C12A114719787BE700D53B1C /* AudioToolbox.framework in Frameworks */,
 				C12A114819787BE700D53B1C /* MapKit.framework in Frameworks */,
@@ -1057,24 +1041,24 @@
 			files = (
 				E9D906D319255D9A00E39FC8 /* CoreLocation.framework in Frameworks */,
 				FA438EA919F19F2200AD74C2 /* AVFoundation.framework in Frameworks */,
+				E9012AB21AF91169007DC769 /* FBSDKCoreKit.framework in Frameworks */,
 				FA438EA719F1998A00AD74C2 /* MediaPlayer.framework in Frameworks */,
 				E9F7995319D4C733001D5BFC /* CoreData.framework in Frameworks */,
 				E998C25D19C9F7FB0012BF51 /* ParseFacebookUtils.framework in Frameworks */,
 				E9ACCA2819C4CD0F00F3EB20 /* AddressBook.framework in Frameworks */,
 				E9CD53891993C2DD00206B75 /* ImageIO.framework in Frameworks */,
 				E9798F9A19901EC700A97AE9 /* Social.framework in Frameworks */,
-				E9C3401E1A96482100AB069F /* Bolts.framework in Frameworks */,
+				E9012AB81AF91189007DC769 /* Bolts.framework in Frameworks */,
 				E9A31E4A1980ABB5008A711B /* AdSupport.framework in Frameworks */,
 				E9A31E491980ABAF008A711B /* libsqlite3.dylib in Frameworks */,
 				E998C25B19C9F7FB0012BF51 /* Parse.framework in Frameworks */,
+				E9012AB51AF91173007DC769 /* FBSDKLoginKit.framework in Frameworks */,
 				E9D906DF19255DCD00E39FC8 /* SystemConfiguration.framework in Frameworks */,
 				E90AA8A81976C8B60055D74B /* Crashlytics.framework in Frameworks */,
-				E9012AAC1AF86746007DC769 /* FBSDKShareKit.framework in Frameworks */,
+				E9012AAF1AF91160007DC769 /* FBSDKShareKit.framework in Frameworks */,
 				E9D906DB19255DBC00E39FC8 /* Security.framework in Frameworks */,
 				E9D906D919255DB400E39FC8 /* QuartzCore.framework in Frameworks */,
-				E9E22DE91AEE8F82009325C2 /* FBSDKCoreKit.framework in Frameworks */,
 				E9F7995519D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */,
-				E9E22DEB1AEE8F82009325C2 /* FBSDKLoginKit.framework in Frameworks */,
 				E9D906D719255DAB00E39FC8 /* MobileCoreServices.framework in Frameworks */,
 				E9D906D519255DA200E39FC8 /* libz.dylib in Frameworks */,
 				E9D906D119255D8B00E39FC8 /* CFNetwork.framework in Frameworks */,
@@ -1523,11 +1507,11 @@
 		E921D6141923967D00361247 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				E9012AAB1AF86746007DC769 /* FBSDKShareKit.framework */,
-				E9E22DE71AEE8F82009325C2 /* FBSDKCoreKit.framework */,
-				E9E22DE81AEE8F82009325C2 /* FBSDKLoginKit.framework */,
+				E9012AB71AF91189007DC769 /* Bolts.framework */,
+				E9012AB41AF91173007DC769 /* FBSDKLoginKit.framework */,
+				E9012AB11AF91169007DC769 /* FBSDKCoreKit.framework */,
+				E9012AAE1AF91160007DC769 /* FBSDKShareKit.framework */,
 				E9E22DE41AEE8F64009325C2 /* FacebookSDK.framework */,
-				E9C3401D1A96482100AB069F /* Bolts.framework */,
 				FA438EA819F19F2200AD74C2 /* AVFoundation.framework */,
 				FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */,
 				E9F7995419D4C762001D5BFC /* libGoogleAnalyticsServices.a */,
@@ -1794,17 +1778,10 @@
 				E900C2581961B96000A01F50 /* SignNavigationViewController.m */,
 				E9D906C619255BB000E39FC8 /* SignViewController.h */,
 				E9D906C719255BB000E39FC8 /* SignViewController.m */,
-				E9F59E1D192D09DF00BB8FDD /* SignUpViewController.h */,
-				E9F59E1E192D09DF00BB8FDD /* SignUpViewController.m */,
-				E9E618FB193625BB00A224C0 /* EmailConfirmationViewController.h */,
-				E9E618FC193625BB00A224C0 /* EmailConfirmationViewController.m */,
 				E9E6A566199917BE003B590C /* OnboardFollowViewController.h */,
 				E9E6A567199917BE003B590C /* OnboardFollowViewController.m */,
 				E9F406001A8436570043F07F /* ReferalViewController.h */,
 				E9F406011A8436570043F07F /* ReferalViewController.m */,
-				E9444C0619F00FCC004E7925 /* OnboardViewController.h */,
-				E9444C0719F00FCC004E7925 /* OnboardViewController.m */,
-				E9DFE1711A00114A003C5779 /* LockScreen */,
 			);
 			name = Signup/Login/Onboard;
 			sourceTree = "<group>";
@@ -1941,15 +1918,6 @@
 				E9DBB04F197813F900DDACDE /* UIScrollView+GifPullToRefresh.m */,
 			);
 			path = CHGifRefreshControl;
-			sourceTree = "<group>";
-		};
-		E9DFE1711A00114A003C5779 /* LockScreen */ = {
-			isa = PBXGroup;
-			children = (
-				E9DFE16D1A001142003C5779 /* BatteryViewController.h */,
-				E9DFE16E1A001142003C5779 /* BatteryViewController.m */,
-			);
-			name = LockScreen;
 			sourceTree = "<group>";
 		};
 		E9EA951319E9F83C003C79F0 /* StickyHeader */ = {
@@ -2489,7 +2457,6 @@
 				E9F406031A8436570043F07F /* ReferalViewController.m in Sources */,
 				C12A111719787BE700D53B1C /* SignViewController.m in Sources */,
 				E9AEAE541A0190DB00BD77AF /* EventPeopleScrollView.m in Sources */,
-				C12A111819787BE700D53B1C /* EmailConfirmationViewController.m in Sources */,
 				45D9FBAF1A7AE1DD00D08577 /* GCDAsyncSocket.m in Sources */,
 				45D9FAD31A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.m in Sources */,
 				E9706E1919C20EAE00A21DE0 /* WigoCustomCell.m in Sources */,
@@ -2540,7 +2507,6 @@
 				45D9FA9F1A781AFD00D08577 /* UIDevice+JSQMessages.m in Sources */,
 				C12A112F19787BE700D53B1C /* ConversationViewController.m in Sources */,
 				45D9FAA71A781AFD00D08577 /* JSQMessagesViewController.m in Sources */,
-				E9444C0919F00FCC004E7925 /* OnboardViewController.m in Sources */,
 				C12A113019787BE700D53B1C /* SDWebImageCompat.m in Sources */,
 				C12A113119787BE700D53B1C /* NSData+ImageContentType.m in Sources */,
 				E99D0ADD1A2CCA3300384A73 /* PeekViewController.m in Sources */,
@@ -2555,7 +2521,6 @@
 				C12A113419787BE700D53B1C /* ChatViewController.m in Sources */,
 				E9ACCA2519C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
 				C14AB1BE1A8017670011C4E5 /* UIImage+Resize.m in Sources */,
-				E9DFE1701A001142003C5779 /* BatteryViewController.m in Sources */,
 				C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */,
 				E9A765981AC2012C00F7C016 /* WGTracker.m in Sources */,
 				C12A113619787BE700D53B1C /* EditProfileViewController.m in Sources */,
@@ -2569,7 +2534,6 @@
 				E9096D771AE174B300386AC2 /* WGCache.m in Sources */,
 				45D9FAB31A781AFD00D08577 /* JSQMessagesToolbarButtonFactory.m in Sources */,
 				E9747D4B1AEA905400E0FE18 /* TabBarAuxiliar.m in Sources */,
-				C12A113819787BE700D53B1C /* SignUpViewController.m in Sources */,
 				C12A113919787BE700D53B1C /* UIView+WebCacheOperation.m in Sources */,
 				E9ACDC6A19AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */,
 				E9A765A01AC5D23A00F7C016 /* LabelSwitch.m in Sources */,
@@ -2637,7 +2601,6 @@
 				FA5526221A1FE3D800101AE7 /* EngagementGraph.m in Sources */,
 				E94408CA1ABA55DA00E3378D /* PlacesViewController.m in Sources */,
 				45D9FAE61A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.m in Sources */,
-				E9E618FD193625BB00A224C0 /* EmailConfirmationViewController.m in Sources */,
 				4563F5211A3F3C6900F8C9C4 /* WGCollection.m in Sources */,
 				45D9FA9A1A781AFD00D08577 /* NSString+JSQMessages.m in Sources */,
 				45DF86AC1A5C5DEB00DB85AE /* AFHTTPRequestOperation.m in Sources */,
@@ -2726,7 +2689,6 @@
 				45D9FAB21A781AFD00D08577 /* JSQMessagesToolbarButtonFactory.m in Sources */,
 				E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */,
 				4563F5651A3F875900F8C9C4 /* NSDictionary+STHelper.m in Sources */,
-				E9444C0819F00FCC004E7925 /* OnboardViewController.m in Sources */,
 				E9F406021A8436570043F07F /* ReferalViewController.m in Sources */,
 				E900C2B81961EADE00A01F50 /* SDWebImageCompat.m in Sources */,
 				E900C2B61961EADE00A01F50 /* NSData+ImageContentType.m in Sources */,
@@ -2742,7 +2704,6 @@
 				FA55261E1A1FDB4000101AE7 /* JBLineChartView.m in Sources */,
 				45D9FAC21A781AFD00D08577 /* JSQMessagesBubbleImage.m in Sources */,
 				E9ACCA2419C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
-				E9DFE16F1A001142003C5779 /* BatteryViewController.m in Sources */,
 				45D9FAE01A781AFD00D08577 /* JSQMessagesMediaPlaceholderView.m in Sources */,
 				45D9FBB01A7AE1DD00D08577 /* GCDAsyncUdpSocket.m in Sources */,
 				E9096D5D1ADD5F1100386AC2 /* NSCalendar+FSExtension.m in Sources */,
@@ -2757,7 +2718,6 @@
 				45D9FAD21A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.m in Sources */,
 				E9096D611ADD5F1100386AC2 /* UIView+FSExtension.m in Sources */,
 				45D9FA9C1A781AFD00D08577 /* UIColor+JSQMessages.m in Sources */,
-				E9F59E1F192D09DF00BB8FDD /* SignUpViewController.m in Sources */,
 				E900C2C41961EADE00A01F50 /* UIView+WebCacheOperation.m in Sources */,
 				FA55261C1A1FDB4000101AE7 /* JBChartView.m in Sources */,
 				E9A765AC1AC5F06800F7C016 /* WGGetter.m in Sources */,

@@ -12,8 +12,9 @@
 #import "UIButtonAligned.h"
 #import "UIImageCrop.h"
 #import "MobileContactsViewController.h"
+#import <FBSDKShareKit/FBSDKShareKit.h>
 
-@interface PeopleViewController ()
+@interface PeopleViewController () <FBSDKAppInviteDialogDelegate>
 @property UISearchBar *searchBar;
 @end
 
@@ -181,27 +182,26 @@ NSIndexPath *userIndex;
 
 
 - (void)invitePressed  {
-//    FBSDKAppInviteContent *content = [[FBSDKAppInviteContent alloc] init];
-//    content.appLinkURL = [NSURL URLWithString:@"https://fb.me/847330831988239"];
-//    //optionally set previewImageURL
-//    content.previewImageURL = [NSURL URLWithString:@"https://www.mydomain.com/my_invite_image.jpg"];
-//    
-//    // present the dialog. Assumes self implements protocol `FBSDKAppInviteDialogDelegate`
-//    [FBSDKAppInviteDialog showWithContent:content
-//                                 delegate:self];
+    FBSDKAppInviteContent *content = [[FBSDKAppInviteContent alloc] init];
+    content.appLinkURL = [NSURL URLWithString:@"https://fb.me/847330831988239"];
+    //optionally set previewImageURL
+    content.previewImageURL = [NSURL URLWithString:@"http://www.wigo.us/static/img/logo.png"];
     
-//    [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
+    // present the dialog. Assumes self implements protocol `FBSDKAppInviteDialogDelegate`
+    [FBSDKAppInviteDialog showWithContent:content
+                                 delegate:self];
+    
 }
 
-//- (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog
-// didCompleteWithResults:(NSDictionary *)result {
-//    
-//}
-//
-//- (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog
-//       didFailWithError:(NSError *)error {
-//    
-//}
+- (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog
+ didCompleteWithResults:(NSDictionary *)result {
+    NSLog(@"result");
+}
+
+- (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog
+       didFailWithError:(NSError *)error {
+    
+}
 #pragma mark - Filter handlers
 
 

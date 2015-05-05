@@ -18,7 +18,6 @@
 #import "ProfileViewController.h"
 #import "FXBlurView.h"
 #import "ChatViewController.h"
-#import "BatteryViewController.h"
 #import "UIView+ViewToImage.h"
 #import "UIImage+ImageEffects.h"
 #import "ReferalViewController.h"
@@ -1012,16 +1011,16 @@ BOOL firstTimeLoading;
 - (void)backPressed {
     self.presentingLockedView = NO;
     
-    BatteryViewController *batteryViewController = [BatteryViewController new];
-    
-    UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
-    imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
-                                                             tintColor:RGBAlpha(0, 0, 0, 0.75)
-                                                 saturationDeltaFactor:1.3
-                                                             maskImage:nil];
-    batteryViewController.blurredBackgroundImage = imageOfUnderlyingView;
-    batteryViewController.placesDelegate = self;
-    [self presentViewController:batteryViewController animated:YES completion:nil];
+//    BatteryViewController *batteryViewController = [BatteryViewController new];
+//    
+//    UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
+//    imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
+//                                                             tintColor:RGBAlpha(0, 0, 0, 0.75)
+//                                                 saturationDeltaFactor:1.3
+//                                                             maskImage:nil];
+//    batteryViewController.blurredBackgroundImage = imageOfUnderlyingView;
+//    batteryViewController.placesDelegate = self;
+//    [self presentViewController:batteryViewController animated:YES completion:nil];
 }
 
 
@@ -1201,7 +1200,7 @@ BOOL firstTimeLoading;
             for (WGEvent *event in strongSelf.allEvents) {
                 if (event) {
                     if (event.isExpired.boolValue) {
-                        if (event.messages.count > 0) [strongSelf.oldEvents addObject:event];
+                        [strongSelf.oldEvents addObject:event];
                     } else {
                         [strongSelf.events addObject:event];
                     }
@@ -1254,7 +1253,7 @@ BOOL firstTimeLoading;
             for (WGEvent *event in strongSelf.allEvents) {
                 if (event) {
                     if (event.isExpired.boolValue) {
-                        if (event.messages.count > 0) [strongSelf.oldEvents addObject:event];
+                        [strongSelf.oldEvents addObject:event];
                     } else {
                         [strongSelf.events addObject:event];
                     }
@@ -1300,7 +1299,7 @@ BOOL firstTimeLoading;
             }
             for (WGEvent *event in strongSelf.allEvents) {
                 if (event.isExpired.boolValue) {
-                    if (event.messages.count > 0) [strongSelf.oldEvents addObject:event];
+                    [strongSelf.oldEvents addObject:event];
                 } else {
                     [strongSelf.events addObject:event];
                 }
