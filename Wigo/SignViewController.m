@@ -7,7 +7,6 @@
 //
 
 #import "Globals.h"
-
 #import "SignViewController.h"
 #import "FacebookHelper.h"
 #import <Parse/Parse.h>

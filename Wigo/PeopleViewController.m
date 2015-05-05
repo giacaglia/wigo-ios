@@ -246,16 +246,6 @@ NSIndexPath *userIndex;
 }
 
 
-- (BOOL)isThereANextPage {
-    if ([self.currentTab isEqual:@2]) {
-        return self.users.hasNextPage.boolValue;
-    }
-    else if ([self.currentTab isEqual:@3]) {
-       return self.users.hasNextPage.boolValue;
-    }
-    return NO;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kSectionFollowPeople && [self.currentTab isEqual:@2]) {
         if (indexPath.row == self.friendRequestUsers.count) {
@@ -282,11 +272,11 @@ NSIndexPath *userIndex;
     cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, [self tableView:tableView heightForRowAtIndexPath:indexPath]);
 
     int tag = (int)indexPath.row;
-    if ([self isThereANextPage] && tag == self.users.count - 5) {
-        [self loadNextPage];
+    if (tag == self.users.count - 5) {
+        [self fetchNextPage];
     }
-     if (tag == self.users.count) {
-        [self loadNextPage];
+    if (tag == self.users.count) {
+        [self fetchNextPage];
         return cell;
     }
     
@@ -473,18 +463,14 @@ viewForHeaderInSection:(NSInteger)section
 
 #pragma mark - Network functions
 
-- (void)loadNextPage {
-    [self fetchNextPage];
-  }
-
 - (void)fetchFirstPageSuggestions {
     self.users = NetworkFetcher.defaultGetter.suggestions;
     [self.tableViewOfPeople reloadData];
 }
 
 - (void)fetchNextPage {
-    if (self.users) return;
-    if (!self.users.hasNextPage.boolValue) return;
+    if (!self.users) return;
+    if (!self.users.nextPage) return;
     self.fetching = YES;
     __weak typeof(self) weakSelf = self;
     [self.users addNextPage:^(BOOL success, NSError *error) {
@@ -492,61 +478,6 @@ viewForHeaderInSection:(NSInteger)section
         if (error) return;
         strongSelf.fetching = NO;
         [strongSelf.tableViewOfPeople reloadData];
-    }];
-}
-
-- (void)fetchFirstPageEveryone {
-    if (self.fetching) return;
-    self.fetching = YES;
-    [WGSpinnerView addDancingGToCenterView:self.view];
-    self.everyone = [[WGCollection alloc] initWithType:[WGUser class]];
-    self.users = [[WGCollection alloc] initWithType:[WGUser class]];
-    __weak typeof(self) weakSelf = self;
-    [WGUser get:^(WGCollection *collection, NSError *error) {
-        __strong typeof(self) strongSelf = weakSelf;
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            [WGSpinnerView removeDancingGFromCenterView:self.view];
-            strongSelf.fetching = NO;
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            if (strongSelf.suggestions) {
-                [strongSelf.everyone addObjectsFromCollection:collection notInCollection:strongSelf.suggestions];
-            }
-            strongSelf.everyone = collection;
-            strongSelf.users = strongSelf.everyone;
-            [strongSelf.tableViewOfPeople reloadData];
-        });
-    }];
-}
-
-- (void) fetchEveryone {
-    if (self.fetching) return;
-    if (!self.everyone.hasNextPage.boolValue) return;
-    self.fetching = YES;
-    __weak typeof(self) weakSelf = self;
-    [self.everyone getNextPage:^(WGCollection *collection, NSError *error) {
-        __strong typeof(self) strongSelf = weakSelf;
-        dispatch_async(dispatch_get_main_queue(), ^(void) {
-            strongSelf.fetching = NO;
-            [WGSpinnerView removeDancingGFromCenterView:self.view];
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                return;
-            }
-            if (strongSelf.suggestions) {
-                [strongSelf.everyone addObjectsFromCollection:collection notInCollection:strongSelf.suggestions];
-            } else {
-                [strongSelf.everyone addObjectsFromCollection:collection notInCollection:strongSelf.everyone];
-            }
-            strongSelf.everyone.hasNextPage = collection.hasNextPage;
-            strongSelf.everyone.nextPage = collection.nextPage;
-            strongSelf.users = strongSelf.everyone;
-            [strongSelf.tableViewOfPeople reloadData];
-        });
     }];
 }
 
@@ -561,7 +492,6 @@ viewForHeaderInSection:(NSInteger)section
             strongSelf.fetching = NO;
             [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
@@ -571,7 +501,7 @@ viewForHeaderInSection:(NSInteger)section
     }];
 }
 
-- (void)fetchFirstPageFriendRequests {
+-(void) fetchFirstPageFriendRequests {
     __weak typeof(self) weakSelf = self;
     [WGProfile.currentUser getFriendRequests:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -585,7 +515,6 @@ viewForHeaderInSection:(NSInteger)section
             [strongSelf.tableViewOfPeople reloadData];
         });
     }];
-
 }
 
 

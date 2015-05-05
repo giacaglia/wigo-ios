@@ -1099,6 +1099,7 @@ static WGUser *currentUser = nil;
        }
        NSError *dataError;
        WGCollection *objects;
+       NSDictionary *response;
        @try {
            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
        }

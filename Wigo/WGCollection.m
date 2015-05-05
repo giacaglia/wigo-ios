@@ -332,7 +332,7 @@
 
 -(void)setMetaInfo:(NSDictionary *)metaDictionary {
     self.hasNextPage = [metaDictionary objectForKey:@"has_next_page"];
-    if (self.hasNextPage && [self.hasNextPage  boolValue]) {
+    if ([metaDictionary objectForKey:@"next"]) {
         self.nextPage = [metaDictionary objectForKey:@"next"];
         self.nextPage = [self.nextPage substringFromIndex:5];
     }
