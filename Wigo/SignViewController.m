@@ -9,27 +9,20 @@
 #import "Globals.h"
 
 #import "SignViewController.h"
-#import "KeychainItemWrapper.h"
 #import "FacebookHelper.h"
 #import <Parse/Parse.h>
 #import "ReferalViewController.h"
-#import "TabBarAuxiliar.h"
-
-#import <Crashlytics/Crashlytics.h>
+#import "WaitListViewController.h"
 
 
 @interface SignViewController ()
-// UI
 @property UIView *facebookConnectView;
-
 @property BOOL pushed;
 @property FBLoginView *loginView;
 @property NSString * profilePicturesAlbumId;
 @property NSString *profilePic;
-
 @property NSString *accessToken;
 @property NSString *fbID;
-
 @property UIAlertView * alert;
 @property BOOL alertShown;
 @end
@@ -42,7 +35,6 @@
     self = [super init];
     if (self) {
         self.fetchingProfilePictures = NO;
-        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -50,6 +42,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.backgroundColor = UIColor.whiteColor;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlertToNotShown) name:@"changeAlertToNotShown" object:nil];
     _alertShown = NO;
     self.fetchingProfilePictures = NO;
@@ -66,6 +59,7 @@
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self showOnboard];
+    [self presentPushNotification];
 }
 
 -(void) showBarrierError:(NSError *)error {
@@ -389,7 +383,6 @@
                                delegate:self
                       cancelButtonTitle:@"OK"
                       otherButtonTitles:nil] show];
-//    [self loginUserAsynchronous];
 }
 
 - (void) loginViewShowingLoggedOutUser:(FBLoginView *)loginView {
@@ -458,7 +451,7 @@
                 [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
             }
             [self.navigationController setNavigationBarHidden:YES animated:NO];
-//            [self.navigationController pushViewController:[ new] animated:NO];
+            [self.navigationController pushViewController:[WaitListViewController new] animated:YES];
         } else {
             [self dismissViewControllerAnimated:NO  completion:nil];
         }
@@ -479,5 +472,62 @@
     }
     [self navigate];
 }
+
+-(void) presentPushNotification {
+    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+    self.blurredView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    self.blurredView.frame = self.view.bounds;
+    [self.view addSubview:self.blurredView];
+    [self presentAlertView];
+}
+
+- (void)presentAlertView {
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
+                                                        message:@"Wigo works best when you enable push notifications so we can let you know when the next party is happening."
+                                                       delegate:self
+                                              cancelButtonTitle:@"Don't allow"
+                                              otherButtonTitles:@"Allow", nil];
+    alertView.delegate = self;
+    [alertView show];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        [self presentAlertView];
+        return;
+    }
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        UIUserNotificationCategory *category = [self registerActions];
+        NSSet *categories = [NSSet setWithObjects:category, nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:categories]];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+    } else {
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+         (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+    }
+#else
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+#endif
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"triedToRegister"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self.blurredView removeFromSuperview];
+}
+
+- (UIMutableUserNotificationCategory*)registerActions {
+    UIMutableUserNotificationAction* acceptLeadAction = [[UIMutableUserNotificationAction alloc] init];
+    acceptLeadAction.identifier = @"tap_with_diff_event";
+    acceptLeadAction.title = @"Go Here";
+    acceptLeadAction.activationMode = UIUserNotificationActivationModeForeground;
+    acceptLeadAction.destructive = false;
+    acceptLeadAction.authenticationRequired = false;
+    
+    UIMutableUserNotificationCategory* category = [[UIMutableUserNotificationCategory alloc] init];
+    category.identifier = @"tap_with_diff_event";
+    [category setActions:@[acceptLeadAction] forContext: UIUserNotificationActionContextDefault];
+    return category;
+}
+
 
 @end

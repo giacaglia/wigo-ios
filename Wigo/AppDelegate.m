@@ -22,9 +22,6 @@
 #define kImageQuality @"quality"
 #define kImageMultiple @"multiple"
 
-
-NSNumber *numberOfNewMessages;
-NSNumber *numberOfNewNotifications;
 NSDate *firstLoggedTime;
 
 @implementation AppDelegate
@@ -248,23 +245,7 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 - (void)addNotificationHandlers {
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(goingOutForRateApp) name:@"goingOutForRateApp" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentPush) name:@"presentPush" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchAppStart) name:@"fetchAppStart" object:nil];
-}
-
-- (void)presentPush {
-    BOOL triedToRegister =  [[NSUserDefaults standardUserDefaults] boolForKey: @"triedToRegister"];
-    if (!triedToRegister) {
-        UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:@"FYI"
-                                  message:@"Wigo only sends notifications from your closest friends and important updates."
-                                  delegate:self
-                                  cancelButtonTitle:@"OK"
-                                  otherButtonTitles: nil];
-        [alertView show];
-        alertView.delegate = self;
-    }
-
 }
 
 # pragma mark - Facebook Login
@@ -364,42 +345,11 @@ forRemoteNotification:(NSDictionary *)userInfo
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if ([alertView.title isEqualToString:@"FYI"]) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-        if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-            UIUserNotificationCategory *category = [self registerActions];
-            NSSet *categories = [NSSet setWithObjects:category, nil];
-            [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:categories]];
-            [[UIApplication sharedApplication] registerForRemoteNotifications];
-        } else {
-            [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-             (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
-        }
-#else
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-         (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-#endif
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"triedToRegister"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    } else {
+    if ([alertView.title isEqualToString:@"Love Wigo"]) {
         if ((int)buttonIndex == 1) {
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/wigo-who-is-going-out/id689401759?mt=8"]];
         }
     }
-}
-
-- (UIMutableUserNotificationCategory*)registerActions {
-    UIMutableUserNotificationAction* acceptLeadAction = [[UIMutableUserNotificationAction alloc] init];
-    acceptLeadAction.identifier = @"tap_with_diff_event";
-    acceptLeadAction.title = @"Go Here";
-    acceptLeadAction.activationMode = UIUserNotificationActivationModeForeground;
-    acceptLeadAction.destructive = false;
-    acceptLeadAction.authenticationRequired = false;
-    
-    UIMutableUserNotificationCategory* category = [[UIMutableUserNotificationCategory alloc] init];
-    category.identifier = @"tap_with_diff_event";
-    [category setActions:@[acceptLeadAction] forContext: UIUserNotificationActionContextDefault];
-    return category;
 }
 
 - (void)fetchAppStart {

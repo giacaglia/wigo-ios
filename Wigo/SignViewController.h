@@ -16,4 +16,6 @@
 -(void) showBarrierError:(NSError *)error;
 @property (nonatomic, assign) BOOL fetchingProfilePictures;
 
+@property (nonatomic, strong) UIVisualEffectView *blurredView;
+
 @end

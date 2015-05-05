@@ -921,11 +921,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [WGProfile reload:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.user = WGProfile.currentUser;
-        strongSelf.numberOfFriendsLabel.text = strongSelf.user.numFriends.stringValue;
-        if (strongSelf.user.numFriends.intValue == 0 || strongSelf.user.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
+        strongSelf.numberOfFriendsLabel.text = WGProfile.currentUser.numFriends.stringValue;
+        if (WGProfile.currentUser.numFriends.intValue == 0 || WGProfile.currentUser.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
         else strongSelf.friendsLabel.text = @"Friends";
         strongSelf.imageScrollView.user = WGProfile.currentUser;
-        strongSelf.pageControl.numberOfPages = strongSelf.user.images.count;
+        strongSelf.pageControl.numberOfPages = WGProfile.currentUser.images.count;
         [strongSelf reloadViewForUserState];
     }];
     

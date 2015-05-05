@@ -1348,7 +1348,6 @@ BOOL firstTimeLoading;
         strongSelf.fetchingUserInfo = NO;
         
         if (!strongSelf.secondTimeFetchingUserInfo) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"presentPush" object:nil];
             strongSelf.secondTimeFetchingUserInfo = YES;
 //            if (
 //                (error || ![WGProfile.currentUser.emailValidated boolValue] ||
