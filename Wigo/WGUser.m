@@ -1357,7 +1357,7 @@ static WGUser *currentUser = nil;
     if (!user.id || !type) {
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi post:@"blocks/" withParameters:@{ @"block" : user.id, @"type" : type } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:[NSString stringWithFormat:@"users/%@/blocks/", user.id] withParameters:@{ @"type" : type } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isBlocked = @YES;
         }
@@ -1417,7 +1417,7 @@ static WGUser *currentUser = nil;
 -(void) friendUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi post:[NSString stringWithFormat:@"users/me/friends/"] withParameters:@{ @"friend_id": user.id} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isFriendRequestRead = kFriendRequestSent;
+            user.friendRequest = kFriendRequestSent;
         }
         handler(error == nil, error);
     }];
