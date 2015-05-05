@@ -141,7 +141,8 @@ BOOL blockShown;
             [strongSelf.tableView reloadData];
         }];
 
-        if (self.user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
+        if (self.user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE ||
+            self.user.state == NOT_FRIEND_STATE) {
             [self.user getMutualFriends:^(WGCollection *collection, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
                 if (error) return;
