@@ -829,6 +829,10 @@ viewForHeaderInSection:(NSInteger)section
     [self.rejectButton addSubview:rejectImgView];
     self.rejectButton.center = CGPointMake(self.rejectButton.center.x, self.contentView.center.y);
     [self.contentView addSubview:self.rejectButton];
+    
+    self.followPersonButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 52, [TablePersonCell height] / 2 - 19, 52, 38)];
+    self.followPersonButton.hidden = YES;
+    [self.contentView addSubview:self.followPersonButton];
 }
 
 
@@ -836,13 +840,28 @@ viewForHeaderInSection:(NSInteger)section
 - (void)setUser:(WGUser *)user {
     super.user = user;
     self.orangeNewView.hidden = user.isFriendRequestRead;
-    if (user.isFriend.boolValue) {
-        self.acceptButton.hidden = YES;
-        self.rejectButton.hidden = YES;
+    self.acceptButton.hidden = YES;
+    self.rejectButton.hidden = YES;
+    self.followPersonButton.hidden = YES;
+
+    if (!user.isFriend) {
+        self.acceptButton.hidden = NO;
+        self.rejectButton.hidden = NO;
         return;
     }
-    self.acceptButton.hidden = NO;
-    self.rejectButton.hidden = NO;
+    if (!user.isFriend.boolValue) {
+        [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"]
+                                           forState:UIControlStateNormal];
+        self.followPersonButton.hidden = NO;
+        return;
+    }
+    if (user.isFriend.boolValue) {
+        [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"]
+                                           forState:UIControlStateNormal];
+        self.followPersonButton.hidden = NO;
+        return;
+    }
+    
 }
 
 @end

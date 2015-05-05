@@ -60,4 +60,5 @@
 @interface FollowPeopleCell : TablePersonCell
 @property (nonatomic, strong) UIButton *acceptButton;
 @property (nonatomic, strong) UIButton *rejectButton;
+@property (nonatomic, strong) UIButton *followPersonButton;
 @end

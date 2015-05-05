@@ -458,7 +458,6 @@ BOOL firstTimeLoading;
 - (void) goingSomewhereElsePressed {
     [WGAnalytics tagAction:@"create_event" atView:@"where"];
     [self.navigationController pushViewController:[WhereAreYouViewController new] animated:YES];
-//    [self.navigationController pushViewController:[CalendarConfigViewController new] animated:YES];
 }
 
 - (void)profileSegue {
@@ -600,12 +599,8 @@ BOOL firstTimeLoading;
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
-//        if (event.messages.count > 2) {
-//           [MoreThan2PhotosOldEventCell height];
-//        }
-//        else {
-            return [MoreThan2PhotosOldEventCell height];
-//        }
+        if (event.messages.count > 2) [MoreThan2PhotosOldEventCell height];
+        else return [LessThan2PhotosOldEventCell height];
     }
     
     return 0;
@@ -687,22 +682,31 @@ BOOL firstTimeLoading;
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
         }
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
-        HighlightOldEventCell *cell;
-//        if (event.messages.count > 2) {
-//            cell = (MoreThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kMoreThan2PhotosOldEventCell forIndexPath:indexPath];
-//        }
-//        else {
-            cell = (MoreThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kMoreThan2PhotosOldEventCell forIndexPath:indexPath];
-//        }
-        cell.event = event;
-        cell.placesDelegate = self;
-        cell.eventPeopleScrollView.isOld = YES;
-        cell.eventPeopleScrollView.groupID = self.groupNumberID;
-        cell.eventPeopleScrollView.placesDelegate = self;
-        if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
-            cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
+        if (event.messages.count > 2) {
+           MoreThan2PhotosOldEventCell *cell = (MoreThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kMoreThan2PhotosOldEventCell forIndexPath:indexPath];
+            cell.event = event;
+            cell.placesDelegate = self;
+            cell.eventPeopleScrollView.isOld = YES;
+            cell.eventPeopleScrollView.groupID = self.groupNumberID;
+            cell.eventPeopleScrollView.placesDelegate = self;
+            if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
+                cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
+            }
+            return cell;
         }
-        return cell;
+        else {
+            LessThan2PhotosOldEventCell *cell = (LessThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kLessThan2PhotosOldEventCell forIndexPath:indexPath];
+            cell.event = event;
+            cell.placesDelegate = self;
+            cell.eventPeopleScrollView.isOld = YES;
+            cell.eventPeopleScrollView.groupID = self.groupNumberID;
+            cell.eventPeopleScrollView.placesDelegate = self;
+            if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
+                cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
+            }
+            return cell;
+        }
+        
     }
     return nil;
 }
