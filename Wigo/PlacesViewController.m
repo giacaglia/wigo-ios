@@ -260,11 +260,11 @@ BOOL firstTimeLoading;
 }
 
 -(void) initializeFlashScreen {
-    if (!firstTimeLoading) {
-        firstTimeLoading = YES;
-        self.signViewController = [SignViewController new];
-        self.signViewController.placesDelegate = self;
-    }
+    if (firstTimeLoading) return;
+
+    firstTimeLoading = YES;
+    self.signViewController = [SignViewController new];
+    self.signViewController.placesDelegate = self;
 }
 
 -(void) showFlashScreen {
@@ -409,8 +409,6 @@ BOOL firstTimeLoading;
 }
 
 - (void)invitePressed:(WGEvent *)event {
-//    if (!WGProfile.currentUser.eventAttending.id) return;
-    
     [self presentViewController:[[InviteViewController alloc] initWithEvent:event] animated:YES completion:nil];
 }
 
@@ -435,7 +433,6 @@ BOOL firstTimeLoading;
     [WGProfile.currentUser goingToEvent:event withHandler:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             handler(success, error);
             return;
@@ -508,8 +505,7 @@ BOOL firstTimeLoading;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kTodaySection) {
-        int hasNextPage = ([self.allEvents.hasNextPage boolValue] ? 1 : 0);
-        return self.events.count + hasNextPage + [self shouldShowAggregatePrivateEvents];
+        return self.events.count + self.allEvents.hasNextPage.intValue + [self shouldShowAggregatePrivateEvents];
     }
     else if (section == kHighlightsEmptySection) {
         return 0;

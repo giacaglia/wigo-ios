@@ -45,7 +45,6 @@ dispatch_queue_t postQueue;
 static NSString *baseURLString = @"https://api2.wigo.us/api/%@";
 static CLLocationManager *locationManager;
 
-
 @implementation WGApi
 
 + (CLLocationManager *)defaultLocationManager {

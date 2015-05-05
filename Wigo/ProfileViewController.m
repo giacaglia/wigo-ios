@@ -459,23 +459,20 @@ BOOL blockShown;
     NSNumber *typeNumber = (NSNumber *)[userInfo objectForKey:@"type"];
     NSArray *blockTypeArray = @[@"annoying", @"not_student", @"abusive"];
     NSString *blockType = [blockTypeArray objectAtIndex:[typeNumber intValue]];
-    if (!blockShown) {
-        blockShown = YES;
-        if (![sentUser isCurrentUser]) {
-            __weak typeof(self) weakSelf = self;
-            [WGProfile.currentUser block:sentUser withType:blockType andHandler:^(BOOL success, NSError *error) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionPost];
-                    return;
-                }
-                strongSelf.userState = strongSelf.user.state;
-                [strongSelf reloadViewForUserState];
-                [strongSelf presentBlockPopView:sentUser];
-            }];
+    if (blockShown) return;
+    if (sentUser.isCurrentUser) return;
+    blockShown = YES;
+    __weak typeof(self) weakSelf = self;
+    [WGProfile.currentUser block:sentUser withType:blockType andHandler:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
+            return;
         }
-    }
+        strongSelf.userState = strongSelf.user.state;
+        [strongSelf reloadViewForUserState];
+        [strongSelf presentBlockPopView:sentUser];
+    }];
 }
 
 - (void)unblockPressed {
