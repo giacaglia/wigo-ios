@@ -324,7 +324,7 @@ BOOL blockShown;
 - (void) editPressed {
     EditProfileViewController *editProfileViewController = [[EditProfileViewController alloc] init];
     editProfileViewController.view.backgroundColor = RGB(235, 235, 235);
-    
+//    
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: editProfileViewController];
     [self presentViewController: navController animated: YES completion: nil];
 }
