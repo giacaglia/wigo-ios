@@ -15,8 +15,9 @@
 #import "ConversationViewController.h"
 #import "ImageScrollView.h"
 #import "Delegate.h"
+#import "MoreViewController.h"
 
-@interface ProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate>
+@interface ProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate, ProfileDelegate>
 
 -(id)initWithUser:(WGUser *)user;
 @property (nonatomic, strong) WGUser *user;
@@ -33,6 +34,8 @@
 @property (nonatomic, strong) UIPageControl *pageControl;
 @property (nonatomic, strong) NSDate *lastNotificationRead;
 @property (nonatomic, strong) WGCollection *mutualFriends;
+@property (nonatomic, strong) MoreViewController *moreVc;
+-(void)removeMoreVc;
 @end
 
 

@@ -160,12 +160,11 @@ BOOL blockShown;
     [super viewWillAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     self.tabBarController.navigationItem.titleView = nil;
-    [self reloadViewForUserState];
-
 
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.translucent = YES;
 
     [_gradientImageView removeFromSuperview];
 
@@ -174,14 +173,9 @@ BOOL blockShown;
         [_gradientImageView setImage: [UIImage imageNamed:@"topGradientBackground"]];
     }
     
-   
-    self.navigationController.navigationBar.translucent = YES;
-    [self.navigationController.navigationBar insertSubview: _gradientImageView atIndex: 0];
+   [self.navigationController.navigationBar insertSubview: _gradientImageView atIndex: 0];
     
     if (!self.pageControl) [self createPageControl];
-    
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    
     [self reloadViewForUserState];
     
     if ([self.user isEqual:WGProfile.currentUser]) {
@@ -215,10 +209,6 @@ BOOL blockShown;
     [self.tableView reloadData];
 }
 
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
-}
-
 #pragma mark - Image Scroll View 
 - (void) createPageControl {
     self.pageControl = [[UIPageControl alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, 20)];
@@ -238,8 +228,6 @@ BOOL blockShown;
     self.imageScrollView.delegate = self;
     [self.tableView reloadData];
 }
-
-
 
 - (void)pageChangedTo:(NSInteger)page {
     self.pageControl.currentPage = page;
@@ -270,7 +258,6 @@ BOOL blockShown;
         NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[self.user deserialize]];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUserAtTable" object:nil userInfo:userInfo];
     }
-    
     
     //if presented sudo-modally
     if (!self.navigationController || self == self.navigationController.viewControllers[0]) {
@@ -309,20 +296,30 @@ BOOL blockShown;
     [self reloadViewForUserState];
 }
 
-- (void) morePressed {
+-(void) morePressed {
     UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
     UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
     visualEffectView.frame = self.view.bounds;
-    self.navigationController.navigationBar.alpha = 0.0f;
-    MoreViewController *moreVc = [MoreViewController new];
-    moreVc.user = self.user;
-    moreVc.view.alpha = 0.0f;
-    moreVc.bgView = visualEffectView;
-    [self addChildViewController:moreVc];
-    [self.view addSubview:moreVc.view];
+//    self.navigationController.navigationBar.alpha = 0.0f;
+    self.moreVc = [MoreViewController new];
+    self.moreVc.user = self.user;
+    self.moreVc.profileDelegate = self;
+    self.moreVc.view.alpha = 0.0f;
+    self.moreVc.bgView = visualEffectView;
+    [self addChildViewController:self.moreVc];
+    [self.view addSubview:self.moreVc.view];
     [UIView animateWithDuration:0.3 animations:^{
-        moreVc.view.alpha = 1.0f;
+        self.moreVc.view.alpha = 1.0f;
     }];
+}
+
+-(void) removeMoreVc {
+    [self.moreVc willMoveToParentViewController:nil];
+    [self.moreVc.view removeFromSuperview];
+    [self.moreVc removeFromParentViewController];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
 }
 
 - (void) editPressed {

@@ -15,6 +15,9 @@
 #import "WGMessage.h"
 typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
 
+@protocol ProfileDelegate <NSObject>
+-(void)removeMoreVc;
+@end
 
 @protocol UserSelectDelegate <NSObject>
 - (void)showUser:(WGUser *)user;
