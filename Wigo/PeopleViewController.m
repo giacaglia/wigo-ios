@@ -195,7 +195,6 @@ NSIndexPath *userIndex;
 
 - (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog
  didCompleteWithResults:(NSDictionary *)result {
-    NSLog(@"result");
 }
 
 - (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog
