@@ -26,6 +26,7 @@
 @property (nonatomic, assign) BOOL isFetchingNotifications;
 @property (nonatomic, strong) WGCollection *events;
 @property (nonatomic, strong) UILabel *numberOfFriendsLabel;
+@property (nonatomic, strong) UILabel *friendsLabel;
 @property (nonatomic, strong) WGCollection *notifications;
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, strong) ImageScrollView *imageScrollView;

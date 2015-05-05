@@ -134,7 +134,11 @@ BOOL blockShown;
             __strong typeof(weakSelf) strongSelf = weakSelf;
             if (error) return;
             strongSelf.userState = strongSelf.user.state;
+            strongSelf.numberOfFriendsLabel.text = self.user.numFriends.stringValue;
+            if (strongSelf.user.numFriends.intValue == 0 || strongSelf.user.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
+            else strongSelf.friendsLabel.text = @"Friends";
             [strongSelf reloadViewForUserState];
+            [strongSelf.tableView reloadData];
         }];
 
         if (self.user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
@@ -416,16 +420,16 @@ BOOL blockShown;
     self.numberOfFriendsLabel.textColor = RGB(80, 80, 80);
     self.numberOfFriendsLabel.font = [FontProperties mediumFont:20.0f];
     self.numberOfFriendsLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberOfFriendsLabel.text = WGProfile.numFriends.stringValue;
+    self.numberOfFriendsLabel.text = self.user.numFriends.stringValue;
     [_rightProfileButton addSubview:self.numberOfFriendsLabel];
     
-    UILabel *friendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _rightProfileButton.frame.size.width, 20)];
-    friendsLabel.textColor = RGB(137, 137, 137);
-    friendsLabel.font = [FontProperties scMediumFont:16.0F];
-    friendsLabel.textAlignment = NSTextAlignmentCenter;
-    if (WGProfile.numFriends.intValue == 0 || WGProfile.numFriends.intValue == 1) friendsLabel.text = @"Friend";
-    else friendsLabel.text = @"Friends";
-    [_rightProfileButton addSubview:friendsLabel];
+    self.friendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, _rightProfileButton.frame.size.width, 20)];
+    self.friendsLabel.textColor = RGB(137, 137, 137);
+    self.friendsLabel.font = [FontProperties scMediumFont:16.0F];
+    self.friendsLabel.textAlignment = NSTextAlignmentCenter;
+    if (self.user.numFriends.intValue == 0 || self.user.numFriends.intValue == 1) self.friendsLabel.text = @"Friend";
+    else self.friendsLabel.text = @"Friends";
+    [_rightProfileButton addSubview:self.friendsLabel];
     [_headerButtonView addSubview:_rightProfileButton];
     
     _followButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 10, 65, 50)];
@@ -917,7 +921,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [WGProfile reload:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.user = WGProfile.currentUser;
-        strongSelf.numberOfFriendsLabel.text = WGProfile.numFriends.stringValue;
+        strongSelf.numberOfFriendsLabel.text = strongSelf.user.numFriends.stringValue;
+        if (strongSelf.user.numFriends.intValue == 0 || strongSelf.user.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
+        else strongSelf.friendsLabel.text = @"Friends";
         strongSelf.imageScrollView.user = WGProfile.currentUser;
         strongSelf.pageControl.numberOfPages = strongSelf.user.images.count;
         [strongSelf reloadViewForUserState];
