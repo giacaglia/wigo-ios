@@ -129,6 +129,8 @@
 @property (nonatomic, strong) UIView *grayView;
 @property (nonatomic, strong) NSMutableArray *arrayOfImageViews;
 @property (nonatomic, strong) UIImageView *verifiedView;
+@property (nonatomic, strong) UIImageView *thirdImageView;
+@property (nonatomic, strong) UIImageView *fourthImageView;
 @end
 
 @interface MoreThan2PhotosOldEventCell : HighlightOldEventCell

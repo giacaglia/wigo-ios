@@ -1201,7 +1201,7 @@ BOOL firstTimeLoading;
             for (WGEvent *event in strongSelf.allEvents) {
                 if (event) {
                     if (event.isExpired.boolValue) {
-                        [strongSelf.oldEvents addObject:event];
+                        if (event.messages.count > 0) [strongSelf.oldEvents addObject:event];
                     } else {
                         [strongSelf.events addObject:event];
                     }
@@ -1254,7 +1254,7 @@ BOOL firstTimeLoading;
             for (WGEvent *event in strongSelf.allEvents) {
                 if (event) {
                     if (event.isExpired.boolValue) {
-                        [strongSelf.oldEvents addObject:event];
+                        if (event.messages.count > 0) [strongSelf.oldEvents addObject:event];
                     } else {
                         [strongSelf.events addObject:event];
                     }
@@ -1300,7 +1300,7 @@ BOOL firstTimeLoading;
             }
             for (WGEvent *event in strongSelf.allEvents) {
                 if (event.isExpired.boolValue) {
-                    [strongSelf.oldEvents addObject:event];
+                    if (event.messages.count > 0) [strongSelf.oldEvents addObject:event];
                 } else {
                     [strongSelf.events addObject:event];
                 }
@@ -1739,19 +1739,17 @@ BOOL firstTimeLoading;
     [backgroundView addSubview:secondImageView];
     [self.arrayOfImageViews addObject:secondImageView];
     
-    UIImageView *thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.numberOfPeopleGoingLabel.frame.origin.y + self.numberOfPeopleGoingLabel.frame.size.height + 10 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
-    thirdImageView.contentMode = UIViewContentModeScaleAspectFill;
-    thirdImageView.clipsToBounds = YES;
-//    thirdImageView.hidden = YES;
-    [backgroundView addSubview:thirdImageView];
-    [self.arrayOfImageViews addObject:thirdImageView];
+    self.thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.numberOfPeopleGoingLabel.frame.origin.y + self.numberOfPeopleGoingLabel.frame.size.height + 10 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    self.thirdImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.thirdImageView.clipsToBounds = YES;
+    [backgroundView addSubview:self.thirdImageView];
+    [self.arrayOfImageViews addObject:self.thirdImageView];
     
-    UIImageView *fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.numberOfPeopleGoingLabel.frame.origin.y + self.numberOfPeopleGoingLabel.frame.size.height + 10 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
-    fourthImageView.contentMode = UIViewContentModeScaleAspectFill;
-    fourthImageView.clipsToBounds = YES;
-//    fourthImageView.hidden = YES;
-    [backgroundView addSubview:fourthImageView];
-    [self.arrayOfImageViews addObject:fourthImageView];
+    self.fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.numberOfPeopleGoingLabel.frame.origin.y + self.numberOfPeopleGoingLabel.frame.size.height + 10 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    self.fourthImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.fourthImageView.clipsToBounds = YES;
+    [backgroundView addSubview:self.fourthImageView];
+    [self.arrayOfImageViews addObject:self.fourthImageView];
 }
 
 - (void)loadConversation {
@@ -1789,12 +1787,12 @@ BOOL firstTimeLoading;
         __weak UIImageView *weakImgView = imageView;
         __weak WGEventMessage *weakEventMsg = eventMessage;
         [imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                __strong UIImageView *strongImgView = weakImgView;
-                __strong WGEventMessage *strongEventMsg = weakEventMsg;
-                NSURL *bigImageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, strongEventMsg.media]];
-                [strongImgView setImageWithURL:bigImageURL];
-            });
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                __strong UIImageView *strongImgView = weakImgView;
+//                __strong WGEventMessage *strongEventMsg = weakEventMsg;
+//                NSURL *bigImageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, strongEventMsg.media]];
+//                [strongImgView setImageWithURL:bigImageURL];
+//            });
             
         }];
     }
@@ -1820,6 +1818,8 @@ BOOL firstTimeLoading;
 - (void)setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [MoreThan2PhotosOldEventCell height]);
     [super setup];
+    self.thirdImageView.hidden = NO;
+    self.fourthImageView.hidden = NO;
 }
 
 @end
@@ -1843,6 +1843,8 @@ BOOL firstTimeLoading;
 - (void)setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [LessThan2PhotosOldEventCell height]);
     [super setup];
+    self.thirdImageView.hidden = YES;
+    self.fourthImageView.hidden = YES;
 }
 
 @end
