@@ -30,17 +30,27 @@
     [self.view addSubview:thankYouLabel];
     
     UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 120, self.view.frame.size.width, 60)];
-    subtitleLabel.text = @"We have added you to our signup queue.";
+    subtitleLabel.text = @"We have added you to our\nsignup queue.";
     subtitleLabel.textColor = UIColor.blackColor;
     subtitleLabel.textAlignment = NSTextAlignmentCenter;
     subtitleLabel.font = [FontProperties lightFont:20.0f];
     subtitleLabel.numberOfLines = 2;
     [self.view addSubview:subtitleLabel];
     
-    UIImageView *puzzleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 302, 160)];
+    UIImageView *leftPuzzleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 16, 128)];
+    leftPuzzleImgView.center = CGPointMake(leftPuzzleImgView.center.x, self.view.center.y);
+    leftPuzzleImgView.image = [UIImage imageNamed:@"leftPuzzle"];
+    [self.view addSubview:leftPuzzleImgView];
+    
+    UIImageView *puzzleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 242, 128)];
     puzzleImgView.center = self.view.center;
     puzzleImgView.image = [UIImage imageNamed:@"puzzle"];
     [self.view addSubview:puzzleImgView];
+    
+    UIImageView *rightPuzzleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 16, 0, 16, 128)];
+    rightPuzzleImgView.center = CGPointMake(rightPuzzleImgView.center.x, self.view.center.y);
+    rightPuzzleImgView.image = [UIImage imageNamed:@"rightPuzzle"];
+    [self.view addSubview:rightPuzzleImgView];
     
     UILabel *numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
     numberLabel.center = CGPointMake(self.view.center.x, self.view.center.y - 20);
