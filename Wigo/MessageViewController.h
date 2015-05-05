@@ -12,8 +12,8 @@
 
 @interface MessageViewController : UIViewController <UISearchBarDelegate, UITableViewDataSource, UITableViewDelegate>
 @property (nonatomic, assign) BOOL isFetchingEveryone;
+@property (nonatomic, strong) WGCollection *allFriends;
 @property (nonatomic, strong) WGCollection *content;
-@property (nonatomic, strong) WGCollection *filteredContent;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, assign) BOOL isSearching;
 @end

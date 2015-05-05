@@ -155,11 +155,10 @@
         else return 0;
     }
     else if (section == kSectionTapCell) {
-//        return 5;
-        return self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue;
+        return 5;
     }
     else if (section == kSectionAllFriends) {
-        return self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue;
+        return self.presentedUsers.count;
     }
     else {
         if (self.presentedUsers.total.intValue > 10) {

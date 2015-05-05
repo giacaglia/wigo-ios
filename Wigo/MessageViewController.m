@@ -17,20 +17,14 @@
 
 @implementation MessageViewController
 
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        self.view.backgroundColor = UIColor.whiteColor;
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.backgroundColor = UIColor.whiteColor;
+
+    self.allFriends = [[WGCollection alloc] initWithType:[WGUser class]];
     self.content = [[WGCollection alloc] initWithType:[WGUser class]];
-    self.filteredContent = [[WGCollection alloc] initWithType:[WGUser class]];
     self.isFetchingEveryone = NO;
     
     // Title setup
@@ -85,25 +79,25 @@
     if (self.isFetchingEveryone) return;
     self.isFetchingEveryone = YES;
     __weak typeof(self) weakSelf = self;
-    [WGProfile.currentUser getNotMeForMessage:^(WGCollection *collection, NSError *error) {
+    [WGProfile.currentUser getFriends:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
             strongSelf.isFetchingEveryone = NO;
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
-            strongSelf.content = collection;
+            strongSelf.allFriends = collection;
+            strongSelf.content = strongSelf.allFriends;
             [strongSelf.tableView reloadData];
         });
     }];
 
 }
 
-- (void) fetchEveryone {
+- (void) fetchNextPage {
     if (self.isFetchingEveryone) return;
-    if (!self.content.hasNextPage.boolValue) return;
+    if (!self.content.nextPage) return;
     self.isFetchingEveryone = YES;
     __weak typeof(self) weakSelf = self;
     [self.content addNextPage:^(BOOL success, NSError *error) {
@@ -111,7 +105,6 @@
             __strong typeof(self) strongSelf = weakSelf;
             strongSelf.isFetchingEveryone = NO;
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
@@ -127,31 +120,21 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.isSearching) {
-        return self.filteredContent.count;
-    }
-    return self.content.count + self.content.hasNextPage.intValue;
+    return self.content.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     MessageCell *cell = [tableView dequeueReusableCellWithIdentifier:kMessageCellName forIndexPath:indexPath];
     
-    if (indexPath.row == self.content.count - 5) {
-        [self fetchEveryone];
-    }
-    
-    if (indexPath.row == self.content.count && self.content.count != 0) {
-        [self fetchEveryone];
-        return cell;
-    }
-    
+    if (indexPath.row == self.content.count - 5) [self fetchNextPage];
     WGUser *user = [self getUserAtIndex:indexPath];
     if (!user) return cell;
     cell.user = user;
     return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView
+heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return [MessageCell height];
 }
 
@@ -164,15 +147,9 @@
 
 - (WGUser *)getUserAtIndex:(NSIndexPath *)indexPath {
     WGUser *user;
-    if (self.isSearching) {
-        int sizeOfArray = (int)self.filteredContent.count;
-        if (sizeOfArray > 0 && sizeOfArray > indexPath.row)
-            user = (WGUser *)[self.filteredContent objectAtIndex:[indexPath row]];
-    } else {
-        int sizeOfArray = (int)self.content.count;
-        if (sizeOfArray > 0 && sizeOfArray > indexPath.row)
-            user = (WGUser *)[self.content objectAtIndex:[indexPath row]];
-    }
+    int sizeOfArray = (int)self.content.count;
+    if (sizeOfArray > 0 && sizeOfArray > indexPath.row)
+        user = (WGUser *)[self.content objectAtIndex:[indexPath row]];
     return user;
 }
 
@@ -185,15 +162,16 @@
 
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    if(searchText.length != 0) {
-        self.filteredContent = nil;
+    if([searchText length] != 0) {
         [self performBlock:^(void){[self searchTableList];}
                 afterDelay:0.25
      cancelPreviousRequest:YES];
     } else {
+        self.content = self.allFriends;
         self.isSearching = NO;
         [self.tableView reloadData];
     }
+
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -209,36 +187,20 @@
     if ([oldString isEqualToString:@"Initiate meltdown"]) {
         [self showMeltdown];
     }
-    if (self.filteredContent.hasNextPage == nil) {
-        [[WGProfile currentUser] searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                __strong typeof(self) strongSelf = weakSelf;
-                strongSelf.isFetchingEveryone = NO;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    return;
-                }
-                strongSelf.isSearching = YES;
-                strongSelf.filteredContent = collection;
-                [strongSelf.tableView reloadData];
-            });
-        }];
-    } else if ([self.filteredContent.hasNextPage boolValue]) {
-        [self.filteredContent addNextPage:^(BOOL success, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                __strong typeof(self) strongSelf = weakSelf;
-                strongSelf.isFetchingEveryone = NO;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    return;
-                }
-                strongSelf.isSearching = YES;
-                [strongSelf.tableView reloadData];
-            });
-        }];
-    }
+    [WGProfile.currentUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            strongSelf.isFetchingEveryone = NO;
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            strongSelf.isSearching = YES;
+            strongSelf.content = collection;
+            [strongSelf.tableView reloadData];
+        });
+    }];
+  
 }
 
 - (void)showMeltdown {
