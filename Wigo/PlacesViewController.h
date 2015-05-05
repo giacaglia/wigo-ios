@@ -25,10 +25,6 @@
 @property (nonatomic, strong) NSString *groupName;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 
-@property (nonatomic, assign) BOOL fetchingIsThereNewPerson;
-@property (nonatomic, strong) UILabel *leftRedDotLabel;
-@property (nonatomic, strong) UILabel *redDotLabel;
-@property (nonatomic, strong) UIButton *rightButton;
 
 @property (nonatomic, assign) BOOL fetchingEventAttendees;
 @property (nonatomic, strong) WGCollection *allEvents;
@@ -43,8 +39,6 @@
 @property (nonatomic, assign) BOOL presentingLockedView;
 @property (nonatomic, assign) BOOL shouldReloadEvents;
 @property (nonatomic, strong) UIButton *switchButton;
-@property (nonatomic, strong) UILabel *invitePeopleLabel;
-@property (nonatomic, assign) BOOL privacyTurnedOn;
 @property (nonatomic, assign) BOOL doNotReloadOffsets;
 @property (nonatomic, assign) CGPoint pointNow;
 @property (nonatomic, assign) BOOL spinnerAtCenter;

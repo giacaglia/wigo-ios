@@ -21,11 +21,9 @@
 #import "UIView+ViewToImage.h"
 #import "UIImage+ImageEffects.h"
 #import "ReferalViewController.h"
-#import "PrivateSwitchView.h"
 #import "EventMessagesConstants.h"
 #import "OverlayViewController.h"
 #import "EventConversationViewController.h"
-#import <QuartzCore/QuartzCore.h>
 #import "WGNavigateParser.h"
 #import "WhereAreYouViewController.h"
 
@@ -36,34 +34,11 @@
 
 #define kOldEventShowHighlightsCellName @"OldEventShowHighlightsCellName"
 
-@interface PlacesViewController () {
-    BOOL isLoaded;
-}
-
-@property (nonatomic, assign) int tagInteger;
-@property (nonatomic, assign) BOOL isSearching;
-@property (nonatomic, strong) NSMutableArray *placeSubviewArray;
-@property (nonatomic, strong) UIImageView *searchIconImageView;
-@property (nonatomic, strong) UIView *searchBarBorderView;
-
-@property (nonatomic, strong) UIImageView *whereImageView;
-@property (nonatomic, strong) UILabel *whereLabel;
-
-
-//private pressed
-@property UIScrollView *scrollViewSender;
-@property CGPoint scrollViewPoint;
-
-
+@interface PlacesViewController ()
 // Events By Days
 @property (nonatomic, strong) NSMutableArray *pastDays;
-
 @property (nonatomic, strong) UIView *blackViewOnTop;
-@property (nonatomic ,strong) UIView *eventDetails;
-@property (nonatomic, strong) PrivateSwitchView *privateSwitchView;
 @end
-
-BOOL presentedMobileContacts;
 BOOL firstTimeLoading;
 
 @implementation PlacesViewController
@@ -82,7 +57,6 @@ BOOL firstTimeLoading;
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.fetchingUserInfo = NO;
     self.fetchingEventAttendees = NO;
-    presentedMobileContacts = NO;
     self.shouldReloadEvents = YES;
     self.eventOffsetDictionary = [NSMutableDictionary new];
     
@@ -90,7 +64,6 @@ BOOL firstTimeLoading;
     ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
     profileVc.user = [WGUser new];
     self.isLocal = YES;
-    
     
     self.spinnerAtCenter = YES;
     [self initializeWhereView];
@@ -466,12 +439,6 @@ BOOL firstTimeLoading;
     [self.navigationController pushViewController: profileViewController animated: YES];
 }
 
-- (void) gotItPressed {
-    _scrollViewSender.contentOffset = _scrollViewPoint;
-    _scrollViewSender.scrollEnabled = YES;
-    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void){}];
-}
-
 #pragma mark - Where Are You Going? View and Delegate
 
 -(void)updateEvent:(WGEvent *)newEvent {
@@ -804,7 +771,6 @@ BOOL firstTimeLoading;
         [WGProfile.currentUser addTootltipTracked:weekdayString];
         [WGProfile.currentUser save:^(BOOL success, NSError *error) {
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionSave];
                 return;
             }

@@ -428,7 +428,7 @@ BOOL blockShown;
     [_rightProfileButton addSubview:self.friendsLabel];
     [_headerButtonView addSubview:_rightProfileButton];
     
-    _followButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 10, 65, 50)];
+    _followButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 75, 10, 65, 50)];
     [_followButton setImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
     [_headerButtonView addSubview: _followButton];
@@ -482,7 +482,6 @@ BOOL blockShown;
     
     [WGProfile.currentUser unblock:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionPost];
             return;
         }
