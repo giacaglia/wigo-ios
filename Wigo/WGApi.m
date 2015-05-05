@@ -75,7 +75,6 @@ static CLLocationManager *locationManager;
 +(void) getURL:(NSString *)url withSerializedHandler:(SerializedApiResultBlock)handler {
     NSLog(@"GET %@", url);
     
-
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];

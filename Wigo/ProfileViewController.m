@@ -921,8 +921,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [WGProfile reload:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.user = WGProfile.currentUser;
-        strongSelf.numberOfFriendsLabel.text = WGProfile.currentUser.numFriends.stringValue;
-        if (WGProfile.currentUser.numFriends.intValue == 0 || WGProfile.currentUser.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
+        strongSelf.numberOfFriendsLabel.text = WGProfile.numFriends.stringValue;
+        if (WGProfile.numFriends.intValue == 0 || WGProfile.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
         else strongSelf.friendsLabel.text = @"Friends";
         strongSelf.imageScrollView.user = WGProfile.currentUser;
         strongSelf.pageControl.numberOfPages = WGProfile.currentUser.images.count;
@@ -1277,7 +1277,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tapButton addSubview:self.underlineTapLabel];
 }
 
-- (void) inviteTapped {
+-(void) inviteTapped {
     [self.delegate inviteTapped];
     self.tapButton.enabled = NO;
     WGUser *user = self.user;

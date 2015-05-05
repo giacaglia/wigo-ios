@@ -93,7 +93,7 @@
 
 - (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog
  didCompleteWithResults:(NSDictionary *)result {
-    NSLog(@"result :%@", result);
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog

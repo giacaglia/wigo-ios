@@ -54,6 +54,7 @@
 @property (nonatomic, strong) UIButton *friendsButton;
 @property (nonatomic, assign) BOOL isLocal;
 @property (nonatomic, strong) UIButton *createButton;
+@property (nonatomic, strong) UIView *overlayView;
 @end
 
 #import "EventPeopleScrollView.h"
