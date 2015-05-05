@@ -1143,8 +1143,8 @@ BOOL firstTimeLoading;
     }
     __weak typeof(self) weakSelf = self;
     if (self.allEvents) {
-        if (!self.allEvents.hasNextPage.boolValue) handler(NO, nil);
-       
+        if (!self.allEvents.nextPage) handler(NO, nil);
+
         [self.allEvents addNextPage:^(BOOL success, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             [strongSelf removeDancingG];
