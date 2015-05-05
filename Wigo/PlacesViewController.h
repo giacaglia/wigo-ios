@@ -89,15 +89,6 @@
 @property (nonatomic, strong) UIView *lineViewUnderLabel;
 @end
 
-@interface GoOutNewPlaceHeader : UIView
-- (void)setupWithMoreThanOneEvent:(BOOL)moreThanOneEvent;
-@property (nonatomic, strong) UILabel *goSomewhereLabel;
-@property (nonatomic, strong) UIButton *plusButton;
-@property (nonatomic, strong) UIButton *addEventButton;
-+ (instancetype) init;
-+ (CGFloat) height;
-@end
-
 @interface HighlightsHeader : UIView
 + (instancetype) init;
 + (CGFloat) height;

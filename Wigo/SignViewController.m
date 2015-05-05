@@ -42,7 +42,7 @@
     self = [super init];
     if (self) {
         self.fetchingProfilePictures = NO;
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -60,13 +60,12 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [WGAnalytics tagView:@"sign"];
     _alertShown = NO;
     self.fetchingProfilePictures = NO;
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self showOnboard];
-    
-    [WGAnalytics tagView:@"sign"];
 }
 
 -(void) showBarrierError:(NSError *)error {

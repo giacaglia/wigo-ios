@@ -1584,62 +1584,6 @@ BOOL firstTimeLoading;
 
 @end
 
-@implementation GoOutNewPlaceHeader
-
-+ (instancetype) init {
-    GoOutNewPlaceHeader *header = [[GoOutNewPlaceHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [GoOutNewPlaceHeader height])];
-    [header setup];
-    
-    return header;
-}
-
-- (void)setupWithMoreThanOneEvent:(BOOL)moreThanOneEvent {
-    if (moreThanOneEvent) self.goSomewhereLabel.text = @"Go somewhere else";
-    else self.goSomewhereLabel.text = @"Get today started";
-}
-
-- (void) setup {
-    self.backgroundColor = RGB(241, 241, 241);
-    
-    UIImageView *backgroundView = [[UIImageView alloc] initWithFrame:self.bounds];
-    backgroundView.image = [UIImage imageNamed: @"create_bg"];
-    [self addSubview: backgroundView];
-    
-    int sizeOfButton = 40;
-    self.plusButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - sizeOfButton - 20, 0, sizeOfButton, sizeOfButton)];
-    self.plusButton.center = CGPointMake(self.plusButton.center.x, self.center.y - 2);
-    
-    self.plusButton.backgroundColor = [FontProperties getBlueColor];
-    self.plusButton.layer.borderWidth = 1.0f;
-    self.plusButton.layer.borderColor = [UIColor clearColor].CGColor;
-    self.plusButton.layer.cornerRadius = sizeOfButton/2;
-
-    UIImageView *sendOvalImageView = [[UIImageView alloc] initWithFrame:CGRectMake(sizeOfButton/2 - 6, sizeOfButton/2 - 6, 12, 12)];
-    sendOvalImageView.image = [UIImage imageNamed:@"plusStoryButton"];
-    [self.plusButton addSubview: sendOvalImageView];
-    [self addSubview: self.plusButton];
-    
-    self.goSomewhereLabel = [[UILabel alloc] initWithFrame: CGRectMake(10, 0, self.frame.size.width, self.frame.size.height)];
-    self.goSomewhereLabel.backgroundColor = [UIColor clearColor];
-    self.goSomewhereLabel.textAlignment = NSTextAlignmentLeft;
-    self.goSomewhereLabel.font = [FontProperties mediumFont: 20.0f];
-    self.goSomewhereLabel.textColor = [FontProperties getBlueColor];
-    self.goSomewhereLabel.text = @"Go somewhere else";
-    self.goSomewhereLabel.center = CGPointMake(self.goSomewhereLabel.center.x, self.center.y - 4);
-    [self addSubview: self.goSomewhereLabel];
-    
-    self.addEventButton = [[UIButton alloc] initWithFrame: self.bounds];
-    self.addEventButton.backgroundColor = [UIColor clearColor];
-    [self addSubview: self.addEventButton];
-}
-
-+ (CGFloat) height {
-    return 70;
-}
-
-@end
-
-
 @implementation PastDayHeader
 
 + (instancetype) initWithDay: (NSString *) dayText isFirst: (BOOL) isFirst {

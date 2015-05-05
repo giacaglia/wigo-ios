@@ -257,6 +257,8 @@
 		E9012AB61AF91173007DC769 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AB41AF91173007DC769 /* FBSDKLoginKit.framework */; };
 		E9012AB81AF91189007DC769 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AB71AF91189007DC769 /* Bolts.framework */; };
 		E9012AB91AF91189007DC769 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AB71AF91189007DC769 /* Bolts.framework */; };
+		E9012AC01AF92B0F007DC769 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012ABF1AF92B0F007DC769 /* WaitListViewController.m */; };
+		E9012AC11AF92B0F007DC769 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012ABF1AF92B0F007DC769 /* WaitListViewController.m */; };
 		E9096D551ADD5F1100386AC2 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = E9096D481ADD5F1100386AC2 /* .gitkeep */; };
 		E9096D561ADD5F1100386AC2 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = E9096D481ADD5F1100386AC2 /* .gitkeep */; };
 		E9096D571ADD5F1100386AC2 /* FSCalendar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */; };
@@ -320,10 +322,6 @@
 		E96F07C819BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07BC19BA654600E858D7 /* GKResizeableCropOverlayView.m */; };
 		E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */; };
 		E96F07D719BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */; };
-		E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */; };
-		E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */; };
-		E9706E1819C20EAE00A21DE0 /* WigoCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */; };
-		E9706E1919C20EAE00A21DE0 /* WigoCustomCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */; };
 		E9747D4A1AEA905400E0FE18 /* TabBarAuxiliar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9747D491AEA905400E0FE18 /* TabBarAuxiliar.m */; };
 		E9747D4B1AEA905400E0FE18 /* TabBarAuxiliar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9747D491AEA905400E0FE18 /* TabBarAuxiliar.m */; };
 		E9798F9919901EC100A97AE9 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9798F9819901EC100A97AE9 /* Social.framework */; };
@@ -738,6 +736,8 @@
 		E9012AB11AF91169007DC769 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		E9012AB41AF91173007DC769 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		E9012AB71AF91189007DC769 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		E9012ABE1AF92B0F007DC769 /* WaitListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaitListViewController.h; sourceTree = "<group>"; };
+		E9012ABF1AF92B0F007DC769 /* WaitListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaitListViewController.m; sourceTree = "<group>"; };
 		E9096D481ADD5F1100386AC2 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		E9096D491ADD5F1100386AC2 /* FSCalendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSCalendar.h; sourceTree = "<group>"; };
 		E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSCalendar.m; sourceTree = "<group>"; };
@@ -804,9 +804,6 @@
 		E96F07BB19BA654600E858D7 /* GKResizeableCropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKResizeableCropOverlayView.h; sourceTree = "<group>"; };
 		E96F07BC19BA654600E858D7 /* GKResizeableCropOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKResizeableCropOverlayView.m; sourceTree = "<group>"; };
 		E96F07D519BE0C5200E858D7 /* WhitneyNumeric-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "WhitneyNumeric-Light.ttf"; sourceTree = "<group>"; };
-		E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WigoCustomCell.xib; sourceTree = "<group>"; };
-		E9706E1619C20EAE00A21DE0 /* WigoCustomCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WigoCustomCell.h; sourceTree = "<group>"; };
-		E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WigoCustomCell.m; sourceTree = "<group>"; };
 		E9747D481AEA905400E0FE18 /* TabBarAuxiliar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TabBarAuxiliar.h; sourceTree = "<group>"; };
 		E9747D491AEA905400E0FE18 /* TabBarAuxiliar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TabBarAuxiliar.m; sourceTree = "<group>"; };
 		E9798F9819901EC100A97AE9 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
@@ -1364,7 +1361,6 @@
 			isa = PBXGroup;
 			children = (
 				C14AB1B41A8017670011C4E5 /* UIImageCategories */,
-				E9706E1A19C22B1400A21DE0 /* WigoCustomCell */,
 				E994111019AA8D9200D76379 /* NSString+URLEncoding.h */,
 				E994111119AA8D9200D76379 /* NSString+URLEncoding.m */,
 				45D9FBBA1A80043000D08577 /* UIImage+ImageEffects.h */,
@@ -1698,16 +1694,6 @@
 			name = "Follow Request";
 			sourceTree = "<group>";
 		};
-		E9706E1A19C22B1400A21DE0 /* WigoCustomCell */ = {
-			isa = PBXGroup;
-			children = (
-				E9706E1319C20DA600A21DE0 /* WigoCustomCell.xib */,
-				E9706E1619C20EAE00A21DE0 /* WigoCustomCell.h */,
-				E9706E1719C20EAE00A21DE0 /* WigoCustomCell.m */,
-			);
-			name = WigoCustomCell;
-			sourceTree = "<group>";
-		};
 		E9747D471AEA8FE100E0FE18 /* Tab Bar */ = {
 			isa = PBXGroup;
 			children = (
@@ -1778,6 +1764,8 @@
 				E900C2581961B96000A01F50 /* SignNavigationViewController.m */,
 				E9D906C619255BB000E39FC8 /* SignViewController.h */,
 				E9D906C719255BB000E39FC8 /* SignViewController.m */,
+				E9012ABE1AF92B0F007DC769 /* WaitListViewController.h */,
+				E9012ABF1AF92B0F007DC769 /* WaitListViewController.m */,
 				E9E6A566199917BE003B590C /* OnboardFollowViewController.h */,
 				E9E6A567199917BE003B590C /* OnboardFollowViewController.m */,
 				E9F406001A8436570043F07F /* ReferalViewController.h */,
@@ -2203,7 +2191,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9C1AD5F1A939BDF009BCFDC /* closeLock.gif in Resources */,
-				E9706E1519C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				C12A116B19787BE700D53B1C /* Whitney-LightSC.ttf in Resources */,
 				E9CDC45D1AA4EF9900CD0336 /* OpenSans-Italic.ttf in Resources */,
 				45D9FADF1A781AFD00D08577 /* JSQMessagesLoadEarlierHeaderView.xib in Resources */,
@@ -2253,7 +2240,6 @@
 				E9CDC4661AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf in Resources */,
 				E96F07D619BE0C5200E858D7 /* WhitneyNumeric-Light.ttf in Resources */,
 				E9BE8C94192AA29C008BB84C /* Whitney-LightSC.ttf in Resources */,
-				E9706E1419C20DA600A21DE0 /* WigoCustomCell.xib in Resources */,
 				E9CDC4601AA4EF9900CD0336 /* OpenSans-LightItalic.ttf in Resources */,
 				45D9FAD41A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.xib in Resources */,
 				E9CDC45E1AA4EF9900CD0336 /* OpenSans-Light.ttf in Resources */,
@@ -2400,6 +2386,7 @@
 				C1F5B3D41A654AC800CAFD95 /* (null) in Sources */,
 				C1F5B3D51A654AC800CAFD95 /* (null) in Sources */,
 				45D9FACB1A781AFD00D08577 /* JSQMessagesCollectionView.m in Sources */,
+				E9012AC11AF92B0F007DC769 /* WaitListViewController.m in Sources */,
 				C1F5B3C71A654A5B00CAFD95 /* WGAnalytics.m in Sources */,
 				C1F5B3C81A654A5B00CAFD95 /* WGObject.m in Sources */,
 				C1F5B3C91A654A5B00CAFD95 /* WGGroup.m in Sources */,
@@ -2459,7 +2446,6 @@
 				E9AEAE541A0190DB00BD77AF /* EventPeopleScrollView.m in Sources */,
 				45D9FBAF1A7AE1DD00D08577 /* GCDAsyncSocket.m in Sources */,
 				45D9FAD31A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.m in Sources */,
-				E9706E1919C20EAE00A21DE0 /* WigoCustomCell.m in Sources */,
 				E96F07C819BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */,
 				C12A111919787BE700D53B1C /* UIPageControlAligned.m in Sources */,
 				45D9FAE11A781AFD00D08577 /* JSQMessagesMediaPlaceholderView.m in Sources */,
@@ -2606,7 +2592,6 @@
 				45DF86AC1A5C5DEB00DB85AE /* AFHTTPRequestOperation.m in Sources */,
 				45D9FAB81A781AFD00D08577 /* JSQMessagesCollectionViewLayoutAttributes.m in Sources */,
 				4563F5661A3F875900F8C9C4 /* NSMutableDictionary+STHelper.m in Sources */,
-				E9706E1819C20EAE00A21DE0 /* WigoCustomCell.m in Sources */,
 				45DF86AF1A5C5DEB00DB85AE /* AFNetworkReachabilityManager.m in Sources */,
 				E96F07C719BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */,
 				4544095E1A548E5700BB3036 /* WGEventAttendee.m in Sources */,
@@ -2698,6 +2683,7 @@
 				E9096D721ADF06AE00386AC2 /* WGUserParser.m in Sources */,
 				E9C34A7819F98A2C00D7E9D3 /* MobileDelegate.m in Sources */,
 				E9CD472C194B889800AEA17D /* RWBlurPopover.m in Sources */,
+				E9012AC01AF92B0F007DC769 /* WaitListViewController.m in Sources */,
 				E9D039C81A09886A00DEF094 /* MediaScrollView.m in Sources */,
 				E9CB091519FB062D00B548A6 /* FacebookHelper.m in Sources */,
 				E9D906C519253A1D00E39FC8 /* ChatViewController.m in Sources */,
