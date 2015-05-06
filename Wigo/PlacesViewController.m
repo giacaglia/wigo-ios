@@ -639,8 +639,7 @@ BOOL firstTimeLoading;
         // past day rows
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
-        if (indexPath.row == eventObjectArray.count - 1 &&
-            self.allEvents.hasNextPage.boolValue) {
+        if (indexPath.row == eventObjectArray.count - 1) {
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
         }
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];

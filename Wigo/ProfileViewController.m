@@ -25,8 +25,11 @@
 @property (nonatomic, strong) UIImageView *nameViewBackground;
 @property (nonatomic, strong) UIButton *rightProfileButton;
 @property (nonatomic, strong) UIButton *chatButton;
+@property (nonatomic, strong) UIImageView *locationImgView;
 @property (nonatomic, strong) UILabel *locationLabel;
+@property (nonatomic, strong) UIImageView *workImgView;
 @property (nonatomic, strong) UILabel *workLabel;
+@property (nonatomic, strong) UIImageView *schoolImgView;
 @property (nonatomic, strong) UILabel *schoolLabel;
 
 //UI
@@ -358,7 +361,6 @@ BOOL blockShown;
     _privateLogoImageView.image = [UIImage imageNamed:@"privateIcon"];
     _privateLogoImageView.userInteractionEnabled = NO;
     [_nameView addSubview:_privateLogoImageView];
-    
 }
 
 #pragma mark Header Button View
@@ -371,9 +373,9 @@ BOOL blockShown;
     lowerBorder.frame = CGRectMake(0, 70, CGRectGetWidth(_headerButtonView.frame), 0.5f);
     [_headerButtonView.layer addSublayer: lowerBorder];
     
-    UIImageView *locationImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 9, 12)];
-    locationImgView.image = [UIImage imageNamed:@"locationIcon"];
-    [_headerButtonView addSubview:locationImgView];
+    _locationImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 10, 9, 12)];
+    _locationImgView.image = [UIImage imageNamed:@"locationIcon"];
+    [_headerButtonView addSubview:_locationImgView];
     
     _locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 9, 0.75*self.view.frame.size.width - 30, 14)];
     _locationLabel.text = self.user.group.name;
@@ -381,9 +383,9 @@ BOOL blockShown;
     _locationLabel.textAlignment = NSTextAlignmentLeft;
     [_headerButtonView addSubview:_locationLabel];
     
-    UIImageView *schoolImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 22 + 5, 14, 11)];
-    schoolImgView.image = [UIImage imageNamed:@"schoolIcon"];
-    [_headerButtonView addSubview:schoolImgView];
+    _schoolImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 22 + 5, 14, 11)];
+    _schoolImgView.image = [UIImage imageNamed:@"schoolIcon"];
+    [_headerButtonView addSubview:_schoolImgView];
     
     _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 22 + 5 - 2, 0.75*self.view.frame.size.width - 30, 14)];
     _schoolLabel.text = self.user.education;
@@ -391,9 +393,9 @@ BOOL blockShown;
     _schoolLabel.textAlignment = NSTextAlignmentLeft;
     [_headerButtonView addSubview:_schoolLabel];
     
-    UIImageView *workImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 38 + 5, 12, 10)];
-    workImgView.image = [UIImage imageNamed:@"workIcon"];
-    [_headerButtonView addSubview:workImgView];
+    _workImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 38 + 5, 12, 10)];
+    _workImgView.image = [UIImage imageNamed:@"workIcon"];
+    [_headerButtonView addSubview:_workImgView];
     
     _workLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 38 + 5 - 2, 0.75*self.view.frame.size.width - 30, 14)];
     _workLabel.text = self.user.work;
@@ -402,8 +404,7 @@ BOOL blockShown;
     [_headerButtonView addSubview:_workLabel];
     
     // Center images
-    locationImgView.center = CGPointMake(schoolImgView.center.x, locationImgView.center.y);
-    workImgView.center = CGPointMake(schoolImgView.center.x, workImgView.center.y);
+    [self centerIcons];
     
     UIView *lineDividerView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width*0.75 - 1, 5, 0.5, 60)];
     lineDividerView.backgroundColor = RGB(205, 205, 205);
@@ -444,6 +445,55 @@ BOOL blockShown;
     titleLabel.textColor = RGB(150, 150, 150);
     [notificationsHeaderView addSubview:titleLabel];
     [_headerButtonView addSubview:notificationsHeaderView];
+}
+
+-(void) centerIcons {
+    //City, education work
+    int numberOfProperties = 3;
+    if (!_locationLabel.text) {
+        _locationLabel.hidden = YES;
+        _locationImgView.hidden = YES;
+        numberOfProperties -= 1;
+    }
+    if (!_workLabel.text) {
+        _workLabel.hidden = YES;
+        _workImgView.hidden = YES;
+        numberOfProperties -= 1;
+    }
+    if (!_schoolLabel.text) {
+        _schoolLabel.hidden = YES;
+        _schoolImgView.hidden = YES;
+        numberOfProperties -= 1;
+    }
+    if (numberOfProperties == 1) {
+        _workLabel.font = [FontProperties lightFont:18.0f];
+        _schoolLabel.font = [FontProperties lightFont:18.0f];
+        _locationLabel.font = [FontProperties lightFont:18.0f];
+        _workImgView.transform = CGAffineTransformMakeScale(2.0f, 2.0f);
+        _schoolImgView.transform = CGAffineTransformMakeScale(2.0f, 2.0f);
+        _locationImgView.transform = CGAffineTransformMakeScale(2.0f, 2.0f);
+        _locationLabel.center = _schoolLabel.center;
+        _workLabel.center = _schoolLabel.center;
+        _locationImgView.center = _schoolImgView.center;
+        _workImgView.center = _schoolImgView.center;
+    }
+    if (numberOfProperties == 2) {
+        _workLabel.font = [FontProperties lightFont:16.0f];
+        _schoolLabel.font = [FontProperties lightFont:16.0f];
+        _locationLabel.font = [FontProperties lightFont:16.0f];
+        _workImgView.transform = CGAffineTransformMakeScale(1.5f, 1.5f);
+        _schoolImgView.transform = CGAffineTransformMakeScale(1.5f, 1.5f);
+        _locationImgView.transform = CGAffineTransformMakeScale(1.5f, 1.5f);
+        _locationLabel.center = _schoolLabel.center;
+        _workLabel.center = _schoolLabel.center;
+        _locationImgView.center = _schoolImgView.center;
+        _workImgView.center = _schoolImgView.center;
+    }
+    else {
+        _locationImgView.center = CGPointMake(_schoolImgView.center.x, _locationImgView.center.y);
+        _workImgView.center = CGPointMake(_schoolImgView.center.x, _workImgView.center.y);
+    }
+   
 }
 
 #pragma mark - Action Taps

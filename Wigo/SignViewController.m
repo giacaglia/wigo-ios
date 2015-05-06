@@ -29,18 +29,10 @@
 @implementation SignViewController
 
 
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        self.fetchingProfilePictures = NO;
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.fetchingProfilePictures = NO;
     self.view.backgroundColor = UIColor.whiteColor;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlertToNotShown) name:@"changeAlertToNotShown" object:nil];
     _alertShown = NO;
@@ -222,25 +214,24 @@
 
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
     WGProfile.currentUser.images = profilePictures;
-    if (!_pushed) {
-        _pushed = YES;
-        self.fetchingProfilePictures = NO;
-        [WGSpinnerView removeDancingGFromCenterView:self.view];
-        __weak typeof(self) weakSelf = self;
-        [WGProfile.currentUser save:^(BOOL success, NSError *error) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionSave];
-                return;
-            }
-            
-            [strongSelf dismissViewControllerAnimated:YES completion:nil];
-        }];
+    if (_pushed) return;
 
+    _pushed = YES;
+    self.fetchingProfilePictures = NO;
+    [WGSpinnerView removeDancingGFromCenterView:self.view];
+    __weak typeof(self) weakSelf = self;
+    [WGProfile.currentUser save:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            return;
+        }
         
-    }
+        [strongSelf dismissViewControllerAnimated:YES completion:nil];
+    }];
+
+   
 }
 
 
@@ -291,49 +282,29 @@
 #pragma mark - Facebook Delegate Methods
 
 - (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
-    if (!_pushed) {
-        _fbID = [fbGraphUser objectID];
-        _profilePic = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", [fbGraphUser objectForKey:@"id"]];
-        _accessToken = [FBSession activeSession].accessTokenData.accessToken;
-        
-        WGProfile.currentUser.firstName = fbGraphUser[@"first_name"];
-        WGProfile.currentUser.lastName = fbGraphUser[@"last_name"];
-        if (fbGraphUser[@"birthday"]) WGProfile.currentUser.birthday = fbGraphUser[@"birthday"];
-        if (fbGraphUser[@"education"]) {
-            NSArray *schoolArray = ((NSArray *)fbGraphUser[@"education"]);
-            NSArray *filteredArray = [schoolArray filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id object, NSDictionary *bindings) {
-                FBGraphObject *school = (FBGraphObject *)object;
-                return ([school[@"type"] isEqual:@"College"]);
-            }]];
-            if (filteredArray.count > 0) {
-                FBGraphObject *firstSchool = [filteredArray objectAtIndex:0];
-                WGProfile.currentUser.education = [[firstSchool objectForKey:@"school"] objectForKey:@"name"];
-            }
-        }
-        if (fbGraphUser[@"work"]) {
-            NSArray *workArray = fbGraphUser[@"work"];
-            if (workArray.count > 0) {
-                NSDictionary *employerDict = [workArray objectAtIndex:0];
-                if (employerDict && [employerDict isKindOfClass:[NSDictionary class]]) {
-                    NSDictionary *details = [employerDict objectForKey:@"employer"];
-                    if (details && [details isKindOfClass:[NSDictionary class]]) {
-                        if ([details.allKeys containsObject:@"name"]) {
-                            WGProfile.currentUser.work = [details objectForKey:@"name"];
-                        }
-                    }
-                }
-            }
-        }
-        
-        NSDictionary *userResponse = (NSDictionary *) fbGraphUser;
-        if ([[userResponse allKeys] containsObject:@"gender"]) {
-            WGProfile.currentUser.gender = [WGUser genderFromName:[userResponse objectForKey:@"gender"]];
-        }
-        
-        if (!_alertShown && !self.fetchingProfilePictures) {
-            [self loginUserAsynchronous];
-        }
+    if (_pushed) return;
+    
+    _fbID = [fbGraphUser objectID];
+    _profilePic = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", [fbGraphUser objectForKey:@"id"]];
+    _accessToken = [FBSession activeSession].accessTokenData.accessToken;
+    
+    WGProfile.currentUser.firstName = fbGraphUser[@"first_name"];
+    WGProfile.currentUser.lastName = fbGraphUser[@"last_name"];
+    if (fbGraphUser[@"birthday"]) WGProfile.currentUser.birthday = fbGraphUser[@"birthday"];
+    NSString *collegeName = [FacebookHelper nameOfCollegeFromUser:fbGraphUser];
+    if (collegeName) WGProfile.currentUser.education = collegeName;
+    NSString *workName = [FacebookHelper nameOFWorkFromUser:fbGraphUser];
+    if (workName) WGProfile.currentUser.work = workName;
+    
+    NSDictionary *userResponse = (NSDictionary *) fbGraphUser;
+    if ([[userResponse allKeys] containsObject:@"gender"]) {
+        WGProfile.currentUser.gender = [WGUser genderFromName:[userResponse objectForKey:@"gender"]];
     }
+    
+    if (!_alertShown && !self.fetchingProfilePictures) {
+        [self loginUserAsynchronous];
+    }
+    
 }
 
 - (void) loginView:(FBLoginView *)loginView handleError:(NSError *)error {
@@ -438,25 +409,23 @@
     currentInstallation[@"wigo_id"] = WGProfile.currentUser.id;
     [currentInstallation saveInBackground];
     
-    if (!_pushed) {
-        _pushed = YES;
-        if (WGProfile.currentUser.group.locked.boolValue) {
-            if (WGProfile.currentUser.findReferrer) {
-                [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
-                NSDateFormatter *dateFormatter = [NSDateFormatter new];
-                [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
-                [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-                WGProfile.currentUser.findReferrer = NO;
-                [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
-            }
-            [self.navigationController setNavigationBarHidden:YES animated:NO];
-            [self.navigationController pushViewController:[WaitListViewController new] animated:YES];
-        } else {
-            [self dismissViewControllerAnimated:NO  completion:nil];
-        }
-        
-    }
+    if (_pushed) return;
+    _pushed = YES;
     
+    if (WGProfile.currentUser.group.locked.boolValue) {
+        if (WGProfile.currentUser.findReferrer) {
+            [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
+            NSDateFormatter *dateFormatter = [NSDateFormatter new];
+            [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
+            [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+            WGProfile.currentUser.findReferrer = NO;
+            [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
+        }
+        [self.navigationController setNavigationBarHidden:YES animated:NO];
+        [self.navigationController pushViewController:[WaitListViewController new] animated:YES];
+    } else {
+        [self dismissViewControllerAnimated:NO  completion:nil];
+    }
 }
 
 - (void)reloadedUserInfo:(BOOL)success andError:(NSError *)error {
