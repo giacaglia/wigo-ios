@@ -1644,10 +1644,6 @@ BOOL firstTimeLoading;
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-//    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, self.frame.size.height - 20 - 10, self.frame.size.width + 10, 12)];
-//    shadowImageView.image = [UIImage imageNamed:@"shadow"];
-//    [self.contentView addSubview:shadowImageView];
-    
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
     backgroundView.backgroundColor = UIColor.whiteColor;
     backgroundView.layer.borderColor = UIColor.clearColor.CGColor;
@@ -1656,16 +1652,20 @@ BOOL firstTimeLoading;
     backgroundView.clipsToBounds = YES;
     [self.contentView addSubview:backgroundView];
     
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 16.5, self.frame.size.width, 20)];
-    self.eventNameLabel.textAlignment = NSTextAlignmentCenter;
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
+    lineView.backgroundColor = RGB(215, 215, 215);
+    [backgroundView addSubview:lineView];
+    
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 16.5, self.frame.size.width - 40, 20)];
+    self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.font = [FontProperties semiboldFont:18.0f];
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
     [backgroundView addSubview:self.eventNameLabel];
 
-    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20 + 20, self.frame.size.width, 20)];
+    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 40 + 20, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
-    self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
     [backgroundView addSubview:self.numberOfPeopleGoingLabel];
     
@@ -1717,10 +1717,10 @@ BOOL firstTimeLoading;
                    @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
     dispatch_async(dispatch_get_main_queue(), ^{
         if (size.width > self.eventNameLabel.frame.size.width) {
-            self.eventNameLabel.frame = CGRectMake(0, 3, self.frame.size.width, 50);
+            self.eventNameLabel.frame = CGRectMake(10, 3, self.frame.size.width - 40, 50);
         }
         else {
-            self.eventNameLabel.frame = CGRectMake(0, 16.5, self.frame.size.width, 20);
+            self.eventNameLabel.frame = CGRectMake(10, 16.5, self.frame.size.width - 40, 20);
         }
     });
     
