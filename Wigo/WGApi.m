@@ -429,7 +429,6 @@ static CLLocationManager *locationManager;
 }
 
 +(void) startup:(WGStartupResult)handler {
-    NSLog(@"hbgeugfeiuh foauh foueah f");
     [WGApi get:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, nil, nil, nil, NO, NO, nil, error);

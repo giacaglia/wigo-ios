@@ -300,7 +300,6 @@ heightForHeaderInSection:(NSInteger)section
         user.isTapped = @NO;
         [WGAnalytics tagAction:@"untap" atView:@"invite"];
     } else {
-#warning Group these
         [WGProfile.currentUser tapUser:user withHandler:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] logError:error forAction:WGActionSave];
@@ -311,10 +310,7 @@ heightForHeaderInSection:(NSInteger)section
     }
     
     [self.presentedUsers replaceObjectAtIndex:tag withObject:user];
-    int sizeOfTable = (int)[self.invitePeopleTableView numberOfRowsInSection:kSectionTapCell];
-    if (sizeOfTable > 0 && tag < sizeOfTable && tag >= 0) {
-        [self.invitePeopleTableView reloadData];
-    }
+    [self.invitePeopleTableView reloadData];
 }
 
 #pragma mark - UISearchBar

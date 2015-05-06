@@ -468,7 +468,7 @@ viewForHeaderInSection:(NSInteger)section
     if (self.fetching) return;
     self.fetching = YES;
     __weak typeof(self) weakSelf = self;
-    [WGSpinnerView addDancingGToCenterView:self.view];
+    if (self.users.count == 0) [WGSpinnerView addDancingGToCenterView:self.view];
     [WGUser getSuggestions:^(WGCollection *collection, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];

@@ -36,7 +36,6 @@
     self.view.backgroundColor = UIColor.whiteColor;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlertToNotShown) name:@"changeAlertToNotShown" object:nil];
     _alertShown = NO;
-    self.fetchingProfilePictures = NO;
     _pushed = NO;
     
     [self initializeScrollView];
@@ -49,16 +48,8 @@
     self.fetchingProfilePictures = NO;
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    [self showOnboard];
-//    [self presentPushNotification];
-}
-
--(void) showBarrierError:(NSError *)error {
-    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-}
-
-- (void)showOnboard {
     [self getFacebookTokensAndLoginORSignUp];
+//    [self presentPushNotification];
 }
 
 - (void) changeAlertToNotShown {
@@ -87,8 +78,6 @@
     _loginView.loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
     _loginView.delegate = self;
     _loginView.frame = CGRectMake(0, self.view.frame.size.height - 0.2*self.view.frame.size.width, self.view.frame.size.width, 0.2*self.view.frame.size.width);
-    _loginView.frame = CGRectOffset(_loginView.frame, (self.view.center.x - (_loginView.frame.size.width / 2)), 5);
-    _loginView.backgroundColor = [UIColor whiteColor];
     UIImageView *connectFacebookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"connectFacebook"]];
     connectFacebookImageView.backgroundColor = [UIColor whiteColor];
     connectFacebookImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, 0.2*self.view.frame.size.width);
@@ -191,7 +180,6 @@
 }
 
 
-
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
     WGProfile.currentUser.images = profilePictures;
     if (_pushed) return;
@@ -207,26 +195,12 @@
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
-        
         [strongSelf dismissViewControllerAnimated:YES completion:nil];
     }];
-
-   
 }
-
-
 
 
 #pragma mark - UIAlertView Methods
-
-- (void)showErrorLoginFailed {
-    _alert = [[UIAlertView alloc] initWithTitle:@"Not so fast!"
-                                        message:@"Wigo requires Facebook login. Open Settings > Facebook and make sure Wigo is turned on."
-                                       delegate:self
-                              cancelButtonTitle:@"Ok"
-                              otherButtonTitles: nil];
-    [_alert show];
-}
 
 - (void)showErrorNoConnection {
     if (!_alertShown) {
@@ -240,19 +214,6 @@
         [self logout];
         _alert.delegate = self;
     }
-    
-}
-
-- (void)showBummerError {
-    _alertShown = YES;
-    _alert = [[UIAlertView alloc] initWithTitle:@"Bummer"
-                                        message:@"We fudged something up. Please try again later."
-                                       delegate:self
-                              cancelButtonTitle:@"Ok"
-                              otherButtonTitles: nil];
-    [_alert show];
-    [self logout];
-    _alert.delegate = self;
 }
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
@@ -401,10 +362,9 @@
             WGProfile.currentUser.findReferrer = NO;
             [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
         }
-        [self.navigationController setNavigationBarHidden:YES animated:NO];
         [self.navigationController pushViewController:[WaitListViewController new] animated:YES];
     } else {
-        [self dismissViewControllerAnimated:NO  completion:nil];
+        [self dismissViewControllerAnimated:NO completion:nil];
     }
 }
 
@@ -479,9 +439,6 @@
     UIImageView *fourthImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 85 + 3*self.view.frame.size.width, 110, 170, 327)];
     fourthImgView.image = [UIImage imageNamed:@"imagePhone"];
     [scrollView addSubview:fourthImgView];
-//    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
-//    logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 151, self.view.frame.size.height/2 - 62 - 40, 302, 123);
-//    [scrollView addSubview:logoImageView];
 
     self.pageControl = [[UIPageControl alloc] initWithFrame: CGRectMake(0, self.view.frame.size.height - 0.2*self.view.frame.size.width - 20, self.view.frame.size.width, 20)];
     self.pageControl.enabled = NO;
