@@ -492,7 +492,6 @@
     [self.view addSubview: self.pageControl];
 }
 
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     int page = scrollView.contentOffset.x / scrollView.frame.size.width;
     self.pageControl.hidden = (page == 3);
