@@ -731,6 +731,34 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     
 }
 
+// stop recording and discard video
+
+- (void)cancelRecording {
+    
+    _isRecording = NO;
+    
+    [[self.audioDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:NO];
+    [[self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:NO];
+    
+    AVAssetWriterStatus status = self.videoWriter.status;
+    
+    
+    if(status == AVAssetWriterStatusUnknown ||
+       status == AVAssetWriterStatusWriting) {
+        [self.videoWriter finishWritingWithCompletionHandler:^{
+            
+            dispatch_async(dispatch_get_main_queue(),
+                           ^{
+                               [self.delegate cameraControllerDidCancel:self];
+                           });
+        }];
+    }
+    else {
+        [self.delegate cameraControllerDidCancel:self];
+    }
+    
+}
+
 - (void)stopRecording {
     //[self.movieFileOutput stopRecording];
     
@@ -739,25 +767,47 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     [[self.audioDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:NO];
     [[self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:NO];
     
-    [self.videoWriter finishWritingWithCompletionHandler:^{
-        
+    NSLog(@"video writer stopped - status: %ld", (long)self.videoWriter.status);
+    
+    AVAssetWriterStatus status = self.videoWriter.status;
+    
+    BOOL isWriting = (status == AVAssetWriterStatusWriting);
+    
+    if(status == AVAssetWriterStatusUnknown ||
+       status == AVAssetWriterStatusWriting) {
+        [self.videoWriter finishWritingWithCompletionHandler:^{
+            
+            dispatch_async(dispatch_get_main_queue(),
+                           ^{
+                               
+                               if(isWriting) {
+                                   
+                                   NSDictionary *dict = @{UIImagePickerControllerMediaType:(NSString *)kUTTypeMovie,
+                                                          UIImagePickerControllerMediaURL:self.videoOutputURL};
+                                   
+                                   
+                                   [self.delegate cameraController:self
+                                     didFinishPickingMediaWithInfo:dict];
+                                   
+                               }
+                               else {
+                                   NSLog(@"video writer was cancelled");
+                                   [self.delegate cameraControllerDidCancel:self];
+                               }
+                           });
+            
+            
+            
+        }];
+    }
+    else {
         
         dispatch_async(dispatch_get_main_queue(),
                        ^{
-                           
-                           NSLog(@"video writer status: %ld", (long)self.videoWriter.status);
-                           
-                           NSDictionary *dict = @{UIImagePickerControllerMediaType:(NSString *)kUTTypeMovie,
-                                                  UIImagePickerControllerMediaURL:self.videoOutputURL};
-                           
-                           
-                           [self.delegate cameraController:self
-                             didFinishPickingMediaWithInfo:dict];
+                           NSLog(@"video writer ended while status was %d", (int)status);
+                           [self.delegate cameraControllerDidCancel:self];
                        });
-        
-        
-        
-    }];
+    }
 }
 
 
@@ -907,78 +957,6 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     }
     
 }
-
-
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput
-didStartRecordingToOutputFileAtURL:(NSURL *)fileURL
-      fromConnections:(NSArray *)connections {
-    NSLog(@"started recording");
-    
-    NSLog(@"connections: %@", connections.description);
-}
-
-- (void)captureOutput:(AVCaptureFileOutput *)captureOutput
-didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
-      fromConnections:(NSArray *)connections
-                error:(NSError *)error {
-    
-    [self.captureSession removeOutput:self.movieFileOutput];
-    
-    if(error) {
-        NSLog(@"error finishing movie");
-        
-        // signal delegate that an error occurred
-        [self.delegate cameraControllerDidCancel:self];
-        return;
-    }
-    
-    AVCaptureDevice *device = self.videoDeviceInput.device;
-    
-    NSError *configLockErr;
-    [device lockForConfiguration:&configLockErr];
-    if(!configLockErr) {
-        device.activeVideoMinFrameDuration = kCMTimeInvalid;
-    }
-    else {
-        NSLog(@"config lock error: %@", configLockErr.localizedDescription);
-    }
-    
-    BOOL recordedSuccessfully = YES;
-    if ([error code] != noErr) {
-        // A problem occurred: Find out if the recording was successful.
-        id value = [[error userInfo] objectForKey:AVErrorRecordingSuccessfullyFinishedKey];
-        if (value) {
-            recordedSuccessfully = [value boolValue];
-            
-        }
-    }
-    
-    if(recordedSuccessfully) {
-        
-        NSURL *fileURL = [WGCameraViewController tempVideoURL];
-        
-        NSData *fileData = [NSData dataWithContentsOfURL:outputFileURL];
-        NSLog(@"original file length: %ld", (long)fileData.length);
-        
-//        [self convertVideoToLowQuailtyWithInputURL:outputFileURL
-//                                         outputURL:fileURL];
-        
-//        NSDictionary *dict = @{UIImagePickerControllerMediaType:(NSString *)kUTTypeMovie,
-//                               UIImagePickerControllerMediaURL:outputFileURL};
-//        
-//        
-//        [self.delegate cameraController:self
-//          didFinishPickingMediaWithInfo:dict];
-        
-        
-    }
-    else {
-        
-    }
-
-}
-
-
 
 
 

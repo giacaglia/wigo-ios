@@ -42,6 +42,7 @@
 - (void)takePictureWithCompletion:(void (^)(UIImage *image, NSDictionary *attachments, NSError *error))completion;
 - (void)startRecordingVideo;
 - (void)stopRecording;
+- (void)cancelRecording;
 
 - (void)switchCameras:(id)sender;
 - (void)toggleFlash;

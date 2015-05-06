@@ -1975,8 +1975,7 @@
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
-    NSLog(@"gesture state: %d", (int)gesture.state);
-    NSLog(@"camera transform: %@", NSStringFromCGAffineTransform(self.controller.cameraViewTransform));
+    // NSLog(@"gesture state: %d", (int)gesture.state);
     
     if (!self.longGesturePressed && gesture.state == UIGestureRecognizerStateBegan) {
         NSLog(@"long press gesture began");
@@ -1994,14 +1993,17 @@
         [self performBlock:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                NSLog(@"starting video capture");
-                [self.cameraController startRecordingVideo];
-                //[self.controller startVideoCapture];
-                self.isRecording = YES;
-                CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 0.0); //This slots the preview exactly in the middle of the screen
-//                self.controller.cameraViewTransform = CGAffineTransformScale(translate, 1.0, 1.0);
-                self.videoTimer = [NSTimer scheduledTimerWithTimeInterval: 0.01 target:self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": self.circularProgressView} repeats: YES];
-                [self.videoTimer fire];
+                // need to re-check longGesturePressed this to ensure video recording hasn't been cancelled
+                
+                if(self.longGesturePressed) {
+                    NSLog(@"starting video capture");
+                    [self.cameraController startRecordingVideo];
+                    //[self.controller startVideoCapture];
+                    self.isRecording = YES;
+                    
+                    self.videoTimer = [NSTimer scheduledTimerWithTimeInterval: 0.01 target:self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": self.circularProgressView} repeats: YES];
+                    [self.videoTimer fire];
+                }
                 
             });
         } afterDelay:0.4];
@@ -2020,6 +2022,14 @@
 
 - (void) videoCaptureTimerFired:(NSTimer *) timer {
     dispatch_async(dispatch_get_main_queue(), ^{
+        
+        if(!self.isRecording) {
+            
+            
+            NSLog(@"recording was cancelled");
+            return;
+        }
+        
         
         //NSLog(@"video fire (%f)", timer.timeInterval);
         self.videoTimerCount -= timer.timeInterval;
@@ -2046,17 +2056,23 @@
 
 - (void)stopRecordingVideo {
     
+    [self.videoTimer invalidate];
+    
     if (self.isRecording) {
-        [self.videoTimer invalidate];
-        [self.cameraController stopRecording];
-        //[self.controller stopVideoCapture];
-        self.circularProgressView.hidden = YES;
-        [self.circularProgressView setProgress:0.1f];
-        self.longGesturePressed = NO;
-        self.isRecording = NO;
         
-
+        // tell camera to stop recording
+        [self.cameraController stopRecording];
     }
+    else {
+        
+        // tell camera to cancel
+        [self.cameraController cancelRecording];
+    }
+    
+    self.circularProgressView.hidden = YES;
+    [self.circularProgressView setProgress:0.0f];
+    self.longGesturePressed = NO;
+    self.isRecording = NO;
 }
 
 
@@ -2104,6 +2120,10 @@
 
 - (void)cameraController:(WGCameraViewController *)controller didFinishPickingMediaWithInfo:(NSDictionary *)info {
     [self imagePickerController:nil didFinishPickingMediaWithInfo:info];
+}
+
+- (void)cameraControllerDidCancel:(WGCameraViewController *)picker {
+    NSLog(@"camera controller cancelled");
 }
 
 
@@ -2187,9 +2207,15 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
                            UIImage *thumbnailImage = notification.userInfo[MPMoviePlayerThumbnailImageKey];
                            if(thumbnailImage) {
                                self.info[kThumbnailImageKey] = thumbnailImage;
+                           
+//                           [self.mediaScrollDelegate mediaPickerController:self.controller
+//                                                    startUploadingWithInfo:self.info];
                            }
-                           [self.mediaScrollDelegate mediaPickerController:self.controller
-                                                    startUploadingWithInfo:self.info];
+                           else {
+                               // cancel upload
+                               [self cancelPressed];
+                               
+                           }
                        });
     }
 }
