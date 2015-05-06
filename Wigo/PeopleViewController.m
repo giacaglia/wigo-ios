@@ -410,6 +410,7 @@ viewForHeaderInSection:(NSInteger)section
     [self.friendRequestUsers replaceObjectAtIndex:buttonSender.tag withObject:user];
     [self.tableViewOfPeople reloadData];
 }
+//
 
 - (void)rejectPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
