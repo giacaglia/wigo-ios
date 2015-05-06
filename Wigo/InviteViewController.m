@@ -426,11 +426,12 @@ heightForHeaderInSection:(NSInteger)section
     NSString *oldString = searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     __weak typeof(self) weakSelf = self;
-    [WGProfile.currentUser searchNotMe:searchString withContext:@"invite" withHandler:^(WGCollection *collection, NSError *error) {
+    [WGProfile.currentUser searchNotMe:searchString
+                           withContext:@"invite"
+                           withHandler:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
@@ -446,7 +447,6 @@ heightForHeaderInSection:(NSInteger)section
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
@@ -471,7 +471,6 @@ heightForHeaderInSection:(NSInteger)section
             __strong typeof(self) strongSelf = weakSelf;
             strongSelf.isFetching = NO;
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }

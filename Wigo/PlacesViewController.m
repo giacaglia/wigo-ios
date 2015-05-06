@@ -1669,27 +1669,33 @@ BOOL firstTimeLoading;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
     [backgroundView addSubview:self.numberOfPeopleGoingLabel];
     
+    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
+    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
+    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 60 + 9, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
+    self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
+    [backgroundView addSubview:self.eventPeopleScrollView];
+    
     self.arrayOfImageViews = [NSMutableArray new];
     
-    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.numberOfPeopleGoingLabel.frame.origin.y + self.numberOfPeopleGoingLabel.frame.size.height + 10, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     firstImageView.contentMode = UIViewContentModeScaleAspectFill;
     firstImageView.clipsToBounds = YES;
     [backgroundView addSubview:firstImageView];
     [self.arrayOfImageViews addObject:firstImageView];
     
-    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.numberOfPeopleGoingLabel.frame.origin.y + self.numberOfPeopleGoingLabel.frame.size.height + 10, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     secondImageView.contentMode = UIViewContentModeScaleAspectFill;
     secondImageView.clipsToBounds = YES;
     [backgroundView addSubview:secondImageView];
     [self.arrayOfImageViews addObject:secondImageView];
     
-    self.thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.numberOfPeopleGoingLabel.frame.origin.y + self.numberOfPeopleGoingLabel.frame.size.height + 10 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    self.thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     self.thirdImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.thirdImageView.clipsToBounds = YES;
     [backgroundView addSubview:self.thirdImageView];
     [self.arrayOfImageViews addObject:self.thirdImageView];
     
-    self.fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.numberOfPeopleGoingLabel.frame.origin.y + self.numberOfPeopleGoingLabel.frame.size.height + 10 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    self.fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     self.fourthImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.fourthImageView.clipsToBounds = YES;
     [backgroundView addSubview:self.fourthImageView];
@@ -1731,13 +1737,12 @@ BOOL firstTimeLoading;
         __weak UIImageView *weakImgView = imageView;
         __weak WGEventMessage *weakEventMsg = eventMessage;
         [imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                __strong UIImageView *strongImgView = weakImgView;
-//                __strong WGEventMessage *strongEventMsg = weakEventMsg;
-//                NSURL *bigImageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, strongEventMsg.media]];
-//                [strongImgView setImageWithURL:bigImageURL];
-//            });
-            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                __strong UIImageView *strongImgView = weakImgView;
+                __strong WGEventMessage *strongEventMsg = weakEventMsg;
+                NSURL *bigImageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, strongEventMsg.media]];
+                [strongImgView setImageWithURL:bigImageURL];
+            });
         }];
     }
 }
@@ -1748,7 +1753,7 @@ BOOL firstTimeLoading;
 
 + (CGFloat)height {
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    return 75 + (width - 2);
+    return 75 + [EventPeopleScrollView containerHeight] + (width - 2);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1772,7 +1777,7 @@ BOOL firstTimeLoading;
 
 + (CGFloat)height {
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    return 75 + (width - 2)/2;
+    return 75 + [EventPeopleScrollView containerHeight] + (width - 2)/2;
 }
 
 
