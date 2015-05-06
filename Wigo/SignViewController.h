@@ -17,5 +17,5 @@
 @property (nonatomic, assign) BOOL fetchingProfilePictures;
 
 @property (nonatomic, strong) UIVisualEffectView *blurredView;
-
+@property (nonatomic, strong) UIPageControl *pageControl;
 @end

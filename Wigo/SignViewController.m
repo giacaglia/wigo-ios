@@ -14,7 +14,7 @@
 #import "WaitListViewController.h"
 
 
-@interface SignViewController ()
+@interface SignViewController () <UIScrollViewDelegate>
 @property UIView *facebookConnectView;
 @property BOOL pushed;
 @property FBLoginView *loginView;
@@ -421,12 +421,15 @@
     [self navigate];
 }
 
+#pragma mark - UIScrollView
+
 -(void)initializeScrollView {
     UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 0.2*self.view.frame.size.width)];
     scrollView.contentSize = CGSizeMake(4*self.view.frame.size.width, self.view.frame.size.height - 0.2*self.view.frame.size.width - 50);
     scrollView.pagingEnabled = YES;
     scrollView.showsVerticalScrollIndicator = NO;
     scrollView.showsHorizontalScrollIndicator = NO;
+    scrollView.delegate = self;
     [self.view addSubview:scrollView];
     
     UILabel *firstLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 100)];
@@ -437,7 +440,7 @@
     firstLabel.font = [FontProperties lightFont:27.0f];
     [scrollView addSubview:firstLabel];
     
-    UIImageView *firstImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110, 110, 220, 409)];
+    UIImageView *firstImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 88, 110, 176, 327)];
     firstImgView.image = [UIImage imageNamed:@"imagePhone"];
     [scrollView addSubview:firstImgView];
     
@@ -449,7 +452,7 @@
     secondLabel.font = [FontProperties lightFont:27.0f];
     [scrollView addSubview:secondLabel];
     
-    UIImageView *secondImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110 + self.view.frame.size.width, 110, 220, 409)];
+    UIImageView *secondImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 88 + self.view.frame.size.width, 110, 176, 327)];
     secondImgView.image = [UIImage imageNamed:@"imagePhone"];
     [scrollView addSubview:secondImgView];
     
@@ -461,7 +464,7 @@
     thirdLabel.font = [FontProperties lightFont:27.0f];
     [scrollView addSubview:thirdLabel];
     
-    UIImageView *thirdImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110 + 2*self.view.frame.size.width, 110, 220, 409)];
+    UIImageView *thirdImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 88 + 2*self.view.frame.size.width, 110, 176, 327)];
     thirdImgView.image = [UIImage imageNamed:@"imagePhone"];
     [scrollView addSubview:thirdImgView];
     
@@ -473,13 +476,30 @@
     fourthLabel.font = [FontProperties lightFont:27.0f];
     [scrollView addSubview:fourthLabel];
     
-    UIImageView *fourthImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110 + 3*self.view.frame.size.width, 110, 220, 409)];
+    UIImageView *fourthImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 88 + 3*self.view.frame.size.width, 110, 176, 327)];
     fourthImgView.image = [UIImage imageNamed:@"imagePhone"];
     [scrollView addSubview:fourthImgView];
 //    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
 //    logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 151, self.view.frame.size.height/2 - 62 - 40, 302, 123);
 //    [scrollView addSubview:logoImageView];
+
+    self.pageControl = [[UIPageControl alloc] initWithFrame: CGRectMake(0, self.view.frame.size.height - 0.2*self.view.frame.size.width - 20, self.view.frame.size.width, 20)];
+    self.pageControl.enabled = NO;
+    self.pageControl.currentPage = 0;
+    self.pageControl.currentPageIndicatorTintColor = [FontProperties getBlueColor];
+    self.pageControl.pageIndicatorTintColor = RGB(224, 224, 224);
+    self.pageControl.numberOfPages = 4;
+    [self.view addSubview: self.pageControl];
 }
+
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    int page = scrollView.contentOffset.x / scrollView.frame.size.width;
+    self.pageControl.hidden = (page == 3);
+    self.pageControl.currentPage = page;
+}
+
+#pragma mark - Push Notification
 
 -(void) presentPushNotification {
     UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
