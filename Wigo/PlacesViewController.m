@@ -353,7 +353,7 @@ BOOL firstTimeLoading;
     [self.placesTableView registerClass:[MoreThan2PhotosOldEventCell class] forCellReuseIdentifier:kMoreThan2PhotosOldEventCell];
     [self.placesTableView registerClass:[LessThan2PhotosOldEventCell class] forCellReuseIdentifier:kLessThan2PhotosOldEventCell];
     [self.placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
-    self.placesTableView.backgroundColor = RGB(237, 237, 237);
+    self.placesTableView.backgroundColor = RGB(210, 210, 210);
     self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self addRefreshToScrollView];
     
@@ -1352,7 +1352,7 @@ BOOL firstTimeLoading;
     CGFloat contentInset = 44.0f;
     self.placesTableView.contentInset = UIEdgeInsetsMake(contentInset, 0, 0, 0);
     [WGSpinnerView addDancingGToUIScrollView:self.placesTableView
-                         withBackgroundColor:RGB(237, 237, 237)
+                         withBackgroundColor:RGB(210, 210, 210)
                             withContentInset:contentInset
                                  withHandler:^{
         self.spinnerAtCenter = NO;
@@ -1438,7 +1438,7 @@ BOOL firstTimeLoading;
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell height]);
     self.contentView.frame = self.frame;
-    self.backgroundColor = RGB(237, 237, 237);
+    self.backgroundColor = RGB(210, 210, 210);
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -1604,7 +1604,7 @@ BOOL firstTimeLoading;
     return header;
 }
 - (void) setup {
-    self.backgroundColor = RGB(237, 237, 237);
+    self.backgroundColor = RGB(210, 210, 210);
     
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSS"];
@@ -1642,12 +1642,12 @@ BOOL firstTimeLoading;
 
 - (void) setup {
     self.contentView.frame = self.frame;
-    self.backgroundColor = RGB(237, 237, 237);
+    self.backgroundColor = RGB(210, 210, 210);
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
-    backgroundView.backgroundColor = UIColor.whiteColor;
+    backgroundView.backgroundColor = RGB(230, 230, 230);
     backgroundView.layer.borderColor = UIColor.clearColor.CGColor;
     backgroundView.layer.borderWidth = 1.0f;
     backgroundView.layer.cornerRadius = 15.0f;
@@ -1662,7 +1662,7 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.font = [FontProperties semiboldFont:18.0f];
-    self.eventNameLabel.textColor = [FontProperties getBlueColor];
+    self.eventNameLabel.textColor = RGB(121, 121, 121);
     [backgroundView addSubview:self.eventNameLabel];
 
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 60, self.frame.size.width, 20)];
