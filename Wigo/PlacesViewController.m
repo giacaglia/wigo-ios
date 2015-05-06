@@ -1587,6 +1587,14 @@ BOOL firstTimeLoading;
 
 @implementation PastDayHeader
 
+
++ (CGFloat) height: (BOOL) isFirst  {
+    if (isFirst) {
+        return 75;
+    }
+    return 70;
+}
+
 + (instancetype) initWithDay: (NSString *) dayText isFirst: (BOOL) isFirst {
     PastDayHeader *header = [[PastDayHeader alloc] initWithFrame: CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [PastDayHeader height: isFirst])];
     header.isFirst = isFirst;
@@ -1628,12 +1636,6 @@ BOOL firstTimeLoading;
     [self addSubview: titleLabel];
 }
 
-+ (CGFloat) height: (BOOL) isFirst  {
-    if (isFirst) {
-        return 75;
-    }
-    return 70;
-}
 @end
 
 @implementation HighlightOldEventCell
@@ -1663,7 +1665,7 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
     [backgroundView addSubview:self.eventNameLabel];
 
-    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 40 + 20, self.frame.size.width, 20)];
+    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 60, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
@@ -1671,7 +1673,7 @@ BOOL firstTimeLoading;
     
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
     self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 60 + 9, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 89, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [backgroundView addSubview:self.eventPeopleScrollView];
     
@@ -1753,7 +1755,7 @@ BOOL firstTimeLoading;
 
 + (CGFloat)height {
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    return 75 + [EventPeopleScrollView containerHeight] + (width - 2);
+    return 129 + 0.9*width/5.5 + (width -2);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1777,7 +1779,7 @@ BOOL firstTimeLoading;
 
 + (CGFloat)height {
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    return 75 + [EventPeopleScrollView containerHeight] + (width - 2)/2;
+    return 129 + 0.9*width/5.5 + (width -2)/2;
 }
 
 

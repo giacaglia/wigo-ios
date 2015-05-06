@@ -43,7 +43,7 @@
 }
 
 + (CGFloat) containerHeight {
-    return (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7;
+    return (float)[UIScreen mainScreen].bounds.size.width/(float)3.7;
 }
 
 -(void) setEvent:(WGEvent *)event {
