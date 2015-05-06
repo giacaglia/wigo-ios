@@ -137,7 +137,7 @@
         return 5;
     }
     else if (section == kSectionAllFriends) {
-        return self.presentedUsers.count;
+        return MAX(self.presentedUsers.count - 5, 0);
     }
     else {
         if (self.presentedUsers.total.intValue > 10) {
@@ -182,7 +182,7 @@
         cell.goingOutLabel.text = nil;
         cell.tapImageView.image = nil;
         
-        int tag = (int)indexPath.row;
+        int tag = (int)indexPath.row + 5;
         WGUser *user;
         if (self.presentedUsers.count == 0) return cell;
         if (tag < self.presentedUsers.count) {
