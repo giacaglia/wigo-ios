@@ -172,7 +172,7 @@
                                     action:NULL
                           forControlEvents:UIControlEventAllEvents];
         [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
-        cell.aroundTapButton.tag = indexPath.row;
+        cell.aroundTapButton.tag = tag;
         return cell;
     }
     else if (indexPath.section == kSectionAllFriends) {
@@ -196,7 +196,7 @@
                                     action:NULL
                           forControlEvents:UIControlEventAllEvents];
         [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
-        cell.aroundTapButton.tag = indexPath.row;
+        cell.aroundTapButton.tag = tag;
         return cell;
     }
     

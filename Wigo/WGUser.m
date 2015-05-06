@@ -88,6 +88,7 @@
 #define kFriendRequestReceived @"received"
 #define kDictionaryTappedList @"is_tapped_dictionary"
 #define kDictionaryIsFriendRequestList @"is_friend_request_read_list"
+#define kDayMetaUserKey @"day_met_user_key"
 
 static WGUser *currentUser = nil;
 
@@ -720,35 +721,6 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kIsGoingOutKey];
 }
 
--(void) setIsTapped:(NSNumber *)isTapped {
-    NSDate* todayDate = [NSDate date];
-    NSString *dayString = [todayDate getDayString];
-    NSMutableDictionary *userToTapped = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryTappedList]];
-    if (!userToTapped) userToTapped = [[NSMutableDictionary alloc] initWithDictionary:@{ dayString :@{}}];
-    NSMutableDictionary *mutableDayDict =  [NSMutableDictionary dictionaryWithDictionary:[userToTapped objectForKey:dayString]];
-    [mutableDayDict setObject:isTapped forKey:self.id.stringValue];
-    [userToTapped setObject:mutableDayDict forKey:dayString];
-    [[NSUserDefaults standardUserDefaults] setObject:userToTapped forKey:kDictionaryTappedList];
-}
-
--(NSNumber *) isTapped {
-    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:kDictionaryTappedList];
-    NSDate* todayDate = [NSDate date];
-    NSString *dayString = [todayDate getDayString];
-    NSMutableDictionary *dayTouserToTapped = [[NSMutableDictionary alloc] initWithDictionary:[[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryTappedList]];
-    for (NSString *key in dayTouserToTapped.allKeys) {
-        if (![key isEqual:dayString]) {
-            [dayTouserToTapped removeObjectForKey:key];
-        }
-    }
-    [[NSUserDefaults standardUserDefaults] setObject:dayTouserToTapped forKey:kDictionaryTappedList];
-    NSDictionary *userToTapped = [dayTouserToTapped objectForKey:dayString];
-    if (!userToTapped) return nil;
-    if ([userToTapped.allKeys containsObject:self.id.stringValue]) {
-        return [userToTapped objectForKey:self.id.stringValue];
-    }
-    return nil;
-}
 
 -(void) setIsFriendRequestRead:(BOOL)isFriendRequestRead {
     NSMutableArray *listOfFriendRequestRead = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryIsFriendRequestList]];
@@ -1099,13 +1071,11 @@ static WGUser *currentUser = nil;
        }
        NSError *dataError;
        WGCollection *objects;
-       NSDictionary *response;
        @try {
            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
        }
        @catch (NSException *exception) {
            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-           
            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
        }
        @finally {
@@ -1526,5 +1496,74 @@ static WGUser *currentUser = nil;
 
 #pragma mark - Meta objects
 
+-(void) setIsTapped:(NSNumber *)isTapped {
+    [self setDayMetaObject:isTapped forKey:kIsTappedKey];
+}
+
+-(NSNumber *) isTapped {
+    NSNumber *isTapped = [self dayMetaObjectForKey:kIsTappedKey];
+    return isTapped;
+}
+
+-(void) setDayMetaObject:(id)object forKey:(NSString *)key {
+    if (!self.id) return;
+    NSDictionary *metaEventMessagesProperties = self.dayMetaUserProperties;
+    if (!metaEventMessagesProperties) metaEventMessagesProperties = [NSDictionary new];
+    NSMutableDictionary *mutFriendsMetaDict = [NSMutableDictionary dictionaryWithDictionary:metaEventMessagesProperties];
+    if (!mutFriendsMetaDict) mutFriendsMetaDict = [NSMutableDictionary new];
+    // cleanup of old dates
+    for (NSString *key in mutFriendsMetaDict.allKeys) {
+        if (![key isEqual:self.dayString]) [mutFriendsMetaDict removeObjectForKey:key];
+    }
+    
+    if ([mutFriendsMetaDict.allKeys containsObject:self.dayString]) {
+        NSMutableDictionary *eventMessagesDict = [NSMutableDictionary dictionaryWithDictionary:[mutFriendsMetaDict objectForKey:self.dayString]];
+        if (!eventMessagesDict) eventMessagesDict = [NSMutableDictionary new];
+        if ([eventMessagesDict.allKeys containsObject:self.id.stringValue]) {
+            NSMutableDictionary *metaEventMsg = [NSMutableDictionary dictionaryWithDictionary:[eventMessagesDict objectForKey:self.id.stringValue]];
+            if (!metaEventMsg) metaEventMsg = [NSMutableDictionary dictionaryWithDictionary:@{key: object}];
+            else [metaEventMsg setObject:object forKey:key];
+            [eventMessagesDict setObject:metaEventMsg forKey:self.id.stringValue];
+        }
+        else {
+            [eventMessagesDict setObject:@{key: object} forKey:self.id.stringValue];
+        }
+        [mutFriendsMetaDict setObject:eventMessagesDict forKey:self.dayString];
+    }
+    else {
+        [mutFriendsMetaDict setObject:@{self.id.stringValue: @{key: object}} forKey:self.dayString];
+    }
+    self.dayMetaUserProperties = mutFriendsMetaDict;
+}
+
+-(id) dayMetaObjectForKey:(NSString *)key {
+    if (!self.id) return nil;
+    NSDictionary *metaProperties = self.dayMetaUserProperties;
+    if (metaProperties) {
+        if ([metaProperties.allKeys containsObject:self.dayString]) {
+            NSDictionary *eventMessagesDict = [metaProperties objectForKey:self.dayString];
+            if ([eventMessagesDict.allKeys containsObject:self.id.stringValue]) {
+                NSDictionary *metaDict = [eventMessagesDict objectForKey:self.id.stringValue];
+                if ([metaDict.allKeys containsObject:key]) return [metaDict objectForKey:key];
+            }
+        }
+    }
+    return nil;
+}
+
+-(NSString *) dayString {
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    return [dateFormatter stringFromDate:[NSDate date]];
+}
+
+-(NSDictionary *) dayMetaUserProperties {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kDayMetaUserKey];
+}
+
+
+-(void) setDayMetaUserProperties:(NSDictionary *)dayMetaUserProperties {
+    [[NSUserDefaults standardUserDefaults] setObject:dayMetaUserProperties forKey:kDayMetaUserKey];
+}
 
 @end

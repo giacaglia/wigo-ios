@@ -166,4 +166,8 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler;
 -(void) resendVerificationEmail:(BoolResultBlock) handler;
 
+#pragma mark - Meta objects
+@property (nonatomic, strong) NSDictionary *dayMetaUserProperties;
+-(void) setDayMetaObject:(id)object forKey:(NSString *)key;
+-(id) dayMetaObjectForKey:(NSString *)key;
 @end
