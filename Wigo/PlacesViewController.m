@@ -1070,8 +1070,10 @@ BOOL firstTimeLoading;
 
 
 - (void)fetchEventsWithoutReloadingWithHandler:(BoolResultBlock)handler {
-    if (self.fetchingEventAttendees) handler(NO, nil);
-    if (!WGProfile.currentUser.key)  handler(NO, nil);
+    if (self.fetchingEventAttendees || !WGProfile.currentUser.key) {
+        handler(NO, nil);
+        return;
+    }
     
     self.fetchingEventAttendees = YES;
     __weak typeof(self) weakSelf = self;
@@ -1134,17 +1136,19 @@ BOOL firstTimeLoading;
 }
 
 - (void) fetchEventsWithHandler:(BoolResultBlock)handler {
-    if (self.fetchingEventAttendees) handler(NO, nil);
-    if (!WGProfile.currentUser.key) handler(NO, nil);
-   
-    self.fetchingEventAttendees = YES;
-    if (self.spinnerAtCenter && ![WGSpinnerView isDancingGInCenterView:self.view]) {
-        [WGSpinnerView addDancingGToCenterView:self.view];
+    if (self.fetchingEventAttendees || !WGProfile.currentUser.key) {
+        handler(NO, nil);
+        return;
     }
+    self.fetchingEventAttendees = YES;
+    if (self.spinnerAtCenter) [WGSpinnerView addDancingGToCenterView:self.view];
     __weak typeof(self) weakSelf = self;
     if (self.allEvents) {
-        if (!self.allEvents.nextPage) handler(NO, nil);
-
+        if (!self.allEvents.nextPage) {
+            self.fetchingEventAttendees = NO;
+            handler(NO, nil);
+            return;
+        }
         [self.allEvents addNextPage:^(BOOL success, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             [strongSelf removeDancingG];
@@ -1233,7 +1237,6 @@ BOOL firstTimeLoading;
                 }
             }
             
-            strongSelf.fetchingEventAttendees = NO;
             [strongSelf.placesTableView reloadData];
             handler(YES, error);
         }];

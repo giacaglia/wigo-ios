@@ -96,6 +96,7 @@
 }
 
 + (void)addDancingGToCenterView:(UIView *)view {
+    if ([WGSpinnerView isDancingGInCenterView:view]) return;
     WGImageView *centeredImageView =[[WGImageView alloc] initWithFrame:CGRectMake(view.frame.size.width/2 - 30, view.frame.size.height/2 - 30, 60, 60)];
     NSArray *loadingImages = [WGSpinnerView getLoadingImgs];
     centeredImageView.animationImages = loadingImages;
@@ -105,6 +106,7 @@
 }
 
 + (BOOL)removeDancingGFromCenterView:(UIView *)view {
+    if (![WGSpinnerView isDancingGInCenterView:view]) return NO;
 	for (UIView *subview in [view subviews]) {
 		if ([subview isKindOfClass:[WGImageView class]]) {
             [(WGImageView *) subview removeFromSuperview];
