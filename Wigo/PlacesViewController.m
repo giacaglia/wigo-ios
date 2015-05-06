@@ -70,7 +70,6 @@ BOOL firstTimeLoading;
     [TabBarAuxiliar startTabBarItems];
     [self addCenterButton];
 //    [NetworkFetcher.defaultGetter fetchMessages];
-    [NetworkFetcher.defaultGetter fetchSuggestions];
     [NetworkFetcher.defaultGetter fetchMeta];
     [NetworkFetcher.defaultGetter fetchFriendsIds];
 //    [NetworkFetcher.defaultGetter fetchNotifications];

@@ -465,8 +465,20 @@ viewForHeaderInSection:(NSInteger)section
 #pragma mark - Network functions
 
 - (void)fetchFirstPageSuggestions {
-    self.users = NetworkFetcher.defaultGetter.suggestions;
-    [self.tableViewOfPeople reloadData];
+    if (self.fetching) return;
+    self.fetching = YES;
+    __weak typeof(self) weakSelf = self;
+    [WGSpinnerView addDancingGToCenterView:self.view];
+    [WGUser getSuggestions:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+        strongSelf.fetching = NO;
+        if (error) return;
+        strongSelf.users = collection;
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [self.tableViewOfPeople reloadData];
+        });
+    }];
 }
 
 - (void)fetchNextPage {

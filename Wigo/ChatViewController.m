@@ -132,9 +132,8 @@
     [WGMessage getConversations:^(WGCollection *collection, NSError *error) {
         __strong typeof(self) strongSelf = weakSelf;
         strongSelf.isFetching = NO;
-        [WGSpinnerView removeDancingGFromCenterView:self.view];
+        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
