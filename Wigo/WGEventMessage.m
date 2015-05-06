@@ -234,15 +234,15 @@
 -(id) metaObjectForKey:(NSString *)key {
     if (!self.id) return nil;
     NSDictionary *metaProperties = self.metaEventMessageProperties;
-    if (metaProperties) {
-        if ([metaProperties.allKeys containsObject:self.dayString]) {
-            NSDictionary *eventMessagesDict = [metaProperties objectForKey:self.dayString];
-            if ([eventMessagesDict.allKeys containsObject:self.id.stringValue]) {
-                NSDictionary *metaDict = [eventMessagesDict objectForKey:self.id.stringValue];
-                if ([metaDict.allKeys containsObject:key]) return [metaDict objectForKey:key];
-            }
+    if (!metaProperties) return nil;
+    if ([metaProperties.allKeys containsObject:self.dayString]) {
+        NSDictionary *eventMessagesDict = [metaProperties objectForKey:self.dayString];
+        if ([eventMessagesDict.allKeys containsObject:self.id.stringValue]) {
+            NSDictionary *metaDict = [eventMessagesDict objectForKey:self.id.stringValue];
+            if ([metaDict.allKeys containsObject:key]) return [metaDict objectForKey:key];
         }
     }
+    
     return nil;
 }
 
@@ -253,12 +253,12 @@
 }
 
 -(NSDictionary *) metaEventMessageProperties {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kMetaEventMessagesProperties];
+    return [[WGCache sharedCache] objectForKey:kEventMessagesKey];
 }
 
 
 -(void) setMetaEventMessageProperties:(NSDictionary *)metaEventMessageProperties {
-    [[NSUserDefaults standardUserDefaults] setObject:metaEventMessageProperties forKey:kMetaEventMessagesProperties];
+    [[WGCache sharedCache] setObject:metaEventMessageProperties forKey:kEventMessagesKey];
 }
 
 @end

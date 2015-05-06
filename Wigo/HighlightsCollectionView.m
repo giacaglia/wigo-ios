@@ -127,14 +127,13 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)fetchEventMessages {
     self.cancelFetchMessages = YES;
-    __weak typeof(self) weakSelf = self;
-    if (!self.event.messages.hasNextPage.boolValue) return;
+    if (!self.event.messages.nextPage) return;
     
+    __weak typeof(self) weakSelf = self;
     [self.event.messages addNextPage:^(BOOL success, NSError *error) {
         __strong typeof(self) strongSelf = weakSelf;
         strongSelf.cancelFetchMessages = NO;
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }

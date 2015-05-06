@@ -468,6 +468,7 @@
                                           }];
                      }];
 }
+
 - (void)updateNumberOfVotes:(BOOL)upvoteBool {
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];

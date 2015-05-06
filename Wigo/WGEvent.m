@@ -289,7 +289,7 @@
             }
         }
         else {
-            [resultDictionary setObject:[toDictionary objectForKey:key] forKey:key];
+            [resultDictionary setObject:[fromDictionary objectForKey:key] forKey:key];
         }
     }
     for (NSString *key in toDictionary.allKeys) {
