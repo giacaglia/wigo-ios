@@ -39,7 +39,7 @@
     self.fetchingProfilePictures = NO;
     _pushed = NO;
     
-    [self initializeLogo];
+    [self initializeScrollView];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -80,22 +80,9 @@
     }
 }
 
-- (void) fetchTokensFromFacebook {
-    _facebookConnectView.hidden = NO;
-    [self initializeFacebookSignButton];
-}
-
-- (void)initializeLogo {
-    _facebookConnectView = [[UIView alloc] initWithFrame:self.view.frame];
-    _facebookConnectView.hidden = YES;
-    [self.view addSubview:_facebookConnectView];
+- (void)fetchTokensFromFacebook {
+    if (_loginView) [_loginView removeFromSuperview];
     
-    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
-    logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 151, self.view.frame.size.height/2 - 62 - 40, 302, 123);
-    [_facebookConnectView addSubview:logoImageView];
-}
-
-- (void)initializeFacebookSignButton {
     _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"user_friends", @"user_photos", @"user_work_history", @"user_education_history"]];
     _loginView.loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
     _loginView.delegate = self;
@@ -435,9 +422,63 @@
 }
 
 -(void)initializeScrollView {
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width)];
-    scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 0.8*self.view.frame.size.width);
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 0.2*self.view.frame.size.width)];
+    scrollView.contentSize = CGSizeMake(4*self.view.frame.size.width, self.view.frame.size.height - 0.2*self.view.frame.size.width - 50);
+    scrollView.pagingEnabled = YES;
+    scrollView.showsVerticalScrollIndicator = NO;
+    scrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:scrollView];
+    
+    UILabel *firstLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 100)];
+    firstLabel.text = @"Discover awesome events\nin your area";
+    firstLabel.numberOfLines = 0;
+    firstLabel.textColor = UIColor.blackColor;
+    firstLabel.textAlignment = NSTextAlignmentCenter;
+    firstLabel.font = [FontProperties lightFont:27.0f];
+    [scrollView addSubview:firstLabel];
+    
+    UIImageView *firstImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110, 110, 220, 409)];
+    firstImgView.image = [UIImage imageNamed:@"imagePhone"];
+    [scrollView addSubview:firstImgView];
+    
+    UILabel *secondLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, 100)];
+    secondLabel.text = @"See who's going\nwhere real-time";
+    secondLabel.numberOfLines = 0;
+    secondLabel.textColor = UIColor.blackColor;
+    secondLabel.textAlignment = NSTextAlignmentCenter;
+    secondLabel.font = [FontProperties lightFont:27.0f];
+    [scrollView addSubview:secondLabel];
+    
+    UIImageView *secondImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110 + self.view.frame.size.width, 110, 220, 409)];
+    secondImgView.image = [UIImage imageNamed:@"imagePhone"];
+    [scrollView addSubview:secondImgView];
+    
+    UILabel *thirdLabel = [[UILabel alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width, 0, self.view.frame.size.width, 100)];
+    thirdLabel.text = @"Share moments with\nfriends";
+    thirdLabel.numberOfLines = 0;
+    thirdLabel.textColor = UIColor.blackColor;
+    thirdLabel.textAlignment = NSTextAlignmentCenter;
+    thirdLabel.font = [FontProperties lightFont:27.0f];
+    [scrollView addSubview:thirdLabel];
+    
+    UIImageView *thirdImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110 + 2*self.view.frame.size.width, 110, 220, 409)];
+    thirdImgView.image = [UIImage imageNamed:@"imagePhone"];
+    [scrollView addSubview:thirdImgView];
+    
+    UILabel *fourthLabel = [[UILabel alloc] initWithFrame:CGRectMake(3*self.view.frame.size.width, 0, self.view.frame.size.width, 100)];
+    fourthLabel.text = @"Finalize plans via chats";
+    fourthLabel.numberOfLines = 0;
+    fourthLabel.textColor = UIColor.blackColor;
+    fourthLabel.textAlignment = NSTextAlignmentCenter;
+    fourthLabel.font = [FontProperties lightFont:27.0f];
+    [scrollView addSubview:fourthLabel];
+    
+    UIImageView *fourthImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110 + 3*self.view.frame.size.width, 110, 220, 409)];
+    fourthImgView.image = [UIImage imageNamed:@"imagePhone"];
+    [scrollView addSubview:fourthImgView];
+//    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
+//    logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 151, self.view.frame.size.height/2 - 62 - 40, 302, 123);
+//    [scrollView addSubview:logoImageView];
 }
 
 -(void) presentPushNotification {
