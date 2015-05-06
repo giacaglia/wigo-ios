@@ -16,6 +16,7 @@
 
 @property (nonatomic, strong) UITableView *invitePeopleTableView;
 @property (nonatomic, strong) WGCollection *content;
+@property (nonatomic, strong) WGCollection *bestFriends;
 @property (nonatomic, strong) WGCollection *presentedUsers;
 @property (nonatomic, strong) WGCollection *suggestions;
 @property (nonatomic, strong) WGCollection* presentedSuggestions;

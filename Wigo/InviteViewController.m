@@ -161,11 +161,11 @@
         cell.tapImageView.image = nil;
         
         int tag = (int)indexPath.row;
-        WGUser *user;
+        
         if (self.presentedUsers.count == 0) return cell;
-        if (tag < self.presentedUsers.count) {
-            user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
-        }
+        if (tag >= self.presentedUsers.count) return cell;
+        
+        WGUser *user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
         if (!user) return cell;
         cell.user = user;
         [cell.aroundTapButton removeTarget:nil
@@ -182,12 +182,11 @@
         cell.goingOutLabel.text = nil;
         cell.tapImageView.image = nil;
         
-        int tag = (int)indexPath.row + 5;
-        WGUser *user;
         if (self.presentedUsers.count == 0) return cell;
-        if (tag < self.presentedUsers.count) {
-            user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
-        }
+        int tag = (int)indexPath.row + 5;
+        if (tag >= self.presentedUsers.count) return cell;
+        
+        WGUser *user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
         if (tag == self.presentedUsers.count - 5 || tag == self.presentedUsers.count - 1) {
             [self getNextPage];
         }
@@ -218,20 +217,21 @@
 }
 
 - (void)tapAllPressed {
-    if (!WGProfile.tapAll) {
-        WGProfile.tapAll = YES;
-        TapAllCell *tapAllCell = (TapAllCell *)[self.invitePeopleTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kSectionTapAllCell]];
-        tapAllCell.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
-        __weak typeof(self) weakSelf = self;
-        [WGProfile.currentUser tapAllUsersWithHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionSave];
-                return;
-            }
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            [strongSelf.invitePeopleTableView reloadData];
-        }];
-    }
+    if (WGProfile.tapAll) return;
+    
+    WGProfile.tapAll = YES;
+    TapAllCell *tapAllCell = (TapAllCell *)[self.invitePeopleTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kSectionTapAllCell]];
+    tapAllCell.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
+    __weak typeof(self) weakSelf = self;
+    [WGProfile.currentUser tapAllUsersWithHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            return;
+        }
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [strongSelf.invitePeopleTableView reloadData];
+    }];
+    
 }
 
 
@@ -286,10 +286,10 @@ heightForHeaderInSection:(NSInteger)section
 - (void)tapPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
-    WGUser *user;
-    if (tag < self.presentedUsers.count) {
-        user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
-    }
+    if (tag >= self.presentedUsers.count) return;
+    
+    WGUser *user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
+    
     
     if (user.isTapped.boolValue) {
         [WGProfile.currentUser untap:user withHandler:^(BOOL success, NSError *error) {
@@ -309,9 +309,8 @@ heightForHeaderInSection:(NSInteger)section
         user.isTapped = @YES;
         [WGAnalytics tagAction:@"tap" atView:@"invite"];
     }
-    if (tag < self.presentedUsers.count) {
-        [self.presentedUsers replaceObjectAtIndex:tag withObject:user];
-    }
+    
+    [self.presentedUsers replaceObjectAtIndex:tag withObject:user];
     int sizeOfTable = (int)[self.invitePeopleTableView numberOfRowsInSection:kSectionTapCell];
     if (sizeOfTable > 0 && tag < sizeOfTable && tag >= 0) {
         [self.invitePeopleTableView reloadData];
@@ -386,7 +385,7 @@ heightForHeaderInSection:(NSInteger)section
 
 - (void) getNextPage {
     if (self.isFetching) return;
-    if (!self.presentedUsers.hasNextPage.boolValue) return;
+    if (!self.presentedUsers.nextPage) return;
 
     self.isFetching = YES;
     __weak typeof(self) weakSelf = self;
