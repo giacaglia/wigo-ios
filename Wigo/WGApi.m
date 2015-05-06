@@ -134,7 +134,9 @@ static CLLocationManager *locationManager;
     
     // Hack for Ambassador View
     BOOL shouldPassKey = [url rangeOfString:@"key="].location != NSNotFound;
-    
+    if (shouldPassKey) {
+        NSLog(@"url: %@", url);
+    }
     [WGApi addWigoHeaders:manager.requestSerializer passKey:shouldPassKey];
     
     if (!postQueue) {
@@ -427,6 +429,7 @@ static CLLocationManager *locationManager;
 }
 
 +(void) startup:(WGStartupResult)handler {
+    NSLog(@"hbgeugfeiuh foauh foueah f");
     [WGApi get:@"app/startup" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, nil, nil, nil, NO, NO, nil, error);

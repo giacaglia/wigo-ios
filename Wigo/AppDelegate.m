@@ -44,7 +44,7 @@ NSDate *firstLoggedTime;
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"canFetchAppStartup"];
     [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
 
-    if ([[WGProfile currentUser].googleAnalyticsEnabled boolValue]) {
+    if (WGProfile.currentUser.googleAnalyticsEnabled.boolValue) {
         [self initializeGoogleAnalytics];
     }
     
@@ -272,7 +272,6 @@ forRemoteNotification:(NSDictionary *)userInfo
     NSDate *dateInUTC = [utcDateFormat dateFromString:[NSDate nowStringUTC]];
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     firstLoggedTime = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
-    [self saveDatesAccessed];
 }
 
 - (void)updateGoingOutIfItsAnotherDay {
@@ -296,53 +295,6 @@ forRemoteNotification:(NSDictionary *)userInfo
 }
 
 #pragma mark - Save Info for showing rate app
-
-- (void)saveDatesAccessed {
-    NSArray *datesAccessed = [[NSUserDefaults standardUserDefaults] objectForKey:@"datesAccessed"];
-    if (!datesAccessed) {
-        NSDate *firstSaveDate = [NSDate dateInLocalTimezone];
-        datesAccessed = @[firstSaveDate];
-        [[NSUserDefaults standardUserDefaults] setObject:datesAccessed forKey: @"datesAccessed"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    else if ([datesAccessed count] < 3){
-        NSDate *lastDateAccessed = (NSDate *)[datesAccessed lastObject];
-        NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-        NSDateComponents *differenceDateComponents = [gregorianCalendar
-                                                      components:NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekOfYearCalendarUnit|NSDayCalendarUnit |NSMinuteCalendarUnit
-                                                      fromDate:lastDateAccessed
-                                                      toDate:firstLoggedTime
-                                                      options:0];
-        if ([differenceDateComponents day] == 1) {
-            NSMutableArray *mutableDatesAccessed = [[NSMutableArray alloc] initWithArray:datesAccessed];
-            [mutableDatesAccessed addObject:firstLoggedTime];
-            [[NSUserDefaults standardUserDefaults] setObject:[NSArray arrayWithArray:mutableDatesAccessed] forKey: @"datesAccessed"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        }
-        else if ([differenceDateComponents day] > 1) {
-            [[NSUserDefaults standardUserDefaults] setObject:@[firstLoggedTime] forKey: @"datesAccessed"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-        }
-    }
-}
-
--(void)goingOutForRateApp {
-    NSArray *datesAccessed = [[NSUserDefaults standardUserDefaults] objectForKey:@"datesAccessed"];
-    if ([datesAccessed count] == 3) {
-        UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:@"Love Wigo?"
-                                  message:@"Looks like you love Wigo. The feeling is mutual. Share your love on the App Store."
-                                  delegate:self
-                                  cancelButtonTitle:@"Not now"
-                                  otherButtonTitles:@"Rate Wigo", nil];
-        [alertView show];
-        NSMutableArray *mutableDatesAccessed = [[NSMutableArray alloc] initWithArray:datesAccessed];
-        [mutableDatesAccessed addObject:firstLoggedTime];
-        [[NSUserDefaults standardUserDefaults] setObject:[NSArray arrayWithArray:mutableDatesAccessed] forKey: @"datesAccessed"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-}
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if ([alertView.title isEqualToString:@"Love Wigo"]) {

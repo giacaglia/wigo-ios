@@ -91,7 +91,7 @@
     [self.view addSubview:_facebookConnectView];
     
     UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
-    logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 132, self.view.frame.size.height/2 - 75 - 40, 265, 151);
+    logoImageView.frame = CGRectMake(self.view.frame.size.width/2 - 151, self.view.frame.size.height/2 - 62 - 40, 302, 123);
     [_facebookConnectView addSubview:logoImageView];
 }
 
@@ -99,23 +99,16 @@
     _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"user_friends", @"user_photos", @"user_work_history", @"user_education_history"]];
     _loginView.loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
     _loginView.delegate = self;
-    _loginView.frame = CGRectMake(0, self.view.frame.size.height - 50 - 50, 256, 50);
+    _loginView.frame = CGRectMake(0, self.view.frame.size.height - 0.2*self.view.frame.size.width, self.view.frame.size.width, 0.2*self.view.frame.size.width);
     _loginView.frame = CGRectOffset(_loginView.frame, (self.view.center.x - (_loginView.frame.size.width / 2)), 5);
     _loginView.backgroundColor = [UIColor whiteColor];
     UIImageView *connectFacebookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"connectFacebook"]];
     connectFacebookImageView.backgroundColor = [UIColor whiteColor];
-    connectFacebookImageView.frame = CGRectMake(0, 0, 256, 50);
+    connectFacebookImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, 0.2*self.view.frame.size.width);
     [_loginView addSubview:connectFacebookImageView];
     [_loginView bringSubviewToFront:connectFacebookImageView];
     [self.view addSubview:_loginView];
     
-    UILabel *dontWorryLabel = [[UILabel alloc] init];
-    dontWorryLabel.frame = CGRectMake(0, self.view.frame.size.height - 30 - 20, self.view.frame.size.width, 30);
-    dontWorryLabel.text = @"Don't worry, we'll NEVER post on your behalf.";
-    dontWorryLabel.font = [FontProperties mediumFont:13.0f];
-    dontWorryLabel.textColor = RGB(51, 102, 154);
-    dontWorryLabel.textAlignment = NSTextAlignmentCenter;
-    [self.view addSubview:dontWorryLabel];
 }
 
 
@@ -439,6 +432,12 @@
         return;
     }
     [self navigate];
+}
+
+-(void)initializeScrollView {
+    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width)];
+    scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 0.8*self.view.frame.size.width);
+    [self.view addSubview:scrollView];
 }
 
 -(void) presentPushNotification {
