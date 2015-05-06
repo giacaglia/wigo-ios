@@ -50,7 +50,7 @@
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self showOnboard];
-    [self presentPushNotification];
+//    [self presentPushNotification];
 }
 
 -(void) showBarrierError:(NSError *)error {
