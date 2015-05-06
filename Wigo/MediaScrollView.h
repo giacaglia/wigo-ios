@@ -67,6 +67,7 @@
 @property (nonatomic, strong) MPMoviePlayerController *sharedMoviePlayer;
 @property (nonatomic, weak) VideoCell *currentVideoCell;
 @property (nonatomic, weak) VideoCell *lastVideoCell;
+@property (nonatomic) NSInteger currentVideoIndex;
 
 @property (nonatomic) BOOL videoPlayerIsSavingThumbnail;
 @property (nonatomic) BOOL videoIsWaitingToPrepare;

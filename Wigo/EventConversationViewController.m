@@ -28,6 +28,9 @@
 @property (nonatomic, strong) UIVisualEffectView *visualEffectView;
 @property (nonatomic, strong) UIView *holeView;
 
+// scroll view currently (or most recently) being dragged by the user
+@property (nonatomic,weak) UIScrollView *currentDraggingView;
+
 - (NSInteger)getCurrentPageForScrollView:(UIScrollView *)scrollView;
 
 @end
@@ -62,7 +65,6 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self.mediaScrollView prepareVideoAtPage:self.index.intValue];
     [self.mediaScrollView scrollStoppedAtPage:self.index.intValue];
 }
 
@@ -149,10 +151,7 @@
     forItemAtIndexPath:(NSIndexPath *)indexPath {
     
     if(collectionView == self.mediaScrollView) {
-        if([cell isKindOfClass:[VideoCell class]]) {
-            //[(VideoCell*)cell prepareVideo];
-        }
-        else if([cell isKindOfClass:[CameraCell class]]) {
+        if([cell isKindOfClass:[CameraCell class]]) {
             
             [[UIApplication sharedApplication] setStatusBarHidden:YES
                                                     withAnimation:UIStatusBarAnimationSlide];
@@ -184,6 +183,7 @@
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (collectionView == self.facesCollectionView) {
+        self.currentDraggingView = self.facesCollectionView;
         if (indexPath == self.currentActiveCell) {
             return;
         }
@@ -326,7 +326,13 @@
         _imagesScrollViewPointNow = scrollView.contentOffset;
     else _collectionViewPointNow = scrollView.contentOffset;
     
+    self.currentDraggingView = scrollView;
+    
     if(scrollView == self.mediaScrollView) {
+        int page = (int)[self getCurrentPageForScrollView:scrollView];
+        [self.mediaScrollView startedScrollingFromPage:page];
+    }
+    else if(scrollView == self.facesCollectionView) {
         int page = (int)[self getCurrentPageForScrollView:scrollView];
         [self.mediaScrollView startedScrollingFromPage:page];
     }
@@ -458,9 +464,10 @@
 
 - (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
     
-    if(scrollView == self.mediaScrollView) {
-        int page = (int)[self getCurrentPageForScrollView:self.mediaScrollView];
+    if(scrollView == self.currentDraggingView) {
+        int page = (int)[self getCurrentPageForScrollView:scrollView];
         [self.mediaScrollView scrollStoppedAtPage:page];
+        self.currentDraggingView = nil;
     }
 }
 
