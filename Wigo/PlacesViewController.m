@@ -1442,12 +1442,15 @@ BOOL firstTimeLoading;
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [EventCell height] - 20 - 4, self.frame.size.width + 10, 12)];
-    shadowImageView.image = [UIImage imageNamed:@"shadow"];
-    [self.contentView addSubview:shadowImageView];
+//    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [EventCell height] - 20 - 4, self.frame.size.width + 10, 12)];
+//    shadowImageView.image = [UIImage imageNamed:@"shadow"];
+//    [self.contentView addSubview:shadowImageView];
     
     self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, [EventCell height] - 20)];
     self.whiteView.backgroundColor = UIColor.whiteColor;
+    self.whiteView.layer.borderColor = UIColor.clearColor.CGColor;
+    self.whiteView.layer.borderWidth = 1.0f;
+    self.whiteView.layer.cornerRadius = 15.0f;
     [self.contentView addSubview:self.whiteView];
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];
