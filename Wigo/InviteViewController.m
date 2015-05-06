@@ -12,8 +12,6 @@
 #import "MobileContactsViewController.h"
 
 @interface InviteViewController() {
-    NSArray *mobileContacts;
-    NSMutableArray *filteredMobileContacts;
     NSMutableArray *chosenPeople;
     WGEvent *event;
     UISearchBar *searchBar;
@@ -27,22 +25,17 @@
     self = [super init];
     if (self) {
         event = newEvent;
-        self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    mobileContacts = [NSArray new];
-    filteredMobileContacts = [NSMutableArray new];
+    self.view.backgroundColor = UIColor.whiteColor;
     NSSet *savedChosenPeople = [[NSUserDefaults standardUserDefaults] valueForKey:@"chosenPeople"];
     if (savedChosenPeople) chosenPeople = [NSMutableArray arrayWithArray:[savedChosenPeople allObjects]];
     else chosenPeople = [NSMutableArray new];
-    [self getMobileContacts];
     [self fetchFirstPageEveryone];
-    [self fetchSuggestions];
     [self initializeTitle];
     [self initializeTableInvite];
 }
@@ -99,20 +92,6 @@
 }
 
 - (void)donePressed {
-    NSArray *savedChosenPeople = [[NSUserDefaults standardUserDefaults] valueForKey:@"chosenPeople"];
-    if (savedChosenPeople) {
-        NSMutableSet *newChosenPeople = [NSMutableSet setWithArray:savedChosenPeople];
-        [newChosenPeople addObjectsFromArray:chosenPeople];
-        [[NSUserDefaults standardUserDefaults] setValue:[newChosenPeople allObjects] forKey:@"chosenPeople"];
-    } else {
-        [[NSUserDefaults standardUserDefaults] setValue:chosenPeople forKey:@"chosenPeople"];
-    }
-    NSMutableSet *differenceChosenPeople = [NSMutableSet setWithArray:chosenPeople];
-    for (NSString *record in savedChosenPeople) {
-        [differenceChosenPeople removeObject:record];
-    }
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    [MobileDelegate sendChosenPeople:[differenceChosenPeople allObjects] forContactList:mobileContacts];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -165,11 +144,6 @@
             return 0;
         }
         return MIN(self.presentedSuggestions.count, 5);
-//        return 0;
-//        if (self.presentedUsers.count + self.presentedUsers.hasNextPage.intValue >= 11) {
-//            return 0;
-//        }
-//        return MIN(self.presentedSuggestions.count, 5);
     }
 }
 
@@ -192,15 +166,13 @@
         if (tag < self.presentedUsers.count) {
             user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
         }
-        if (user) {
-            cell.user = user;
-            [cell.aroundTapButton removeTarget:nil
-                                        action:NULL
-                              forControlEvents:UIControlEventAllEvents];
-            [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
-            cell.aroundTapButton.tag = indexPath.row;
-        }
-        
+        if (!user) return cell;
+        cell.user = user;
+        [cell.aroundTapButton removeTarget:nil
+                                    action:NULL
+                          forControlEvents:UIControlEventAllEvents];
+        [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
+        cell.aroundTapButton.tag = indexPath.row;
         return cell;
     }
     else if (indexPath.section == kSectionAllFriends) {
@@ -219,15 +191,13 @@
         if (tag == self.presentedUsers.count - 5 || tag == self.presentedUsers.count - 1) {
             [self getNextPage];
         }
-        if (user) {
-            cell.user = user;
-            [cell.aroundTapButton removeTarget:nil
-                                        action:NULL
-                              forControlEvents:UIControlEventAllEvents];
-            [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
-            cell.aroundTapButton.tag = indexPath.row;
-        }
-        
+        if (!user) return cell;
+        cell.user = user;
+        [cell.aroundTapButton removeTarget:nil
+                                    action:NULL
+                          forControlEvents:UIControlEventAllEvents];
+        [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
+        cell.aroundTapButton.tag = indexPath.row;
         return cell;
     }
     
@@ -243,19 +213,6 @@
         cell.user = user;
         return cell;
     }
-//    else  {
-//        ABRecordRef contactPerson;
-//        if (self.isSearching)
-//            contactPerson  = (__bridge ABRecordRef)([filteredMobileContacts objectAtIndex:indexPath.row]);
-//        else
-//            contactPerson = (__bridge ABRecordRef)([mobileContacts objectAtIndex:indexPath.row]);
-//        [cell setCellForContactPerson:contactPerson withChosenPeople:chosenPeople];
-//        cell.aroundTapButton.tag = indexPath.row;
-//        [cell.aroundTapButton removeTarget:nil
-//                                    action:NULL
-//                          forControlEvents:UIControlEventAllEvents];
-//        [cell.aroundTapButton addTarget:self action:@selector(inviteMobilePressed:) forControlEvents:UIControlEventTouchUpInside];
-//    }
     return nil;
     
 }
@@ -277,35 +234,6 @@
     }
 }
 
-
-- (void)inviteMobilePressed:(id)sender {
-    UIButton *buttonSender = (UIButton *)sender;
-    int tag = (int)buttonSender.tag;
-    ABRecordRef contactPerson;
-    ABRecordID recordID;
-    if (self.isSearching) {
-        contactPerson = (__bridge ABRecordRef)([filteredMobileContacts objectAtIndex:tag]);
-        recordID = ABRecordGetRecordID(contactPerson);
-        tag = [MobileDelegate changeTag:tag fromArray:filteredMobileContacts toArray:mobileContacts];
-    } else {
-        contactPerson = (__bridge ABRecordRef)([mobileContacts objectAtIndex:tag]);
-        recordID = ABRecordGetRecordID(contactPerson);
-    }
-    for (UIView *subview in buttonSender.subviews) {
-        if ([subview isKindOfClass:[UIImageView class]] && subview.tag == 3) {
-            UIImageView *selectedImageView = (UIImageView *)subview;
-            NSString *recordIdString = [NSString stringWithFormat:@"%d",recordID];
-            if (![chosenPeople containsObject:recordIdString]) {
-                selectedImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
-                [chosenPeople addObject:recordIdString];
-            }
-            else {
-                selectedImageView.image = [UIImage imageNamed:@"tapUnselectedInvite"];
-                [chosenPeople removeObject:recordIdString];
-            }
-        }
-    }
-}
 
 - (void)followedPersonPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
@@ -437,7 +365,6 @@ heightForHeaderInSection:(NSInteger)section
             }
             strongSelf.isSearching = YES;
             strongSelf.presentedUsers = collection;
-            [strongSelf.presentedUsers removeObject:[WGProfile currentUser]];
             [strongSelf.invitePeopleTableView reloadData];
         });
     }];
@@ -451,13 +378,10 @@ heightForHeaderInSection:(NSInteger)section
                 return;
             }
             strongSelf.presentedSuggestions = collection;
-            [strongSelf.presentedSuggestions removeObject:WGProfile.currentUser];
             [strongSelf.invitePeopleTableView reloadData];
         });
     }];
 
-    // Mobile contacts
-    filteredMobileContacts = [NSMutableArray arrayWithArray:[MobileDelegate filterArray:mobileContacts withText:searchBar.text]];
 }
 
 - (void) getNextPage {
@@ -474,7 +398,6 @@ heightForHeaderInSection:(NSInteger)section
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
-            [strongSelf.presentedUsers removeObject:WGProfile.currentUser];
             [strongSelf.invitePeopleTableView reloadData];
         });
     }];
@@ -493,8 +416,10 @@ heightForHeaderInSection:(NSInteger)section
             }
             strongSelf.isSearching = NO;
             strongSelf.content = collection;
-            [strongSelf.content removeObject:WGProfile.currentUser];
             strongSelf.presentedUsers = strongSelf.content;
+            if (strongSelf.presentedUsers.count < 10) {
+                [strongSelf fetchSuggestions];
+            }
             [strongSelf.invitePeopleTableView reloadData];
         });
     }];
@@ -520,13 +445,7 @@ heightForHeaderInSection:(NSInteger)section
 
 
 
-#pragma mark - Mobile
 
-- (void)getMobileContacts {
-    [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
-        mobileContacts = mobileArray;
-    }];
-}
 
 @end
 
