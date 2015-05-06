@@ -561,8 +561,10 @@ BOOL firstTimeLoading;
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
-        if (event.messages.count > 2) [MoreThan2PhotosOldEventCell height];
-        else return [LessThan2PhotosOldEventCell height];
+        if (event.messages.count > 2) {
+            return [MoreThan2PhotosOldEventCell height];
+        }
+        return [LessThan2PhotosOldEventCell height];
     }
     
     return 0;
@@ -1096,7 +1098,7 @@ BOOL firstTimeLoading;
             else strongSelf.aggregateEvent = nil;
         }
         for (WGEvent *event in strongSelf.allEvents) {
-            if ([event.isExpired boolValue]) {
+            if (event.isExpired.boolValue) {
                 [strongSelf.oldEvents addObject:event];
             } else {
                 [strongSelf.events addObject:event];
