@@ -26,7 +26,6 @@
     AVCaptureStillImageOutput *stillImageOutput;
     UIView *flashView;
     UIImage *square;
-    BOOL isUsingFrontFacingCamera;
     CIDetector *faceDetector;
     CGFloat beginGestureScale;
     CGFloat effectiveScale;
@@ -37,12 +36,15 @@
 @property (nonatomic,strong) UIView *cameraOverlayView;
 
 @property (nonatomic,readonly) BOOL isRecording;
+@property (nonatomic) BOOL flashEnabled;
+@property (nonatomic) BOOL isUsingFrontFacingCamera;
 
 - (void)takePictureWithCompletion:(void (^)(UIImage *image, NSDictionary *attachments, NSError *error))completion;
 - (void)startRecordingVideo;
 - (void)stopRecording;
 
 - (void)switchCameras:(id)sender;
+- (void)toggleFlash;
 
 @end
 

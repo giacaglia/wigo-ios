@@ -215,7 +215,7 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 
         
         
-        isUsingFrontFacingCamera = NO;
+        self.isUsingFrontFacingCamera = NO;
         if ( [self.captureSession canAddInput:self.videoDeviceInput] )
             [self.captureSession addInput:self.videoDeviceInput];
         
@@ -238,7 +238,7 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
         
         // Make a still image output
         stillImageOutput = [AVCaptureStillImageOutput new];
-        [stillImageOutput addObserver:self forKeyPath:@"capturingStillImage" options:NSKeyValueObservingOptionNew context:(__bridge void *)((NSString *)AVCaptureStillImageIsCapturingStillImageContext)];
+//        [stillImageOutput addObserver:self forKeyPath:@"capturingStillImage" options:NSKeyValueObservingOptionNew context:(__bridge void *)((NSString *)AVCaptureStillImageIsCapturingStillImageContext)];
         if ( [self.captureSession canAddOutput:stillImageOutput] )
         [self.captureSession addOutput:stillImageOutput];
         
@@ -336,7 +336,7 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     [self.captureSession removeOutput:self.audioDataOutput];
     [self.captureSession removeOutput:self.videoDataOutput];
     
-    [stillImageOutput removeObserver:self forKeyPath:@"capturingStillImage"];
+    //[stillImageOutput removeObserver:self forKeyPath:@"capturingStillImage"];
     //[stillImageOutput release];
     [previewLayer removeFromSuperlayer];
     //[previewLayer release];
@@ -346,40 +346,40 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     
     _isRecording = NO;
 }
-
-// perform a flash bulb animation using KVO to monitor the value of the capturingStillImage property of the AVCaptureStillImageOutput class
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if ( context == (__bridge void *)(AVCaptureStillImageIsCapturingStillImageContext) ) {
-        BOOL isCapturingStillImage = [[change objectForKey:NSKeyValueChangeNewKey] boolValue];
-        
-        if ( isCapturingStillImage ) {
-            // do flash bulb like animation
-            flashView = [[UIView alloc] initWithFrame:[previewView frame]];
-            [flashView setBackgroundColor:[UIColor whiteColor]];
-            [flashView setAlpha:0.f];
-            [[[self view] window] addSubview:flashView];
-            
-            [UIView animateWithDuration:.4f
-                             animations:^{
-                                 [flashView setAlpha:1.f];
-                             }
-             ];
-        }
-        else {
-            [UIView animateWithDuration:.4f
-                             animations:^{
-                                 [flashView setAlpha:0.f];
-                             }
-                             completion:^(BOOL finished){
-                                 [flashView removeFromSuperview];
-                                 //[flashView release];
-                                 flashView = nil;
-                             }
-             ];
-        }
-    }
-}
+//
+//// perform a flash bulb animation using KVO to monitor the value of the capturingStillImage property of the AVCaptureStillImageOutput class
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+//{
+//    if ( context == (__bridge void *)(AVCaptureStillImageIsCapturingStillImageContext) ) {
+//        BOOL isCapturingStillImage = [[change objectForKey:NSKeyValueChangeNewKey] boolValue];
+//        
+//        if ( isCapturingStillImage ) {
+//            // do flash bulb like animation
+//            flashView = [[UIView alloc] initWithFrame:[previewView frame]];
+//            [flashView setBackgroundColor:[UIColor whiteColor]];
+//            [flashView setAlpha:0.f];
+//            [[[self view] window] addSubview:flashView];
+//            
+//            [UIView animateWithDuration:.4f
+//                             animations:^{
+//                                 [flashView setAlpha:1.f];
+//                             }
+//             ];
+//        }
+//        else {
+//            [UIView animateWithDuration:.4f
+//                             animations:^{
+//                                 [flashView setAlpha:0.f];
+//                             }
+//                             completion:^(BOOL finished){
+//                                 [flashView removeFromSuperview];
+//                                 //[flashView release];
+//                                 flashView = nil;
+//                             }
+//             ];
+//        }
+//    }
+//}
 
 // utility routing used during image capture to set up capture orientation
 - (AVCaptureVideoOrientation)avOrientationForDeviceOrientation:(UIDeviceOrientation)deviceOrientation
@@ -398,6 +398,37 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 
 - (void)takePictureWithCompletion:(void (^)(UIImage *image, NSDictionary *attachments, NSError *error))completion
 {
+    AVCaptureDevice *currentCamera = self.videoDeviceInput.device;
+    
+    if(self.flashEnabled &&
+       [currentCamera hasFlash] &&
+       [currentCamera isFlashModeSupported:AVCaptureFlashModeOn]) {
+        
+        if(currentCamera.flashMode != AVCaptureFlashModeOn) {
+            NSError *err;
+            [currentCamera lockForConfiguration:&err];
+            if(!err) {
+                [currentCamera setFlashMode:AVCaptureFlashModeOn];
+            }
+            else {
+                NSLog(@"flash lock error: %@", err.localizedDescription);
+            }
+        }
+    }
+    else {
+        if(currentCamera.flashMode != AVCaptureFlashModeOff) {
+            
+            NSError *err;
+            [currentCamera lockForConfiguration:&err];
+            if(!err) {
+                [currentCamera setFlashMode:AVCaptureFlashModeOff];
+            }
+            else {
+                NSLog(@"flash lock error: %@", err.localizedDescription);
+            }
+        }
+    }
+    
     // Find out the current orientation and tell the still image output.
     AVCaptureConnection *stillImageConnection = [stillImageOutput connectionWithMediaType:AVMediaTypeVideo];
     UIDeviceOrientation curDeviceOrientation = [[UIDevice currentDevice] orientation];
@@ -465,7 +496,7 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 - (void)switchCameras:(id)sender
 {
     AVCaptureDevicePosition desiredPosition;
-    if (isUsingFrontFacingCamera)
+    if (self.isUsingFrontFacingCamera)
         desiredPosition = AVCaptureDevicePositionBack;
     else
         desiredPosition = AVCaptureDevicePositionFront;
@@ -482,7 +513,18 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
             break;
         }
     }
-    isUsingFrontFacingCamera = !isUsingFrontFacingCamera;
+    self.isUsingFrontFacingCamera = !self.isUsingFrontFacingCamera;
+}
+
+- (void)toggleFlash {
+    if(self.flashEnabled) {
+        self.flashEnabled = NO;
+        
+    }
+    else {
+        self.flashEnabled = YES;
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -550,6 +592,40 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 #pragma mark Video Recording
 
 - (void)startRecordingVideo {
+    
+    
+    // set up torch
+    
+    AVCaptureDevice *currentCamera = self.videoDeviceInput.device;
+    
+    if(self.flashEnabled &&
+       [currentCamera hasTorch] &&
+       [currentCamera isTorchModeSupported:AVCaptureTorchModeOn]) {
+        
+        if(currentCamera.torchMode != AVCaptureTorchModeOn) {
+            NSError *err;
+            [currentCamera lockForConfiguration:&err];
+            if(!err) {
+                [currentCamera setTorchMode:AVCaptureTorchModeOn];
+            }
+            else {
+                NSLog(@"torch lock error: %@", err.localizedDescription);
+            }
+        }
+    }
+    else {
+        if(currentCamera.torchMode != AVCaptureTorchModeOff) {
+            
+            NSError *err;
+            [currentCamera lockForConfiguration:&err];
+            if(!err) {
+                [currentCamera setTorchMode:AVCaptureTorchModeOff];
+            }
+            else {
+                NSLog(@"torch lock error: %@", err.localizedDescription);
+            }
+        }
+    }
     
     _startTime = kCMTimeZero;
     

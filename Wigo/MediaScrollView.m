@@ -1567,7 +1567,7 @@
 //    self.controller.videoQuality = UIImagePickerControllerQualityType640x480;
     self.controller.delegate = self;
 //    self.controller.showsCameraControls = NO;
-//    
+//
 //    self.photoController = [[UIImagePickerController alloc] init];
 //    self.photoController.sourceType = UIImagePickerControllerSourceTypeCamera;
 //    self.photoController.cameraDevice = UIImagePickerControllerCameraDeviceRear;
@@ -2062,7 +2062,9 @@
 
 
 - (void)changeFlash {
-    if (self.photoController.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
+    
+    [self.cameraController toggleFlash];
+    if (self.cameraController.flashEnabled) {
         self.flashImageView.image = [UIImage imageNamed:@"flashOn"];
         self.flashImageView.frame = CGRectMake(10, 10, 18, 30);
         self.photoController.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
@@ -2081,6 +2083,12 @@
     }completion:^(BOOL finished) {
         [UIView animateWithDuration:.15f animations:^{
             self.cameraImageView.transform = CGAffineTransformMakeScale(1.0,1.0);
+            if(self.cameraController.isUsingFrontFacingCamera) {
+                self.flashButton.alpha = 0.0;
+            }
+            else {
+                self.flashButton.alpha = 1.0;
+            }
         }];
     }];
     
