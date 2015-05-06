@@ -236,25 +236,22 @@ UIImageView *searchIconImageView;
 }
 
 - (void) getNextPage {
-    if (!self.isFetching) {
-        self.isFetching = YES;
-        __weak typeof(self) weakSelf = self;
-        if (self.presentedUsers.hasNextPage.boolValue) {
-            [self.presentedUsers addNextPage:^(BOOL success, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    __strong typeof(self) strongSelf = weakSelf;
-                    strongSelf.isFetching = NO;
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        return;
-                    }
-                    [strongSelf.tableViewOfPeople reloadData];
-                });
-            }];
-        }
+    if (self.isFetching) return;
+    if (!self.presentedUsers.nextPage) return;
+    self.isFetching = YES;
+    __weak typeof(self) weakSelf = self;
+    [self.presentedUsers addNextPage:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            strongSelf.isFetching = NO;
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            [strongSelf.tableViewOfPeople reloadData];
+        });
+    }];
 
-    }
     
 }
 

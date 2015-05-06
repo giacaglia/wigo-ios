@@ -401,14 +401,14 @@ ProfileViewController *profileViewController;
             strongSelf.viewForEmptyConversation.hidden = YES;
         }
         
-        strongSelf.showLoadEarlierMessagesHeader = strongSelf.messages.hasNextPage.boolValue;
+        strongSelf.showLoadEarlierMessagesHeader = (strongSelf.messages.nextPage != nil);
         [strongSelf.collectionView reloadData];
         [strongSelf scrollToBottomAnimated:YES];
     }];
 }
 
 - (void)fetchMessages:(BOOL)scrollToBottom {
-    if (!self.messages.hasNextPage.boolValue) return;
+    if (!self.messages.nextPage) return;
     if (self.isFetching) return;
     self.isFetching = YES;
     
@@ -424,9 +424,8 @@ ProfileViewController *profileViewController;
         }
         [collection reverse];
         [strongSelf.messages addObjectsFromCollectionToBeginning:collection notInCollection:self.messages];
-        strongSelf.messages.hasNextPage = collection.hasNextPage;
         strongSelf.messages.nextPage = collection.nextPage;
-        strongSelf.showLoadEarlierMessagesHeader = strongSelf.messages.hasNextPage.boolValue;
+        strongSelf.showLoadEarlierMessagesHeader = (strongSelf.messages.nextPage != nil);
         dispatch_async(dispatch_get_main_queue(), ^{
             [strongSelf.collectionView reloadData];
         });

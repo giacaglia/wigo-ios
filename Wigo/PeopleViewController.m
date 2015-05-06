@@ -240,7 +240,7 @@ NSIndexPath *userIndex;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kSectionFollowPeople && [self.currentTab isEqual:@2]) {
         if (self.isSearching) return 0;
-        return self.friendRequestUsers.count + self.friendRequestUsers.hasNextPage.intValue;
+        return self.friendRequestUsers.count;
     }
     else return (int)self.users.count + self.users.hasNextPage.intValue;
 }

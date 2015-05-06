@@ -992,20 +992,16 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)fetchNextPageNotifications {
-    if (self.isFetchingNotifications || !self.notifications.hasNextPage.boolValue) return;
+    if (self.isFetchingNotifications || !self.notifications.nextPage) return;
     self.isFetchingNotifications = YES;
     
     __weak typeof(self) weakSelf = self;
-    [self.notifications getNextPage:^(WGCollection *collection, NSError *error) {
+    [self.notifications addNextPage:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.isFetchingNotifications = NO;
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
-        }
-        for (WGNotification *notification in collection) {
-            [strongSelf.notifications addObject:notification];
         }
         [strongSelf.tableView reloadData];
     }];

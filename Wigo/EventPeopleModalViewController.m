@@ -141,24 +141,21 @@ int imageWidth;
 }
 
 - (void)fetchEventAttendeesAsynchronous {
-    if (!self.fetchingEventAttendees) {
-        self.fetchingEventAttendees = YES;
-        __weak typeof(self) weakSelf = self;
-        if ([self.event.attendees.hasNextPage boolValue]) {
-            [self.event.attendees addNextPage:^(BOOL success, NSError *error) {
-                __strong typeof(self) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    strongSelf.fetchingEventAttendees = NO;
-                    return;
-                }
-                [strongSelf.attendeesPhotosScrollView reloadData];
-                strongSelf.fetchingEventAttendees = NO;
-            }];
-        } else {
-            self.fetchingEventAttendees = NO;
+    if (self.fetchingEventAttendees) return;
+    if (!self.event.attendees.nextPage) return;
+    self.fetchingEventAttendees = YES;
+    __weak typeof(self) weakSelf = self;
+    [self.event.attendees addNextPage:^(BOOL success, NSError *error) {
+        __strong typeof(self) strongSelf = weakSelf;
+        strongSelf.fetchingEventAttendees = NO;
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
         }
-    }
+        [strongSelf.attendeesPhotosScrollView reloadData];
+    }];
+    
+    
 }
 
 #pragma mark - Paging

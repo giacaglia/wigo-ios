@@ -42,6 +42,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
     if (self.eventMessages.count > 0) {
         self.currentActiveCell = [NSIndexPath indexPathForItem:[self.index intValue] inSection:0];
@@ -88,8 +89,7 @@
         [myCell resetToInactive];
     });
 
-    if (indexPath.row + 1 == self.eventMessages.count &&
-        self.eventMessages.hasNextPage.boolValue) {
+    if (indexPath.row + 1 == self.eventMessages.count) {
         [self fetchNextMessages];
     }
 
@@ -169,7 +169,7 @@
 
 
 - (void)fetchNextMessages {
-    if (!self.eventMessages.hasNextPage.boolValue) return;
+    if (!self.eventMessages.nextPage) return;
     if (self.isFetchingMessages) return;
     self.isFetchingMessages = YES;
     

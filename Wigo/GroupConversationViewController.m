@@ -343,7 +343,7 @@ ProfileViewController *profileViewController;
 }
 
 - (void)fetchMessages:(BOOL)scrollToBottom {
-    if (!self.messages.hasNextPage.boolValue) return;
+    if (!self.messages.nextPage) return;
     if (self.isFetching) return;
     self.isFetching = YES;
 }

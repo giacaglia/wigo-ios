@@ -145,27 +145,22 @@
 
 
 - (void)fetchEventAttendeesAsynchronous {
-    if (!self.fetchingEventAttendees) {
-        self.fetchingEventAttendees = YES;
-        __weak typeof(self) weakSelf = self;
-        if ([self.event.attendees.hasNextPage boolValue]) {
-            [self.event.attendees addNextPage:^(BOOL success, NSError *error) {
-                __strong typeof(self) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    strongSelf.fetchingEventAttendees = NO;
-                    return;
-                }
-                
-                [strongSelf reloadData];
-                [strongSelf saveScrollPosition];
-                strongSelf.fetchingEventAttendees = NO;
-            }];
-        } else {
-            self.fetchingEventAttendees = NO;
+    if (self.fetchingEventAttendees) return;
+    if (!self.event.attendees.nextPage) return;
+    self.fetchingEventAttendees = YES;
+    __weak typeof(self) weakSelf = self;
+    [self.event.attendees addNextPage:^(BOOL success, NSError *error) {
+        __strong typeof(self) strongSelf = weakSelf;
+        strongSelf.fetchingEventAttendees = NO;
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
         }
-    }
+        
+        [strongSelf reloadData];
+        [strongSelf saveScrollPosition];
+    }];
+    
 }
 
 #pragma mark - UICollectionView Data Source

@@ -153,7 +153,7 @@
 }
 
 - (void)fetchNextPage {
-    if (!self.messages.hasNextPage.boolValue) return;
+    if (!self.messages.nextPage) return;
     if (self.isFetching) return;
     self.isFetching = YES;
     __weak typeof(self) weakSelf = self;

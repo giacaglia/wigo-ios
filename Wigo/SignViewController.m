@@ -440,7 +440,7 @@
     firstLabel.font = [FontProperties lightFont:27.0f];
     [scrollView addSubview:firstLabel];
     
-    UIImageView *firstImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 88, 110, 176, 327)];
+    UIImageView *firstImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 85, 110, 170, 327)];
     firstImgView.image = [UIImage imageNamed:@"imagePhone"];
     [scrollView addSubview:firstImgView];
     
@@ -452,7 +452,7 @@
     secondLabel.font = [FontProperties lightFont:27.0f];
     [scrollView addSubview:secondLabel];
     
-    UIImageView *secondImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 88 + self.view.frame.size.width, 110, 176, 327)];
+    UIImageView *secondImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 85 + self.view.frame.size.width, 110, 170, 327)];
     secondImgView.image = [UIImage imageNamed:@"imagePhone"];
     [scrollView addSubview:secondImgView];
     
@@ -464,7 +464,7 @@
     thirdLabel.font = [FontProperties lightFont:27.0f];
     [scrollView addSubview:thirdLabel];
     
-    UIImageView *thirdImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 88 + 2*self.view.frame.size.width, 110, 176, 327)];
+    UIImageView *thirdImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 85 + 2*self.view.frame.size.width, 110, 170, 327)];
     thirdImgView.image = [UIImage imageNamed:@"imagePhone"];
     [scrollView addSubview:thirdImgView];
     
@@ -476,7 +476,7 @@
     fourthLabel.font = [FontProperties lightFont:27.0f];
     [scrollView addSubview:fourthLabel];
     
-    UIImageView *fourthImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 88 + 3*self.view.frame.size.width, 110, 176, 327)];
+    UIImageView *fourthImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 85 + 3*self.view.frame.size.width, 110, 170, 327)];
     fourthImgView.image = [UIImage imageNamed:@"imagePhone"];
     [scrollView addSubview:fourthImgView];
 //    UIImageView *logoImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"wigoLogo"]];
