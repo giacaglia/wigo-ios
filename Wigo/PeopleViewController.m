@@ -664,38 +664,38 @@ viewForHeaderInSection:(NSInteger)section
     self.followPersonButton.backgroundColor = UIColor.clearColor;
     [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
-    
-    if (!user.isCurrentUser) {
-        self.followPersonButton.hidden = NO;
-        if (user.state == BLOCKED_USER_STATE) {
-            [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-            [self.followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
-            [self.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-            self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            self.followPersonButton.layer.borderWidth = 1;
-            self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            self.followPersonButton.layer.cornerRadius = 8;
-        } else {
-            if (user.state == FRIEND_USER_STATE) {
-                [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-                [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
-            }
-            if (user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
-                [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-                [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
-                [self.followPersonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-                self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-                self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-                self.followPersonButton.backgroundColor = RGB(223, 223, 223);
-                self.followPersonButton.layer.borderWidth = 1;
-                self.followPersonButton.layer.borderColor = UIColor.clearColor.CGColor;
-                self.followPersonButton.layer.cornerRadius = 8;
-            }
-        }
-    }
-    else {
+    if (user.isCurrentUser) {
         self.followPersonButton.hidden = YES;
+        return;
+    }
+    self.followPersonButton.hidden = NO;
+    if (user.state == BLOCKED_USER_STATE) {
+        [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+        [self.followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
+        [self.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+        self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+        self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        self.followPersonButton.layer.borderWidth = 1;
+        self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+        self.followPersonButton.layer.cornerRadius = 8;
+        return;
+    }
+    if (user.state == FRIEND_USER_STATE) {
+        [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+        [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
+        return;
+    }
+    if (user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
+        [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+        [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+        [self.followPersonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+        self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        self.followPersonButton.backgroundColor = RGB(223, 223, 223);
+        self.followPersonButton.layer.borderWidth = 1;
+        self.followPersonButton.layer.borderColor = UIColor.clearColor.CGColor;
+        self.followPersonButton.layer.cornerRadius = 8;
+        return;
     }
 }
 
