@@ -1753,23 +1753,29 @@ BOOL firstTimeLoading;
     int days = [differenceDates day];
     if (days == 1) self.dateLabel.text = @"Yesterday";
     else self.dateLabel.text = [NSString stringWithFormat:@"%d days ago", days];
-    for (int i = 0; i < MIN(4, event.messages.count); i++) {
-        WGEventMessage *eventMessage = (WGEventMessage *)[event.messages objectAtIndex:i];
+    for (int i = 0; i < 4; i++) {
         UIImageView *imageView = [self.arrayOfImageViews objectAtIndex:i];
-        NSString *contentURL;
-        if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
-        else  contentURL = eventMessage.media;
-        NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, contentURL]];
-        __weak UIImageView *weakImgView = imageView;
-        __weak WGEventMessage *weakEventMsg = eventMessage;
-        [imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                __strong UIImageView *strongImgView = weakImgView;
-                __strong WGEventMessage *strongEventMsg = weakEventMsg;
-                NSURL *bigImageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, strongEventMsg.media]];
-                [strongImgView setImageWithURL:bigImageURL];
-            });
-        }];
+        if (i >= event.messages.count) {
+            imageView.image = nil;
+        }
+        else {
+            WGEventMessage *eventMessage = (WGEventMessage *)[event.messages objectAtIndex:i];
+            NSString *contentURL;
+            if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
+            else  contentURL = eventMessage.media;
+            NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, contentURL]];
+            __weak UIImageView *weakImgView = imageView;
+            __weak WGEventMessage *weakEventMsg = eventMessage;
+            [imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    __strong UIImageView *strongImgView = weakImgView;
+                    __strong WGEventMessage *strongEventMsg = weakEventMsg;
+                    NSURL *bigImageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, strongEventMsg.media]];
+                    [strongImgView setImageWithURL:bigImageURL];
+                });
+            }];
+        }
+    
     }
     
 }
