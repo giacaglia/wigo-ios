@@ -158,4 +158,32 @@
     return [dateFormatter stringFromDate:[NSDate date]];
 }
 
+-(NSString *)timeAgo {
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    unsigned int flags = NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekCalendarUnit|NSWeekOfYearCalendarUnit |NSDayCalendarUnit | NSHourCalendarUnit;
+    NSCalendar* calendar = [NSCalendar currentCalendar];
+    NSDateComponents *otherDay=  [gregorianCalendar
+                                  components:flags
+                                  fromDate:[self dateByAddingTimeInterval:-3600*6]];
+   
+    NSDateComponents *today = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit fromDate:[NSDate date]];
+
+    NSDate *otherDayDate = [calendar dateFromComponents:otherDay];
+    NSDate *nowDayDate = [calendar dateFromComponents:today];
+    
+    double deltaSeconds = fabs([otherDayDate timeIntervalSinceDate:nowDayDate]);
+    double deltaMinutes = deltaSeconds / 60.0f;
+    
+    int minutes;
+    if (deltaMinutes < (24 * 60 * 2))
+    {
+        return @"Yesterday";
+    }
+    else {
+        minutes = (int)floor(deltaMinutes/(60 * 24));
+        return [NSString stringWithFormat:@"%d days ago", minutes];
+    }
+
+}
+
 @end

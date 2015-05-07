@@ -27,5 +27,5 @@
 +(NSDate *) serialize:(NSString *)dateString;
 
 +(NSString *) nowStringUTC;
-
+-(NSString *)timeAgo;
 @end

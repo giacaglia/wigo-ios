@@ -559,7 +559,7 @@ BOOL firstTimeLoading;
     else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
-        WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
+        WGEvent *event = (WGEvent *)[eventObjectArray objectAtIndex:indexPath.row];
         return [LessThan2PhotosOldEventCell height];
     }
     
@@ -1638,10 +1638,8 @@ BOOL firstTimeLoading;
     _event = event;
     self.eventNameLabel.text = _event.name;
     self.highlightsCollectionView.event = _event;
-    if (_event.numAttending.intValue > 0) {
-        self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ went", _event.numAttending];
-    }
-
+    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ went", _event.numAttending];
+    
     CGSize size = [_event.name sizeWithAttributes:
                    @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -1654,11 +1652,7 @@ BOOL firstTimeLoading;
     });
     
     self.eventPeopleScrollView.event = _event;
-    NSDate *nowDate = [NSDate date];
-    NSDateComponents *differenceDates = [event.created differenceBetweenDates:nowDate];
-    int days = [differenceDates day];
-    if (days == 1) self.dateLabel.text = @"Yesterday";
-    else self.dateLabel.text = [NSString stringWithFormat:@"%d days ago", days];
+    self.dateLabel.text = [event.created timeAgo];
 }
 
 @end
