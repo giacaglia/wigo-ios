@@ -463,7 +463,6 @@ viewForHeaderInSection:(NSInteger)section
 }
 
 #pragma mark - Network functions
-
 - (void)fetchFirstPageSuggestions {
     self.users = NetworkFetcher.defaultGetter.suggestions;
     [self.tableViewOfPeople reloadData];
