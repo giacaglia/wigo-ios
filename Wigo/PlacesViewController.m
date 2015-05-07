@@ -72,6 +72,7 @@ BOOL firstTimeLoading;
     [self addCenterButton];
     [NetworkFetcher.defaultGetter fetchMeta];
     [NetworkFetcher.defaultGetter fetchFriendsIds];
+    [NetworkFetcher.defaultGetter fetchSuggestions];
 }
 
 - (void) viewWillAppear:(BOOL)animated {

@@ -465,6 +465,10 @@ viewForHeaderInSection:(NSInteger)section
 #pragma mark - Network functions
 
 - (void)fetchFirstPageSuggestions {
+    self.users = NetworkFetcher.defaultGetter.suggestions;
+    [self.tableViewOfPeople reloadData];
+    [self cleanupUsers];
+    if (self.users.count > 0) return;
     if (self.fetching) return;
     self.fetching = YES;
     __weak typeof(self) weakSelf = self;
@@ -475,10 +479,19 @@ viewForHeaderInSection:(NSInteger)section
         strongSelf.fetching = NO;
         if (error) return;
         strongSelf.users = collection;
+        [strongSelf cleanupUsers];
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-            [self.tableViewOfPeople reloadData];
+            [strongSelf.tableViewOfPeople reloadData];
         });
     }];
+}
+
+- (void)cleanupUsers {
+    for (WGUser *user in self.users) {
+        if (user.isFriend.boolValue || user.friendRequest) {
+            [self.users removeObject:user];
+        }
+    }
 }
 
 - (void)fetchNextPage {
