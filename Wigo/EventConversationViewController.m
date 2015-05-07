@@ -334,12 +334,6 @@
                 self.numberOfVotesLabel.hidden = NO;
             }
             self.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
-//            if (eventMessage.upVotes.intValue == 1) {
-//                self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ like", eventMessage.upVotes.stringValue];
-//            }
-//            else {
-//                self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ likes", eventMessage.upVotes.stringValue];
-//            }
         }
         if (eventMessage.vote.intValue == 1) {
             self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
@@ -415,10 +409,10 @@
 //    [self.buttonTrash addTarget:self action:@selector(trashPressed) forControlEvents:UIControlEventTouchUpInside];
 //    [self.view addSubview:self.buttonTrash];
     
-    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 - 50, 8, 50, 20)];
+    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 58 - 20, 8, 36, 28)];
     self.numberOfVotesLabel.textColor = UIColor.whiteColor;
     self.numberOfVotesLabel.textAlignment = NSTextAlignmentRight;
-    self.numberOfVotesLabel.font = [FontProperties mediumFont:20.0f];
+    self.numberOfVotesLabel.font = [FontProperties openSansSemibold:20.0f];
     [self.view addSubview:self.numberOfVotesLabel];
     
 //    self.downArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 15, 28 + 8, 30, 15)];
@@ -486,12 +480,7 @@
         NSNumber *myNumber = [f numberFromString:self.numberOfVotesLabel.text];
         myNumber = [NSNumber numberWithInt:(myNumber.intValue + 1)];
         self.numberOfVotesLabel.hidden = NO;
-        if (myNumber.intValue == 1) {
-            self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ like", myNumber.stringValue];
-        }
-        else {
-            self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ likes", myNumber.stringValue];
-        }
+        self.numberOfVotesLabel.text = myNumber.stringValue;
     }
     
 }
