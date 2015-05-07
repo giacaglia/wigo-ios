@@ -354,7 +354,7 @@ BOOL firstTimeLoading;
     [self.placesTableView registerClass:[MoreThan2PhotosOldEventCell class] forCellReuseIdentifier:kMoreThan2PhotosOldEventCell];
     [self.placesTableView registerClass:[LessThan2PhotosOldEventCell class] forCellReuseIdentifier:kLessThan2PhotosOldEventCell];
     [self.placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
-    self.placesTableView.backgroundColor = RGB(210, 210, 210);
+    self.placesTableView.backgroundColor = RGB(232, 232, 232);
     self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self addRefreshToScrollView];
     
@@ -1356,7 +1356,7 @@ BOOL firstTimeLoading;
     CGFloat contentInset = 44.0f;
     self.placesTableView.contentInset = UIEdgeInsetsMake(contentInset, 0, 0, 0);
     [WGSpinnerView addDancingGToUIScrollView:self.placesTableView
-                         withBackgroundColor:RGB(210, 210, 210)
+                         withBackgroundColor:RGB(232, 232, 232)
                             withContentInset:contentInset
                                  withHandler:^{
         self.spinnerAtCenter = NO;
@@ -1442,7 +1442,7 @@ BOOL firstTimeLoading;
 - (void) setup {
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell height]);
     self.contentView.frame = self.frame;
-    self.backgroundColor = RGB(210, 210, 210);
+    self.backgroundColor = RGB(232, 232, 232);
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -1611,7 +1611,7 @@ BOOL firstTimeLoading;
     return header;
 }
 - (void) setup {
-    self.backgroundColor = RGB(210, 210, 210);
+    self.backgroundColor = RGB(232, 232, 232);
     
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSS"];
@@ -1649,21 +1649,17 @@ BOOL firstTimeLoading;
 
 - (void) setup {
     self.contentView.frame = self.frame;
-    self.backgroundColor = RGB(210, 210, 210);
+    self.backgroundColor = RGB(232, 232, 232);
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
-    backgroundView.backgroundColor = RGB(230, 230, 230);
+    backgroundView.backgroundColor = UIColor.whiteColor;
     backgroundView.layer.borderColor = UIColor.clearColor.CGColor;
     backgroundView.layer.borderWidth = 1.0f;
     backgroundView.layer.cornerRadius = 15.0f;
     backgroundView.clipsToBounds = YES;
     [self.contentView addSubview:backgroundView];
-    
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
-    lineView.backgroundColor = RGB(215, 215, 215);
-    [backgroundView addSubview:lineView];
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 16.5, self.frame.size.width - 40, 20)];
     self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
@@ -1672,6 +1668,16 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textColor = RGB(121, 121, 121);
     [backgroundView addSubview:self.eventNameLabel];
 
+    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 40, 100, 10)];
+    self.dateLabel.textAlignment = NSTextAlignmentLeft;
+    self.dateLabel.textColor = RGB(165, 165, 165);
+    self.dateLabel.font = [FontProperties mediumFont:10.0f];
+    [self.contentView addSubview:self.dateLabel];
+
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
+    lineView.backgroundColor = RGB(215, 215, 215);
+    [backgroundView addSubview:lineView];
+    
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 60, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
@@ -1684,27 +1690,33 @@ BOOL firstTimeLoading;
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [backgroundView addSubview:self.eventPeopleScrollView];
     
-    self.arrayOfImageViews = [NSMutableArray new];
+    UILabel *topBuzzLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, 100, 20)];
+    topBuzzLabel.textColor = [FontProperties getBlueColor];
+    topBuzzLabel.text = @"Top Buzz";
+    topBuzzLabel.textAlignment = NSTextAlignmentLeft;
+    topBuzzLabel.font = [FontProperties mediumFont:15.0];
+    [backgroundView addSubview:topBuzzLabel];
     
-    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    self.arrayOfImageViews = [NSMutableArray new];
+    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     firstImageView.contentMode = UIViewContentModeScaleAspectFill;
     firstImageView.clipsToBounds = YES;
     [backgroundView addSubview:firstImageView];
     [self.arrayOfImageViews addObject:firstImageView];
     
-    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     secondImageView.contentMode = UIViewContentModeScaleAspectFill;
     secondImageView.clipsToBounds = YES;
     [backgroundView addSubview:secondImageView];
     [self.arrayOfImageViews addObject:secondImageView];
     
-    self.thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    self.thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     self.thirdImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.thirdImageView.clipsToBounds = YES;
     [backgroundView addSubview:self.thirdImageView];
     [self.arrayOfImageViews addObject:self.thirdImageView];
     
-    self.fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 10 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    self.fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     self.fourthImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.fourthImageView.clipsToBounds = YES;
     [backgroundView addSubview:self.fourthImageView];
@@ -1736,6 +1748,11 @@ BOOL firstTimeLoading;
     self.privacyLockImageView.hidden = !_event.isPrivate;
     self.privacyLockButton.enabled = _event.isPrivate;
     self.eventPeopleScrollView.event = _event;
+    NSDate *nowDate = [NSDate date];
+    NSDateComponents *differenceDates = [event.created differenceBetweenDates:nowDate];
+    int days = [differenceDates day];
+    if (days == 1) self.dateLabel.text = @"Yesterday";
+    else self.dateLabel.text = [NSString stringWithFormat:@"%d days ago", days];
     for (int i = 0; i < MIN(4, event.messages.count); i++) {
         WGEventMessage *eventMessage = (WGEventMessage *)[event.messages objectAtIndex:i];
         UIImageView *imageView = [self.arrayOfImageViews objectAtIndex:i];
@@ -1754,6 +1771,7 @@ BOOL firstTimeLoading;
             });
         }];
     }
+    
 }
 
 @end
@@ -1762,7 +1780,7 @@ BOOL firstTimeLoading;
 
 + (CGFloat)height {
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    return 129 + 0.9*width/5.5 + (width -2);
+    return 154 + 0.9*width/5.5 + (width -2);
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1786,7 +1804,7 @@ BOOL firstTimeLoading;
 
 + (CGFloat)height {
     CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    return 129 + 0.9*width/5.5 + (width -2)/2;
+    return 154 + 0.9*width/5.5 + (width -2)/2;
 }
 
 
@@ -1827,7 +1845,7 @@ BOOL firstTimeLoading;
     [self.showHighlightsButton setTitleColor:RGB(160, 160, 160) forState:UIControlStateNormal];
     self.showHighlightsButton.titleLabel.font = [FontProperties scMediumFont: 18];
     [self.showHighlightsButton addTarget:self action:@selector(showHighlightsPressed) forControlEvents:UIControlEventTouchUpInside];
-    self.showHighlightsButton.layer.borderColor = RGB(210, 210, 210).CGColor;
+    self.showHighlightsButton.layer.borderColor = RGB(232, 232, 232).CGColor;
     self.showHighlightsButton.layer.borderWidth = 1;
     self.showHighlightsButton.layer.cornerRadius = 8;
     [self.contentView addSubview:self.showHighlightsButton];

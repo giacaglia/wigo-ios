@@ -114,7 +114,7 @@
 @property (nonatomic, strong) UIButton *goingHereButton;
 @property (nonatomic, strong) UIView *grayView;
 @property (nonatomic, strong) NSMutableArray *arrayOfImageViews;
-@property (nonatomic, strong) UIImageView *verifiedView;
+@property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) UIImageView *thirdImageView;
 @property (nonatomic, strong) UIImageView *fourthImageView;
 @end
