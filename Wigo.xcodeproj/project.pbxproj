@@ -261,6 +261,8 @@
 		E9012AC11AF92B0F007DC769 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012ABF1AF92B0F007DC769 /* WaitListViewController.m */; };
 		E9012AC81AFAE5C3007DC769 /* LocationPrimer.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012AC71AFAE5C3007DC769 /* LocationPrimer.m */; };
 		E9012AC91AFAE5C3007DC769 /* LocationPrimer.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012AC71AFAE5C3007DC769 /* LocationPrimer.m */; };
+		E9012AD11AFBEFCD007DC769 /* ReferalView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012ACF1AFBEFCD007DC769 /* ReferalView.m */; };
+		E9012AD21AFBEFCD007DC769 /* ReferalView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012ACF1AFBEFCD007DC769 /* ReferalView.m */; };
 		E9096D551ADD5F1100386AC2 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = E9096D481ADD5F1100386AC2 /* .gitkeep */; };
 		E9096D561ADD5F1100386AC2 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = E9096D481ADD5F1100386AC2 /* .gitkeep */; };
 		E9096D571ADD5F1100386AC2 /* FSCalendar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */; };
@@ -742,6 +744,8 @@
 		E9012ABF1AF92B0F007DC769 /* WaitListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaitListViewController.m; sourceTree = "<group>"; };
 		E9012AC61AFAE5C3007DC769 /* LocationPrimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationPrimer.h; sourceTree = "<group>"; };
 		E9012AC71AFAE5C3007DC769 /* LocationPrimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationPrimer.m; sourceTree = "<group>"; };
+		E9012ACF1AFBEFCD007DC769 /* ReferalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReferalView.m; sourceTree = "<group>"; };
+		E9012AD01AFBEFCD007DC769 /* ReferalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReferalView.h; sourceTree = "<group>"; };
 		E9096D481ADD5F1100386AC2 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		E9096D491ADD5F1100386AC2 /* FSCalendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSCalendar.h; sourceTree = "<group>"; };
 		E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSCalendar.m; sourceTree = "<group>"; };
@@ -1443,6 +1447,17 @@
 			path = SDWebImage;
 			sourceTree = "<group>";
 		};
+		E9012ACA1AFBEE42007DC769 /* FirstScreen */ = {
+			isa = PBXGroup;
+			children = (
+				E9012AD01AFBEFCD007DC769 /* ReferalView.h */,
+				E9012ACF1AFBEFCD007DC769 /* ReferalView.m */,
+				E9012AC61AFAE5C3007DC769 /* LocationPrimer.h */,
+				E9012AC71AFAE5C3007DC769 /* LocationPrimer.m */,
+			);
+			name = FirstScreen;
+			sourceTree = "<group>";
+		};
 		E9096D001ADD55D600386AC2 /* EventCreation */ = {
 			isa = PBXGroup;
 			children = (
@@ -1774,8 +1789,7 @@
 				E9E6A567199917BE003B590C /* OnboardFollowViewController.m */,
 				E9F406001A8436570043F07F /* ReferalViewController.h */,
 				E9F406011A8436570043F07F /* ReferalViewController.m */,
-				E9012AC61AFAE5C3007DC769 /* LocationPrimer.h */,
-				E9012AC71AFAE5C3007DC769 /* LocationPrimer.m */,
+				E9012ACA1AFBEE42007DC769 /* FirstScreen */,
 			);
 			name = Signup/Login/Onboard;
 			sourceTree = "<group>";
@@ -2521,6 +2535,7 @@
 				C14AB1C01A8017670011C4E5 /* UIImage+RoundedCorner.m in Sources */,
 				45D9FAC11A781AFD00D08577 /* JSQMessagesAvatarImage.m in Sources */,
 				FA8C37EC1A3FDFA500C46B9F /* FXBlurView.m in Sources */,
+				E9012AD21AFBEFCD007DC769 /* ReferalView.m in Sources */,
 				C12A113719787BE700D53B1C /* SignNavigationViewController.m in Sources */,
 				FA55261D1A1FDB4000101AE7 /* JBChartView.m in Sources */,
 				E9096D581ADD5F1100386AC2 /* FSCalendar.m in Sources */,
@@ -2709,6 +2724,7 @@
 				FA2BE9BD19FAF06500CC0E5E /* EventStoryViewController.m in Sources */,
 				45DF86B01A5C5DEB00DB85AE /* AFSecurityPolicy.m in Sources */,
 				454409551A5241FA00BB3036 /* WGEvent.m in Sources */,
+				E9012AD11AFBEFCD007DC769 /* ReferalView.m in Sources */,
 				45D9FAD21A781AFD00D08577 /* JSQMessagesCollectionViewCellOutgoing.m in Sources */,
 				E9096D611ADD5F1100386AC2 /* UIView+FSExtension.m in Sources */,
 				45D9FA9C1A781AFD00D08577 /* UIColor+JSQMessages.m in Sources */,

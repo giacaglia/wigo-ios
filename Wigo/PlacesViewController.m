@@ -27,6 +27,7 @@
 #import "WGNavigateParser.h"
 #import "WhereAreYouViewController.h"
 #import "LocationPrimer.h"
+#import "ReferalView.h"
 
 #define kEventCellName @"EventCell"
 #define kMoreThan2PhotosOldEventCell @"MoreThan2PhotosOldEventCell"
@@ -87,7 +88,6 @@ BOOL firstTimeLoading;
     [self.placesTableView reloadData];
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    [LocationPrimer startPrimer];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -106,6 +106,8 @@ BOOL firstTimeLoading;
     }
     [self updateNavigationBar];
     [self fetchUserInfo];
+//    ReferalView *referalView = [[ReferalView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+//    [self.view addSubview:referalView];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
