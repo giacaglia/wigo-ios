@@ -102,10 +102,8 @@
 @property (nonatomic, strong) UILabel *eventNameLabel;
 @property (nonatomic, strong) UILabel *numberOfPeopleGoingLabel;
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
-@property (nonatomic, strong) NSMutableArray *arrayOfImageViews;
 @property (nonatomic, strong) UILabel *dateLabel;
-@property (nonatomic, strong) UIImageView *thirdImageView;
-@property (nonatomic, strong) UIImageView *fourthImageView;
+@property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @end
 
 @interface MoreThan2PhotosOldEventCell : HighlightOldEventCell

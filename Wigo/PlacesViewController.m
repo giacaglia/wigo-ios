@@ -351,7 +351,6 @@ BOOL firstTimeLoading;
     self.placesTableView.showsHorizontalScrollIndicator = NO;
     [self.placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
-    [self.placesTableView registerClass:[MoreThan2PhotosOldEventCell class] forCellReuseIdentifier:kMoreThan2PhotosOldEventCell];
     [self.placesTableView registerClass:[LessThan2PhotosOldEventCell class] forCellReuseIdentifier:kLessThan2PhotosOldEventCell];
     [self.placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
     self.placesTableView.backgroundColor = UIColor.whiteColor;
@@ -561,9 +560,6 @@ BOOL firstTimeLoading;
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
-        if (event.messages.count > 3) {
-            return [MoreThan2PhotosOldEventCell height];
-        }
         return [LessThan2PhotosOldEventCell height];
     }
     
@@ -636,30 +632,17 @@ BOOL firstTimeLoading;
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
         }
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
-        if (event.messages.count > 3) {
-           MoreThan2PhotosOldEventCell *cell = (MoreThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kMoreThan2PhotosOldEventCell forIndexPath:indexPath];
-            cell.event = event;
-            cell.placesDelegate = self;
-            cell.eventPeopleScrollView.isOld = YES;
-            cell.eventPeopleScrollView.groupID = self.groupNumberID;
-            cell.eventPeopleScrollView.placesDelegate = self;
-            if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
-                cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
-            }
-            return cell;
+        LessThan2PhotosOldEventCell *cell = (LessThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kLessThan2PhotosOldEventCell forIndexPath:indexPath];
+        cell.event = event;
+        cell.placesDelegate = self;
+        cell.eventPeopleScrollView.isOld = YES;
+        cell.eventPeopleScrollView.groupID = self.groupNumberID;
+        cell.eventPeopleScrollView.placesDelegate = self;
+        if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
+            cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
         }
-        else {
-            LessThan2PhotosOldEventCell *cell = (LessThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kLessThan2PhotosOldEventCell forIndexPath:indexPath];
-            cell.event = event;
-            cell.placesDelegate = self;
-            cell.eventPeopleScrollView.isOld = YES;
-            cell.eventPeopleScrollView.groupID = self.groupNumberID;
-            cell.eventPeopleScrollView.placesDelegate = self;
-            if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
-                cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
-            }
-            return cell;
-        }
+        cell.highlightsCollectionView.placesDelegate = self;
+        return cell;
         
     }
     return nil;
@@ -1607,17 +1590,17 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textColor = RGB(121, 121, 121);
     [backgroundView addSubview:self.eventNameLabel];
 
-    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 40, 100, 10)];
+    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 47, 100, 10)];
     self.dateLabel.textAlignment = NSTextAlignmentLeft;
     self.dateLabel.textColor = RGB(165, 165, 165);
     self.dateLabel.font = [FontProperties mediumFont:10.0f];
     [self.contentView addSubview:self.dateLabel];
 
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 60, 85, 0.5)];
     lineView.backgroundColor = RGB(215, 215, 215);
     [backgroundView addSubview:lineView];
     
-    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 60, self.frame.size.width, 20)];
+    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 67, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
@@ -1636,52 +1619,10 @@ BOOL firstTimeLoading;
     topBuzzLabel.font = [FontProperties mediumFont:15.0];
     [backgroundView addSubview:topBuzzLabel];
     
-    self.arrayOfImageViews = [NSMutableArray new];
-   
-    UIButton *firstButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
-    firstButton.tag = 0;
-    [firstButton addTarget:self action:@selector(chooseImage:) forControlEvents:UIControlEventTouchUpInside];
-    [backgroundView addSubview:firstButton];
-
-    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
-    firstImageView.contentMode = UIViewContentModeScaleAspectFill;
-    firstImageView.clipsToBounds = YES;
-    [firstButton addSubview:firstImageView];
-    [self.arrayOfImageViews addObject:firstImageView];
-    
-    UIButton *secondButton = [[UIButton alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
-    [secondButton addTarget:self action:@selector(chooseImage:) forControlEvents:UIControlEventTouchUpInside];
-    secondButton.tag = 1;
-    [backgroundView addSubview:secondButton];
-    
-    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
-    secondImageView.contentMode = UIViewContentModeScaleAspectFill;
-    secondImageView.clipsToBounds = YES;
-    [secondButton addSubview:secondImageView];
-    [self.arrayOfImageViews addObject:secondImageView];
-    
-    UIButton *thirdButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
-    [thirdButton addTarget:self action:@selector(chooseImage:) forControlEvents:UIControlEventTouchUpInside];
-    thirdButton.tag = 2;
-    [backgroundView addSubview:thirdButton];
-    
-    self.thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
-    self.thirdImageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.thirdImageView.clipsToBounds = YES;
-    [thirdButton addSubview:self.thirdImageView];
-    [self.arrayOfImageViews addObject:self.thirdImageView];
-    
-    UIButton *fourthButton = [[UIButton alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
-    fourthButton.backgroundColor = UIColor.redColor;
-    [fourthButton addTarget:self action:@selector(chooseImage:) forControlEvents:UIControlEventTouchUpInside];
-    fourthButton.tag = 3;
-    [backgroundView addSubview:fourthButton];
-    
-    self.fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
-    self.fourthImageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.fourthImageView.clipsToBounds = YES;
-    [fourthButton addSubview:self.fourthImageView];
-    [self.arrayOfImageViews addObject:self.fourthImageView];
+    self.highlightsCollectionView = [[HighlightsCollectionView alloc]
+                                     initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 20 + 5, self.frame.size.width, [HighlightCell height])
+                                     collectionViewLayout:[HighlightsFlowLayout new]];
+    [backgroundView addSubview:self.highlightsCollectionView];
 }
 
 -(void) chooseImage:(id)sender {
@@ -1696,6 +1637,7 @@ BOOL firstTimeLoading;
 - (void)setEvent:(WGEvent *)event {
     _event = event;
     self.eventNameLabel.text = _event.name;
+    self.highlightsCollectionView.event = _event;
     if (_event.numAttending.intValue > 0) {
         self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ went", _event.numAttending];
     }
@@ -1717,21 +1659,6 @@ BOOL firstTimeLoading;
     int days = [differenceDates day];
     if (days == 1) self.dateLabel.text = @"Yesterday";
     else self.dateLabel.text = [NSString stringWithFormat:@"%d days ago", days];
-    for (int i = 0; i < 4; i++) {
-        UIImageView *imageView = [self.arrayOfImageViews objectAtIndex:i];
-        if (i >= event.messages.count) {
-            imageView.image = nil;
-        }
-        else {
-            WGEventMessage *eventMessage = (WGEventMessage *)[event.messages objectAtIndex:i];
-            NSString *contentURL;
-            if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
-            else  contentURL = eventMessage.media;
-            NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, contentURL]];
-            [imageView setImageWithURL:imageURL completed:nil];
-        }
-    }
-    
 }
 
 @end
@@ -1759,8 +1686,6 @@ BOOL firstTimeLoading;
     [self.contentView addSubview:shadowImageView];
     
     [super setup];
-    self.thirdImageView.hidden = NO;
-    self.fourthImageView.hidden = NO;
 }
 
 @end
@@ -1768,8 +1693,7 @@ BOOL firstTimeLoading;
 @implementation LessThan2PhotosOldEventCell
 
 + (CGFloat)height {
-    CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    return 154 + 0.9*width/5.5 + (width -2)/2;
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 7;
 }
 
 
@@ -1789,8 +1713,6 @@ BOOL firstTimeLoading;
     [self.contentView addSubview:shadowImageView];
     
     [super setup];
-    self.thirdImageView.hidden = YES;
-    self.fourthImageView.hidden = YES;
 }
 
 @end
