@@ -15,4 +15,5 @@
                                          inPhotoArray:(FBGraphObject *)photoArray;
 + (NSString *)nameOfCollegeFromUser:(id<FBGraphUser>)object;
 + (NSString *)nameOFWorkFromUser:(id<FBGraphUser>)fbGraphUser;
++ (void)fillProfileWithUser:(id<FBGraphUser>)fbGraphUser;
 @end

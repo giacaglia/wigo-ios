@@ -7,6 +7,7 @@
 //
 
 #import "FacebookHelper.h"
+#import "WGProfile.h"
 
 @implementation FacebookHelper
 
@@ -75,5 +76,22 @@
     }
     return nil;
 }
+
++ (void)fillProfileWithUser:(id<FBGraphUser>)fbGraphUser {
+    WGProfile.currentUser.firstName = fbGraphUser[@"first_name"];
+    WGProfile.currentUser.lastName = fbGraphUser[@"last_name"];
+    if (fbGraphUser[@"birthday"]) WGProfile.currentUser.birthday = fbGraphUser[@"birthday"];
+    NSString *collegeName = [FacebookHelper nameOfCollegeFromUser:fbGraphUser];
+    if (collegeName) WGProfile.currentUser.education = collegeName;
+    NSString *workName = [FacebookHelper nameOFWorkFromUser:fbGraphUser];
+    if (workName) WGProfile.currentUser.work = workName;
+
+    NSDictionary *userResponse = (NSDictionary *) fbGraphUser;
+    if ([[userResponse allKeys] containsObject:@"gender"]) {
+        WGProfile.currentUser.gender = [WGUser genderFromName:[userResponse objectForKey:@"gender"]];
+    }
+}
+
+
 
 @end

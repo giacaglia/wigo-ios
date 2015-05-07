@@ -13,6 +13,9 @@
 #import "ReferalViewController.h"
 #import "WaitListViewController.h"
 
+#define kPushNotificationMessage @"Wigo works best when you enable push notifications so we can let you know when the next party is happening."
+#define kPushNotificationKey @"push_notification_key"
+
 
 @interface SignViewController () <UIScrollViewDelegate>
 @property UIView *facebookConnectView;
@@ -49,7 +52,6 @@
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self getFacebookTokensAndLoginORSignUp];
-//    [self presentPushNotification];
 }
 
 - (void) changeAlertToNotShown {
@@ -216,7 +218,9 @@
     }
 }
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertView *)alertView
+didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if ([alertView.message isEqual:kPushNotificationMessage]) return;
     [self fetchTokensFromFacebook];
 }
 
@@ -228,20 +232,7 @@
     _fbID = [fbGraphUser objectID];
     _profilePic = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", [fbGraphUser objectForKey:@"id"]];
     _accessToken = [FBSession activeSession].accessTokenData.accessToken;
-    
-    WGProfile.currentUser.firstName = fbGraphUser[@"first_name"];
-    WGProfile.currentUser.lastName = fbGraphUser[@"last_name"];
-    if (fbGraphUser[@"birthday"]) WGProfile.currentUser.birthday = fbGraphUser[@"birthday"];
-    NSString *collegeName = [FacebookHelper nameOfCollegeFromUser:fbGraphUser];
-    if (collegeName) WGProfile.currentUser.education = collegeName;
-    NSString *workName = [FacebookHelper nameOFWorkFromUser:fbGraphUser];
-    if (workName) WGProfile.currentUser.work = workName;
-    
-    NSDictionary *userResponse = (NSDictionary *) fbGraphUser;
-    if ([[userResponse allKeys] containsObject:@"gender"]) {
-        WGProfile.currentUser.gender = [WGUser genderFromName:[userResponse objectForKey:@"gender"]];
-    }
-    
+    [FacebookHelper fillProfileWithUser:fbGraphUser];
     if (!_alertShown && !self.fetchingProfilePictures) {
         [self loginUserAsynchronous];
     }
@@ -296,11 +287,11 @@
                       otherButtonTitles:nil] show];
 }
 
-- (void) loginViewShowingLoggedOutUser:(FBLoginView *)loginView {
+-(void) loginViewShowingLoggedOutUser:(FBLoginView *)loginView {
     _alertShown = NO;
 }
 
-- (void)logout {
+-(void) logout {
     FBSession* session = [FBSession activeSession];
     [session closeAndClearTokenInformation];
     [session close];
@@ -316,7 +307,7 @@
 
 #pragma mark - Asynchronous methods
 
-- (void) loginUserAsynchronous {
+-(void) loginUserAsynchronous {
     [Crashlytics setUserIdentifier:_fbID];
     
     WGProfile.currentUser.facebookId = _fbID;
@@ -339,7 +330,7 @@
             return;
         }
         [TabBarAuxiliar clearOutAllNotifications];
-        [strongSelf navigate];
+        [strongSelf presentPushNotification];
     }];
 }
 
@@ -378,7 +369,7 @@
         }
         return;
     }
-    [self navigate];
+    [self presentPushNotification];
 }
 
 #pragma mark - UIScrollView
@@ -458,16 +449,23 @@
 #pragma mark - Push Notification
 
 -(void) presentPushNotification {
-    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    self.blurredView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    self.blurredView.frame = self.view.bounds;
-    [self.view addSubview:self.blurredView];
-    [self presentAlertView];
+    NSNumber *wasSentPushNotification = [[NSUserDefaults standardUserDefaults] objectForKey:kPushNotificationKey];
+    if (!wasSentPushNotification) {
+        UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        self.blurredView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        self.blurredView.frame = self.view.bounds;
+        [self.view addSubview:self.blurredView];
+        [self presentAlertView];
+    }
+    else {
+        [self navigate];
+    }
+   
 }
 
 - (void)presentAlertView {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
-                                                        message:@"Wigo works best when you enable push notifications so we can let you know when the next party is happening."
+                                                        message:kPushNotificationMessage
                                                        delegate:self
                                               cancelButtonTitle:@"Don't allow"
                                               otherButtonTitles:@"Allow", nil];
@@ -480,6 +478,9 @@
         [self presentAlertView];
         return;
     }
+   
+    [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:kPushNotificationKey];
+
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
         UIUserNotificationCategory *category = [self registerActions];
@@ -497,6 +498,7 @@
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"triedToRegister"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [self.blurredView removeFromSuperview];
+    [self navigate];
 }
 
 - (UIMutableUserNotificationCategory*)registerActions {
