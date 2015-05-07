@@ -9,5 +9,11 @@
 #import <Foundation/Foundation.h>
 
 @interface LocationPrimer : NSObject
-+(void)addLocationPrimer;
++(UILabel *)defaultTitleLabel;
++(UIView *) defaultBlackOverlay;
++(UIButton *)defaultButton;
++(void) addLocationPrimer;
++(void) removePrimer;
++(void) addErrorMessage;
++(BOOL) wasPushNotificationEnabled;
 @end

@@ -416,7 +416,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     int page = scrollView.contentOffset.x / scrollView.frame.size.width;
-    self.pageControl.hidden = (page == 4);
+    self.pageControl.hidden = (page >= 4);
     self.pageControl.currentPage = page;
 }
 

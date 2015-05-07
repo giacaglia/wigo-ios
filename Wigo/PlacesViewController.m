@@ -90,7 +90,12 @@ BOOL firstTimeLoading;
     [self.placesTableView reloadData];
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-//    [LocationPrimer addLocationPrimer];
+    if ([LocationPrimer wasPushNotificationEnabled]) {
+        NSLog(@"enabled");
+    }
+    else {
+        NSLog(@"not enabled");
+    }
 }
 
 
@@ -283,7 +288,8 @@ BOOL firstTimeLoading;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(navigate:)
                                                  name:@"navigate"
-                                               object:nil];}
+                                               object:nil];
+}
 
 - (void)goToChat:(NSNotification *)notification {
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
@@ -1373,45 +1379,6 @@ BOOL firstTimeLoading;
     }
 }
 
-#pragma mark - Location primer
--(void) showLocationPrimer {
-    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
-    self.overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, window.frame.size.width, window.frame.size.height)];
-    self.overlayView.backgroundColor = UIColor.blackColor;
-    self.overlayView.alpha = 0.5f;
-    [window addSubview:self.overlayView];
-    
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 120)];
-    titleLabel.font = [FontProperties mediumFont:18.0f];
-    titleLabel.textColor = UIColor.whiteColor;
-    titleLabel.text = @"Oops! In order to see stuff thats\nhappening around you, please\nenable your location to Wigo.";
-    titleLabel.numberOfLines = 0;
-    titleLabel.textAlignment = NSTextAlignmentCenter;
-    [window addSubview:titleLabel];
-    
-    UIButton *enableLocationButton = [[UIButton alloc] initWithFrame:CGRectMake(window.frame.size.width/2 - 100, 340, 200, 65)];
-    [enableLocationButton addTarget:self action:@selector(enablePressed) forControlEvents:UIControlEventTouchUpInside];
-    enableLocationButton.backgroundColor = [FontProperties getBlueColor];
-    [enableLocationButton setTitle:@"Enable Location" forState:UIControlStateNormal];
-    [enableLocationButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-    enableLocationButton.titleLabel.font = [FontProperties semiboldFont:20.0f];
-    enableLocationButton.layer.borderColor = UIColor.clearColor.CGColor;
-    enableLocationButton.layer.borderWidth = 5.0f;
-    enableLocationButton.layer.cornerRadius = 10.0f;
-    [window addSubview:enableLocationButton];
-}
-
--(void)enablePressed {
-    CLLocationManager *locationManager = [[CLLocationManager alloc] init];
-    locationManager.distanceFilter = 500;
-    locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters; // 100 m
-    if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-        [locationManager requestWhenInUseAuthorization];
-    }
-    [locationManager startUpdatingLocation];
-}
-
-
 @end
 
 #pragma mark - Cells
@@ -1749,18 +1716,8 @@ BOOL firstTimeLoading;
             if (eventMessage.thumbnail) contentURL = eventMessage.thumbnail;
             else  contentURL = eventMessage.media;
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, contentURL]];
-            __weak UIImageView *weakImgView = imageView;
-            __weak WGEventMessage *weakEventMsg = eventMessage;
-            [imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    __strong UIImageView *strongImgView = weakImgView;
-                    __strong WGEventMessage *strongEventMsg = weakEventMsg;
-                    NSURL *bigImageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", WGProfile.currentUser.cdnPrefix, strongEventMsg.media]];
-                    [strongImgView setImageWithURL:bigImageURL];
-                });
-            }];
+            [imageView setImageWithURL:imageURL completed:nil];
         }
-    
     }
     
 }
