@@ -259,6 +259,8 @@
 		E9012AB91AF91189007DC769 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9012AB71AF91189007DC769 /* Bolts.framework */; };
 		E9012AC01AF92B0F007DC769 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012ABF1AF92B0F007DC769 /* WaitListViewController.m */; };
 		E9012AC11AF92B0F007DC769 /* WaitListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012ABF1AF92B0F007DC769 /* WaitListViewController.m */; };
+		E9012AC81AFAE5C3007DC769 /* LocationPrimer.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012AC71AFAE5C3007DC769 /* LocationPrimer.m */; };
+		E9012AC91AFAE5C3007DC769 /* LocationPrimer.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012AC71AFAE5C3007DC769 /* LocationPrimer.m */; };
 		E9096D551ADD5F1100386AC2 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = E9096D481ADD5F1100386AC2 /* .gitkeep */; };
 		E9096D561ADD5F1100386AC2 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = E9096D481ADD5F1100386AC2 /* .gitkeep */; };
 		E9096D571ADD5F1100386AC2 /* FSCalendar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */; };
@@ -738,6 +740,8 @@
 		E9012AB71AF91189007DC769 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		E9012ABE1AF92B0F007DC769 /* WaitListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WaitListViewController.h; sourceTree = "<group>"; };
 		E9012ABF1AF92B0F007DC769 /* WaitListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WaitListViewController.m; sourceTree = "<group>"; };
+		E9012AC61AFAE5C3007DC769 /* LocationPrimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationPrimer.h; sourceTree = "<group>"; };
+		E9012AC71AFAE5C3007DC769 /* LocationPrimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationPrimer.m; sourceTree = "<group>"; };
 		E9096D481ADD5F1100386AC2 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		E9096D491ADD5F1100386AC2 /* FSCalendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSCalendar.h; sourceTree = "<group>"; };
 		E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSCalendar.m; sourceTree = "<group>"; };
@@ -1770,6 +1774,8 @@
 				E9E6A567199917BE003B590C /* OnboardFollowViewController.m */,
 				E9F406001A8436570043F07F /* ReferalViewController.h */,
 				E9F406011A8436570043F07F /* ReferalViewController.m */,
+				E9012AC61AFAE5C3007DC769 /* LocationPrimer.h */,
+				E9012AC71AFAE5C3007DC769 /* LocationPrimer.m */,
 			);
 			name = Signup/Login/Onboard;
 			sourceTree = "<group>";
@@ -2386,6 +2392,7 @@
 				C1F5B3D41A654AC800CAFD95 /* (null) in Sources */,
 				C1F5B3D51A654AC800CAFD95 /* (null) in Sources */,
 				45D9FACB1A781AFD00D08577 /* JSQMessagesCollectionView.m in Sources */,
+				E9012AC91AFAE5C3007DC769 /* LocationPrimer.m in Sources */,
 				E9012AC11AF92B0F007DC769 /* WaitListViewController.m in Sources */,
 				C1F5B3C71A654A5B00CAFD95 /* WGAnalytics.m in Sources */,
 				C1F5B3C81A654A5B00CAFD95 /* WGObject.m in Sources */,
@@ -2596,6 +2603,7 @@
 				E96F07C719BA654600E858D7 /* GKResizeableCropOverlayView.m in Sources */,
 				4544095E1A548E5700BB3036 /* WGEventAttendee.m in Sources */,
 				FABD337B1A3B9904008FF56D /* JPBFloatingTextViewController.m in Sources */,
+				E9012AC81AFAE5C3007DC769 /* LocationPrimer.m in Sources */,
 				45D9FAAE1A781AFD00D08577 /* JSQMessagesMediaViewBubbleImageMasker.m in Sources */,
 				E93F84FC1940B3AC00B3B448 /* UIPageControlAligned.m in Sources */,
 				E900C2C21961EADE00A01F50 /* UIImageView+HighlightedWebCache.m in Sources */,

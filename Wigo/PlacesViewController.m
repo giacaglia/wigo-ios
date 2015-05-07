@@ -26,6 +26,7 @@
 #import "EventConversationViewController.h"
 #import "WGNavigateParser.h"
 #import "WhereAreYouViewController.h"
+#import "LocationPrimer.h"
 
 #define kEventCellName @"EventCell"
 #define kMoreThan2PhotosOldEventCell @"MoreThan2PhotosOldEventCell"
@@ -89,6 +90,7 @@ BOOL firstTimeLoading;
     [self.placesTableView reloadData];
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+//    [LocationPrimer addLocationPrimer];
 }
 
 

@@ -52,9 +52,6 @@ static CLLocationManager *locationManager;
         locationManager = [[CLLocationManager alloc] init];
         locationManager.distanceFilter = 500;
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters; // 100 m
-        if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-            [locationManager requestWhenInUseAuthorization];
-        }
         [locationManager startUpdatingLocation];
     }
     return locationManager;
