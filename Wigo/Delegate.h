@@ -28,7 +28,8 @@ typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
 - (void)showConversationForEvent:(WGEvent *)event
                withEventMessages:(WGCollection *)eventMessages
                          atIndex:(int)index;
-- (void)showConversationForEvent:(WGEvent *)event;
+- (void)showHighlightForEvent:(WGEvent *)event
+              andEventMessage:(WGEventMessage *)eventMessage;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
 - (void)presentViewWithGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
 - (void)showViewController:(UIViewController *)vc;

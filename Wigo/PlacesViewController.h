@@ -25,7 +25,6 @@
 @property (nonatomic, strong) NSString *groupName;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 
-
 @property (nonatomic, assign) BOOL fetchingEventAttendees;
 @property (nonatomic, strong) WGCollection *allEvents;
 @property (nonatomic, strong) WGCollection *events;
@@ -49,6 +48,7 @@
 @property (nonatomic, assign) BOOL isLocal;
 @property (nonatomic, strong) UIButton *createButton;
 @property (nonatomic, strong) UIView *overlayView;
+
 @end
 
 #import "EventPeopleScrollView.h"
@@ -97,22 +97,12 @@
 @end
 
 @interface HighlightOldEventCell : UITableViewCell
-@property (nonatomic, strong) UIImageView *privateIconImageView;
-@property (nonatomic, strong) UIImageView *highlightImageView;
-@property (nonatomic, strong) UILabel *oldEventLabel;
- // Properties from Event Cell
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
-
-@property (nonatomic, strong) UIButton *privacyLockButton;
-@property (nonatomic, strong) UIImageView *privacyLockImageView;
+@property (nonatomic, strong) UIView *backgroundView;
 @property (nonatomic, strong) UILabel *eventNameLabel;
 @property (nonatomic, strong) UILabel *numberOfPeopleGoingLabel;
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
-@property (nonatomic, strong) UILabel *numberOfHighlightsLabel;
-@property (nonatomic, strong) UILabel *numberOfNewHighlightsLabel;
-@property (nonatomic, strong) UIButton *goingHereButton;
-@property (nonatomic, strong) UIView *grayView;
 @property (nonatomic, strong) NSMutableArray *arrayOfImageViews;
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) UIImageView *thirdImageView;

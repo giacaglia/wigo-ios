@@ -855,12 +855,14 @@ BOOL firstTimeLoading;
     return newEventMessages;
 }
 
-- (void)showConversationForEvent:(WGEvent *)event {
+- (void)showHighlightForEvent:(WGEvent *)event
+              andEventMessage:(WGEventMessage *)eventMessage
+{
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.shouldReloadEvents = NO;
     
     WGCollection *temporaryEventMessages = [[WGCollection alloc] initWithType:[WGEventMessage class]];
-    [temporaryEventMessages addObject:event.highlight];
+    [temporaryEventMessages addObject:eventMessage];
 
     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationViewController.event = event;
@@ -871,10 +873,9 @@ BOOL firstTimeLoading;
     __weak typeof(conversationViewController) weakConversationViewController =
     conversationViewController;
     __weak typeof(event) weakEvent = event;
-    [event getMessagesForHighlights:event.highlight
+    [event getMessagesForHighlights:eventMessage
                         withHandler:^(WGCollection *collection, NSError *error) {
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
@@ -885,17 +886,6 @@ BOOL firstTimeLoading;
         [weakConversationViewController.mediaScrollView reloadData];
         weakConversationViewController.index = @(messageIndex);
         [weakConversationViewController highlightCellAtPage:messageIndex animated:NO];
-//        if (messageIndex == NSNotFound) {
-//            [weakSelf addNextPageForEventConversationUntilFound:weakConversationViewController
-//                                                       forEvent:weakEvent];
-//        }
-//        else {
-//            [weakConversationViewController.facesCollectionView reloadData];
-//            [weakConversationViewController.mediaScrollView reloadData];
-//            weakConversationViewController.index = @(messageIndex);
-//            [weakConversationViewController highlightCellAtPage:messageIndex animated:NO];
-//        }
-        
     }];
 }
 
@@ -1290,6 +1280,7 @@ BOOL firstTimeLoading;
 
 - (void)removeDancingG {
     [WGSpinnerView removeDancingGFromCenterView:self.view];
+    self.placesTableView.backgroundColor = RGB(232, 232, 232);
     [self.placesTableView didFinishPullToRefresh];
     self.spinnerAtCenter = NO;
 }
@@ -1643,33 +1634,59 @@ BOOL firstTimeLoading;
     [backgroundView addSubview:topBuzzLabel];
     
     self.arrayOfImageViews = [NSMutableArray new];
-    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+   
+    UIButton *firstButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    firstButton.tag = 0;
+    [firstButton addTarget:self action:@selector(chooseImage:) forControlEvents:UIControlEventTouchUpInside];
+    [backgroundView addSubview:firstButton];
+
+    UIImageView *firstImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     firstImageView.contentMode = UIViewContentModeScaleAspectFill;
     firstImageView.clipsToBounds = YES;
-    [backgroundView addSubview:firstImageView];
+    [firstButton addSubview:firstImageView];
     [self.arrayOfImageViews addObject:firstImageView];
     
-    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    UIButton *secondButton = [[UIButton alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    [secondButton addTarget:self action:@selector(chooseImage:) forControlEvents:UIControlEventTouchUpInside];
+    secondButton.tag = 1;
+    [backgroundView addSubview:secondButton];
+    
+    UIImageView *secondImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     secondImageView.contentMode = UIViewContentModeScaleAspectFill;
     secondImageView.clipsToBounds = YES;
-    [backgroundView addSubview:secondImageView];
+    [secondButton addSubview:secondImageView];
     [self.arrayOfImageViews addObject:secondImageView];
     
-    self.thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    UIButton *thirdButton = [[UIButton alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    [thirdButton addTarget:self action:@selector(chooseImage:) forControlEvents:UIControlEventTouchUpInside];
+    thirdButton.tag = 2;
+    [backgroundView addSubview:thirdButton];
+    
+    self.thirdImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     self.thirdImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.thirdImageView.clipsToBounds = YES;
-    [backgroundView addSubview:self.thirdImageView];
+    [thirdButton addSubview:self.thirdImageView];
     [self.arrayOfImageViews addObject:self.thirdImageView];
+    
+    UIButton *fourthButton = [[UIButton alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    [fourthButton addTarget:self action:@selector(chooseImage:) forControlEvents:UIControlEventTouchUpInside];
+    fourthButton.tag = 3;
+    [backgroundView addSubview:thirdButton];
     
     self.fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     self.fourthImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.fourthImageView.clipsToBounds = YES;
-    [backgroundView addSubview:self.fourthImageView];
+    [fourthButton addSubview:self.fourthImageView];
     [self.arrayOfImageViews addObject:self.fourthImageView];
 }
 
-- (void)loadConversation {
-    [self.placesDelegate showConversationForEvent:self.event];
+-(void) chooseImage:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    int tag = buttonSender.tag;
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.event.messages objectAtIndex:tag];
+    [self.placesDelegate showHighlightForEvent:self.event
+                               andEventMessage:eventMessage];
+
 }
 
 - (void)setEvent:(WGEvent *)event {
@@ -1690,8 +1707,6 @@ BOOL firstTimeLoading;
         }
     });
     
-    self.privacyLockImageView.hidden = !_event.isPrivate;
-    self.privacyLockButton.enabled = _event.isPrivate;
     self.eventPeopleScrollView.event = _event;
     NSDate *nowDate = [NSDate date];
     NSDateComponents *differenceDates = [event.created differenceBetweenDates:nowDate];
