@@ -59,6 +59,10 @@
 @property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
 @property (nonatomic, strong) UIView *holeView;
 @property (nonatomic, strong) WGEventMessage *eventMessage;
+@property (nonatomic, strong) UIView *leftLine;
+@property (nonatomic, strong) UIView *rightLine;
+- (void)setRightLineEnabled:(BOOL)rightLineEnabled;
+- (void)setLeftLineEnabled:(BOOL)leftLineEnabled;
 @end
 
 @interface FaceFlowLayout : UICollectionViewFlowLayout

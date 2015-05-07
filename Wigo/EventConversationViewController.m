@@ -87,6 +87,8 @@
     FaceCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"FaceCell" forIndexPath: indexPath];
     dispatch_barrier_async(dispatch_get_main_queue(), ^{
         [myCell resetToInactive];
+        [myCell setLeftLineEnabled:(indexPath.row > 0)];
+        [myCell setRightLineEnabled:(indexPath.row < self.eventMessages.count - 1)];
     });
 
     if (indexPath.row + 1 == self.eventMessages.count) {
@@ -756,8 +758,26 @@
     self.timeLabel.alpha = 0.0f;
     [self.contentView addSubview:self.timeLabel];
     [self.contentView sendSubviewToBack:self.timeLabel];
+    
+    self.leftLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 4)];
+    self.leftLine.alpha = 0.5f;
+    self.leftLine.backgroundColor = UIColor.whiteColor;
+    [self.contentView addSubview: self.leftLine];
+    
+    self.rightLine = [[UIView alloc] initWithFrame: CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - 0.3*sizeOfEachFaceCell, 4)];
+    self.rightLine.alpha = 0.5f;
+    self.rightLine.backgroundColor = UIColor.whiteColor;
+    [self.contentView addSubview: self.rightLine];
 
     _isActive = NO;
+}
+
+- (void)setRightLineEnabled:(BOOL)rightLineEnabled {
+    self.rightLine.hidden = !rightLineEnabled;
+}
+
+- (void)setLeftLineEnabled:(BOOL)leftLineEnabled {
+    self.leftLine.hidden = !leftLineEnabled;
 }
 
 - (void)panWasRecognized:(UIPanGestureRecognizer *)panner {
@@ -852,6 +872,8 @@
     self.faceImageView.transform = CGAffineTransformIdentity;
     self.mediaTypeImageView.frame = CGRectMake(0.65*sizeOfEachFaceCell, 0.15*sizeOfEachFaceCell, sizeOfEachFaceCell/5, sizeOfEachFaceCell/5);
     self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/10;
+    self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 4);
+    self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 4);
 }
 
 - (void) resetToInactive {
@@ -859,6 +881,8 @@
     self.faceImageView.transform = CGAffineTransformMakeScale(0.75, 0.75);
     self.mediaTypeImageView.frame = CGRectMake(0.6*sizeOfEachFaceCell, 0.25*sizeOfEachFaceCell, sizeOfEachFaceCell/6.6, sizeOfEachFaceCell/6.6);
     self.mediaTypeImageView.layer.cornerRadius = sizeOfEachFaceCell/14;
+    self.rightLine.frame = CGRectMake(self.contentView.center.x + self.faceImageView.frame.size.width/2, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 4);
+    self.leftLine.frame = CGRectMake(0, self.contentView.center.y, self.contentView.center.x - self.faceImageView.frame.size.width/2, 4);
 }
 
 - (void)setUser:(WGUser *)user {
