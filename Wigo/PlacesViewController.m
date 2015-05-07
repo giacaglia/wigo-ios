@@ -562,22 +562,13 @@ BOOL firstTimeLoading;
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
-        if (event.messages.count > 2) {
+        if (event.messages.count > 3) {
             return [MoreThan2PhotosOldEventCell height];
         }
         return [LessThan2PhotosOldEventCell height];
     }
     
     return 0;
-}
-
--(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.pastDays.count > 0 && indexPath.section > 1) {
-        NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
-        NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
-        WGEvent *event = [eventObjectArray objectAtIndex:[indexPath row]];
-        [self showConversationForEvent:event];
-    }
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView
@@ -646,7 +637,7 @@ BOOL firstTimeLoading;
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
         }
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
-        if (event.messages.count > 2) {
+        if (event.messages.count > 3) {
            MoreThan2PhotosOldEventCell *cell = (MoreThan2PhotosOldEventCell *)[tableView dequeueReusableCellWithIdentifier:kMoreThan2PhotosOldEventCell forIndexPath:indexPath];
             cell.event = event;
             cell.placesDelegate = self;
@@ -1446,15 +1437,12 @@ BOOL firstTimeLoading;
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-//    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [EventCell height] - 20 - 4, self.frame.size.width + 10, 12)];
-//    shadowImageView.image = [UIImage imageNamed:@"shadow"];
-//    [self.contentView addSubview:shadowImageView];
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [EventCell height] - 20 - 4, self.frame.size.width + 10, 12)];
+    shadowImageView.image = [UIImage imageNamed:@"shadow"];
+    [self.contentView addSubview:shadowImageView];
     
     self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, [EventCell height] - 20)];
     self.whiteView.backgroundColor = UIColor.whiteColor;
-    self.whiteView.layer.borderColor = UIColor.clearColor.CGColor;
-    self.whiteView.layer.borderWidth = 1.0f;
-    self.whiteView.layer.cornerRadius = 15.0f;
     [self.contentView addSubview:self.whiteView];
     
     self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];
@@ -1655,9 +1643,6 @@ BOOL firstTimeLoading;
     
     UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
     backgroundView.backgroundColor = UIColor.whiteColor;
-    backgroundView.layer.borderColor = UIColor.clearColor.CGColor;
-    backgroundView.layer.borderWidth = 1.0f;
-    backgroundView.layer.cornerRadius = 15.0f;
     backgroundView.clipsToBounds = YES;
     [self.contentView addSubview:backgroundView];
     
@@ -1799,6 +1784,11 @@ BOOL firstTimeLoading;
 
 - (void)setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [MoreThan2PhotosOldEventCell height]);
+    
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [MoreThan2PhotosOldEventCell height] - 20 - 7, self.frame.size.width + 10, 12)];
+    shadowImageView.image = [UIImage imageNamed:@"shadow"];
+    [self.contentView addSubview:shadowImageView];
+    
     [super setup];
     self.thirdImageView.hidden = NO;
     self.fourthImageView.hidden = NO;
@@ -1824,6 +1814,11 @@ BOOL firstTimeLoading;
 
 - (void)setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [LessThan2PhotosOldEventCell height]);
+    
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [LessThan2PhotosOldEventCell height] - 20 - 7, self.frame.size.width + 10, 12)];
+    shadowImageView.image = [UIImage imageNamed:@"shadow"];
+    [self.contentView addSubview:shadowImageView];
+    
     [super setup];
     self.thirdImageView.hidden = YES;
     self.fourthImageView.hidden = YES;

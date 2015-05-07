@@ -375,74 +375,48 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
 #pragma mark - UIScrollView
 
 -(void)initializeScrollView {
-    UIScrollView *scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 0.2*self.view.frame.size.width)];
-    scrollView.contentSize = CGSizeMake(4*self.view.frame.size.width, self.view.frame.size.height - 0.2*self.view.frame.size.width - 50);
-    scrollView.pagingEnabled = YES;
-    scrollView.showsVerticalScrollIndicator = NO;
-    scrollView.showsHorizontalScrollIndicator = NO;
-    scrollView.delegate = self;
-    [self.view addSubview:scrollView];
+    self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - 0.2*self.view.frame.size.width)];
+    self.scrollView.contentSize = CGSizeMake(5*self.view.frame.size.width, self.view.frame.size.height - 0.2*self.view.frame.size.width - 50);
+    self.scrollView.pagingEnabled = YES;
+    self.scrollView.showsVerticalScrollIndicator = NO;
+    self.scrollView.showsHorizontalScrollIndicator = NO;
+    self.scrollView.delegate = self;
+    [self.view addSubview:self.scrollView];
     
-    UILabel *firstLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 100)];
-    firstLabel.text = @"Discover awesome events\nin your area";
-    firstLabel.numberOfLines = 0;
-    firstLabel.textColor = UIColor.blackColor;
-    firstLabel.textAlignment = NSTextAlignmentCenter;
-    firstLabel.font = [FontProperties lightFont:27.0f];
-    [scrollView addSubview:firstLabel];
-    
-    UIImageView *firstImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 85, 110, 170, 327)];
-    firstImgView.image = [UIImage imageNamed:@"imagePhone"];
-    [scrollView addSubview:firstImgView];
-    
-    UILabel *secondLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, 100)];
-    secondLabel.text = @"See who's going\nwhere real-time";
-    secondLabel.numberOfLines = 0;
-    secondLabel.textColor = UIColor.blackColor;
-    secondLabel.textAlignment = NSTextAlignmentCenter;
-    secondLabel.font = [FontProperties lightFont:27.0f];
-    [scrollView addSubview:secondLabel];
-    
-    UIImageView *secondImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 85 + self.view.frame.size.width, 110, 170, 327)];
-    secondImgView.image = [UIImage imageNamed:@"imagePhone"];
-    [scrollView addSubview:secondImgView];
-    
-    UILabel *thirdLabel = [[UILabel alloc] initWithFrame:CGRectMake(2*self.view.frame.size.width, 0, self.view.frame.size.width, 100)];
-    thirdLabel.text = @"Share moments with\nfriends";
-    thirdLabel.numberOfLines = 0;
-    thirdLabel.textColor = UIColor.blackColor;
-    thirdLabel.textAlignment = NSTextAlignmentCenter;
-    thirdLabel.font = [FontProperties lightFont:27.0f];
-    [scrollView addSubview:thirdLabel];
-    
-    UIImageView *thirdImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 85 + 2*self.view.frame.size.width, 110, 170, 327)];
-    thirdImgView.image = [UIImage imageNamed:@"imagePhone"];
-    [scrollView addSubview:thirdImgView];
-    
-    UILabel *fourthLabel = [[UILabel alloc] initWithFrame:CGRectMake(3*self.view.frame.size.width, 0, self.view.frame.size.width, 100)];
-    fourthLabel.text = @"Finalize plans via chats";
-    fourthLabel.numberOfLines = 0;
-    fourthLabel.textColor = UIColor.blackColor;
-    fourthLabel.textAlignment = NSTextAlignmentCenter;
-    fourthLabel.font = [FontProperties lightFont:27.0f];
-    [scrollView addSubview:fourthLabel];
-    
-    UIImageView *fourthImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 85 + 3*self.view.frame.size.width, 110, 170, 327)];
-    fourthImgView.image = [UIImage imageNamed:@"imagePhone"];
-    [scrollView addSubview:fourthImgView];
+    [self addText:@"Discover awesome events\nin your area" andImage:@"discover" atIndex:0];
+    [self addText:@"See who's going\nwhere real-time" andImage:@"whoPreview" atIndex:1];
+    [self addText:@"Share moments with\nfriends" andImage:@"share" atIndex:2];
+    [self addText:@"Finalize plans via chats" andImage:@"chatPreview" atIndex:3];
+    [self addText:@"Forget FOMO, forever!" andImage:@"wigoPreview" atIndex:4];
 
-    self.pageControl = [[UIPageControl alloc] initWithFrame: CGRectMake(0, self.view.frame.size.height - 0.2*self.view.frame.size.width - 20, self.view.frame.size.width, 20)];
+    self.pageControl = [[UIPageControl alloc] initWithFrame: CGRectMake(0, self.view.frame.size.height - 0.2*self.view.frame.size.width - 20 - 5, self.view.frame.size.width, 20)];
     self.pageControl.enabled = NO;
     self.pageControl.currentPage = 0;
     self.pageControl.currentPageIndicatorTintColor = [FontProperties getBlueColor];
     self.pageControl.pageIndicatorTintColor = RGB(224, 224, 224);
-    self.pageControl.numberOfPages = 4;
+    self.pageControl.numberOfPages = 5;
     [self.view addSubview: self.pageControl];
+}
+
+-(void)addText:(NSString *)text
+      andImage:(NSString *)imageName
+       atIndex:(int)index {
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(index*self.view.frame.size.width, 0, self.view.frame.size.width, 100)];
+    label.text = text;
+    label.numberOfLines = 0;
+    label.textColor = UIColor.blackColor;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.font = [FontProperties lightFont:27.0f];
+    [self.scrollView addSubview:label];
+    
+    UIImageView *fourthImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 92 + index*self.view.frame.size.width, 95, 184, 355)];
+    fourthImgView.image = [UIImage imageNamed:imageName];
+    [self.scrollView addSubview:fourthImgView];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     int page = scrollView.contentOffset.x / scrollView.frame.size.width;
-    self.pageControl.hidden = (page == 3);
+    self.pageControl.hidden = (page == 4);
     self.pageControl.currentPage = page;
 }
 
