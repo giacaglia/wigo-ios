@@ -735,6 +735,10 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 
 - (void)cancelRecording {
     
+    if(!self.isRecording) {
+        return;
+    }
+    
     _isRecording = NO;
     
     [[self.audioDataOutput connectionWithMediaType:AVMediaTypeVideo] setEnabled:NO];
@@ -761,6 +765,10 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
 
 - (void)stopRecording {
     //[self.movieFileOutput stopRecording];
+    
+    if(!self.isRecording) {
+        return;
+    }
     
     _isRecording = NO;
     
