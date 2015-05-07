@@ -498,6 +498,9 @@
 - (void)mediaPickerController:(UIImagePickerController *)controller
        startUploadingWithInfo:(NSDictionary *)info {
     self.filenameString = [self.filenameString substringWithRange:NSMakeRange(0, self.filenameString.length - 4)];
+    
+    NSURL *originalFileURL = nil;
+    
     NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
     f.numberStyle = NSNumberFormatterDecimalStyle;
     NSNumber *myNumber = [f numberFromString:self.filenameString];
@@ -540,15 +543,15 @@
                          @"event": self.event.id,
                          kMediaMimeTypeKey: type,
                          kThumbnailDataKey: thumbnailFileData,
-                         @"thumbnail": thumbnailFilename//,
-                         //@"fileURL":info[UIImagePickerControllerMediaURL]
+                         @"thumbnail": thumbnailFilename
                          };
+        originalFileURL = info[UIImagePickerControllerMediaURL];
     }
     
-    
-   [self uploadContentWithFile:fileData
-                andFileName:self.filenameString
-                 andOptions:self.options];
+    [self uploadContentWithFile:fileData
+                    andFileName:self.filenameString
+                     andOptions:self.options
+                originalFileURL:originalFileURL];
   
     
     
@@ -704,6 +707,7 @@
 - (void)uploadContentWithFile:(NSData *)fileData
                   andFileName:(NSString *)filename
                    andOptions:(NSDictionary *)options
+              originalFileURL:(NSURL *)originalFileURL
 {
     // If it's image.
     if ([[options objectForKey:kMediaMimeTypeKey] isEqual:kImageEventType]) {
@@ -739,48 +743,35 @@
         
         NSLog(@"video data length: %d", (int)fileData.length);
         
-        
-//        NSURL *fileURL = options[@"fileURL"];
-//        
-//         NSURL *uploadURL = [NSURL fileURLWithPath:[[NSTemporaryDirectory() stringByAppendingPathComponent:@"video_tmp"] stringByAppendingString:@".mp4"]];
-//         
-//         // Compress movie first
-//         [self convertVideoToLowQuailtyWithInputURL:fileURL
-//                                          outputURL:uploadURL
-//                                         completion:^{
-//        
-//                                             
-//                                             NSData *fileData = [NSData dataWithContentsOfURL:uploadURL];
-//                                             NSLog(@"new length: %d", (int)fileData.length);
-        
-                                             
-                                             
-                                             [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumnailFileName andHandler:^(WGEventMessage *object, NSError *error) {
-                                                 __strong typeof(weakSelf) strongSelf = weakSelf;
-                                                 strongSelf.error = error;
-                                                 strongSelf.object = object;
-                                                 NSDictionary *objectDict = [strongSelf.object deserialize];
-                                                 if ([[objectDict allKeys] containsObject:@"media"]) {
-                                                     NSString *mediaName = [objectDict objectForKey:@"media"];
-                                                     NSArray *components = [mediaName componentsSeparatedByString:@"/"];
-                                                     NSString *returnedFilename = [components lastObject];
-                                                     if ([strongSelf.tasksStillBeingUploaded containsObject:returnedFilename]) {
-                                                         [strongSelf.tasksStillBeingUploaded removeObject:returnedFilename];
-                                                     }
-                                                     else {
-                                                         [strongSelf.tasksStillBeingUploaded addObject:returnedFilename];
-                                                     }
-                                                     [strongSelf callbackFromUploadWithInfo:nil andFilename:returnedFilename];
-                                                 }
-//                                             }];
-                                             
-                                             
-                                         }];
-        
-        
-//        [newEventMessage addVideo:fileData withName:filename andHandler:^(WGEventMessage *object, NSError *error) {
-
-//        }];
+        [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumnailFileName andHandler:^(WGEventMessage *object, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            strongSelf.error = error;
+            strongSelf.object = object;
+            NSDictionary *objectDict = [strongSelf.object deserialize];
+            if ([[objectDict allKeys] containsObject:@"media"]) {
+                NSString *mediaName = [objectDict objectForKey:@"media"];
+                NSArray *components = [mediaName componentsSeparatedByString:@"/"];
+                NSString *returnedFilename = [components lastObject];
+                if ([strongSelf.tasksStillBeingUploaded containsObject:returnedFilename]) {
+                    [strongSelf.tasksStillBeingUploaded removeObject:returnedFilename];
+                }
+                else {
+                    [strongSelf.tasksStillBeingUploaded addObject:returnedFilename];
+                }
+                [strongSelf callbackFromUploadWithInfo:nil andFilename:returnedFilename];
+                
+                // delete local copy of video
+                
+                NSError *err = nil;
+                if(originalFileURL) {
+                    [[NSFileManager defaultManager] removeItemAtURL:originalFileURL
+                                                              error:&err];
+                    if(err) {
+                        NSLog(@"error removing file: %@", err.localizedDescription);
+                    }
+                }
+            }
+        }];
     }
 }
 
@@ -956,24 +947,25 @@
             return;
         }
         [object create:^(BOOL success, NSError *error) {
-                if (error) {
-                    [strongSelf.eventConversationDelegate showErrorMessage];
-                    return;
-                }
-                strongSelf.firstCell = YES;
-                [strongSelf.eventConversationDelegate showCompletedMessage];
-                strongSelf.shownCurrentImage = YES;
-                if (strongSelf.shownCurrentImage) {
-                    [strongSelf.eventMessages replaceObjectAtIndex:1 withObject:object];
-                }
-                else {
-                    [strongSelf.eventMessages insertObject:object atIndex:1];
-                
-                }
-                [strongSelf.eventConversationDelegate reloadUIForEventMessages:strongSelf.eventMessages];
+            if (error) {
+                [strongSelf.eventConversationDelegate showErrorMessage];
+                return;
+            }
+            strongSelf.firstCell = YES;
+            [strongSelf.eventConversationDelegate showCompletedMessage];
+            strongSelf.shownCurrentImage = YES;
+            if (strongSelf.shownCurrentImage) {
+                [strongSelf.eventMessages replaceObjectAtIndex:1 withObject:object];
+            }
+            else {
+                [strongSelf.eventMessages insertObject:object atIndex:1];
+            
+            }
+            [strongSelf.eventConversationDelegate reloadUIForEventMessages:strongSelf.eventMessages];
             if (!strongSelf.shownCurrentImage) {
                 [strongSelf.eventConversationDelegate highlightCellAtPage:1 animated:YES];
             }
+            
         }];
     }];
 }
@@ -2216,8 +2208,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
                            if(thumbnailImage) {
                                self.info[kThumbnailImageKey] = thumbnailImage;
                            
-//                           [self.mediaScrollDelegate mediaPickerController:self.controller
-//                                                    startUploadingWithInfo:self.info];
+                           [self.mediaScrollDelegate mediaPickerController:self.controller
+                                                    startUploadingWithInfo:self.info];
                            }
                            else {
                                // cancel upload
@@ -2232,6 +2224,21 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     //self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
     [self.mediaScrollDelegate cancelPressed];
     [self cleanupView];
+    
+    NSString *mediaType = self.info[UIImagePickerControllerMediaType];
+    if([mediaType isEqualToString:(NSString *)kUTTypeMovie]) {
+        NSURL *fileURL = [self.info objectForKey:UIImagePickerControllerMediaURL];
+        
+        NSError *err = nil;
+        if(fileURL) {
+            [[NSFileManager defaultManager] removeItemAtURL:fileURL
+                                                      error:&err];
+            if(err) {
+                NSLog(@"error removing file: %@", err.localizedDescription);
+            }
+        }
+    }
+    
     self.info = nil;
 }
 
