@@ -16,4 +16,5 @@
 +(void) removePrimer;
 +(void) addErrorMessage;
 +(BOOL) wasPushNotificationEnabled;
++(void) startPrimer;
 @end

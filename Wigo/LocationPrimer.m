@@ -93,6 +93,18 @@ static UIButton *mainButton;
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 }
 
++(void)startPrimer {
+    if (![CLLocationManager locationServicesEnabled] &&
+        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+        [LocationPrimer addErrorMessage];
+        return;
+    }
+    if (![CLLocationManager locationServicesEnabled]) {
+        [LocationPrimer addLocationPrimer];
+        return;
+    }
+}
+
 +(void) enableLocationPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     [UIView animateWithDuration:1.5f animations:^{

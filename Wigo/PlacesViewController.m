@@ -64,17 +64,13 @@ BOOL firstTimeLoading;
     UITabBarController *tab = self.tabBarController;
     ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
     profileVc.user = [WGUser new];
-    self.isLocal = YES;
     
     self.spinnerAtCenter = YES;
     [self initializeWhereView];
     [TabBarAuxiliar startTabBarItems];
     [self addCenterButton];
-//    [NetworkFetcher.defaultGetter fetchMessages];
     [NetworkFetcher.defaultGetter fetchMeta];
     [NetworkFetcher.defaultGetter fetchFriendsIds];
-//    [NetworkFetcher.defaultGetter fetchNotifications];
-//    [NetworkFetcher.defaultGetter fetchUserNames];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -85,19 +81,32 @@ BOOL firstTimeLoading;
     else {
         [WGAnalytics tagView:@"where"];
     }
-
+    
+    self.isLocal = YES;
     [self updateNavigationBar];
     [self.placesTableView reloadData];
     [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    if ([LocationPrimer wasPushNotificationEnabled]) {
-        NSLog(@"enabled");
-    }
-    else {
-        NSLog(@"not enabled");
-    }
+    [LocationPrimer startPrimer];
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self initializeFlashScreen];
+    if (!WGProfile.currentUser.key && !self.presentingLockedView) {
+        [self showFlashScreen];
+        [self.signViewController reloadedUserInfo:NO andError:nil];
+    }
+    
+    [self.view endEditing:YES];
+    if (self.shouldReloadEvents) {
+        [self fetchEventsFirstPage];
+    } else {
+        self.shouldReloadEvents = YES;
+    }
+    [self updateNavigationBar];
+    [self fetchUserInfo];
+}
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
@@ -110,24 +119,6 @@ BOOL firstTimeLoading;
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
     self.tabBarController.navigationItem.titleView = nil;
-}
-
-- (void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [self initializeFlashScreen];
-    if (!WGProfile.currentUser.key && !self.presentingLockedView) {
-        [self showFlashScreen];
-        [self.signViewController reloadedUserInfo:NO andError:nil];
-    }
-
-    [self.view endEditing:YES];
-    if (self.shouldReloadEvents) {
-        [self fetchEventsFirstPage];
-    } else {
-        self.shouldReloadEvents = YES;
-    }
-    [self updateNavigationBar];
-    [self fetchUserInfo];
 }
 
 - (void)showReferral {
@@ -360,14 +351,13 @@ BOOL firstTimeLoading;
     [self.placesTableView registerClass:[MoreThan2PhotosOldEventCell class] forCellReuseIdentifier:kMoreThan2PhotosOldEventCell];
     [self.placesTableView registerClass:[LessThan2PhotosOldEventCell class] forCellReuseIdentifier:kLessThan2PhotosOldEventCell];
     [self.placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
-    self.placesTableView.backgroundColor = RGB(232, 232, 232);
+    self.placesTableView.backgroundColor = UIColor.whiteColor;
     self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self addRefreshToScrollView];
     
 //    self.labelSwitch = [[LabelSwitch alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, [LabelSwitch height])];
 //    [self.view bringSubviewToFront:self.labelSwitch];
 //    [self.view addSubview:self.labelSwitch];
-//    
 }
 
 - (void)showEvent:(WGEvent *)event {
@@ -1150,10 +1140,10 @@ BOOL firstTimeLoading;
         }
         [self.allEvents addNextPage:^(BOOL success, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
-            [strongSelf removeDancingG];
             strongSelf.fetchingEventAttendees = NO;
             if (error) {
                 strongSelf.shouldReloadEvents = YES;
+                [strongSelf removeDancingG];
                 handler(success, error);
                 return;
             }
@@ -1184,6 +1174,7 @@ BOOL firstTimeLoading;
             }
             
             strongSelf.shouldReloadEvents = YES;
+            [strongSelf removeDancingG];
             [strongSelf.placesTableView reloadData];
             handler(success, error);
         }];
@@ -1192,9 +1183,9 @@ BOOL firstTimeLoading;
         [WGEvent getWithGroupNumber:self.groupNumberID andHandler:^(WGCollection *collection, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             strongSelf.fetchingEventAttendees = NO;
-            [strongSelf removeDancingG];
             if (error) {
                 strongSelf.shouldReloadEvents = YES;
+                [strongSelf removeDancingG];
                 handler(NO, error);
                 return;
             }
@@ -1236,6 +1227,7 @@ BOOL firstTimeLoading;
                 }
             }
             
+            [strongSelf removeDancingG];
             [strongSelf.placesTableView reloadData];
             handler(YES, error);
         }];
@@ -1243,8 +1235,8 @@ BOOL firstTimeLoading;
         [WGEvent get:^(WGCollection *collection, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             strongSelf.fetchingEventAttendees = NO;
-            [strongSelf removeDancingG];
             if (error) {
+                [strongSelf removeDancingG];
                 handler(NO, error);
                 return;
             }
@@ -1279,6 +1271,7 @@ BOOL firstTimeLoading;
                 [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
             }
 
+            [strongSelf removeDancingG];
             [strongSelf.placesTableView reloadData];
             handler(YES, error);
         }];
