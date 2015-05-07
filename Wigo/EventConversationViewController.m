@@ -442,8 +442,8 @@
 - (void)upvotePressed {
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-    NSNumber *vote = [eventMessage objectForKey:@"vote"];
-    if (vote != nil) {
+    NSNumber *vote = eventMessage.vote;
+    if (vote.boolValue) {
         return;
     }
     if ([eventMessage objectForKey:@"id"] == nil) {
