@@ -1657,7 +1657,7 @@ BOOL firstTimeLoading;
     [secondButton addSubview:secondImageView];
     [self.arrayOfImageViews addObject:secondImageView];
     
-    UIButton *thirdButton = [[UIButton alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    UIButton *thirdButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     [thirdButton addTarget:self action:@selector(chooseImage:) forControlEvents:UIControlEventTouchUpInside];
     thirdButton.tag = 2;
     [backgroundView addSubview:thirdButton];
@@ -1669,11 +1669,12 @@ BOOL firstTimeLoading;
     [self.arrayOfImageViews addObject:self.thirdImageView];
     
     UIButton *fourthButton = [[UIButton alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    fourthButton.backgroundColor = UIColor.redColor;
     [fourthButton addTarget:self action:@selector(chooseImage:) forControlEvents:UIControlEventTouchUpInside];
     fourthButton.tag = 3;
-    [backgroundView addSubview:thirdButton];
+    [backgroundView addSubview:fourthButton];
     
-    self.fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake((self.frame.size.width - 2)/2 + 2, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 35 + (self.frame.size.width - 2)/2 + 2, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
+    self.fourthImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, (self.frame.size.width - 2)/2, (self.frame.size.width - 2)/2)];
     self.fourthImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.fourthImageView.clipsToBounds = YES;
     [fourthButton addSubview:self.fourthImageView];
