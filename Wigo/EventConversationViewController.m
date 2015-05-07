@@ -68,11 +68,6 @@
     [self.mediaScrollView scrollStoppedAtPage:self.index.intValue];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    NSLog(@"leaving page %d", (int)[self getCurrentPageForScrollView:self.mediaScrollView]);
-    [self.mediaScrollView startedScrollingFromPage:(int)[self getCurrentPageForScrollView:self.mediaScrollView]];
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
@@ -631,7 +626,6 @@
 
 - (void)cancelPressed:(id)sender {
     [WGAnalytics tagEvent: @"Close Highlights Tapped"];
-    [self.mediaScrollView.lastMoviePlayer stop];
     [self.mediaScrollView closeViewWithHandler:^(BOOL success, NSError *error) {
         if (success) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
@@ -748,6 +742,7 @@
     
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     [self.mediaScrollView scrolledToPage:(int)page];
+    [self.mediaScrollView scrollStoppedAtPage:(int)page];
     [self hideOrShowFacesForPage:(int)page];
 }
 

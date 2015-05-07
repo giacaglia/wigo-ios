@@ -49,7 +49,6 @@
 @interface MediaScrollView : UICollectionView <UICollectionViewDataSource,
                                                 MediaScrollViewDelegate>
 
-@property (nonatomic, strong) MPMoviePlayerController *lastMoviePlayer;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) WGCollection *eventMessages;
 @property (nonatomic, weak) id<MediaScrollViewDelegate> mediaDelegate;

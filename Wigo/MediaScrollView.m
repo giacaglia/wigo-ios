@@ -84,6 +84,8 @@
 }
 
 - (void)dealloc {
+    NSLog(@"releasing media scroll view");
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -144,6 +146,7 @@
                 if ([typeString isEqual:@"public.movie"]) {
                     
                     // this is a no-op unless the user has a preview video, ready to upload or cancel
+                    [cameraCell.contentView bringSubviewToFront:cameraCell.previewMoviePlayer.view];
                     [cameraCell.previewMoviePlayer play];
                 }
             }
@@ -242,11 +245,6 @@
         
         NSLog(@"video URL: %@", videoURL.absoluteString);
         
-//        if (self.firstCell) {
-//            [myCell.moviePlayer play];
-//            self.lastMoviePlayer = myCell.moviePlayer;
-//            self.firstCell = NO;
-//        }
         [self.pageViews setObject:myCell atIndexedSubscript:indexPath.row];
         
         return myCell;
@@ -259,9 +257,9 @@
 }
 
 - (void)closeViewWithHandler:(BoolResultBlock)handler {
-    if (self.lastMoviePlayer) {
-        [self.lastMoviePlayer stop];
-    }
+    [self.currentVideoCell.moviePlayer stop];
+    self.currentVideoCell.moviePlayer.shouldAutoplay = NO;
+    
     for (int i = self.minPage; i <= self.maxPage; i++) {
         [self addReadPage:i];
     }
@@ -340,10 +338,10 @@
             
             
             NSLog(@"switching video cells to page %d", page);
-            //[self.currentVideoCell unloadVideo];
+            
+            [self.currentVideoCell.moviePlayer cancelAllThumbnailImageRequests];
             
             if(self.currentVideoIndex == page) {
-
                 [self.currentVideoCell resumeVideo];
             }
             else {
@@ -355,22 +353,9 @@
                     self.lastVideoCell.moviePlayer = nil;
                 }
                 
-                
-                // if the previous video cell is preparing a thumbnail,
-                // wait until it finishes ( when markVideoPlayerIsSavingThumbnail: is called)
-                // to start preparing.
-                // Otherwise, start now
-                
-                if(!self.videoPlayerIsSavingThumbnail) {
-                    NSLog(@"preparing cell %d to play video", page);
-                    [self.lastVideoCell.moviePlayer stop];
-                    [self.currentVideoCell prepareVideo];
-                    self.videoIsWaitingToPrepare = NO;
-                }
-                else {
-                    self.videoIsWaitingToPrepare = YES;
-                    NSLog(@"waiting to prepare cell %d to play video - thumbnail loading", page);
-                }
+                NSLog(@"preparing cell %d to play video", page);
+                [self.lastVideoCell.moviePlayer stop];
+                [self.currentVideoCell prepareVideo];
             }
         }
         
@@ -378,57 +363,18 @@
         // - stop video on previous cell
         else if(self.currentVideoCell) {
             
-            
-            
             self.lastVideoCell = self.currentVideoCell;
             self.currentVideoCell = nil;
+            [self.lastVideoCell.moviePlayer stop];
             self.lastVideoCell.moviePlayer = nil;
             
             self.currentVideoIndex = -1;
             
-            // if the previous video cell is preparing a thumbnail,
-            // wait until it finishes ( when markVideoPlayerIsSavingThumbnail: is called)
-            // to start preparing.
-            // Otherwise, start now
-            
-            if(!self.videoPlayerIsSavingThumbnail) {
-                NSLog(@"stopping video for previous cell - now showing photo at %d", page);
-                [self.lastVideoCell.moviePlayer stop];
-                //self.lastVideoCell.moviePlayer.shouldAutoplay = NO;
-                
-                self.videoIsWaitingToPrepare = NO;
-            }
-            else {
-                NSLog(@"waiting to stop video for previous cell - now showing photo at %d", page);
-                self.videoIsWaitingToPrepare = YES;
-            }
+            NSLog(@"stopping video for previous cell - now showing photo at %d", page);
         }
     }
 }
 
-// response to a video cell starting or finishing saving a thumbnail
-//
-// if it is finishing, and the current video is waiting to start preparing,
-// start preparing the current videw
-
-- (void)markVideoPlayerIsSavingThumbnail:(BOOL)videoPlayerIsSavingThumbnail {
-    self.videoPlayerIsSavingThumbnail = videoPlayerIsSavingThumbnail;
-    
-    NSLog(@"video player is saving thumbnail set to %d", videoPlayerIsSavingThumbnail);
-    
-    if(!self.videoPlayerIsSavingThumbnail) {
-        if(self.videoIsWaitingToPrepare) {
-            
-            NSLog(@"cell was waiting to prepare - now stopping and preparing");
-            self.videoIsWaitingToPrepare = NO;
-            
-            [self.lastVideoCell.moviePlayer stop];
-            //self.lastVideoCell.moviePlayer.shouldAutoplay = NO;
-            
-            //[self.currentVideoCell prepareVideo];
-        }
-    }
-}
 
 - (void)addReadPage:(int)page {
     if (!self.eventMessagesRead) {
@@ -453,23 +399,8 @@
     [self.eventConversationDelegate upvotePressed];
 }
 
-//- (MPMoviePlayerController *)sharedMoviePlayerController {
-//    return self.moviePlayer;
-//}
-
 - (MPMoviePlayerController *)getAvailableMoviePlayer {
     return self.sharedMoviePlayer;
-    
-//    return [self videoCellMoviePlayer];
-//    
-//    MPMoviePlayerController *ret = [self.moviePlayerPool anyObject];
-//    if (!ret) {
-//        ret = [self videoCellMoviePlayer];
-//    }
-//    else {
-//        [self.moviePlayerPool removeObject:ret];
-//    }
-//    return ret;
 }
 
 - (WGCameraViewController *)cameraController {
@@ -1220,7 +1151,7 @@
         [self.moviePlayer cancelAllThumbnailImageRequests];
         
         self.isRequestingThumbnail = YES;
-        [self.mediaScrollDelegate markVideoPlayerIsSavingThumbnail:YES];
+        //[self.mediaScrollDelegate markVideoPlayerIsSavingThumbnail:YES];
         [self.moviePlayer requestThumbnailImagesAtTimes:times timeOption:MPMovieTimeOptionExact];
         
     }
@@ -1242,9 +1173,8 @@
     
     if(self.isRequestingThumbnail) {
         self.isRequestingThumbnail = NO;
-        [self.mediaScrollDelegate markVideoPlayerIsSavingThumbnail:NO];
+//        [self.mediaScrollDelegate markVideoPlayerIsSavingThumbnail:NO];
     }
-    
 }
 
 
@@ -1281,11 +1211,13 @@
 
 - (void)moviePlayerThumbnailsLoaded:(NSNotification*)notification {
     
+    NSLog(@"video thumbnails finished loading");
+    
     if(notification.object == self.moviePlayer) {
         if(self.isRequestingThumbnail) {
             self.isRequestingThumbnail = NO;
             NSLog(@"thumbnail loaded");
-            [self.mediaScrollDelegate markVideoPlayerIsSavingThumbnail:NO];
+//            [self.mediaScrollDelegate markVideoPlayerIsSavingThumbnail:NO];
             
             UIImage *thumbnailImage = notification.userInfo[MPMoviePlayerThumbnailImageKey];
             if(thumbnailImage && [thumbnailImage isKindOfClass:[UIImage class]]) {

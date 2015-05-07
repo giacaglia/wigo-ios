@@ -970,6 +970,11 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
     if ([paths count] > 0) {
         tempDirectory = [paths objectAtIndex:0];
         
+//        NSArray *fileList = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:tempDirectory error:nil];
+//        for (NSString *s in fileList){
+//            NSLog(@"%@", s);
+//        }
+        
         NSString *randomString = [WGCameraViewController randomStringWithLength:8];
         return [NSURL fileURLWithPath:[tempDirectory stringByAppendingFormat:@"/%@.mp4", randomString]];
     }
