@@ -10,6 +10,7 @@
 #import "Globals.h"
 #import <CoreLocation/CoreLocation.h>
 
+static CLLocationManager *locationManager;
 
 @implementation LocationPrimer
 
@@ -20,7 +21,7 @@
     blackOverlayView.backgroundColor = RGBAlpha(0, 0, 0, 0.5f);
     [window addSubview:blackOverlayView];
     
-    UILabel *pleaseEnable = [[UILabel alloc] initWithFrame:CGRectMake(15, window.frame.size.height/2 - 200, window.frame.size.width - 30, 200)];
+    UILabel *pleaseEnable = [[UILabel alloc] initWithFrame:CGRectMake(15, window.frame.size.height/2 - 100 - 50, window.frame.size.width - 30, 200)];
     pleaseEnable.text = @"Please enable location so\nwe can show the amazing events\nand awesome people nearby";
     pleaseEnable.textAlignment = NSTextAlignmentCenter;
     pleaseEnable.textColor = UIColor.whiteColor;
@@ -29,7 +30,7 @@
     [window addSubview:pleaseEnable];
     
     UIButton *enableLocationButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 200, 80)];
-    enableLocationButton.center = window.center;
+    enableLocationButton.center = CGPointMake(window.center.x, window.center.y + 50);
     enableLocationButton.layer.borderColor = UIColor.clearColor.CGColor;
     enableLocationButton.layer.borderWidth = 1.0f;
     enableLocationButton.layer.cornerRadius = 15.0f;
@@ -43,7 +44,7 @@
 + (void)enableLocationPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     buttonSender.hidden = YES;
-    CLLocationManager *locationManager = [[CLLocationManager alloc] init];
+    locationManager = [[CLLocationManager alloc] init];
     if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
         [locationManager requestWhenInUseAuthorization];
     }
