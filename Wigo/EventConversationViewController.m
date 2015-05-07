@@ -333,12 +333,13 @@
             else {
                 self.numberOfVotesLabel.hidden = NO;
             }
-            if (eventMessage.upVotes.intValue == 1) {
-                self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ like", eventMessage.upVotes.stringValue];
-            }
-            else {
-                self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ likes", eventMessage.upVotes.stringValue];
-            }
+            self.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
+//            if (eventMessage.upVotes.intValue == 1) {
+//                self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ like", eventMessage.upVotes.stringValue];
+//            }
+//            else {
+//                self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%@ likes", eventMessage.upVotes.stringValue];
+//            }
         }
         if (eventMessage.vote.intValue == 1) {
             self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
@@ -414,14 +415,10 @@
 //    [self.buttonTrash addTarget:self action:@selector(trashPressed) forControlEvents:UIControlEventTouchUpInside];
 //    [self.view addSubview:self.buttonTrash];
     
-    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 75, 8, 150, 20)];
+    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 - 50, 8, 50, 20)];
     self.numberOfVotesLabel.textColor = UIColor.whiteColor;
-    self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberOfVotesLabel.textAlignment = NSTextAlignmentRight;
     self.numberOfVotesLabel.font = [FontProperties mediumFont:20.0f];
-    self.numberOfVotesLabel.layer.shadowOpacity = 1.0f;
-    self.numberOfVotesLabel.layer.shadowColor = UIColor.blackColor.CGColor;
-    self.numberOfVotesLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
-    self.numberOfVotesLabel.layer.shadowRadius = 0.5;
     [self.view addSubview:self.numberOfVotesLabel];
     
 //    self.downArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 15, 28 + 8, 30, 15)];
