@@ -1590,17 +1590,17 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textColor = RGB(121, 121, 121);
     [backgroundView addSubview:self.eventNameLabel];
 
-    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 47, 100, 10)];
+    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 50, 100, 10)];
     self.dateLabel.textAlignment = NSTextAlignmentLeft;
     self.dateLabel.textColor = RGB(165, 165, 165);
     self.dateLabel.font = [FontProperties mediumFont:10.0f];
     [self.contentView addSubview:self.dateLabel];
 
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 60, 85, 0.5)];
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 63, 85, 0.5)];
     lineView.backgroundColor = RGB(215, 215, 215);
     [backgroundView addSubview:lineView];
     
-    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 67, self.frame.size.width, 20)];
+    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 70, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
@@ -1687,7 +1687,7 @@ BOOL firstTimeLoading;
 @implementation LessThan2PhotosOldEventCell
 
 + (CGFloat)height {
-    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 7;
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 5;
 }
 
 
