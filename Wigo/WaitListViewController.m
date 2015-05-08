@@ -91,6 +91,21 @@
     [shareNowButton setTitle:@"Share now" forState:UIControlStateNormal];
     shareNowButton.titleLabel.font = [FontProperties mediumFont:18.0f];
     [self.view addSubview:shareNowButton];
+    
+    self.fetchTimer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(reloadUser) userInfo:nil repeats:YES];
+}
+
+-(void) reloadUser {
+    __weak typeof(self) weakSelf = self;
+    [WGProfile reload:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (![WGProfile.currentUser.status isEqual:kStatusWaiting]) {
+            [strongSelf dismissViewControllerAnimated:YES completion:nil];
+            [strongSelf.fetchTimer invalidate];
+            strongSelf.fetchTimer = nil;
+        }
+    }];
+    
 }
 
 -(void) shareNowPressed {

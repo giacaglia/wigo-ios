@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface WaitListViewController : UIViewController
-
+@property (nonatomic, strong) NSTimer *fetchTimer;
 @end
