@@ -144,7 +144,7 @@ BOOL firstTimeLoading;
     UIImage *highlightImage = nil;
     self.createButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.createButton.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-    self.createButton.frame = CGRectMake(0.0, 0.0, 55.0f, 49.0f);
+    self.createButton.frame = CGRectMake(0.0, 0.0, 49.5f, 44.0f);
     [self.createButton setBackgroundImage:buttonImage forState:UIControlStateNormal];
     [self.createButton setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
     [self.createButton addTarget:self action:@selector(goingSomewhereElsePressed) forControlEvents:UIControlEventTouchUpInside];
@@ -339,7 +339,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)initializeWhereView {
-    self.placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20 - 49) style: UITableViewStyleGrouped];
+    self.placesTableView = [[UITableView alloc] initWithFrame: CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20 - 44) style: UITableViewStyleGrouped];
     self.placesTableView.sectionHeaderHeight = 0;
     self.placesTableView.sectionFooterHeight = 0;
     [self.view addSubview:self.placesTableView];

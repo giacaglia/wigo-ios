@@ -21,7 +21,6 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchMessages) name:@"fetchMessages" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
-    
     self.messages = NetworkFetcher.defaultGetter.messages;
     [self initializeNewChatButton];
     [self initializeTableOfChats];
@@ -97,7 +96,8 @@
 }
 
 - (void)initializeTableOfChats {
-    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20 - 49)];
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20)];
     self.tableViewOfPeople.delegate = self;
     self.tableViewOfPeople.dataSource = self;
     self.tableViewOfPeople.backgroundColor = UIColor.clearColor;
