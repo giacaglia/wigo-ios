@@ -125,9 +125,6 @@
     if(collectionView == self.mediaScrollView) {
         if([cell isKindOfClass:[CameraCell class]]) {
             
-            [[UIApplication sharedApplication] setStatusBarHidden:YES
-                                                    withAnimation:UIStatusBarAnimationSlide];
-            
         }
     }
 }
@@ -142,12 +139,6 @@
         }
         else if([cell isKindOfClass:[CameraCell class]]) {
             
-            // unhide status bar unless we're displaying a loading/posted message
-            
-            if(!self.loadingBanner || self.loadingBanner.hidden) {
-                [[UIApplication sharedApplication] setStatusBarHidden:NO
-                                                        withAnimation:UIStatusBarAnimationSlide];
-            }
         }
     }
 }
