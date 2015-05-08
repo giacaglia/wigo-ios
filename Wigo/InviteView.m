@@ -24,9 +24,6 @@
     _user = user;
     
     if (self.delegate.user.state == OTHER_SCHOOL_USER_STATE) {
-//        self.inviteButton.hidden = YES;
-//        self.inviteButton.enabled = NO;
-//        self.tappedLabel.alpha = 0;
         self.tapButton.hidden = YES;
     }
     if (user.isCurrentUser) {
@@ -39,7 +36,7 @@
         self.tapImageView.image = [UIImage imageNamed:@"blueTappedImageView"];
     }
     else {
-        self.tapLabel.text = @"TAP";
+        self.tapLabel.text = @"TAP TO SEE OUT";
         self.tapImageView.image = [UIImage imageNamed:@"blueTapImageView"];
     }
     //
@@ -55,11 +52,11 @@
     self.tapImageView.image = [UIImage imageNamed:@"blueTapImageView"];
     [self.tapButton addSubview:self.tapImageView];
     
-    self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 40, 45, 80, 20)];
-    self.tapLabel.text = @"TAP";
+    self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - 60, 45, 120, 20)];
+    self.tapLabel.text = @"TAP TO SEE OUT";
     self.tapLabel.textAlignment = NSTextAlignmentCenter;
-    self.tapLabel.font = [FontProperties mediumFont:14.0f];
-    self.tapLabel.textColor = [FontProperties getBlueColor];
+    self.tapLabel.font = [FontProperties mediumFont:12.0f];
+    self.tapLabel.textColor = RGB(210, 210, 210);
     [self.tapButton addSubview:self.tapLabel];
 }
 
