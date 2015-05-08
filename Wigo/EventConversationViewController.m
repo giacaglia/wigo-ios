@@ -35,14 +35,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self loadScrollView];
 }
 
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 
     if (self.eventMessages.count > 0) {
         self.currentActiveCell = [NSIndexPath indexPathForItem:[self.index intValue] inSection:0];
@@ -55,21 +53,6 @@
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
     NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
     [WGAnalytics tagEvent:@"Event Story Detail View" withDetails: @{@"isPeeking": isPeekingString}];
-}
-
--(void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
-}
-
--(void) viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-}
-
--(void) viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
 #pragma mark UICollectionViewDataSource
@@ -410,7 +393,7 @@
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
-//    
+   
 //    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 29, self.view.frame.size.height - 65 - 8, 58, 65)];
 //    UIImageView *buttonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.buttonTrash.frame.size.width/2 - 14, self.buttonTrash.frame.size.height - 32, 29, 32)];
 //    buttonImageView.image = [UIImage imageNamed:@"trashIcon"];

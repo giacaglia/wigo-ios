@@ -12,13 +12,15 @@
 @implementation BaseViewController
 
 - (void)viewDidAppear:(BOOL)animated {
-    [super viewDidDisappear:animated];
+    [super viewDidAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden: NO];
     [self initializeTopBlue];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    [[UIApplication sharedApplication] setStatusBarHidden: NO];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     [self initializeTopBlue];
     [self updateBarButtonItems:1.0f];
     self.blueBannerView.hidden = NO;
@@ -31,14 +33,13 @@
     self.blueBannerView.hidden = NO;
 //    CGRect frame =  self.navigationController.navigationBar.frame;
 //    self.navigationController.navigationBar.frame =  CGRectMake(frame.origin.x, 20, frame.size.width, frame.size.height);
-    self.navigationController.navigationBar.backgroundColor = UIColor.clearColor;
     [self updateBarButtonItems:1.0f];
 }
 
 
 - (void)initializeTopBlue {
     self.navigationController.navigationBar.shadowImage = [UIImage new];
-    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: [FontProperties getBlueColor]] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor] forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.backgroundColor = [FontProperties getBlueColor];
     self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
 }
@@ -52,21 +53,6 @@
     [self.view addSubview:self.blueBannerView];
 }
 
-
-- (UIImage *)imageWithColor:(UIColor *)color
-{
-    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-    
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
-}
 
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {

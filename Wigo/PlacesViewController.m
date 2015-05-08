@@ -87,8 +87,6 @@ BOOL firstTimeLoading;
     self.isLocal = YES;
     [self updateNavigationBar];
     [self.placesTableView reloadData];
-    [[UIApplication sharedApplication] setStatusBarHidden: NO];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
 
 - (void) viewDidAppear:(BOOL)animated {

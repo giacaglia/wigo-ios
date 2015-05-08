@@ -263,6 +263,8 @@
 		E9012AC91AFAE5C3007DC769 /* LocationPrimer.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012AC71AFAE5C3007DC769 /* LocationPrimer.m */; };
 		E9012AD11AFBEFCD007DC769 /* ReferalView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012ACF1AFBEFCD007DC769 /* ReferalView.m */; };
 		E9012AD21AFBEFCD007DC769 /* ReferalView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012ACF1AFBEFCD007DC769 /* ReferalView.m */; };
+		E9012ADA1AFD00D7007DC769 /* UIColor+ImageExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012AD91AFD00D7007DC769 /* UIColor+ImageExtension.m */; };
+		E9012ADB1AFD00D7007DC769 /* UIColor+ImageExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = E9012AD91AFD00D7007DC769 /* UIColor+ImageExtension.m */; };
 		E9096D551ADD5F1100386AC2 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = E9096D481ADD5F1100386AC2 /* .gitkeep */; };
 		E9096D561ADD5F1100386AC2 /* .gitkeep in Resources */ = {isa = PBXBuildFile; fileRef = E9096D481ADD5F1100386AC2 /* .gitkeep */; };
 		E9096D571ADD5F1100386AC2 /* FSCalendar.m in Sources */ = {isa = PBXBuildFile; fileRef = E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */; };
@@ -746,6 +748,8 @@
 		E9012AC71AFAE5C3007DC769 /* LocationPrimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocationPrimer.m; sourceTree = "<group>"; };
 		E9012ACF1AFBEFCD007DC769 /* ReferalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReferalView.m; sourceTree = "<group>"; };
 		E9012AD01AFBEFCD007DC769 /* ReferalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReferalView.h; sourceTree = "<group>"; };
+		E9012AD81AFD00D7007DC769 /* UIColor+ImageExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ImageExtension.h"; sourceTree = "<group>"; };
+		E9012AD91AFD00D7007DC769 /* UIColor+ImageExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+ImageExtension.m"; sourceTree = "<group>"; };
 		E9096D481ADD5F1100386AC2 /* .gitkeep */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		E9096D491ADD5F1100386AC2 /* FSCalendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FSCalendar.h; sourceTree = "<group>"; };
 		E9096D4A1ADD5F1100386AC2 /* FSCalendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FSCalendar.m; sourceTree = "<group>"; };
@@ -1375,6 +1379,8 @@
 				45D9FBBB1A80043000D08577 /* UIImage+ImageEffects.m */,
 				45D9FBB61A8003EF00D08577 /* UIView+ViewToImage.h */,
 				45D9FBB71A8003EF00D08577 /* UIView+ViewToImage.m */,
+				E9012AD81AFD00D7007DC769 /* UIColor+ImageExtension.h */,
+				E9012AD91AFD00D7007DC769 /* UIColor+ImageExtension.m */,
 				E9ACDC6719AB7559004B0349 /* NSObject-CancelableScheduledBlock.h */,
 				E9ACDC6819AB7559004B0349 /* NSObject-CancelableScheduledBlock.m */,
 				E998C26319CB80240012BF51 /* UIImageView+ImageArea.h */,
@@ -2414,6 +2420,7 @@
 				C1F5B3C41A654A4200CAFD95 /* WGApi.m in Sources */,
 				C1F5B3C51A654A4200CAFD95 /* WGError.m in Sources */,
 				C1F5B3C61A654A4200CAFD95 /* WGParser.m in Sources */,
+				E9012ADB1AFD00D7007DC769 /* UIColor+ImageExtension.m in Sources */,
 				E994111319AA8D9200D76379 /* NSString+URLEncoding.m in Sources */,
 				C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */,
 				E96F07C219BA654600E858D7 /* GKImageCropView.m in Sources */,
@@ -2694,6 +2701,7 @@
 				E900C2BB1961EADE00A01F50 /* SDWebImageDownloaderOperation.m in Sources */,
 				45D9FAC01A781AFD00D08577 /* JSQMessagesAvatarImage.m in Sources */,
 				45D9FAE21A781AFD00D08577 /* JSQMessagesToolbarContentView.m in Sources */,
+				E9012ADA1AFD00D7007DC769 /* UIColor+ImageExtension.m in Sources */,
 				45D9FAB21A781AFD00D08577 /* JSQMessagesToolbarButtonFactory.m in Sources */,
 				E9A50CFD19350F13009B73EA /* ConversationViewController.m in Sources */,
 				4563F5651A3F875900F8C9C4 /* NSDictionary+STHelper.m in Sources */,

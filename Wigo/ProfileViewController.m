@@ -91,7 +91,7 @@ BOOL blockShown;
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleLightContent];
     self.tabBarController.navigationItem.titleView.hidden = NO;
     self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
-    [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor: [FontProperties getBlueColor]] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor] forBarMetrics:UIBarMetricsDefault];
 
     
     [self.pageControl removeFromSuperview];
@@ -100,22 +100,6 @@ BOOL blockShown;
     _gradientImageView = nil;
     if (self.user.isCurrentUser) [self updateLastNotificationsRead];
 }
-
-- (UIImage *)imageWithColor:(UIColor *)color
-{
-    CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-    
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return image;
-}
-
 
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -160,6 +144,7 @@ BOOL blockShown;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.navigationController.navigationBar.backgroundColor = UIColor.clearColor;
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     self.tabBarController.navigationItem.titleView = nil;
 
