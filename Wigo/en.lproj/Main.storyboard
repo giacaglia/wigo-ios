@@ -550,9 +550,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="chatTabIcon" width="32" height="25"/>
+        <image name="chatTabIcon" width="30" height="24"/>
         <image name="friendsIcon" width="30" height="25"/>
-        <image name="homeIcon" width="24" height="27"/>
+        <image name="homeIcon" width="23" height="26"/>
         <image name="profileIcon" width="22" height="26"/>
     </resources>
     <color key="tintColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>

@@ -12,18 +12,23 @@
 
 @implementation WhereAreYouViewController
 
-- (void)viewDidLoad {
+-(void) viewDidLoad {
     [super viewDidLoad];
     [self setup];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
+-(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self.privateSwitchView.closeLockImageView stopAnimating];
     [self.privateSwitchView.openLockImageView stopAnimating];
 }
 
-- (void)setup {
+-(void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.navigationController.navigationBar.backgroundColor = [FontProperties getBlueColor];
+}
+
+-(void) setup {
     self.view.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     self.view.backgroundColor = RGB(248, 248, 248);
     [self initializeNavigationItem];

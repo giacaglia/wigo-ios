@@ -11,6 +11,7 @@
 #import "WGApi.h"
 #import "WGError.h"
 #import "NSDate+WGDate.h"
+#define kRefKey @"$ref"
 
 @class WGCollection;
 

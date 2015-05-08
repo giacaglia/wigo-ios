@@ -41,14 +41,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self loadScrollView];
 }
 
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
 
     if (self.eventMessages.count > 0) {
         self.currentActiveCell = [NSIndexPath indexPathForItem:[self.index intValue] inSection:0];
@@ -65,18 +63,7 @@
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     [self.mediaScrollView scrollStoppedAtPage:self.index.intValue];
-}
-
--(void) viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-}
-
--(void) viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
 #pragma mark UICollectionViewDataSource
@@ -402,6 +389,10 @@
             }
             self.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
         }
+        else {
+            self.numberOfVotesLabel.hidden = YES;
+        }
+        if (!eventMessage.vote) self.upvoteImageView.image =  [UIImage imageNamed:@"heart"];
         if (eventMessage.vote.intValue == 1) {
             self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
         }
@@ -410,7 +401,6 @@
         }
         if (eventMessage.mediaMimeType && [eventMessage.mediaMimeType isEqualToString:kCameraType]) {
             self.buttonCancel.hidden = YES;
-//            self.buttonTrash.hidden = YES;
             self.facesHidden = NO;
             [self focusOnContent];
         } else if (eventMessage.mediaMimeType && ([eventMessage.mediaMimeType isEqualToString:kFaceImage] || [eventMessage.mediaMimeType isEqualToString:kNotAbleToPost])) {
@@ -477,7 +467,7 @@
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
-//    
+   
 //    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 29, self.view.frame.size.height - 65 - 8, 58, 65)];
 //    UIImageView *buttonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.buttonTrash.frame.size.width/2 - 14, self.buttonTrash.frame.size.height - 32, 29, 32)];
 //    buttonImageView.image = [UIImage imageNamed:@"trashIcon"];
@@ -512,8 +502,8 @@
 - (void)upvotePressed {
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-    NSNumber *vote = [eventMessage objectForKey:@"vote"];
-    if (vote != nil) {
+    NSNumber *vote = eventMessage.vote;
+    if (vote.boolValue) {
         return;
     }
     if ([eventMessage objectForKey:@"id"] == nil) {

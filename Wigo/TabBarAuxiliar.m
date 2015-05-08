@@ -86,22 +86,36 @@ static NSDate *biggestDate;
     NSArray *viewControllers = navigationController.viewControllers;
     UITabBarController *tabBarController = [viewControllers objectAtIndex:0];
     UITabBar *tabBar = tabBarController.tabBar;
+    [tabBar setFrame:CGRectMake(tabBar.frame.origin.x, tabBar.frame.origin.y + 5, tabBar.frame.size.width, tabBar.frame.size.height - 5)];
     tabBar.translucent = NO;
-    UITabBarItem *firstItem = [tabBar.items objectAtIndex:0];
-    firstItem.image = [[UIImage imageNamed:@"homeIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    firstItem.selectedImage = [UIImage imageNamed:@"blueHomeIcon"];
-    UITabBarItem *secondItem =  [tabBar.items objectAtIndex:1];
-    secondItem.image = [[UIImage imageNamed:@"chatTabIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    secondItem.selectedImage = [UIImage imageNamed:@"blueChatsIcon"];
-    UITabBarItem *thirdItem = [tabBar.items objectAtIndex:3];
-    thirdItem.image = [[UIImage imageNamed:@"friendsIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    thirdItem.selectedImage = [UIImage imageNamed:@"blueFriendsIcon"];
-    UITabBarItem *fourthItem = [tabBar.items objectAtIndex:4];
-    fourthItem.image = [[UIImage imageNamed:@"profileIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    fourthItem.selectedImage = [UIImage imageNamed:@"blueProfileIcon"];
+
+    [TabBarAuxiliar addTabBarImage:@"homeIcon"
+                     withBlueImage:@"blueHomeIcon" atIndex:0 atTabBar:tabBar];
+
+    [TabBarAuxiliar addTabBarImage:@"chatTabIcon"
+                     withBlueImage:@"blueChatsIcon" atIndex:1 atTabBar:tabBar];
+
+    [TabBarAuxiliar addTabBarImage:@"friendsIcon"
+                     withBlueImage:@"blueFriendsIcon" atIndex:3 atTabBar:tabBar];
+
+    [TabBarAuxiliar addTabBarImage:@"profileIcon"
+                     withBlueImage:@"blueProfileIcon" atIndex:4 atTabBar:tabBar];
+
     [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName : RGB(200, 200, 200) } forState:UIControlStateNormal];
     [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName :[FontProperties getBlueColor] } forState:UIControlStateSelected];
 
+}
+
++(void)addTabBarImage:(NSString *)imageName
+        withBlueImage:(NSString *)blueImage
+              atIndex:(int)index
+             atTabBar:(UITabBar *)tabBar;
+{
+    UITabBarItem *item = [tabBar.items objectAtIndex:index];
+    item.image = [[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    item.imageInsets = UIEdgeInsetsMake(-3, 0, 3, 0);
+    item.selectedImage = [UIImage imageNamed:blueImage];
+    item.titlePositionAdjustment = UIOffsetMake(0.0, -6.0);
 }
 
 + (void)checkIndex:(int)index forDate:(NSDate *)date {
