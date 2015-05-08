@@ -152,8 +152,30 @@
     [self.event getMeta:^(WGCollection *collection, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [strongSelf.mediaScrollView reloadData];
-            [strongSelf.facesCollectionView reloadData];
+            NSInteger page = [strongSelf getPageForScrollView:strongSelf.mediaScrollView toLeft:YES];
+            if (page < strongSelf.eventMessages.count) {
+                WGEventMessage *eventMessage = (WGEventMessage *)[strongSelf.eventMessages objectAtIndex:page];
+                if (eventMessage.upVotes) {
+                    if (eventMessage.upVotes.intValue == 0) {
+                        strongSelf.numberOfVotesLabel.hidden = YES;
+                    }
+                    else {
+                        strongSelf.numberOfVotesLabel.hidden = NO;
+                    }
+                    strongSelf.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
+                }
+                else {
+                    strongSelf.numberOfVotesLabel.hidden = YES;
+                }
+                if (!eventMessage.vote) strongSelf.upvoteImageView.image =  [UIImage imageNamed:@"heart"];
+                if (eventMessage.vote.intValue == 1) {
+                    strongSelf.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
+                }
+                else {
+                    strongSelf.upvoteImageView.image = [UIImage imageNamed:@"heart"];
+                }
+            }
+            
         });
     }];
 }
