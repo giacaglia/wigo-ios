@@ -121,15 +121,16 @@
             handler(NO, error);
             return;
         }
-//        __strong typeof(weakSelf) strongSelf = weakSelf;
-//        WGParser *parser = [[WGParser alloc] init];
-//        NSDictionary *response = [parser replaceReferences:jsonResponse];
-//        NSDictionary *messageResponse = [[response objectForKey:@"objects"] objectAtIndex:0];
-//        if ([messageResponse objectForKey:kRefKey] &&
-//            [[WGCache sharedCache] objectForKey:[messageResponse objectForKey:kRefKey]]) {
-//            messageResponse = [[WGCache sharedCache] objectForKey:[messageResponse objectForKey:kRefKey]];
-//        }
-//        strongSelf.parameters = [NSMutableDictionary dictionaryWithDictionary:messageResponse];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        WGParser *parser = [[WGParser alloc] init];
+        NSDictionary *response = [parser replaceReferences:jsonResponse];
+        NSDictionary *messageResponse = [[response objectForKey:@"objects"] objectAtIndex:0];
+        if ([messageResponse objectForKey:kRefKey] &&
+            [[WGCache sharedCache] objectForKey:[messageResponse objectForKey:kRefKey]]) {
+            messageResponse = [[WGCache sharedCache] objectForKey:[messageResponse objectForKey:kRefKey]];
+        }
+        strongSelf.parameters = [NSMutableDictionary dictionaryWithDictionary:messageResponse];
+        [strongSelf replaceReferences];
         handler(YES, nil);
     }];
 }
