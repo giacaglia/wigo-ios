@@ -355,8 +355,8 @@ referenceSizeForFooterInSection:(NSInteger)section {
     UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35 + 10, self.chatButton.frame.size.width, 20)];
     chatLabel.textAlignment = NSTextAlignmentCenter;
     chatLabel.text = @"CHAT";
-    chatLabel.textColor = [FontProperties getBlueColor];
-    chatLabel.font = [FontProperties mediumFont:14.0f];
+    chatLabel.textColor = RGB(210, 210, 210);
+    chatLabel.font = [FontProperties mediumFont:12.0f];
     [self.chatButton addSubview:chatLabel];
     [self.backgroundWhiteView addSubview:self.chatButton];
     

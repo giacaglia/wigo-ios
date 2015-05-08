@@ -73,9 +73,12 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
                                               atIndex:(int)indexPath.item];
         return;
     }
-    if (indexPath.section != kAddPhotoSection || !self.isPeeking || (WGProfile.currentUser.crossEventPhotosEnabled || [[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser])) {
-        int index = (int)indexPath.item + 1;
-        if (indexPath.section == kAddPhotoSection) index -= 1;
+    
+    if (indexPath.section != kAddPhotoSection) {
+        int index = (int)indexPath.item;
+        if ([[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) {
+            index +=1;
+        }
         [self.placesDelegate showConversationForEvent:self.event
                                     withEventMessages:self.event.messages
                                               atIndex:index];
@@ -93,7 +96,8 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(NSInteger)collectionView:(UICollectionView *)collectionView
     numberOfItemsInSection:(NSInteger)section {
     if (section == kAddPhotoSection)  {
-       if (self.event.isExpired.boolValue) return 0;
+       if (self.event.isExpired.boolValue ||
+           ![[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) return 0;
        return 1;
     }
     if (section == kHighlightSection) return self.event.messages.count;

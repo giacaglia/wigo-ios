@@ -73,6 +73,7 @@ BOOL blockShown;
     [self initializeHeaderButtonView];
     [self initializeRightBarButton];
 
+    self.edgesForExtendedLayout = UIRectEdgeAll;
 
     [self setNeedsStatusBarAppearanceUpdate];
 }
@@ -83,6 +84,7 @@ BOOL blockShown;
     if ([self.tableView respondsToSelector:@selector(layoutMargins)]) {
         self.tableView.layoutMargins = UIEdgeInsetsZero;
     }
+    self.tableView.frame = CGRectMake( self.tableView.frame.origin.x, self.tableView.frame.origin.y, self.tableView.frame.size.width,  [UIApplication sharedApplication].keyWindow.frame.size.height - 44);
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -107,6 +109,7 @@ BOOL blockShown;
     [self initializeRightBarButton];
     self.tabBarController.navigationItem.titleView = nil;
     [self.imageScrollView.scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [self.user.imagesURL count] - 10, [UIScreen mainScreen].bounds.size.width)];
+
 
     self.tableView.contentOffset = CGPointMake(0, 0);
     [self reloadViewForUserState];

@@ -13,6 +13,7 @@
 #import "Delegate.h"
 
 @interface EventConversationViewController : UIViewController<UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, EventConversationDelegate>
+- (NSInteger)getPageForScrollView:(UIScrollView *)scrollView toLeft:(BOOL)leftBoolean;
 - (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) WGCollection *eventMessages;

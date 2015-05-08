@@ -388,7 +388,7 @@
         <scene sceneID="4Co-ES-03f">
             <objects>
                 <tableViewController storyboardIdentifier="ProfileViewController" automaticallyAdjustsScrollViewInsets="NO" id="4XA-L7-y6d" customClass="ProfileViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="NaO-eg-QbV">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleAspectFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="NaO-eg-QbV">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -551,9 +551,9 @@
     </scenes>
     <resources>
         <image name="chatTabIcon" width="30" height="24"/>
-        <image name="friendsIcon" width="30" height="25"/>
+        <image name="friendsIcon" width="28" height="23"/>
         <image name="homeIcon" width="23" height="26"/>
-        <image name="profileIcon" width="22" height="26"/>
+        <image name="profileIcon" width="21" height="24"/>
     </resources>
     <color key="tintColor" red="1" green="0.5" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
 </document>
