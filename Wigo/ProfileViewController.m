@@ -74,7 +74,6 @@ BOOL blockShown;
     [self initializeRightBarButton];
 
     self.edgesForExtendedLayout = UIRectEdgeAll;
-    self.tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
 
     [self setNeedsStatusBarAppearanceUpdate];
 }
@@ -85,10 +84,7 @@ BOOL blockShown;
     if ([self.tableView respondsToSelector:@selector(layoutMargins)]) {
         self.tableView.layoutMargins = UIEdgeInsetsZero;
     }
-    self.tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
-    NSLog(@"frame: %@", NSStringFromCGRect(self.tableView.frame));
     self.tableView.frame = CGRectMake( self.tableView.frame.origin.x, self.tableView.frame.origin.y, self.tableView.frame.size.width,  [UIApplication sharedApplication].keyWindow.frame.size.height - 44);
-    NSLog(@"frame: %@", NSStringFromCGRect(self.tableView.frame));
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
@@ -114,7 +110,6 @@ BOOL blockShown;
     self.tabBarController.navigationItem.titleView = nil;
     [self.imageScrollView.scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [self.user.imagesURL count] - 10, [UIScreen mainScreen].bounds.size.width)];
 
-    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
 
     self.tableView.contentOffset = CGPointMake(0, 0);
     [self reloadViewForUserState];
