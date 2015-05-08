@@ -378,9 +378,9 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
     [self.view addSubview:self.scrollView];
     
     [self addText:@"Discover awesome events\nin your area" andImage:@"discover" atIndex:0];
-    [self addText:@"See who's going\nwhere real-time" andImage:@"whoPreview" atIndex:1];
-    [self addText:@"Share moments with\nfriends" andImage:@"share" atIndex:2];
-    [self addText:@"Finalize plans via chats" andImage:@"chatPreview" atIndex:3];
+    [self addText:@"See who's going\nin real-time" andImage:@"whoPreview" atIndex:1];
+    [self addText:@"Share moments\nwith friends" andImage:@"share" atIndex:2];
+    [self addText:@"Finalize plans\nvia chats" andImage:@"chatPreview" atIndex:3];
     [self addText:@"Forget FOMO, forever!" andImage:@"wigoPreview" atIndex:4];
 
     self.pageControl = [[UIPageControl alloc] initWithFrame: CGRectMake(0, self.view.frame.size.height - 0.2*self.view.frame.size.width - 20 - 5, self.view.frame.size.width, 20)];

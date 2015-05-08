@@ -1045,7 +1045,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.mutualFriendsLabel.font = [FontProperties mediumFont:15.0f];
     [self.contentView addSubview:self.mutualFriendsLabel];
     
-    self.mutualFriendsCollection = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 30, self.contentView.frame.size.width, 60) collectionViewLayout:[[ScrollViewLayout alloc] initWithWidth:40]];
+    self.mutualFriendsCollection = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 30, [UIScreen mainScreen].bounds.size.width, 60) collectionViewLayout:[[ScrollViewLayout alloc] initWithWidth:40]];
     [self.mutualFriendsCollection registerClass:[ScrollViewCell class] forCellWithReuseIdentifier:kScrollViewCellName];
     [self.mutualFriendsCollection registerClass:[UICollectionReusableView class]
                      forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
