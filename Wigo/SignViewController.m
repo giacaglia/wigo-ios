@@ -197,7 +197,10 @@
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
-        [strongSelf dismissViewControllerAnimated:YES completion:nil];
+        if ([WGProfile.currentUser.status isEqual:kStatusWaiting]) {
+            [strongSelf.navigationController pushViewController:[WaitListViewController new] animated:YES];
+        }
+        else [strongSelf dismissViewControllerAnimated:YES completion:nil];
     }];
 }
 
@@ -343,20 +346,11 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
     if (_pushed) return;
     _pushed = YES;
-    
-    if (WGProfile.currentUser.group.locked.boolValue) {
-        if (WGProfile.currentUser.findReferrer) {
-            [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
-            NSDateFormatter *dateFormatter = [NSDateFormatter new];
-            [dateFormatter setDateFormat:@"yyyy-d-MM HH:mm:ss"];
-            [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-            WGProfile.currentUser.findReferrer = NO;
-            [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
-        }
+
+    if ([WGProfile.currentUser.status isEqual:kStatusWaiting]) {
         [self.navigationController pushViewController:[WaitListViewController new] animated:YES];
-    } else {
-        [self dismissViewControllerAnimated:NO completion:nil];
     }
+    else [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 - (void)reloadedUserInfo:(BOOL)success andError:(NSError *)error {

@@ -54,7 +54,10 @@
     
     UILabel *numberLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 60)];
     numberLabel.center = CGPointMake(self.view.center.x, self.view.center.y - 20);
-    numberLabel.text = @"1,392";
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    NSString *formattedOutput = [formatter stringFromNumber:WGProfile.currentUser.waitListPos];
+    numberLabel.text = formattedOutput;
     numberLabel.font = [FontProperties semiboldFont:30.0f];
     numberLabel.textColor = [FontProperties getBlueColor];
     numberLabel.textAlignment = NSTextAlignmentCenter;

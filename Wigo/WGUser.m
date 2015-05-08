@@ -68,6 +68,8 @@
 #define kIsAttendingKey @"is_attending"
 #define kPeriodWentOutKey @"period_went_out"
 #define kNumMutualFriends @"num_mutual_friends"
+#define kStatusKey @"status"
+#define kWaitListPosKey @"wait_list_position"
 
 #define kGroupKey @"group" //: {},
 #define kGroupLockedKey @"locked"
@@ -365,7 +367,7 @@ static WGUser *currentUser = nil;
     self.properties = properties;
 }
 
--(NSString *)age {
+-(NSString *) age {
     NSString *birthday = self.birthday;
     if (!birthday) return @"";
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
@@ -376,6 +378,17 @@ static WGUser *currentUser = nil;
 
     NSDateComponents *conversionInfo = [calendar components:NSYearCalendarUnit fromDate:dateFromString toDate:[NSDate date]  options:0];
     return [NSString stringWithFormat:@"%ld", (long)[conversionInfo year]];
+}
+
+-(NSString *) status {
+    return [self objectForKey:kStatusKey];
+}
+
+-(NSNumber *)waitListPos {
+    if ([self objectForKey:kWaitListPosKey]) {
+        return [self objectForKey:kWaitListPosKey];
+    }
+    return @1132;
 }
 
 -(NSDictionary *)friendsMetaDict {

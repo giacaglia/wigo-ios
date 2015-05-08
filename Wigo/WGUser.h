@@ -15,6 +15,8 @@
 #define kFriendRequestReceived @"received"
 #define kPropertiesKey @"properties"
 
+#define kStatusWaiting @"waiting"
+
 @class WGEvent;
 
 typedef enum Gender {
@@ -106,6 +108,8 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 +(Gender) genderFromName:(NSString *)name;
 -(NSString *) fullName;
 -(NSString *) age;
+-(NSString *) status;
+-(NSNumber *) waitListPos;
 
 -(State) state;
 
