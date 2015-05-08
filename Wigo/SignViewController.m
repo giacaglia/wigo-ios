@@ -13,7 +13,7 @@
 #import "ReferalViewController.h"
 #import "WaitListViewController.h"
 
-#define kPushNotificationMessage @"Wigo works best when you enable push notifications so we can let you know when the next party is happening."
+#define kPushNotificationMessage @"When your friends are counting on you to go out, we need to reach you via push notifications."
 #define kPushNotificationKey @"push_notification_key"
 
 
