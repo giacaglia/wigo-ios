@@ -12,7 +12,6 @@
 #import "WGCache.h"
 
 #define kIdKey @"id"
-#define kRefKey @"$ref"
 #define kCreatedKey @"created"
 
 @implementation WGObject

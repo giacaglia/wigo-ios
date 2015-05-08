@@ -557,9 +557,6 @@ BOOL firstTimeLoading;
         return [EventCell height];
     }
     else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
-        NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
-        NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
-        WGEvent *event = (WGEvent *)[eventObjectArray objectAtIndex:indexPath.row];
         return [LessThan2PhotosOldEventCell height];
     }
     

@@ -341,6 +341,10 @@
             }
             self.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
         }
+        else {
+            self.numberOfVotesLabel.hidden = YES;
+        }
+        if (!eventMessage.vote) self.upvoteImageView.image =  [UIImage imageNamed:@"heart"];
         if (eventMessage.vote.intValue == 1) {
             self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
         }
@@ -349,7 +353,6 @@
         }
         if (eventMessage.mediaMimeType && [eventMessage.mediaMimeType isEqualToString:kCameraType]) {
             self.buttonCancel.hidden = YES;
-//            self.buttonTrash.hidden = YES;
             self.facesHidden = NO;
             [self focusOnContent];
         } else if (eventMessage.mediaMimeType && ([eventMessage.mediaMimeType isEqualToString:kFaceImage] || [eventMessage.mediaMimeType isEqualToString:kNotAbleToPost])) {

@@ -115,11 +115,21 @@
     NSString *eventID = [self.parameters objectForKey:@"event"];
     NSString *classURL = [NSString stringWithFormat:@"events/%@/messages/", eventID];
     [self.parameters removeObjectForKey:@"event"];
+    __weak typeof(self) weakSelf = self;
     [WGApi post:classURL withParameters:self.parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(NO, error);
             return;
         }
+//        __strong typeof(weakSelf) strongSelf = weakSelf;
+//        WGParser *parser = [[WGParser alloc] init];
+//        NSDictionary *response = [parser replaceReferences:jsonResponse];
+//        NSDictionary *messageResponse = [[response objectForKey:@"objects"] objectAtIndex:0];
+//        if ([messageResponse objectForKey:kRefKey] &&
+//            [[WGCache sharedCache] objectForKey:[messageResponse objectForKey:kRefKey]]) {
+//            messageResponse = [[WGCache sharedCache] objectForKey:[messageResponse objectForKey:kRefKey]];
+//        }
+//        strongSelf.parameters = [NSMutableDictionary dictionaryWithDictionary:messageResponse];
         handler(YES, nil);
     }];
 }
