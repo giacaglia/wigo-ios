@@ -6,15 +6,25 @@
 //  Copyright (c) 2014 Giuliano Giacaglia. All rights reserved.
 //
 
+#import <ImageIO/ImageIO.h>
+
 #import "MediaScrollView.h"
 #import "Globals.h"
 #import "EventMessagesConstants.h"
 #import "WGEventMessage.h"
 #import "WGCollection.h"
+
+#import "WGCameraViewController.h"
+#import "UIImage+Rotation.h"
+
 #import <AVFoundation/AVFoundation.h>
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 #define kMediaMimeTypeKey @"media_mime_type"
 #define kThumbnailDataKey @"thumbnailData"
+#define kThumbnailImageKey @"thumbnailImage"
+
+#define kVideoMetaDataCurrentThumbImage     @"current_thumb_image"
+#define kVideoMetaDataCurrentTime           @"current_time"
 
 @interface MediaScrollView() {}
 @property (nonatomic, strong) NSMutableArray *pageViews;
@@ -23,6 +33,11 @@
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
 @property (nonatomic, assign) BOOL shownCurrentImage;
+
+@property (nonatomic, strong) NSMutableSet *moviePlayerPool;
+
+@property (nonatomic, strong) WGCameraViewController *internalCameraController;
+
 @end
 
 @implementation MediaScrollView
@@ -47,7 +62,46 @@
     [self registerClass:[ImageCell class] forCellWithReuseIdentifier:@"ImageCell"];
     [self registerClass:[PromptCell class] forCellWithReuseIdentifier:@"PromptCell"];
     [self registerClass:[CameraCell class] forCellWithReuseIdentifier:@"CameraCell"];
+    
+    
+//    MPMoviePlayerController *playerA = [self videoCellMoviePlayer];
+//    MPMoviePlayerController *playerB = [self videoCellMoviePlayer];
+//    self.moviePlayerPool = [NSMutableSet setWithObjects:playerA, playerB, nil];
+    
+    self.sharedMoviePlayer = [self videoCellMoviePlayer];
+    
+    self.videoPlayerIsSavingThumbnail = NO;
+    self.videoIsWaitingToPrepare = NO;
+    
+    self.videoMetaDataInternal = [NSMutableDictionary dictionary];
+    
+    
+    
+    self.internalCameraController = [[WGCameraViewController alloc] init];
+    
+    self.currentVideoIndex = -1;
+    
 }
+
+- (void)dealloc {
+    NSLog(@"releasing media scroll view");
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (MPMoviePlayerController *)videoCellMoviePlayer {
+    
+    MPMoviePlayerController *ret = [[MPMoviePlayerController alloc] init];
+    ret.movieSourceType = MPMovieSourceTypeStreaming;
+    
+    ret.scalingMode = MPMovieScalingModeAspectFill;
+    [ret setControlStyle: MPMovieControlStyleNone];
+    ret.repeatMode = MPMovieRepeatModeOne;
+    ret.shouldAutoplay = YES;
+    
+    return ret;
+}
+
 
 #pragma mark - UICollectionView Data Source
 
@@ -86,13 +140,17 @@
         } else {
             CameraCell *cameraCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"CameraCell" forIndexPath: indexPath];
             cameraCell.mediaScrollDelegate = self;
+            [cameraCell setupCameraController:self.internalCameraController];
             if ([cameraCell.info.allKeys containsObject:UIImagePickerControllerMediaType]) {
                 NSString *typeString = [cameraCell.info objectForKey:UIImagePickerControllerMediaType];
                 if ([typeString isEqual:@"public.movie"]) {
+                    
+                    // this is a no-op unless the user has a preview video, ready to upload or cancel
+                    [cameraCell.contentView bringSubviewToFront:cameraCell.previewMoviePlayer.view];
                     [cameraCell.previewMoviePlayer play];
                 }
             }
-            [self.pageViews setObject:cameraCell.controller atIndexedSubscript:indexPath.row];
+            [self.pageViews setObject:cameraCell atIndexedSubscript:indexPath.row];
             return cameraCell;
         }
     }
@@ -111,10 +169,12 @@
                 [myCell.imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                          NSURL *realURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
+                        NSLog(@"image URL: %@", realURL.absoluteString);
                         [weakCell.spinner startAnimating];
                         [weakCell.imageView setImageWithURL:realURL
                                            placeholderImage:image
                                                   completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                                                      NSLog(@"image size: %@", NSStringFromCGSize(image.size));
                                                     [weakCell.spinner stopAnimating];
                                                 }];
                     });
@@ -140,20 +200,21 @@
         myCell.eventMessage = eventMessage;
         myCell.isPeeking = self.isPeeking;
 
+        myCell.videoStartTime = nil;
         NSString *thumbnailURL = [eventMessage objectForKey:@"thumbnail"];
         if (![thumbnailURL isKindOfClass:[NSNull class]]) {
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, thumbnailURL]];
             [myCell.thumbnailImageView setImageWithURL:imageURL];
-            [myCell.thumbnailImageView2 setImageWithURL:imageURL];
+            //[myCell.thumbnailImageView2 setImageWithURL:imageURL];
         }
+        
         NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
-        myCell.moviePlayer.contentURL = videoURL;
-        if (self.firstCell) {
-            [myCell.moviePlayer play];
-            self.lastMoviePlayer = myCell.moviePlayer;
-            self.firstCell = NO;
-        }
-        [self.pageViews setObject:myCell.moviePlayer atIndexedSubscript:indexPath.row];
+        myCell.videoURL = videoURL;
+        
+        NSLog(@"video URL: %@", videoURL.absoluteString);
+        
+        [self.pageViews setObject:myCell atIndexedSubscript:indexPath.row];
+        
         return myCell;
     }
 }
@@ -164,9 +225,9 @@
 }
 
 - (void)closeViewWithHandler:(BoolResultBlock)handler {
-    if (self.lastMoviePlayer) {
-        [self.lastMoviePlayer stop];
-    }
+    [self.currentVideoCell.moviePlayer stop];
+    self.currentVideoCell.moviePlayer.shouldAutoplay = NO;
+    
     for (int i = self.minPage; i <= self.maxPage; i++) {
         [self addReadPage:i];
     }
@@ -189,7 +250,19 @@
     [self.eventConversationDelegate dismissView];
 }
 
+- (void)startedScrollingFromPage:(int)fromPage {
+    
+    if ((int)fromPage < [self.pageViews count]) {
+        
+        id currentCell = [self.pageViews objectAtIndex:fromPage];
+        if([currentCell isKindOfClass:[VideoCell class]]) {
+            [(VideoCell*)currentCell pauseVideo];
+        }
+    }
+}
+
 -(void)scrolledToPage:(int)page {
+    
     NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
     [WGAnalytics tagEvent:@"Event Conversation Scrolled Highlight" withDetails: @{@"isPeeking": isPeekingString}];
     
@@ -201,22 +274,71 @@
             [self.pageViews addObject:[NSNull null]];
         }
     }
-
-    [self performBlock:^(void){[self playVideoAtPage:page];} afterDelay:0.5];
 }
 
+- (void)scrollStoppedAtPage:(int)page {
+    NSLog(@"stopped at page %d", page);
+    
+    [self prepareVideoAtPage:page];
+    [self playVideoAtPage:page];
+}
 
 - (void)playVideoAtPage:(int)page {
-    if (self.lastMoviePlayer) [self.lastMoviePlayer stop];
+    
     if ((int)page < [self.pageViews count]) {
-        MPMoviePlayerController *theMoviePlayer = [self.pageViews objectAtIndex:page];
-        if ([theMoviePlayer isKindOfClass:[MPMoviePlayerController class]] &&
-            theMoviePlayer.playbackState != MPMoviePlaybackStatePlaying) {
-            [theMoviePlayer play];
-            self.lastMoviePlayer = theMoviePlayer;
+        id currentCell = [self.pageViews objectAtIndex:page];
+        if([currentCell isKindOfClass:[VideoCell class]]) {
+            [(VideoCell*)currentCell startVideo];
         }
     }
 }
+
+- (void)prepareVideoAtPage:(int)page {
+    
+    if ((int)page < [self.pageViews count]) {
+        
+        id currentCell = [self.pageViews objectAtIndex:page];
+        if([currentCell isKindOfClass:[VideoCell class]]) {
+            
+            
+            NSLog(@"switching video cells to page %d", page);
+            
+            [self.currentVideoCell.moviePlayer cancelAllThumbnailImageRequests];
+            
+            if(self.currentVideoIndex == page) {
+                [self.currentVideoCell resumeVideo];
+            }
+            else {
+                
+                self.currentVideoIndex = page;
+                self.lastVideoCell = self.currentVideoCell;
+                self.currentVideoCell = (VideoCell *)currentCell;
+                if(self.lastVideoCell != self.currentVideoCell) {
+                    self.lastVideoCell.moviePlayer = nil;
+                }
+                
+                NSLog(@"preparing cell %d to play video", page);
+                [self.lastVideoCell.moviePlayer stop];
+                [self.currentVideoCell prepareVideo];
+            }
+        }
+        
+        // previous cell was a video cell but current is not:
+        // - stop video on previous cell
+        else if(self.currentVideoCell) {
+            
+            self.lastVideoCell = self.currentVideoCell;
+            self.currentVideoCell = nil;
+            [self.lastVideoCell.moviePlayer stop];
+            self.lastVideoCell.moviePlayer = nil;
+            
+            self.currentVideoIndex = -1;
+            
+            NSLog(@"stopping video for previous cell - now showing photo at %d", page);
+        }
+    }
+}
+
 
 - (void)addReadPage:(int)page {
     if (!self.eventMessagesRead) {
@@ -231,7 +353,6 @@
     }
 }
 
-
 #pragma mark - MediaScrollViewDelegate 
 
 - (void)focusOnContent {
@@ -240,6 +361,22 @@
 
 - (void)upvotePressed {
     [self.eventConversationDelegate upvotePressed];
+}
+
+- (MPMoviePlayerController *)getAvailableMoviePlayer {
+    return self.sharedMoviePlayer;
+}
+
+- (WGCameraViewController *)cameraController {
+    return self.internalCameraController;
+}
+
+- (void)freeMoviePlayer:(MPMoviePlayerController *)moviePlayer {
+    [self.moviePlayerPool addObject:moviePlayer];
+}
+
+- (NSMutableDictionary *)videoMetaData {
+    return self.videoMetaDataInternal;
 }
 
 #pragma mark - IQMediaPickerController Delegate methods
@@ -256,6 +393,9 @@
 - (void)mediaPickerController:(UIImagePickerController *)controller
        startUploadingWithInfo:(NSDictionary *)info {
     self.filenameString = [self.filenameString substringWithRange:NSMakeRange(0, self.filenameString.length - 4)];
+    
+    NSURL *originalFileURL = nil;
+    
     NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
     f.numberStyle = NSNumberFormatterDecimalStyle;
     NSNumber *myNumber = [f numberFromString:self.filenameString];
@@ -289,10 +429,9 @@
         self.filenameString = [NSString stringWithFormat:@"%@.mp4", myNumber.stringValue];
         NSURL *fileURL = [info objectForKey:UIImagePickerControllerMediaURL];
         fileData = [NSData dataWithContentsOfURL:fileURL];
-        type = kVideoEventType;
         
-        MPMoviePlayerController *player = [[MPMoviePlayerController alloc] initWithContentURL:fileURL];
-        UIImage *thumbnailImage = [player thumbnailImageAtTime:0.1 timeOption:MPMovieTimeOptionNearestKeyFrame];
+        type = kVideoEventType;
+        UIImage *thumbnailImage = info[kThumbnailImageKey];
         NSData *thumbnailFileData = [self getImageDataFromImage:thumbnailImage andController:controller isTemplate:YES];
         NSString *thumbnailFilename = [NSString stringWithFormat:@"thumbnail%@.jpg", myNumber.stringValue];
         self.options = @{
@@ -301,12 +440,13 @@
                          kThumbnailDataKey: thumbnailFileData,
                          @"thumbnail": thumbnailFilename
                          };
+        originalFileURL = info[UIImagePickerControllerMediaURL];
     }
     
-    
-   [self uploadContentWithFile:fileData
-                andFileName:self.filenameString
-                 andOptions:self.options];
+    [self uploadContentWithFile:fileData
+                    andFileName:self.filenameString
+                     andOptions:self.options
+                originalFileURL:originalFileURL];
   
     
     
@@ -342,45 +482,48 @@
 - (NSData *)getImageDataFromImage:(UIImage *)image
                     andController:(UIImagePickerController *)controller
                        isTemplate:(BOOL)isTemplate{
-    CGFloat imageWidth = image.size.height * 1.0; // because the image is rotated
-    CGFloat imageHeight = image.size.width * 1.0; // because the image is rotated
     
-    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
-    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-    
-    CGFloat ratio = imageWidth/screenHeight; // approximately 4.0
-    CGFloat cropWidth = screenHeight * ratio;
-    CGFloat cropHeight = screenWidth * ratio;
-    
-    CGFloat jpegQuality = WGProfile.currentUser.imageQuality;
-    CGFloat imageMultiple = WGProfile.currentUser.imageMultiple;
-    
-    CGFloat translation = (imageHeight - cropHeight) / 2.0;
-    
-    UIImage *flippedImage;
-    if (!isTemplate) {
-        UIImage *croppedImage = [image croppedImage:CGRectMake(0, translation, cropWidth, cropHeight)];
-        UIImage *scaledImage = [croppedImage resizedImage:CGSizeMake(screenHeight*imageMultiple, screenWidth*imageMultiple) interpolationQuality:kCGInterpolationHigh];
-        flippedImage = scaledImage;
-        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
-            flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
-                                               scale:scaledImage.scale
-                                         orientation:UIImageOrientationLeftMirrored];
-        }
-    }
-    else {
-//        UIImage *scaledImage = [image resizedImage:CGSizeMake(screenWidth*imageMultiple, screenHeight*imageMultiple) interpolationQuality:kCGInterpolationHigh];
-        flippedImage = image;
+    return UIImageJPEGRepresentation(image, WGProfile.currentUser.imageQuality);
+//    CGFloat imageWidth = image.size.height * 1.0; // because the image is rotated
+//    CGFloat imageHeight = image.size.width * 1.0; // because the image is rotated
+//    
+//    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+//    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+//    
+//    CGFloat ratio = imageWidth/screenHeight; // approximately 4.0
+//    CGFloat cropWidth = screenHeight * ratio;
+//    CGFloat cropHeight = screenWidth * ratio;
+//    
+//    CGFloat jpegQuality = WGProfile.currentUser.imageQuality;
+//    CGFloat imageMultiple = WGProfile.currentUser.imageMultiple;
+//    
+//    CGFloat translation = (imageHeight - cropHeight) / 2.0;
+//    
+//    UIImage *flippedImage;
+//    if (!isTemplate) {
+//        UIImage *croppedImage = [image croppedImage:CGRectMake(0, translation, cropWidth, cropHeight)];
+//        UIImage *scaledImage = [croppedImage resizedImage:CGSizeMake(screenHeight*imageMultiple, screenWidth*imageMultiple) interpolationQuality:kCGInterpolationHigh];
+//        flippedImage = scaledImage;
 //        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
 //            flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
 //                                               scale:scaledImage.scale
 //                                         orientation:UIImageOrientationLeftMirrored];
 //        }
-    }
-    
-    return UIImageJPEGRepresentation(flippedImage, jpegQuality);
+//    }
+//    else {
+////        UIImage *scaledImage = [image resizedImage:CGSizeMake(screenWidth*imageMultiple, screenHeight*imageMultiple) interpolationQuality:kCGInterpolationHigh];
+//        flippedImage = image;
+////        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
+////            flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
+////                                               scale:scaledImage.scale
+////                                         orientation:UIImageOrientationLeftMirrored];
+////        }
+//    }
+//    
+//    return UIImageJPEGRepresentation(flippedImage, jpegQuality);
 
 }
+
 
 - (void)mediaPickerController:(UIImagePickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info {
@@ -452,13 +595,14 @@
            andOptions:self.options];
 }
 
-- (void)didFinishPlaying:(NSNotification *)notification {
-    [self.moviePlayer stop];
-}
+//- (void)didFinishPlaying:(NSNotification *)notification {
+//    [self.moviePlayer stop];
+//}
 
 - (void)uploadContentWithFile:(NSData *)fileData
                   andFileName:(NSString *)filename
                    andOptions:(NSDictionary *)options
+              originalFileURL:(NSURL *)originalFileURL
 {
     // If it's image.
     if ([[options objectForKey:kMediaMimeTypeKey] isEqual:kImageEventType]) {
@@ -491,6 +635,9 @@
         options = mutableOptions;
         WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
         __weak typeof(self) weakSelf = self;
+        
+        NSLog(@"video data length: %d", (int)fileData.length);
+        
         [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumnailFileName andHandler:^(WGEventMessage *object, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             strongSelf.error = error;
@@ -507,13 +654,178 @@
                     [strongSelf.tasksStillBeingUploaded addObject:returnedFilename];
                 }
                 [strongSelf callbackFromUploadWithInfo:nil andFilename:returnedFilename];
+                
+                // delete local copy of video
+                
+                NSError *err = nil;
+                if(originalFileURL) {
+                    [[NSFileManager defaultManager] removeItemAtURL:originalFileURL
+                                                              error:&err];
+                    if(err) {
+                        NSLog(@"error removing file: %@", err.localizedDescription);
+                    }
+                }
             }
         }];
-//        [newEventMessage addVideo:fileData withName:filename andHandler:^(WGEventMessage *object, NSError *error) {
-
-//        }];
     }
 }
+
+
+
+
+// credit: http://stackoverflow.com/questions/11751883/how-can-i-reduce-the-file-size-of-a-video-created-with-uiimagepickercontroller
+
+
+
+- (void)convertVideoToLowQuailtyWithInputURL:(NSURL*)inputURL
+                                   outputURL:(NSURL*)outputURL
+                                  completion:(void (^)(void))completion
+{
+    //setup video writer
+    
+    AVAsset *videoAsset = [[AVURLAsset alloc] initWithURL:inputURL options:nil];
+    
+    
+    
+    AVAssetTrack *videoTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    
+    CGSize videoSize = videoTrack.naturalSize;
+    
+    NSLog(@"video size: %@", NSStringFromCGSize(videoSize));
+    
+    NSDictionary *videoWriterCompressionSettings =  [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:1250000], AVVideoAverageBitRateKey, nil];
+    
+    NSDictionary *videoWriterSettings = [NSDictionary dictionaryWithObjectsAndKeys:AVVideoCodecH264, AVVideoCodecKey, videoWriterCompressionSettings, AVVideoCompressionPropertiesKey, [NSNumber numberWithFloat:videoSize.width], AVVideoWidthKey, [NSNumber numberWithFloat:videoSize.height], AVVideoHeightKey, nil];
+    
+    AVAssetWriterInput* videoWriterInput = [AVAssetWriterInput
+                                            assetWriterInputWithMediaType:AVMediaTypeVideo
+                                            outputSettings:videoWriterSettings];
+    
+    videoWriterInput.expectsMediaDataInRealTime = YES;
+    
+    videoWriterInput.transform = videoTrack.preferredTransform;
+    
+    AVAssetWriter *videoWriter = [[AVAssetWriter alloc] initWithURL:outputURL fileType:AVFileTypeQuickTimeMovie error:nil];
+    
+    [videoWriter addInput:videoWriterInput];
+    
+    //setup video reader
+    NSDictionary *videoReaderSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+    
+    AVAssetReaderTrackOutput *videoReaderOutput = [[AVAssetReaderTrackOutput alloc] initWithTrack:videoTrack outputSettings:videoReaderSettings];
+    
+    AVAssetReader *videoReader = [[AVAssetReader alloc] initWithAsset:videoAsset error:nil];
+    
+    [videoReader addOutput:videoReaderOutput];
+    
+    //setup audio writer
+    AVAssetWriterInput* audioWriterInput = [AVAssetWriterInput
+                                            assetWriterInputWithMediaType:AVMediaTypeAudio
+                                            outputSettings:nil];
+    
+    audioWriterInput.expectsMediaDataInRealTime = NO;
+    
+    [videoWriter addInput:audioWriterInput];
+    
+    //setup audio reader
+    AVAssetTrack* audioTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio] objectAtIndex:0];
+    
+    AVAssetReaderOutput *audioReaderOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:audioTrack outputSettings:nil];
+    
+    AVAssetReader *audioReader = [AVAssetReader assetReaderWithAsset:videoAsset error:nil];
+    
+    [audioReader addOutput:audioReaderOutput];
+    
+    [videoWriter startWriting];
+    
+    //start writing from video reader
+    [videoReader startReading];
+    
+    [videoWriter startSessionAtSourceTime:kCMTimeZero];
+    
+    dispatch_queue_t processingQueue = dispatch_queue_create("processingQueue1", NULL);
+    
+    [videoWriterInput requestMediaDataWhenReadyOnQueue:processingQueue usingBlock:^{
+         
+         while ([videoWriterInput isReadyForMoreMediaData]) {
+             
+             CMSampleBufferRef sampleBuffer;
+             
+             /*
+              AVAssetReaderStatusUnknown = 0,
+              AVAssetReaderStatusReading,
+              AVAssetReaderStatusCompleted,
+              AVAssetReaderStatusFailed,
+              AVAssetReaderStatusCancelled,
+              */
+             
+             NSLog(@"video reader status: %d", (int)[videoReader status]);
+             if ([videoReader status] == AVAssetReaderStatusReading &&
+                 (sampleBuffer = [videoReaderOutput copyNextSampleBuffer])) {
+                 
+                 [videoWriterInput appendSampleBuffer:sampleBuffer];
+                 CFRelease(sampleBuffer);
+             }
+             
+             else {
+                 
+                 [videoWriterInput markAsFinished];
+                 
+                 if ([videoReader status] == AVAssetReaderStatusCompleted) {
+                     
+                     //start writing from audio reader
+                     [audioReader startReading];
+                     
+                     [videoWriter startSessionAtSourceTime:kCMTimeZero];
+                     
+                     dispatch_queue_t processingQueue = dispatch_queue_create("processingQueue2", NULL);
+                     
+                     [audioWriterInput requestMediaDataWhenReadyOnQueue:processingQueue usingBlock:^{
+                         
+                         while (audioWriterInput.readyForMoreMediaData) {
+                             
+                             CMSampleBufferRef sampleBuffer;
+                             
+                             if ([audioReader status] == AVAssetReaderStatusReading &&
+                                 (sampleBuffer = [audioReaderOutput copyNextSampleBuffer])) {
+                                 
+                                 [audioWriterInput appendSampleBuffer:sampleBuffer];
+                                 CFRelease(sampleBuffer);
+                             }
+                             
+                             else {
+                                 
+                                 [audioWriterInput markAsFinished];
+                                 
+                                 if ([audioReader status] == AVAssetReaderStatusCompleted) {
+                                     
+                                     [videoWriter finishWritingWithCompletionHandler:^(){
+                                         dispatch_async(dispatch_get_main_queue(),
+                                                        ^{
+                                                            completion();
+                                                        });
+                                         
+                                     }];
+                                     
+                                 }
+                             }
+                         }
+                         
+                     }
+                      ];
+                 }
+             }
+         }
+     }
+     ];
+}
+
+
+
+
+
+
+
 
 - (void)uploadVideo:(NSData *)fileData
       withVideoName:(NSString *)filename
@@ -530,24 +842,25 @@
             return;
         }
         [object create:^(BOOL success, NSError *error) {
-                if (error) {
-                    [strongSelf.eventConversationDelegate showErrorMessage];
-                    return;
-                }
-                strongSelf.firstCell = YES;
-                [strongSelf.eventConversationDelegate showCompletedMessage];
-                strongSelf.shownCurrentImage = YES;
-                if (strongSelf.shownCurrentImage) {
-                    [strongSelf.eventMessages replaceObjectAtIndex:1 withObject:object];
-                }
-                else {
-                    [strongSelf.eventMessages insertObject:object atIndex:1];
-                
-                }
-                [strongSelf.eventConversationDelegate reloadUIForEventMessages:strongSelf.eventMessages];
+            if (error) {
+                [strongSelf.eventConversationDelegate showErrorMessage];
+                return;
+            }
+            strongSelf.firstCell = YES;
+            [strongSelf.eventConversationDelegate showCompletedMessage];
+            strongSelf.shownCurrentImage = YES;
+            if (strongSelf.shownCurrentImage) {
+                [strongSelf.eventMessages replaceObjectAtIndex:1 withObject:object];
+            }
+            else {
+                [strongSelf.eventMessages insertObject:object atIndex:1];
+            
+            }
+            [strongSelf.eventConversationDelegate reloadUIForEventMessages:strongSelf.eventMessages];
             if (!strongSelf.shownCurrentImage) {
                 [strongSelf.eventConversationDelegate highlightCellAtPage:1 animated:YES];
             }
+            
         }];
     }];
 }
@@ -582,6 +895,7 @@
             else {
                 [strongSelf.eventMessages replaceObjectAtIndex:1 withObject:strongSelf.object];
                 [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+                
                 strongSelf.shownCurrentImage = NO;
             }
         }];
@@ -607,6 +921,7 @@
             [self.eventMessages insertObject:newEventMessage atIndex:1];
             [self.eventConversationDelegate highlightCellAtPage:1 animated:NO];
             [self.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
+            
             self.shownCurrentImage = YES;
         }
         else {
@@ -667,29 +982,26 @@
     self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     self.backgroundColor = RGB(23, 23, 23);
     
-    self.moviePlayer = [[MPMoviePlayerController alloc] init];
-    self.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
-
-    self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
-    [self.moviePlayer setControlStyle: MPMovieControlStyleNone];
-    self.moviePlayer.repeatMode = MPMovieRepeatModeOne;
-    self.moviePlayer.shouldAutoplay = NO;
-    self.moviePlayer.view.frame = self.frame;
-    [self.moviePlayer prepareToPlay];
-    [self.contentView addSubview:self.moviePlayer.view];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerLoadStateChanged:) name:MPMoviePlayerLoadStateDidChangeNotification object:self.moviePlayer];
+    self.isCurrentVideoCell = NO;
+    self.isRequestingThumbnail = NO;
     
     self.thumbnailImageView = [[UIImageView alloc] initWithFrame:self.frame];
     self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.thumbnailImageView.clipsToBounds = YES;
-    
     [self.contentView addSubview:self.thumbnailImageView];
+    
+    self.spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    self.spinner.frame = CGRectMake(self.thumbnailImageView.frame.size.width/4, self.thumbnailImageView.frame.size.height/4, self.thumbnailImageView.frame.size.width/2,  self.thumbnailImageView.frame.size.height/2);
+    [self.thumbnailImageView addSubview:self.spinner];
     
     self.thumbnailImageView2 = [[UIImageView alloc] initWithFrame:self.frame];
     self.thumbnailImageView2.contentMode = UIViewContentModeScaleAspectFill;
     self.thumbnailImageView2.clipsToBounds = YES;
-    [self.moviePlayer.backgroundView addSubview:self.thumbnailImageView2];
+    self.thumbnailImageView2.hidden = YES;
+    self.thumbnailImageView2.image = nil;
+    [self.contentView addSubview:self.thumbnailImageView2];
+    //[self.moviePlayer.backgroundView addSubview:self.thumbnailImageView2];
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:17.0f];
@@ -700,22 +1012,195 @@
     [self.contentView addSubview:self.label];
     [self.contentView bringSubviewToFront:self.label];
     
-    self.focusButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 110, self.frame.size.width, self.frame.size.height - 220)];
-    self.focusButton.backgroundColor = UIColor.clearColor;
-    [self.focusButton addTarget:self action:@selector(focusOnContent) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:self.focusButton];
-    [self.contentView bringSubviewToFront:self.focusButton];
+    self.touchableView = [[UIView alloc] initWithFrame:CGRectMake(0, 110, self.frame.size.width, self.frame.size.height - 200)];
+    self.touchableView.backgroundColor = UIColor.clearColor;
+    [self.contentView addSubview:self.touchableView];
+    [self.contentView bringSubviewToFront:self.touchableView];
+    
+    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(focusOnContent)];
+    singleTap.cancelsTouchesInView = YES;
+    singleTap.numberOfTapsRequired = 1;
+    [self.touchableView addGestureRecognizer:singleTap];
+    
+    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTapToLike)];
+    doubleTap.numberOfTapsRequired = 2;
+    doubleTap.cancelsTouchesInView = YES;
+    [self.touchableView addGestureRecognizer:doubleTap];
+    [singleTap requireGestureRecognizerToFail:doubleTap];
+    
+    [self.contentView bringSubviewToFront:self.touchableView];
+    [self.contentView bringSubviewToFront:self.label];
+    
+}
+
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    
+    //[self unloadVideo];
+}
+
+- (void)prepareVideo {
+    
+    self.moviePlayer = [self.mediaScrollDelegate getAvailableMoviePlayer];
+    
+    NSLog(@"preparing video");
+    self.moviePlayer.view.frame = self.bounds;
+    self.moviePlayer.contentURL = self.videoURL;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerLoadStateChanged:) name:MPMoviePlayerLoadStateDidChangeNotification object:self.moviePlayer];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerPlaybackStateChanged:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:self.moviePlayer];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerThumbnailsLoaded:) name:MPMoviePlayerThumbnailImageRequestDidFinishNotification object:self.moviePlayer];
+    
+    
+//    if(self.videoStartTime) {
+//        self.moviePlayer.currentPlaybackTime = [self.videoStartTime floatValue];
+//    }
+    
+    [self.moviePlayer prepareToPlay];
+    
+    [self.contentView addSubview:self.moviePlayer.view];
+    [self.contentView bringSubviewToFront:self.thumbnailImageView];
+    [self.contentView bringSubviewToFront:self.thumbnailImageView2];
+    self.thumbnailImageView.hidden = NO;
+    self.thumbnailImageView2.image = nil;
+    self.thumbnailImageView2.hidden = YES;
+    
+    [self.contentView bringSubviewToFront:self.touchableView];
+    [self.contentView bringSubviewToFront:self.label];
+    
+    [self.spinner startAnimating];
+    
+}
+
+// play if ready, or start playing when ready
+
+// cancel any outstanding thumbnail requests,
+// as these will throw up the paused thumbnail on completion
+- (void)resumeVideo {
+    NSLog(@"resuming video");
+    if(self.moviePlayer.isPreparedToPlay) {
+        [self.moviePlayer play];
+    }
+    self.moviePlayer.shouldAutoplay = YES;
+    [self.moviePlayer cancelAllThumbnailImageRequests];
+}
+
+// play if ready, or start playing when ready
+- (void)startVideo {
+    
+    if(self.moviePlayer.isPreparedToPlay) {
+        NSLog(@"start video - playing");
+        [self.moviePlayer play];
+    }
+    else {
+        NSLog(@"start video - playing when ready");
+        
+        self.moviePlayer.shouldAutoplay = YES;
+    }
+}
+
+- (void)pauseVideo {
+    
+    if(self.moviePlayer.playbackState == MPMoviePlaybackStatePlaying) {
+        
+        NSLog(@"pausing video");
+        
+        [self.moviePlayer pause];
+        
+        //slight time adjustment to smooth pause effect
+        NSArray *times = @[@(self.moviePlayer.currentPlaybackTime+0.05)];
+        
+        //NSLog(@"requesting thumbnail");
+        
+        // only allow one thumbnail request for the shared player
+        [self.moviePlayer cancelAllThumbnailImageRequests];
+        
+        self.isRequestingThumbnail = YES;
+        //[self.mediaScrollDelegate markVideoPlayerIsSavingThumbnail:YES];
+        [self.moviePlayer requestThumbnailImagesAtTimes:times timeOption:MPMovieTimeOptionExact];
+        
+    }
+    //self.moviePlayer.shouldAutoplay = NO;
+}
+
+// handle the video player being moved to another cell
+
+- (void)unloadVideoCell {
+    
+    NSLog(@"unloading video");
+    
+    [self.spinner stopAnimating];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    self.thumbnailImageView.hidden = NO;
+    self.thumbnailImageView2.hidden = YES;
+    
+    if(self.isRequestingThumbnail) {
+        self.isRequestingThumbnail = NO;
+//        [self.mediaScrollDelegate markVideoPlayerIsSavingThumbnail:NO];
+    }
+}
+
+
+#pragma mark - MoviePlayerController nofitication handlers
+
+- (void)moviePlayerPlaybackStateChanged:(NSNotification *)notification {
+    if(self.moviePlayer == notification.object) {
+        NSLog(@"playback state: %d", (int)self.moviePlayer.playbackState);
+        
+        if(self.moviePlayer.playbackState == MPMoviePlaybackStatePlaying &&
+           (self.moviePlayer.loadState & MPMovieLoadStatePlaythroughOK)) {
+            [self updateUIForPlayback];
+        }
+    }
 }
 
 - (void) moviePlayerLoadStateChanged:(NSNotification*)notification {
-    if (self.moviePlayer.loadState == MPMovieLoadStatePlayable || self.moviePlayer.loadState == MPMovieLoadStatePlaythroughOK) {
-        [self performBlock:^{
-            self.thumbnailImageView.alpha = 0.0;
-        } afterDelay:0.1];
-    } else if (self.moviePlayer.loadState == MPMovieLoadStateUnknown) {
-        self.thumbnailImageView.alpha = 1.0;
+    if(self.moviePlayer == notification.object) {
+        NSLog(@"video load state: %d", (int)self.moviePlayer.loadState);
+        
+        if((self.moviePlayer.loadState & MPMovieLoadStatePlaythroughOK) &&
+            self.moviePlayer.playbackState == MPMoviePlaybackStatePlaying) {
+            [self updateUIForPlayback];
+        }
     }
 }
+
+- (void)updateUIForPlayback {
+    self.thumbnailImageView.hidden = YES;
+    self.thumbnailImageView2.hidden = YES;
+    [self.spinner stopAnimating];
+}
+
+
+- (void)moviePlayerThumbnailsLoaded:(NSNotification*)notification {
+    
+    NSLog(@"video thumbnails finished loading");
+    
+    if(notification.object == self.moviePlayer) {
+        if(self.isRequestingThumbnail) {
+            self.isRequestingThumbnail = NO;
+            NSLog(@"thumbnail loaded");
+//            [self.mediaScrollDelegate markVideoPlayerIsSavingThumbnail:NO];
+            
+            UIImage *thumbnailImage = notification.userInfo[MPMoviePlayerThumbnailImageKey];
+            if(thumbnailImage && [thumbnailImage isKindOfClass:[UIImage class]]) {
+                self.thumbnailImageView2.image = thumbnailImage;
+                self.thumbnailImageView2.hidden = NO;
+                [self.contentView bringSubviewToFront:self.thumbnailImageView2];
+                
+                [self.contentView bringSubviewToFront:self.touchableView];
+                [self.contentView bringSubviewToFront:self.label];
+                
+            }
+        }
+    }
+}
+
+
 
 @end
 
@@ -904,6 +1389,9 @@
 
 @implementation MediaCell
 
+- (void)cellDidDisappear {
+    
+}
 
 - (void)setEventMessage:(WGEventMessage *)eventMessage {
     _eventMessage = eventMessage;
@@ -957,14 +1445,25 @@
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
-
-    self.controller = [[UIImagePickerController alloc] init];
-    self.controller.sourceType = UIImagePickerControllerSourceTypeCamera;
-    self.controller.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-    self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
-    self.controller.videoQuality = UIImagePickerControllerQualityTypeHigh;
+    
+    self.isTakingPicture = NO;
+    
+//    self.controller = [[UIImagePickerController alloc] init];
+//    self.controller.sourceType = UIImagePickerControllerSourceTypeCamera;
+//    self.controller.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+//    self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+//    self.controller.videoQuality = UIImagePickerControllerQualityType640x480;
     self.controller.delegate = self;
-    self.controller.showsCameraControls = NO;
+//    self.controller.showsCameraControls = NO;
+//
+//    self.photoController = [[UIImagePickerController alloc] init];
+//    self.photoController.sourceType = UIImagePickerControllerSourceTypeCamera;
+//    self.photoController.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+//    self.photoController.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+//    self.photoController.videoQuality = UIImagePickerControllerQualityTypeMedium;
+//    self.photoController.delegate = self;
+//    self.photoController.showsCameraControls = NO;
+    
     
     CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
     CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
@@ -975,13 +1474,20 @@
     CGFloat yAdjust = delta / 2.0;
     
     CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, yAdjust); //This slots the preview exactly in the middle of the screen
-    self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
+    //self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
     
-    self.controller.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeMovie, (NSString *)kUTTypeImage, nil];
-    [self.contentView addSubview:self.controller.view];
+    self.photoController.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeImage, nil];
+    self.controller.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeMovie, nil];
+    //[self.contentView addSubview:self.controller.view];
+    
+    
+    //[self.contentView addSubview:self.cameraController.view];
+    
 
     self.overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
-    self.controller.cameraOverlayView = self.overlayView;
+    //self.controller.cameraOverlayView = self.overlayView;
+    
+    //self.cameraController.cameraOverlayView = self.overlayView;
     
     self.pictureButton = [[UIButton alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     self.captureImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.pictureButton.frame.size.width/2 - 36, self.pictureButton.frame.size.height - 72 - 5, 72, 72)];
@@ -991,12 +1497,15 @@
     [self.pictureButton addTarget:self action:@selector(takePicture) forControlEvents:UIControlEventTouchDown];
     [self.overlayView addSubview:self.pictureButton];
   
-//    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(takePicture)];
+ //   UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+//    tapGestureRecognizer.numberOfTapsRequired = 1;
 //    [self.pictureButton addGestureRecognizer:tapGestureRecognizer];
     
 //    if (WGProfile.currentUser.videoEnabled) {
-//        UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
-//        [self.pictureButton addGestureRecognizer:longGesture];
+        UILongPressGestureRecognizer *longGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+        longGesture.cancelsTouchesInView = NO;
+        longGesture.delaysTouchesBegan = YES;
+        [self.pictureButton addGestureRecognizer:longGesture];
 //        [longGesture requireGestureRecognizerToFail:tapGestureRecognizer];
 //        [tapGestureRecognizer requireGestureRecognizerToFail:longGesture];
 //    }
@@ -1042,9 +1551,8 @@
     [self.previewMoviePlayer setControlStyle: MPMovieControlStyleNone];
     self.previewMoviePlayer.repeatMode = MPMovieRepeatModeOne;
     self.previewMoviePlayer.shouldAutoplay = YES;
-    self.previewMoviePlayer.view.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
+    self.previewMoviePlayer.view.frame = self.overlayView.bounds;
     self.previewMoviePlayer.view.hidden = YES;
-    [self.previewMoviePlayer prepareToPlay];
     [self.overlayView addSubview:self.previewMoviePlayer.view];
     
     self.flashWhiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
@@ -1117,25 +1625,252 @@
     self.textLabel.font = [FontProperties mediumFont:17.0f];
     [self.overlayView addSubview:self.textLabel];
     [self.overlayView bringSubviewToFront:self.textLabel];
+    
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(cameraIsReady:)
+//                                                 name:AVCaptureSessionDidStartRunningNotification object:nil];
+//    
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(cameraStopped:)
+//                                                 name:AVCaptureSessionDidStopRunningNotification
+//                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moviePlayerThumbnailsLoaded:) name:MPMoviePlayerThumbnailImageRequestDidFinishNotification object:self.previewMoviePlayer];
+    
+    self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
+    self.photoController.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
+    
+}
+
+- (void)setupCameraController:(WGCameraViewController *)cameraController {
+    self.cameraController = cameraController;
+    [self.contentView addSubview:self.cameraController.view];
+    self.cameraController.cameraOverlayView = self.overlayView;
+    self.cameraController.delegate = self;
+}
+
+- (void)cellWillAppear {
+}
+
+- (void)cellDidDisappear {
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)cameraIsReady:(NSNotification *)notification {
+    NSLog(@"camera is ready");
+//    if(notification.object && [notification.object isKindOfClass:[AVCaptureSession class]]) {
+//        self.captureSession = notification.object;
+//        if (![self.captureSession canSetSessionPreset:AVCaptureSessionPreset1280x720]) {
+//            NSLog(@"cannot set preset %@", AVCaptureSessionPreset1280x720);
+//        }
+//        [self.captureSession setSessionPreset:AVCaptureSessionPreset1280x720];
+//    }
+//    
+//    if(self.isTakingPicture) {
+//        self.isTakingPicture = NO;
+//        [self.photoController takePicture];
+//    }
+}
+
+- (void)cameraStopped:(NSNotification *)notification {
+    NSLog(@"camera stopped");
+}
+
+
+- (void)handleTap:(UITapGestureRecognizer *)sender {
+    NSLog(@"tap state: %d", (int)sender.state);
+    if(sender.state == UIGestureRecognizerStateRecognized) {
+        [self takePicture];
+    }
 }
 
 - (void)takePicture {
-    self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
-    if (self.controller.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn &&
-        self.controller.cameraDevice == UIImagePickerControllerCameraDeviceFront ) {
+    NSLog(@"capture mode: %d", (int)self.controller.cameraCaptureMode);
+    NSLog(@"taking picture");
+    
+    
+    //self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
+    if (self.photoController.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn &&
+        self.photoController.cameraDevice == UIImagePickerControllerCameraDeviceFront ) {
         [UIView animateWithDuration:0.04 animations:^{
             self.flashWhiteView.alpha = 1.0f;
         } completion:^(BOOL finished) {
             self.flashWhiteView.alpha = 0.0f;
         }];
     }
-    [self.controller takePicture];
+    self.pictureButton.userInteractionEnabled = NO;
+    
+    
+    // take picture
+    
+//    UIGraphicsBeginImageContextWithOptions(self.controller.view.frame.size, NO, 0.0);
+//    CGContextRef context = UIGraphicsGetCurrentContext();
+//    
+//    [self.controller.view.layer renderInContext:context];
+//    
+//    UIImage *photo = UIGraphicsGetImageFromCurrentImageContext();
+//    
+//    UIGraphicsEndImageContext();
+//    
+//    NSDictionary *mediaDict = @{UIImagePickerControllerMediaMetadata:@{},
+//                                UIImagePickerControllerMediaType:@"public.image",
+//                                UIImagePickerControllerOriginalImage:photo};
+//    
+//    [self imagePickerController:self.controller
+//  didFinishPickingMediaWithInfo:mediaDict];
+    
+//    self.isTakingPicture = YES;
+//    
+//    [self.controller.view removeFromSuperview];
+//    [self.contentView addSubview:self.photoController.view];
+    
+    //[self.photoController takePicture];
+    
+    [self.cameraController takePictureWithCompletion:^(UIImage *image, NSDictionary *attachments, NSError *error) {
+        
+        NSDictionary *mediaDict = @{UIImagePickerControllerMediaMetadata:attachments,
+                                    UIImagePickerControllerMediaType:@"public.image",
+                                    UIImagePickerControllerOriginalImage:image};
+        [self imagePickerController:self.controller
+      didFinishPickingMediaWithInfo:mediaDict];
+        
+    }];
+    
+    for(AVCaptureInput *input in self.captureSession.inputs) {
+        NSLog(@"input: %@", input.description);
+    }
+    
+    
+    AVCaptureStillImageOutput *stillImageOutput = nil;
+    for(AVCaptureOutput *output in self.captureSession.outputs) {
+        if([output isKindOfClass:[AVCaptureStillImageOutput class]]) {
+            stillImageOutput = (AVCaptureStillImageOutput *)output;
+        }
+        NSLog(@"output: %@", output.description);
+    }
+    
+    NSDictionary *outputSettings = @{ AVVideoCodecKey : AVVideoCodecJPEG,
+                                      (NSString*)kCVPixelBufferPixelFormatTypeKey:[NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA]};
+    
+    [stillImageOutput setOutputSettings:outputSettings];
+//    
+//    NSString* key = ;
+//    NSNumber* value = ;
+//    NSDictionary* outputSettings = [NSDictionary dictionaryWithObject:value forKey:key];
+//    
+//    [newStillImageOutput setOutputSettings:outputSettings];
+//    
+//    AVCaptureConnection *videoConnection = nil;
+//    for (AVCaptureConnection *connection in stillImageOutput.connections) {
+//        for (AVCaptureInputPort *port in [connection inputPorts]) {
+//            if ([[port mediaType] isEqual:AVMediaTypeVideo] ) {
+//                videoConnection = connection;
+//                break;
+//            }
+//        }
+//        if (videoConnection) { break; }
+//    }
+//    
+//    [stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:
+//     ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
+//         CFDictionaryRef exifAttachments =
+//         CMGetAttachment(imageSampleBuffer, kCGImagePropertyExifDictionary, NULL);
+//         
+//         if (exifAttachments) {
+//             // Do something with the attachments.
+//         }
+//         
+//         UIImage *image = [self imageFromSampleBuffer:imageSampleBuffer];
+//
+//         if(image) {
+//             
+//             NSDictionary *mediaDict = @{UIImagePickerControllerMediaMetadata:(__bridge NSDictionary *)exifAttachments,
+//                                         UIImagePickerControllerMediaType:@"public.image",
+//                                         UIImagePickerControllerOriginalImage:image};
+//             [self imagePickerController:self.controller
+//           didFinishPickingMediaWithInfo:mediaDict];
+//         }
+//         
+//         // Continue as appropriate.
+//     }];
+
+}
+
+// courtesy http://stackoverflow.com/questions/3305862/uiimage-created-from-cmsamplebufferref-not-displayed-in-uiimageview
+
+- (UIImage *) imageFromSampleBuffer:(CMSampleBufferRef) sampleBuffer // Create a CGImageRef from sample buffer data
+{
+//    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+//    CVPixelBufferLockBaseAddress(imageBuffer,0);        // Lock the image buffer
+//    
+//    uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0);   // Get information of the image
+//    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+//    size_t width = CVPixelBufferGetWidth(imageBuffer);
+//    size_t height = CVPixelBufferGetHeight(imageBuffer);
+//    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+//    
+//    CGContextRef newContext = CGBitmapContextCreate(baseAddress, width, height, 8, bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+//    CGImageRef newImage = CGBitmapContextCreateImage(newContext);
+//    CGContextRelease(newContext);
+//    
+//    CGColorSpaceRelease(colorSpace);
+//    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+//    /* CVBufferRelease(imageBuffer); */  // do not call this!
+//    
+//    return newImage;
+    
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+    
+    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+    
+    // Get the number of bytes per row for the pixel buffer
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    // Get the pixel buffer width and height
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    
+    
+    
+    // Create a device-dependent RGB color space
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    // Create a bitmap graphics context with the sample buffer data
+    CGContextRef context = CGBitmapContextCreate(baseAddress, width, height, 8,
+                                                 bytesPerRow, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    // Create a Quartz image from the pixel data in the bitmap graphics context
+    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
+    // Unlock the pixel buffer
+    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+    
+    
+    // Free up the context and color space
+    CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
+    
+    // Create an image object from the Quartz image
+    UIImage *image = [UIImage imageWithCGImage:quartzImage];
+    
+    // Release the Quartz image
+    CGImageRelease(quartzImage);
+    
+    image = [image imageRotatedByDegrees:90.0];
+    return (image);
+
 }
 
 - (void)longPress:(UILongPressGestureRecognizer*)gesture {
+    // NSLog(@"gesture state: %d", (int)gesture.state);
+    
     if (!self.longGesturePressed && gesture.state == UIGestureRecognizerStateBegan) {
+        NSLog(@"long press gesture began");
+        
         dispatch_async(dispatch_get_main_queue(), ^{
-
+            
+            NSLog(@"setting up progress view");
             [self.circularProgressView setProgress:0.0f];
             self.circularProgressView.hidden = NO;
             self.videoTimerCount = 8.0f;
@@ -1145,30 +1880,51 @@
         });
         [self performBlock:^{
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.controller startVideoCapture];
-                self.isRecording = YES;
-                CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, 0.0); //This slots the preview exactly in the middle of the screen
-                self.controller.cameraViewTransform = CGAffineTransformScale(translate, 1.0, 1.0);
-                [[NSTimer scheduledTimerWithTimeInterval: 0.01 target:self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": self.circularProgressView} repeats: YES] fire];
+                
+                // need to re-check longGesturePressed this to ensure video recording hasn't been cancelled
+                
+                if(self.longGesturePressed) {
+                    NSLog(@"starting video capture");
+                    [self.cameraController startRecordingVideo];
+                    //[self.controller startVideoCapture];
+                    self.isRecording = YES;
+                    
+                    self.videoTimer = [NSTimer scheduledTimerWithTimeInterval: 0.01 target:self selector:@selector(videoCaptureTimerFired:) userInfo: @{@"gesture": gesture, @"progress": self.circularProgressView} repeats: YES];
+                    [self.videoTimer fire];
+                }
                 
             });
         } afterDelay:0.4];
     }
-    if ( (gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) && self.longGesturePressed) {
-        if (self.isRecording) {
-            [self.controller stopVideoCapture];
-            self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
-            self.circularProgressView.hidden = YES;
-            [self.circularProgressView setProgress:0.1f];
-            self.longGesturePressed = NO;
-            self.isRecording = NO;
+    if(gesture.state == UIGestureRecognizerStateEnded || gesture.state == UIGestureRecognizerStateCancelled) {
+        NSLog(@"long press ended/cancelled (%d)", (int)gesture.state);
+        if(self.longGesturePressed) {
+            NSLog(@"recording stopped");
+            [self stopRecordingVideo];
+        }
+        else {
+            NSLog(@"long gesture NOT pressed - no recording stopped");
         }
     }
 }
 
 - (void) videoCaptureTimerFired:(NSTimer *) timer {
     dispatch_async(dispatch_get_main_queue(), ^{
+        
+        if(!self.isRecording) {
+            
+            
+            NSLog(@"recording was cancelled");
+            return;
+        }
+        
+        
+        //NSLog(@"video fire (%f)", timer.timeInterval);
         self.videoTimerCount -= timer.timeInterval;
+        //NSLog(@"video timer count: %f", self.videoTimerCount);
+        
+        //NSLog(@"camera %@", NSStringFromCGAffineTransform(self.controller.cameraViewTransform));
+        
         UILongPressGestureRecognizer *gesture = timer.userInfo[@"gesture"];
         [self.circularProgressView setProgress: MIN(1.0, (8.0 - self.videoTimerCount)/8.0) animated:YES];
         
@@ -1180,50 +1936,101 @@
             gesture.enabled = NO;
             gesture.enabled = YES;
             
-            [self longPress: gesture];
+            [self stopRecordingVideo];
             
         }
     });
 }
 
+- (void)stopRecordingVideo {
+    
+    [self.videoTimer invalidate];
+    
+    if (self.isRecording) {
+        
+        // tell camera to stop recording
+        [self.cameraController stopRecording];
+    }
+    else {
+        
+        // tell camera to cancel
+        [self.cameraController cancelRecording];
+    }
+    
+    self.circularProgressView.hidden = YES;
+    [self.circularProgressView setProgress:0.0f];
+    self.longGesturePressed = NO;
+    self.isRecording = NO;
+}
+
 
 
 - (void)changeFlash {
-    if (self.controller.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
+    
+    [self.cameraController toggleFlash];
+    if (self.cameraController.flashEnabled) {
         self.flashImageView.image = [UIImage imageNamed:@"flashOn"];
         self.flashImageView.frame = CGRectMake(10, 10, 18, 30);
-        self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
+        self.photoController.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
     }
     else {
         self.flashImageView.image = [UIImage imageNamed:@"flashOff"];
         self.flashImageView.frame = CGRectMake(10, 10, 30, 37);
-        self.controller.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+        self.photoController.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
     }
 }
 
 - (void)switchCamera {
+    
     [UIView animateWithDuration:.15f animations:^{
         self.cameraImageView.transform = CGAffineTransformMakeScale(1.5,1.5);
     }completion:^(BOOL finished) {
         [UIView animateWithDuration:.15f animations:^{
             self.cameraImageView.transform = CGAffineTransformMakeScale(1.0,1.0);
+            if(self.cameraController.isUsingFrontFacingCamera) {
+                self.flashButton.alpha = 0.0;
+            }
+            else {
+                self.flashButton.alpha = 1.0;
+            }
         }];
     }];
-
-    if (self.controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
-        self.controller.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-    }
-    else {
-        self.controller.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-    }
+    
+    [self.cameraController switchCameras:self];
 }
 
 - (void)dismissPressed {
     [self.mediaScrollDelegate dismissView];
 }
 
+
+// WGCameraViewControllerDelegate methods
+
+- (void)cameraController:(WGCameraViewController *)controller didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    [self imagePickerController:nil didFinishPickingMediaWithInfo:info];
+}
+
+- (void)cameraControllerDidCancel:(WGCameraViewController *)picker {
+    NSLog(@"camera controller cancelled");
+}
+
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker; {
+    NSLog(@"image picker cancelled");
+}
+
 - (void)imagePickerController:(UIImagePickerController *)picker
 didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    
+    
+    NSString *mediaType = info[UIImagePickerControllerMediaType];
+    
+    NSLog(@"finished picking %@", (NSString *)mediaType);
+    
+    
+    // change camera back to default camera mode
+    //self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
+    
     self.dismissButton.hidden = YES;
     self.dismissButton.enabled = NO;
     self.pictureButton.hidden = YES;
@@ -1238,8 +2045,26 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.cancelButton.hidden = NO;
     self.cancelButton.enabled = YES;
     self.panRecognizer.enabled = NO;
-
-    if (self.controller.cameraCaptureMode == UIImagePickerControllerCameraCaptureModePhoto) {
+    
+    //if(picker == self.controller) {
+    if([mediaType isEqualToString:(NSString *)kUTTypeMovie]) {
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.previewMoviePlayer.view.hidden = NO;
+            NSURL *fileURL = [info objectForKey:UIImagePickerControllerMediaURL];
+            self.previewMoviePlayer.contentURL = fileURL;
+            //[self.previewMoviePlayer prepareToPlay];
+            [self.previewMoviePlayer play];
+            
+            // request thumbnail.
+            // when the thumbnail returns, the video will be uploaded with the thumbnail
+            [self.previewMoviePlayer requestThumbnailImagesAtTimes:@[@(0.0)]
+                                                        timeOption:MPMovieTimeOptionExact];
+            
+        });
+        self.info = [NSMutableDictionary dictionaryWithDictionary:info];
+    }
+    else { //picked photo
         self.previewImageView.hidden = NO;
         self.previewImageView.userInteractionEnabled = YES;
         self.previewImageView.image = (UIImage *) [self.info objectForKey: UIImagePickerControllerOriginalImage];
@@ -1252,43 +2077,56 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
                                               orientation:UIImageOrientationLeftMirrored];
             [newInfo setObject:newImage forKey:UIImagePickerControllerOriginalImage];
         }
-        self.info = [[NSDictionary alloc] initWithDictionary:newInfo];
+        self.info = [[NSMutableDictionary alloc] initWithDictionary:newInfo];
         self.previewImageView.hidden = NO;
         self.previewImageView.userInteractionEnabled = YES;
         self.previewImageView.image = newImage;
         [self.mediaScrollDelegate mediaPickerController:self.controller
                                  startUploadingWithInfo:self.info];
     }
-    else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.previewMoviePlayer.view.hidden = NO;
-            NSURL *fileURL = [info objectForKey:UIImagePickerControllerMediaURL];
-            self.previewMoviePlayer.contentURL = fileURL;
-            [self.previewMoviePlayer prepareToPlay];
-            [self.previewMoviePlayer play];
-            CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
-            CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-            CGFloat cameraWidth = screenWidth;
-            CGFloat cameraHeight = floor((4/3.0f) * cameraWidth);
-            CGFloat scale = screenHeight / cameraHeight;
-            CGFloat delta = screenHeight - cameraHeight;
-            CGFloat yAdjust = delta / 2.0;
-            
-            CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, yAdjust); //This slots the preview exactly in the middle of the screen
-            self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
-        });
-        self.info = info;
-        [self.mediaScrollDelegate mediaPickerController:self.controller
-                                 startUploadingWithInfo:self.info];
-  
+}
+
+- (void)moviePlayerThumbnailsLoaded:(NSNotification*)notification {
+    
+    if(notification.object == self.previewMoviePlayer) {
+        dispatch_async(dispatch_get_main_queue(),
+                       ^{
+                           
+                           UIImage *thumbnailImage = notification.userInfo[MPMoviePlayerThumbnailImageKey];
+                           if(thumbnailImage) {
+                               self.info[kThumbnailImageKey] = thumbnailImage;
+                           
+                           [self.mediaScrollDelegate mediaPickerController:self.controller
+                                                    startUploadingWithInfo:self.info];
+                           }
+                           else {
+                               // cancel upload
+                               [self cancelPressed];
+                               
+                           }
+                       });
     }
-   
 }
 
 - (void)cancelPressed {
-    self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
+    //self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
     [self.mediaScrollDelegate cancelPressed];
     [self cleanupView];
+    
+    NSString *mediaType = self.info[UIImagePickerControllerMediaType];
+    if([mediaType isEqualToString:(NSString *)kUTTypeMovie]) {
+        NSURL *fileURL = [self.info objectForKey:UIImagePickerControllerMediaURL];
+        
+        NSError *err = nil;
+        if(fileURL) {
+            [[NSFileManager defaultManager] removeItemAtURL:fileURL
+                                                      error:&err];
+            if(err) {
+                NSLog(@"error removing file: %@", err.localizedDescription);
+            }
+        }
+    }
+    
     self.info = nil;
 }
 
@@ -1305,6 +2143,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
 
     [self.previewMoviePlayer stop];
     self.previewMoviePlayer.view.hidden = YES;
+    self.previewMoviePlayer.contentURL = nil;
+    
     self.previewImageView.hidden = YES;
     self.previewImageView.userInteractionEnabled = NO;
     self.previewImageView.image = nil;

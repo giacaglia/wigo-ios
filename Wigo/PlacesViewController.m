@@ -674,6 +674,7 @@ BOOL firstTimeLoading;
         [cell setPreservesSuperviewLayoutMargins:NO];
     }
     
+    
     // Explictly set your cell's layout margins
     if ([cell respondsToSelector:@selector(setLayoutMargins:)]) {
         [cell setLayoutMargins:UIEdgeInsetsZero];

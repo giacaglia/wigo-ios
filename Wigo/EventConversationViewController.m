@@ -27,6 +27,12 @@
 @property (nonatomic, assign) BOOL facesHidden;
 @property (nonatomic, strong) UIVisualEffectView *visualEffectView;
 @property (nonatomic, strong) UIView *holeView;
+
+// scroll view currently (or most recently) being dragged by the user
+@property (nonatomic,weak) UIScrollView *currentDraggingView;
+
+- (NSInteger)getCurrentPageForScrollView:(UIScrollView *)scrollView;
+
 @end
 
 @implementation EventConversationViewController
@@ -53,6 +59,11 @@
     [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: self.currentActiveCell] setIsActive:YES];
     NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
     [WGAnalytics tagEvent:@"Event Story Detail View" withDetails: @{@"isPeeking": isPeekingString}];
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self.mediaScrollView scrollStoppedAtPage:self.index.intValue];
 }
 
 #pragma mark UICollectionViewDataSource
@@ -93,8 +104,36 @@
 
 #pragma mark - UICollectionViewDelegate
 
+
+- (void)collectionView:(UICollectionView *)collectionView
+       willDisplayCell:(UICollectionViewCell *)cell
+    forItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if(collectionView == self.mediaScrollView) {
+        if([cell isKindOfClass:[CameraCell class]]) {
+            
+        }
+    }
+}
+
+- (void)collectionView:(UICollectionView *)collectionView
+  didEndDisplayingCell:(UICollectionViewCell *)cell
+    forItemAtIndexPath:(NSIndexPath *)indexPath {
+    if(collectionView == self.mediaScrollView) {
+        if([cell isKindOfClass:[VideoCell class]]) {
+            VideoCell *videoCell = (VideoCell*)cell;
+            [videoCell unloadVideoCell];
+        }
+        else if([cell isKindOfClass:[CameraCell class]]) {
+            
+        }
+    }
+}
+
+
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (collectionView == self.facesCollectionView) {
+        self.currentDraggingView = self.facesCollectionView;
         if (indexPath == self.currentActiveCell) {
             return;
         }
@@ -269,6 +308,17 @@
     if (scrollView == self.mediaScrollView)
         _imagesScrollViewPointNow = scrollView.contentOffset;
     else _collectionViewPointNow = scrollView.contentOffset;
+    
+    self.currentDraggingView = scrollView;
+    
+    if(scrollView == self.mediaScrollView) {
+        int page = (int)[self getCurrentPageForScrollView:scrollView];
+        [self.mediaScrollView startedScrollingFromPage:page];
+    }
+    else if(scrollView == self.facesCollectionView) {
+        int page = (int)[self getCurrentPageForScrollView:scrollView];
+        [self.mediaScrollView startedScrollingFromPage:page];
+    }
 }
 
 
@@ -320,6 +370,21 @@
         }
     }
     return page;
+}
+
+// get current page (rounded fractional page)
+
+- (NSInteger)getCurrentPageForScrollView:(UIScrollView *)scrollView {
+    float fractionalPage;
+    if (scrollView == self.mediaScrollView) {
+        CGFloat pageWidth = [[UIScreen mainScreen] bounds].size.width;
+        fractionalPage = (self.mediaScrollView.contentOffset.x) / pageWidth;
+    } else {
+        CGFloat pageWidth = newSizeOfEachFaceCell; // you need to have a **iVar** with getter for scrollView
+        fractionalPage = (self.facesCollectionView.contentOffset.x + newSizeOfEachFaceCell) / pageWidth;
+    }
+    // round fractionalPage
+    return floorf(fractionalPage+0.5);
 }
 
 - (void)highlightCellAtPage:(NSInteger)page animated:(BOOL)animated {
@@ -376,6 +441,15 @@
         [(FaceCell *)[self.facesCollectionView cellForItemAtIndexPath: activeIndexPath] setIsActive:YES];
             
         self.currentActiveCell = activeIndexPath;
+    }
+}
+
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
+    
+    if(scrollView == self.currentDraggingView) {
+        int page = (int)[self getCurrentPageForScrollView:scrollView];
+        [self.mediaScrollView scrollStoppedAtPage:page];
+        self.currentDraggingView = nil;
     }
 }
 
@@ -539,7 +613,6 @@
 
 - (void)cancelPressed:(id)sender {
     [WGAnalytics tagAction:@"close_highlights" atView:@"event_conversation"];
-    [self.mediaScrollView.lastMoviePlayer stop];
     [self.mediaScrollView closeViewWithHandler:^(BOOL success, NSError *error) {
         if (success) {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
@@ -551,6 +624,9 @@
 #pragma mark -  EventConversation Delegate methods
 
 - (void)addLoadingBanner {
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
+    
 //    self.view.transform = CGAffineTransformMakeTranslation(0, 20);
 //    self.loadingBanner = [[UIView alloc] initWithFrame:CGRectMake(0, -20, self.view.frame.size.width, 20)];
 //    self.loadingBanner.backgroundColor = UIColor.blackColor;
@@ -567,6 +643,7 @@
 //                                   selector:@selector(changePostingLabel)
 //                                   userInfo:nil
 //                                    repeats:YES];
+
 }
 
 - (void)changePostingLabel {
@@ -606,6 +683,7 @@
 //    [UIView animateWithDuration:15 animations:^{} completion:^(BOOL finished) {
 //        self.loadingBanner.hidden = YES;
 //        self.postingLabel.hidden = YES;
+//        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 //    }];
 }
 
@@ -622,6 +700,8 @@
     [self.mediaScrollView reloadData];
     
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
+    [self.mediaScrollView scrolledToPage:(int)page];
+    [self.mediaScrollView scrollStoppedAtPage:(int)page];
     [self hideOrShowFacesForPage:(int)page];
 }
 

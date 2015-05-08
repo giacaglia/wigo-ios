@@ -374,7 +374,7 @@ static CLLocationManager *locationManager;
         NSDictionary *thumbnailDictionary;
         @try {
             videoDictionary = [jsonResponse objectForKey:kVideoKey];
-            thumbnailDictionary = [jsonResponse objectForKey:@"thumbnail"];
+            thumbnailDictionary = [jsonResponse objectForKey:@"image"];
             
             videoAction = [videoDictionary objectForKey:kActionKey];
             videoFields = [[NSMutableDictionary alloc] init];

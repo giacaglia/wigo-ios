@@ -57,7 +57,7 @@
 // For Transition
 @property (nonatomic, assign) CGFloat startYPosition;
 @property (nonatomic, assign) CGRect startFrame;
-@property (nonatomic, strong) id<EventConversationDelegate> eventConversationDelegate;
+@property (nonatomic, weak) id<EventConversationDelegate> eventConversationDelegate;
 @property (nonatomic, strong) UIView *holeView;
 @property (nonatomic, strong) WGEventMessage *eventMessage;
 @property (nonatomic, strong) UIView *leftLine;

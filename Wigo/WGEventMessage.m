@@ -39,6 +39,7 @@
 -(id) initWithJSON:(NSDictionary *)json {
     self = [super initWithJSON:json];
     if (self) {
+        // NSLog(@"%@", json.description);
         self.className = @"eventmessage";
     }
     return self;
