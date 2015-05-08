@@ -159,7 +159,6 @@
         myCell.mediaScrollDelegate = self;
         myCell.eventMessage = eventMessage;
         myCell.isPeeking = self.isPeeking;
-        [myCell updateUI];
         if ([contentURL isKindOfClass:[UIImage class]]) {
             myCell.imageView.image = (UIImage *)contentURL;
         } else {
@@ -187,21 +186,6 @@
 
         return myCell;
     }
-    else if ([mimeType isEqualToString:kFaceImage]) {
-        PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
-        [myCell.imageView setCoverImageForUser:WGProfile.currentUser completed:nil];
-        myCell.titleTextLabel.text = [NSString stringWithFormat:@"Sweet! You're going out to: %@", [self.event name]];
-        myCell.subtitleTextLabel.text = @"Post a selfie to build the buzz!";
-        myCell.subtitleTextLabel.alpha = 0.7f;
-        myCell.actionButton.backgroundColor = [FontProperties getOrangeColor];
-        [myCell.actionButton setTitle:@"POST" forState:UIControlStateNormal];
-        [myCell.actionButton.titleLabel setFont: [FontProperties scMediumFont: 16.0]];
-        [myCell.actionButton addTarget:self action:@selector(promptCamera) forControlEvents:UIControlEventTouchUpInside];
-        [myCell.avoidAction addTarget:self action:@selector(dismissView) forControlEvents:UIControlEventTouchUpInside];
-        myCell.isPeeking = self.isPeeking;
-        self.eventConversationDelegate.buttonCancel.hidden = YES;
-        return myCell;
-    }
     else if ([mimeType isEqualToString:kNotAbleToPost]) {
         PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
         [myCell.imageView setImageWithURL:[WGProfile currentUser].coverImageURL];
@@ -215,30 +199,14 @@
         myCell.mediaScrollDelegate = self;
         myCell.eventMessage = eventMessage;
         myCell.isPeeking = self.isPeeking;
-        
-        // load video metadata if any
-        //NSDictionary *metaData = self.videoMetaData[eventMessage.id];
-        
-        
-        
-        [myCell updateUI];
-        
-//        if(metaData) {
-//            myCell.videoStartTime = self.videoMetaData[kVideoMetaDataCurrentTime];
-//            myCell.startingThumbnail = self.videoMetaData[kVideoMetaDataCurrentThumbImage];
-//            [myCell.thumbnailImageView setImage:myCell.startingThumbnail];
-//        }
-//        else {
-            myCell.videoStartTime = nil;
-            NSString *thumbnailURL = [eventMessage objectForKey:@"thumbnail"];
-            if (![thumbnailURL isKindOfClass:[NSNull class]]) {
-                NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, thumbnailURL]];
-                [myCell.thumbnailImageView setImageWithURL:imageURL];
-                //[myCell.thumbnailImageView2 setImageWithURL:imageURL];
-            }
-//        }
-        
-        
+
+        myCell.videoStartTime = nil;
+        NSString *thumbnailURL = [eventMessage objectForKey:@"thumbnail"];
+        if (![thumbnailURL isKindOfClass:[NSNull class]]) {
+            NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, thumbnailURL]];
+            [myCell.thumbnailImageView setImageWithURL:imageURL];
+            //[myCell.thumbnailImageView2 setImageWithURL:imageURL];
+        }
         
         NSURL *videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
         myCell.videoURL = videoURL;
@@ -264,27 +232,23 @@
         [self addReadPage:i];
     }
     if (self.eventMessagesRead.count > 0) {
-        __weak typeof(handler) weakHandler = handler;
-        [self.event setMessagesRead:self.eventMessagesRead andHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionSave];
-                weakHandler(NO, error);
-                return;
-            }
-            weakHandler(YES, error);
-        }];
+#pragma - TO DO: mark messages as read
+//        __weak typeof(handler) weakHandler = handler;
+//        [self.event setMessagesRead:self.eventMessagesRead andHandler:^(BOOL success, NSError *error) {
+//            if (error) {
+//                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
+//                [[WGError sharedInstance] logError:error forAction:WGActionSave];
+//                weakHandler(NO, error);
+//                return;
+//            }
+//            weakHandler(YES, error);
+//        }];
     }
 }
 
 - (void)dismissView {
     [self.eventConversationDelegate dismissView];
 }
-
-- (void)promptCamera {
-    [self.eventConversationDelegate promptCamera];
-}
-
 
 - (void)startedScrollingFromPage:(int)fromPage {
     
@@ -912,14 +876,16 @@
         [objectDict addEntriesFromDictionary:info];
         self.object = [[WGEventMessage alloc] initWithJSON:objectDict];
         __weak typeof(self) weakSelf = self;
-        [self.object create:^(BOOL success, NSError *error) {
+        [self.object postEventMessage:^(BOOL success, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             if (strongSelf.error) {
                 [strongSelf.eventConversationDelegate showErrorMessage];
                 return;
             }
             [strongSelf.eventConversationDelegate showCompletedMessage];
-          
+            NSMutableDictionary *newObjDict = [[NSMutableDictionary alloc] initWithDictionary:strongSelf.object.deserialize];
+            if (![newObjDict.allKeys containsObject:@"user"]) [newObjDict setObject:WGProfile.currentUser forKey:@"user"];
+            if (![newObjDict.allKeys containsObject:@"created"]) [newObjDict setObject:[NSDate date] forKey:@"created"];
             if (!strongSelf.shownCurrentImage) {
                 [strongSelf.eventMessages insertObject:strongSelf.object atIndex:1];
                 [strongSelf.eventConversationDelegate reloadUIForEventMessages:self.eventMessages];
@@ -933,6 +899,7 @@
                 strongSelf.shownCurrentImage = NO;
             }
         }];
+
         NSMutableDictionary *mutableDict = [NSMutableDictionary dictionaryWithDictionary:self.options];
 
         [mutableDict addEntriesFromDictionary:@{
@@ -1426,36 +1393,25 @@
     
 }
 
-- (void)updateUI {
-    if (self.eventMessage.message) {
-        NSString *message = self.eventMessage.message;
+- (void)setEventMessage:(WGEventMessage *)eventMessage {
+    _eventMessage = eventMessage;
+    if (eventMessage.message) {
+        NSString *message = eventMessage.message;
         if (message && [message isKindOfClass:[NSString class]]) {
             self.label.hidden = NO;
-            self.label.text = self.eventMessage.message;
+            self.label.text = eventMessage.message;
         }
         else self.label.hidden = YES;
-        if (self.eventMessage.properties) {
-            if (self.eventMessage.properties &&
-                [self.eventMessage.properties isKindOfClass:[NSDictionary class]] &&
-                [[self.eventMessage.properties allKeys] containsObject:@"yPercentage"]) {
-                NSNumber *yPercentage = [self.eventMessage.properties objectForKey:@"yPercentage"];
+        if (eventMessage.properties) {
+            if (eventMessage.properties &&
+                [eventMessage.properties isKindOfClass:[NSDictionary class]] &&
+                [[eventMessage.properties allKeys] containsObject:@"yPercentage"]) {
+                NSNumber *yPercentage = [eventMessage.properties objectForKey:@"yPercentage"];
                 self.label.frame = CGRectMake(0, [yPercentage floatValue]*[[UIScreen mainScreen] bounds].size.height, self.frame.size.width, 40);
             }
         }
     }
     else self.label.hidden = YES;
-    
-    
-}
-
-
-
-- (void)sendVote:(BOOL)upvoteBool {
-    [self.eventMessage vote:upvoteBool withHandler:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionPost];
-        }
-    }];
 }
 
 - (void)focusOnContent {
@@ -2257,8 +2213,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
         else {
             [self.textField endEditing:YES];
             self.textField.hidden = YES;
+            if (self.textField.text.length == 0) return;
             self.textLabel.hidden = NO;
-            self.textLabel.text = self.textField.text;
+            self.textLabel.text = self.textField.text;            
         }
     }
 }

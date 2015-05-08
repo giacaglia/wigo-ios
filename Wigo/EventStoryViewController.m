@@ -66,11 +66,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear: animated];
-
-    NSString *isPeekingString = ([self isPeeking]) ? @"Yes" : @"No";
-    
-    [WGAnalytics tagEvent:@"Event Story View" withDetails: @{@"isPeeking": isPeekingString}];
+    [super viewWillAppear: animated];    
     
     self.eventMessages = nil;
     if (_loadViewFromFront) [self fetchEventMessages];
@@ -181,18 +177,12 @@
 }
 
 - (void)goHerePressed {
-    [WGAnalytics tagEvent: @"Event Story Go Here Tapped"];
-    
-    // Update data
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
-    [WGAnalytics tagEvent:@"Go Here" withDetails:options];
     
     [[WGProfile currentUser] goingToEvent:self.event withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [self.event.attendees removeObjectAtIndex:0];
             self.event.numAttending = @([self.event.numAttending intValue] - 1);
             self.eventPeopleScrollView.event = self.event;
-            [self.eventPeopleScrollView updateUI];
             
             self.goHereButton.hidden = NO;
             self.goHereButton.enabled = YES;
@@ -215,7 +205,6 @@
     
     // Update UI
     self.eventPeopleScrollView.event = self.event;
-    [self.eventPeopleScrollView updateUI];
     self.goHereButton.hidden = YES;
     self.goHereButton.enabled = NO;
     self.inviteButton.hidden = NO;
@@ -363,12 +352,6 @@
     myCell.contentView.frame = CGRectMake(0, 0, sizeOfEachFaceCell, sizeOfEachFaceCell);
     myCell.faceAndMediaTypeView.frame = myCell.contentView.frame;
     
-    myCell.leftLine.backgroundColor = RGB(237, 237, 237);
-    myCell.leftLineEnabled = (indexPath.row %3 > 0) && (indexPath.row > 0);
-    
-    myCell.rightLine.backgroundColor = RGB(237, 237, 237);
-    myCell.rightLineEnabled = (indexPath.row % 3 < 2) && (indexPath.row < self.eventMessages.count - 1);
-    
     if ([indexPath row] + 1 == self.eventMessages.count && [self.eventMessages.hasNextPage boolValue]) {
         [self fetchEventMessages];
     }
@@ -377,9 +360,6 @@
     myCell.faceImageView.center = CGPointMake(myCell.contentView.center.x, myCell.faceImageView.center.y);
     myCell.timeLabel.center = CGPointMake(myCell.contentView.center.x, myCell.timeLabel.center.y);
     myCell.faceImageView.layer.borderColor = UIColor.blackColor.CGColor;
-    myCell.rightLine.frame = CGRectMake(myCell.contentView.center.x + myCell.faceImageView.frame.size.width/2, myCell.contentView.center.y, myCell.contentView.center.x - myCell.faceImageView.frame.size.width/2, 2);
-    myCell.leftLine.frame = CGRectMake(0, myCell.contentView.center.y, myCell.contentView.center.x - myCell.faceImageView.frame.size.width/2, 2);
-    
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:[indexPath row]];
     WGUser *user = eventMessage.user;
     [myCell.mediaTypeImageView setSmallImageForUser:user completed:nil];
@@ -399,12 +379,6 @@
     myCell.timeLabel.textColor = RGB(59, 59, 59);
     myCell.faceAndMediaTypeView.alpha = 1.0f;
     
-    if (eventMessage.isRead) {
-        if ([eventMessage.isRead boolValue]) {
-            [myCell updateUIToRead:YES];
-        }
-        else [myCell updateUIToRead:NO];
-    }
     return myCell;
 }
 
@@ -634,7 +608,6 @@
     self.eventPeopleScrollView.event = _event;
     self.eventPeopleScrollView.userSelectDelegate = self;
     self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
-    [self.eventPeopleScrollView updateUI];
     self.eventPeopleScrollView.frame = CGRectMake(0, 10, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
     [self.backgroundScrollview addSubview:self.eventPeopleScrollView];
 }
@@ -708,8 +681,6 @@
 
 
 - (void)sendPressed {
-    [WGAnalytics tagEvent: @"Event Story Create Highlight Tapped"];
-
     //not going here
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
@@ -806,9 +777,6 @@
 
 
 - (void)showEventConversation:(NSNumber *)index {
-    NSString *isPeekingString = ([self isPeeking]) ? @"Yes" : @"No";
-    [WGAnalytics tagEvent:@"Event Story Highlight Tapped" withDetails: @{ @"isPeeking": isPeekingString }];
-
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     
@@ -883,8 +851,7 @@
 - (void)showUser:(WGUser *)user {
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ProfileViewController *profileViewController = [sb instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [profileViewController setStateWithUser: user];
-
+    profileViewController.user = user;
     if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     _loadViewFromFront = YES;
     [self.navigationController pushViewController: profileViewController animated: YES];

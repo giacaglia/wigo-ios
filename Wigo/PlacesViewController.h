@@ -11,12 +11,13 @@
 #import "Delegate.h"
 #import "UIButtonAligned.h"
 #import "SignViewController.h"
+#import "LabelSwitch.h"
+#import "BaseViewController.h"
 
-
-@interface PlacesViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
+@interface PlacesViewController : BaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
     UIGestureRecognizerDelegate,
     PlacesDelegate,
-    PrivacySwitchDelegate>
+    CLLocationManagerDelegate>
 #define kTodaySection 0
 #define kHighlightsEmptySection 1
 
@@ -24,15 +25,9 @@
 @property (nonatomic, strong) NSString *groupName;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 
-@property (nonatomic, assign) BOOL fetchingIsThereNewPerson;
-@property (nonatomic, strong) UILabel *leftRedDotLabel;
-@property (nonatomic, strong) UILabel *redDotLabel;
-@property (nonatomic, strong) UIButton *rightButton;
-
 @property (nonatomic, assign) BOOL fetchingEventAttendees;
 @property (nonatomic, strong) WGCollection *allEvents;
 @property (nonatomic, strong) WGCollection *events;
-@property (nonatomic, strong) WGCollection *filteredEvents;
 @property (nonatomic, strong) WGCollection *oldEvents;
 @property (nonatomic, strong) WGEvent *aggregateEvent;
 @property (nonatomic, strong) NSMutableDictionary *dayToEventObjArray;
@@ -40,17 +35,19 @@
 @property (nonatomic, assign) BOOL fetchingUserInfo;
 @property (nonatomic, assign) BOOL secondTimeFetchingUserInfo;
 @property (nonatomic, strong) UITableView *placesTableView;
-@property (nonatomic, strong) UITextField *whereAreYouGoingTextField;
-@property (nonatomic, strong) UIView *loadingView;
-@property (nonatomic, strong) UIView *loadingIndicator;
-@property (nonatomic, strong) UIButton *schoolButton;
 @property (nonatomic, assign) BOOL presentingLockedView;
 @property (nonatomic, assign) BOOL shouldReloadEvents;
 @property (nonatomic, strong) UIButton *switchButton;
-@property (nonatomic, strong) UILabel *invitePeopleLabel;
-@property (nonatomic, assign) BOOL privacyTurnedOn;
 @property (nonatomic, assign) BOOL doNotReloadOffsets;
 @property (nonatomic, assign) CGPoint pointNow;
+@property (nonatomic, assign) BOOL spinnerAtCenter;
+
+@property (nonatomic, strong) LabelSwitch *labelSwitch;
+@property (nonatomic, strong) UILabel *bostonLabel;
+@property (nonatomic, strong) UIButton *friendsButton;
+@property (nonatomic, assign) BOOL isLocal;
+@property (nonatomic, strong) UIButton *createButton;
+@property (nonatomic, strong) UIView *overlayView;
 
 @end
 
@@ -58,7 +55,8 @@
 #import "HighlightsCollectionView.h"
 
 @interface EventCell : UITableViewCell
-+ (CGFloat) heightIsFullCell:(BOOL)isFullCell;
++ (CGFloat) height;
+@property (nonatomic, strong) UIView *whiteView;
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, strong) UIButton *privacyLockButton;
@@ -67,11 +65,12 @@
 @property (nonatomic, strong) UILabel *eventNameLabel;
 @property (nonatomic, strong) UILabel *numberOfPeopleGoingLabel;
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
-@property (nonatomic, strong) UILabel *numberOfHighlightsLabel;
 @property (nonatomic, strong) UILabel *numberOfNewHighlightsLabel;
 @property (nonatomic, strong) UIButton *goingHereButton;
 @property (nonatomic, strong) UIView *grayView;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
+@property (nonatomic, strong) UIView *verifiedView;
+@property (nonatomic, assign) BOOL isOldEvent;
 @end
 
 
@@ -80,15 +79,9 @@
 + (CGFloat) height;
 @property (nonatomic, strong) NSDate *date;
 + (instancetype) initWithDay: (NSDate *) date;
-@end
-
-@interface GoOutNewPlaceHeader : UIView
-- (void)setupWithMoreThanOneEvent:(BOOL)moreThanOneEvent;
-@property (nonatomic, strong) UILabel *goSomewhereLabel;
-@property (nonatomic, strong) UIButton *plusButton;
-@property (nonatomic, strong) UIButton *addEventButton;
-+ (instancetype) init;
-+ (CGFloat) height;
+@property (nonatomic, strong) UILabel *friendsLabel;
+@property (nonatomic, strong) UILabel *bostonLabel;
+@property (nonatomic, strong) UIView *lineViewUnderLabel;
 @end
 
 @interface HighlightsHeader : UIView
@@ -104,12 +97,21 @@
 @end
 
 @interface HighlightOldEventCell : UITableViewCell
-@property (nonatomic, strong) UIImageView *privateIconImageView;
-@property (nonatomic, strong) UIImageView *highlightImageView;
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
-@property (nonatomic, strong) UILabel *oldEventLabel;
-+ (CGFloat) height;
+@property (nonatomic, strong) UILabel *eventNameLabel;
+@property (nonatomic, strong) UILabel *numberOfPeopleGoingLabel;
+@property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
+@property (nonatomic, strong) UILabel *dateLabel;
+@property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
+@end
+
+@interface MoreThan2PhotosOldEventCell : HighlightOldEventCell
++(CGFloat)height;
+@end
+
+@interface LessThan2PhotosOldEventCell : HighlightOldEventCell
++(CGFloat)height;
 @end
 
 @interface OldEventShowHighlightsCell : UITableViewCell

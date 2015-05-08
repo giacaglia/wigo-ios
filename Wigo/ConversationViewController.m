@@ -10,7 +10,7 @@
 #import "Globals.h"
 #import "UIButtonAligned.h"
 #import "ProfileViewController.h"
-
+#import "WGUserParser.h"
 #define kTimeDifferenceToShowDate 1800 // 30 minutes
 
 @interface ConversationViewController ()
@@ -40,7 +40,7 @@ ProfileViewController *profileViewController;
 {
     self = [super init];
     if (self) {
-        self.view.backgroundColor = [UIColor whiteColor];
+        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -50,10 +50,11 @@ ProfileViewController *profileViewController;
     [super viewDidLoad];
     
     [self initializeNotificationObservers];
+    [self initializeMessageForEmptyConversation];
     
     bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
-    orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor orangeColor]];
-    grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+    orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+    grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[FontProperties getBlueColor]];
     
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
@@ -63,10 +64,6 @@ ProfileViewController *profileViewController;
     self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
     
     self.automaticallyScrollsToMostRecentMessage = YES;
-    
-    UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 1)];
-    bottomLine.backgroundColor = [FontProperties getLightOrangeColor];
-    [self.view addSubview:bottomLine];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(textChanged:)
@@ -88,15 +85,15 @@ ProfileViewController *profileViewController;
     [super viewWillAppear:animated];
     
     // Title setup
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    self.navigationController.navigationBar.barTintColor = [FontProperties getOrangeColor];
-    self.navigationController.navigationBar.tintColor = [FontProperties getOrangeColor];
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [FontProperties getOrangeColor]}];
-    self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:[FontProperties getOrangeColor] forKey:NSForegroundColorAttributeName];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:UIColor.whiteColor, NSFontAttributeName:[FontProperties getTitleFont]};
+    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
+    self.navigationController.navigationBar.tintColor = UIColor.whiteColor;
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:UIColor.whiteColor}];
+    self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:UIColor.whiteColor forKey:NSForegroundColorAttributeName];
     
-    self.title = [self.user fullName];
-    
-    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
+    self.title = self.user.fullName;
+    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     self.navigationController.navigationBar.translucent = NO;
     
     [self fetchFirstPageMessages];
@@ -105,11 +102,7 @@ ProfileViewController *profileViewController;
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [WGAnalytics tagEvent:@"Conversation View"];
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
+    [WGAnalytics tagView:@"conversation"];
 }
 
 -(void) textChanged:(id)sender {
@@ -140,18 +133,18 @@ ProfileViewController *profileViewController;
 }
 
 - (NSString *)senderDisplayName {
-    return [[WGProfile currentUser] fullName];
+    return WGProfile.currentUser.fullName;
 }
 
 - (NSString *)senderId {
-    return [NSString stringWithFormat:@"%@", [WGProfile currentUser].id];
+    return [NSString stringWithFormat:@"%@", WGProfile.currentUser.id];
 }
 
 - (void) initializeLeftBarButton {
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
-    [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
+    [barBt setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
-    [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    [barBt setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     barBt.titleLabel.font = [FontProperties getSubtitleFont];
     [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
@@ -166,6 +159,9 @@ ProfileViewController *profileViewController;
     UIImageView *profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
     profileImageView.contentMode = UIViewContentModeScaleAspectFill;
     profileImageView.clipsToBounds = YES;
+    profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
+    profileImageView.layer.borderWidth = 1.0f;
+    profileImageView.layer.cornerRadius = profileImageView.frame.size.width/2;
     [profileImageView setSmallImageForUser:self.user completed:nil];
     [profileButton addSubview:profileImageView];
     [profileButton setShowsTouchWhenHighlighted:NO];
@@ -229,10 +225,10 @@ ProfileViewController *profileViewController;
     if (!message.isMediaMessage) {
         
         if ([message.senderId isEqualToString:self.senderId]) {
-            cell.textView.textColor = [UIColor blackColor];
+            cell.textView.textColor = UIColor.whiteColor;
         }
         else {
-            cell.textView.textColor = [UIColor whiteColor];
+            cell.textView.textColor = UIColor.blackColor;
         }
         
         cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,
@@ -273,13 +269,7 @@ ProfileViewController *profileViewController;
 }
 
 - (void) goBack {
-    [self.user readConversation:^(BOOL success, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionSave];
-        }
-    }];
-    
-    self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
+    self.navigationController.navigationBar.barTintColor = UIColor.clearColor;
     self.navigationController.navigationBar.translucent = YES;
     
     [self.navigationController popViewControllerAnimated:YES];
@@ -287,7 +277,6 @@ ProfileViewController *profileViewController;
 
 - (void)showUser {
     ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [profileViewController setStateWithUser: self.user];
     profileViewController.user = self.user;
     
     self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
@@ -301,20 +290,22 @@ ProfileViewController *profileViewController;
     message.message = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     message.created = date;
     message.toUser = self.user;
-    message.user = [WGProfile currentUser];
+    message.user = WGProfile.currentUser;
     __weak typeof(self) weakSelf = self;
-    [message create:^(BOOL success, NSError *error) {
+    [message sendMessage:^(WGMessage *newMessage, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             [strongSelf.messages removeObject:message];
-            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionPost];
+            return;
         }
         dispatch_async(dispatch_get_main_queue(), ^{
+            WGProfile.currentUser.lastMessageRead = newMessage.created;
             [strongSelf.collectionView reloadData];
             [strongSelf scrollToBottomAnimated:YES];
         });
     }];
+    [self updateLastMessagesRead:message];
     self.viewForEmptyConversation.alpha = 0.0f;
     
     self.inputToolbar.contentView.textView.text = @"";
@@ -372,96 +363,96 @@ ProfileViewController *profileViewController;
 }
 
 - (void)initializeMessageForEmptyConversation {
-    self.viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 90)];
-    self.viewForEmptyConversation.center = self.view.center;
-    
+    self.viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, 90)];
+    self.viewForEmptyConversation.center = CGPointMake(self.viewForEmptyConversation.center.x, self.view.center.y);
     [self.view addSubview:self.viewForEmptyConversation];
     
-    UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , self.view.frame.size.width, 30)];
-    everyDayLabel.text = @"Start a new chat today.";
-    everyDayLabel.textColor = [FontProperties getOrangeColor];
+    UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , [UIScreen mainScreen].bounds.size.width, 30)];
+    everyDayLabel.text = @"Start a new chat today";
+    everyDayLabel.textColor = UIColor.grayColor;
     everyDayLabel.textAlignment = NSTextAlignmentCenter;
     everyDayLabel.font = [FontProperties getBigButtonFont];
+    self.viewForEmptyConversation.hidden = YES;
     [self.viewForEmptyConversation addSubview:everyDayLabel];
 }
 
 # pragma mark - Network functions
 
 - (void)fetchFirstPageMessages {
-    self.fetching = NO;
-    [self fetchMessages:YES];
+    self.isFetching = NO;
+
+    [WGSpinnerView addDancingGToCenterView:self.view];
+    __weak typeof(self) weakSelf = self;
+    [self.user getConversation:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+        strongSelf.isFetching = NO;
+
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        [collection reverse];
+        strongSelf.messages = collection;
+        if (strongSelf.messages.count == 0) {
+            strongSelf.viewForEmptyConversation.hidden = NO;
+        } else {
+            strongSelf.viewForEmptyConversation.hidden = YES;
+        }
+        
+        strongSelf.showLoadEarlierMessagesHeader = (strongSelf.messages.nextPage != nil);
+        [strongSelf.collectionView reloadData];
+        [strongSelf scrollToBottomAnimated:YES];
+    }];
 }
 
 - (void)fetchMessages:(BOOL)scrollToBottom {
-    if (!self.fetching) {
-        self.fetching = YES;
-        if (!self.messages) {
-            UIView *loadingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 120)];
-            [self.view addSubview:loadingView];
-            [WGSpinnerView showOrangeSpinnerAddedTo:loadingView];
-            __weak typeof(self) weakSelf = self;
-            [self.user getConversation:^(WGCollection *collection, NSError *error) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    strongSelf.fetching = NO;
-                    return;
-                }
-                [collection reverse];
-                strongSelf.messages = collection;
-                [WGSpinnerView hideSpinnerForView:loadingView];
-                [loadingView removeFromSuperview];
-                strongSelf.fetching = NO;
-                
-                if (strongSelf.messages.count == 0) {
-                    [strongSelf initializeMessageForEmptyConversation];
-                } else {
-                    strongSelf.viewForEmptyConversation.alpha = 0.0f;
-                }
-                
-                strongSelf.showLoadEarlierMessagesHeader = [[strongSelf.messages hasNextPage] boolValue];
-                [strongSelf.collectionView reloadData];
-                if (scrollToBottom) {
-                    [strongSelf scrollToBottomAnimated:YES];
-                }
-            }];
-        } else if ([self.messages.hasNextPage boolValue]) {
-            __weak typeof(self) weakSelf = self;
-            [self.messages getNextPage:^(WGCollection *collection, NSError *error) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    strongSelf.fetching = NO;
-                    return;
-                }
-                [collection reverse];
-                [strongSelf.messages addObjectsFromCollectionToBeginning:collection notInCollection:self.messages];
-                strongSelf.messages.hasNextPage = collection.hasNextPage;
-                strongSelf.messages.nextPage = collection.nextPage;
-                
-                [strongSelf.viewForEmptyConversation removeFromSuperview];
-                strongSelf.fetching = NO;
-                strongSelf.showLoadEarlierMessagesHeader = [[strongSelf.messages hasNextPage] boolValue];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [strongSelf.collectionView reloadData];
-                    if (scrollToBottom) {
-                        [strongSelf scrollToBottomAnimated:YES];
-                    }
-                });
-            }];
-        } else {
-            self.fetching = NO;
+    if (!self.messages.nextPage) return;
+    if (self.isFetching) return;
+    self.isFetching = YES;
+    
+    __weak typeof(self) weakSelf = self;
+    [self.messages getNextPage:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.isFetching = NO;
+
+        if (error) {
+            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
         }
-    }
+        [collection reverse];
+        [strongSelf.messages addObjectsFromCollectionToBeginning:collection notInCollection:self.messages];
+        strongSelf.messages.nextPage = collection.nextPage;
+        strongSelf.showLoadEarlierMessagesHeader = (strongSelf.messages.nextPage != nil);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [strongSelf.collectionView reloadData];
+        });
+    }];
+   
+    
 }
 
 - (void)updateLastMessagesRead:(WGMessage *)message {
-    if ([message.id intValue] > [[WGProfile currentUser].lastMessageRead intValue]) {
-        [WGProfile currentUser].lastMessageRead = message.id;
+    if ([message.date compare:WGProfile.currentUser.lastMessageRead] == NSOrderedDescending) {
+        WGProfile.currentUser.lastMessageRead = message.created;
     }
 }
+
+#pragma mark - UITextField Delegate 
+
+- (void)textViewDidChange:(UITextView *)textView {
+    [super textViewDidChange:textView];
+//    NSArray *arrayStrings = [textView.text componentsSeparatedByString:@" "];
+//    NSString *string = (NSString *)arrayStrings.lastObject;
+//    if (string.length == 0) return;
+//    if ([[string substringWithRange:NSMakeRange(0, 1)] isEqual:@"@"]) {
+//        NSString *text = [string substringWithRange:NSMakeRange(1, string.length - 1)];
+//        WGCollection *usersFromText = [WGUserParser usersFromText:text];
+//        NSLog(@"tagged: %@", text);
+//    }
+}
+
 
 @end

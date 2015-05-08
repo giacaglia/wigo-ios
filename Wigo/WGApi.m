@@ -11,6 +11,7 @@ dispatch_queue_t postQueue;
 #import "WGApi.h"
 #import "WGProfile.h"
 #import <dispatch/dispatch.h>
+#import <CoreLocation/CoreLocation.h>
 
 #define kWigoApiKeyKey @"X-Wigo-API-Key"
 #define kWigoClientEnterpriseKey @"X-Wigo-Client-Enterprise"
@@ -18,6 +19,7 @@ dispatch_queue_t postQueue;
 #define kWigoApiVersionKey @"X-Wigo-API-Version"
 #define kWigoDeviceKey @"X-Wigo-Device"
 #define kWigoUserKey @"X-Wigo-User-Key"
+#define kGeoLocationKey @"Geolocation"
 
 #define kContentLengthKey @"Content-Length"
 #define kContentTypeKey @"Content-Type"
@@ -25,7 +27,7 @@ dispatch_queue_t postQueue;
 
 #define kWigoApiKey @"oi34u53205ju34ik23"
 #define kDeviceType @"iphone"
-#define kWigoApiVersion @"1.0.10 (enable_refs)"
+#define kWigoApiVersion @"2.0.0"
 #define kGZip @"gzip"
 #define kTrue @"true"
 #define kPOST @"POST"
@@ -40,14 +42,21 @@ dispatch_queue_t postQueue;
 #define kReferenceIdKey @"$id"
 #define kReferenceKey @"$ref"
 
-//#ifdef DEBUG
-//static NSString *baseURLString = @"https://dev-api.wigo.us/api/%@";
-//#else
-static NSString *baseURLString = @"https://api.wigo.us/api/%@";
-//#endif
-
+static NSString *baseURLString = @"https://api2.wigo.us/api/%@";
+static CLLocationManager *locationManager;
 
 @implementation WGApi
+
++ (CLLocationManager *)defaultLocationManager {
+    if (!locationManager) {
+        locationManager = [[CLLocationManager alloc] init];
+        locationManager.distanceFilter = 500;
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters; // 100 m
+        [locationManager startUpdatingLocation];
+    }
+    return locationManager;
+  
+}
 
 +(void) get:(NSString *)endpoint withSerializedHandler:(SerializedApiResultBlock)handler {
     [WGApi getURL:[WGApi getUrlStringForEndpoint:endpoint] withSerializedHandler:handler];
@@ -122,7 +131,9 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     
     // Hack for Ambassador View
     BOOL shouldPassKey = [url rangeOfString:@"key="].location != NSNotFound;
-    
+    if (shouldPassKey) {
+        NSLog(@"url: %@", url);
+    }
     [WGApi addWigoHeaders:manager.requestSerializer passKey:shouldPassKey];
     
     if (!postQueue) {
@@ -228,7 +239,9 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [request addValue:contentLength forHTTPHeaderField:kContentLengthKey];
     [request setHTTPMethod:kPOST];
     
-    [WGApi addWigoHeaders:request passKey:NO];
+    BOOL shouldPassKey = [url rangeOfString:@"key="].location != NSNotFound;
+
+    [WGApi addWigoHeaders:request passKey:shouldPassKey];
     
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.responseSerializer = [AFJSONResponseSerializer serializer];
@@ -297,10 +310,15 @@ static NSString *baseURLString = @"https://api.wigo.us/api/%@";
     [serializer setValue:kWigoApiVersion forHTTPHeaderField:kWigoApiVersionKey];
     [serializer setValue:kDeviceType forHTTPHeaderField:kWigoDeviceKey];
     [serializer setValue:kContentType forHTTPHeaderField:kContentTypeKey];
+    [serializer setValue:WGApi.getGeoVal forHTTPHeaderField:kGeoLocationKey];
     if (!shouldPassKey) {
         [serializer setValue:kWigoApiKey forHTTPHeaderField:kWigoApiKeyKey];
-        [serializer setValue:[WGProfile currentUser].key forHTTPHeaderField:kWigoUserKey];
+        [serializer setValue:WGProfile.currentUser.key forHTTPHeaderField:kWigoUserKey];
     }
+}
+
++ (NSString *)getGeoVal {
+    return [NSString stringWithFormat:@"geo: %f,%f", WGApi.defaultLocationManager.location.coordinate.latitude, WGApi.defaultLocationManager.location.coordinate.longitude];
 }
 
 #pragma mark AWS Uploader

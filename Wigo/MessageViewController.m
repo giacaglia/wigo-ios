@@ -11,84 +11,48 @@
 #import "UIButtonAligned.h"
 #import "ConversationViewController.h"
 
-
 @interface MessageViewController ()
-
-// Search Bar
 @property UISearchBar *searchBar;
-@property BOOL isSearching;
-@property UIImageView *searchIconImageView;
-
 @end
-
-int queryQueueInt;
 
 @implementation MessageViewController
 
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        self.view.backgroundColor = [UIColor whiteColor];
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    queryQueueInt = 0;
+    self.view.backgroundColor = UIColor.whiteColor;
+
+    self.allFriends = [[WGCollection alloc] initWithType:[WGUser class]];
     self.content = [[WGCollection alloc] initWithType:[WGUser class]];
-    self.filteredContent = [[WGCollection alloc] initWithType:[WGUser class]];
     self.isFetchingEveryone = NO;
     
     // Title setup
     [self initializeNavigationItem];
-    [self initializeSearchBar];
     [self initializeTableListOfFriends];
-    [self initializeTapHandler];
     [self fetchFirstPageEveryone];
 }
 
 - (void) initializeNavigationItem {
-    self.navigationItem.titleView = nil;
     self.title = @"New Message";
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
 
-    UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 60, 44) andType:@0];
-    [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
+    UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 60, 44) andType:@0];
+    [barBt setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
-    [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    [barBt setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     barBt.titleLabel.font = [FontProperties getSubtitleFont];
     [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
     [barItem setCustomView:barBt];
     self.navigationItem.leftBarButtonItem = barItem;
 
-    UIButtonAligned *searchButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 15, 16) andType:@2];
-    [searchButton setBackgroundImage:[UIImage imageNamed:@"orangeSearchIcon"] forState:UIControlStateNormal];
-    [searchButton addTarget:self action:@selector(searchPressed)
-           forControlEvents:UIControlEventTouchUpInside];
-    [searchButton setShowsTouchWhenHighlighted:YES];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:searchButton];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"New Chat View"];
+    [WGAnalytics tagView:@"new_chat"];
 }
 
-- (void)initializeTapHandler {
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                          action:@selector(dismissKeyboard)];
-    tap.cancelsTouchesInView = NO;
-    [self.view addGestureRecognizer:tap];
-}
-
-
-- (void)dismissKeyboard {
-    [self.view endEditing:YES];
-}
 
 - (void) goBack {
     [self.navigationController popViewControllerAnimated:YES];
@@ -97,51 +61,56 @@ int queryQueueInt;
 - (void) initializeTableListOfFriends {
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    [self.tableView registerClass:[MessageCell class] forCellReuseIdentifier:kMessageCellName];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 50)];
+    _searchBar.placeholder = @"Search By Name";
+    _searchBar.delegate = self;
+    self.tableView.tableHeaderView = _searchBar;
+    self.tableView.contentOffset = CGPointMake(0, 50);
     [self.view addSubview:self.tableView];
 }
 
 #pragma Network Functions
 
 - (void) fetchFirstPageEveryone {
-    [self fetchEveryone];
+    if (self.isFetchingEveryone) return;
+    self.isFetchingEveryone = YES;
+    __weak typeof(self) weakSelf = self;
+    [WGProfile.currentUser getFriends:^(WGCollection *collection, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            strongSelf.isFetchingEveryone = NO;
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            strongSelf.allFriends = collection;
+            strongSelf.content = strongSelf.allFriends;
+            [strongSelf.tableView reloadData];
+        });
+    }];
+
 }
 
-- (void) fetchEveryone {
-    if (!self.isFetchingEveryone) {
-        self.isFetchingEveryone = YES;
-        __weak typeof(self) weakSelf = self;
-        if (!self.content || self.content.hasNextPage == nil) {
-            [[WGProfile currentUser] getNotMeForMessage:^(WGCollection *collection, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    __strong typeof(self) strongSelf = weakSelf;
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        return;
-                    }
-                    strongSelf.content = collection;
-                    [strongSelf.tableView reloadData];
-                    strongSelf.isFetchingEveryone = NO;
-                });
-            }];
-        } else if ([self.content.hasNextPage boolValue]) {
-            [self.content addNextPage:^(BOOL success, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^(void) {
-                    __strong typeof(self) strongSelf = weakSelf;
-                    if (error) {
-                        [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                        [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                        return;
-                    }
-                    [strongSelf.tableView reloadData];
-                    strongSelf.isFetchingEveryone = NO;
-                });
-            }];
-        }
-    }
+- (void) fetchNextPage {
+    if (self.isFetchingEveryone) return;
+    if (!self.content.nextPage) return;
+    self.isFetchingEveryone = YES;
+    __weak typeof(self) weakSelf = self;
+    [self.content addNextPage:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            strongSelf.isFetchingEveryone = NO;
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            [strongSelf.tableView reloadData];
+        });
+    }];
 }
 
 #pragma mark - Tablew View Data Source
@@ -151,201 +120,58 @@ int queryQueueInt;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (_isSearching) {
-        return self.filteredContent.count;
-    }
-    int hasNextPage = ([self.content.hasNextPage boolValue] ? 1 : 0);
-    return self.content.count + hasNextPage;
+    return self.content.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
+    MessageCell *cell = [tableView dequeueReusableCellWithIdentifier:kMessageCellName forIndexPath:indexPath];
     
-    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-    if (self.content.count > 5) {
-        if ([self.content.hasNextPage boolValue] && indexPath.row == self.content.count - 5) {
-            [self fetchEveryone];
-        }
-    }
-    if (indexPath.row == self.content.count && self.content.count != 0) {
-        [self fetchEveryone];
-        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc]initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        spinner.frame = CGRectMake(0.0, 0.0, 40.0, 40.0);
-        spinner.center = cell.contentView.center;
-        [cell.contentView addSubview:spinner];
-        [spinner startAnimating];
-        return cell;
-    }
-    
-    WGUser *user;
-    if (_isSearching) {
-        if (self.filteredContent.count == 0) return cell;
-        if (indexPath.row < self.filteredContent.count) {
-            user = (WGUser *)[self.filteredContent objectAtIndex:indexPath.row];
-        }
-        else return cell;
-    } else {
-        if (self.content.count == 0) return cell;
-        if (indexPath.row < self.content.count) {
-            user = (WGUser *)[self.content objectAtIndex:indexPath.row];
-        }
-        else return cell;
-    }
-       
-    UIImageView *profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
-    profileImageView.contentMode = UIViewContentModeScaleAspectFill;
-    profileImageView.clipsToBounds = YES;
-    [profileImageView setSmallImageForUser:user completed:nil];
-    [cell.contentView addSubview:profileImageView];
-    
-    UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 10, 150, 20)];
-    textLabel.text = user.fullName;
-    textLabel.font = [FontProperties getSubtitleFont];
-    [cell.contentView addSubview:textLabel];
-    
-    UILabel *goingOutLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 40, 150, 20)];
-    goingOutLabel.font = [FontProperties mediumFont:13.0f];
-    goingOutLabel.textAlignment = NSTextAlignmentLeft;
-    if ([user.isGoingOut boolValue]) {
-        goingOutLabel.text = @"Going Out";
-        goingOutLabel.textColor = [FontProperties getOrangeColor];
-    }
-    [cell.contentView addSubview:goingOutLabel];
-    
+    if (indexPath.row == self.content.count - 5) [self fetchNextPage];
+    WGUser *user = [self getUserAtIndex:indexPath];
+    if (!user) return cell;
+    cell.user = user;
     return cell;
 }
 
-- (void) followedPerson:(id)sender {
-    UIButton *senderButton = (UIButton*)sender;
-    [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 75;
+- (CGFloat)tableView:(UITableView *)tableView
+heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [MessageCell height];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    WGUser *user = [self getUserAtIndex:indexPath];
+    if (!user) return;
+    
+    [self.navigationController pushViewController:[[ConversationViewController alloc] initWithUser:user] animated:YES];
+}
+
+- (WGUser *)getUserAtIndex:(NSIndexPath *)indexPath {
     WGUser *user;
-    if (_isSearching) {
-        int sizeOfArray = (int)self.filteredContent.count;
-        if (sizeOfArray > 0 && sizeOfArray > indexPath.row)
-            user = (WGUser *)[self.filteredContent objectAtIndex:[indexPath row]];
-    } else {
-        int sizeOfArray = (int)self.content.count;
-        if (sizeOfArray > 0 && sizeOfArray > indexPath.row)
-            user = (WGUser *)[self.content objectAtIndex:[indexPath row]];
-    }
-    if (user) {
-        ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithUser:user];
-        [self.navigationController pushViewController:conversationViewController animated:YES];
-    }
+    int sizeOfArray = (int)self.content.count;
+    if (sizeOfArray > 0 && sizeOfArray > indexPath.row)
+        user = (WGUser *)[self.content objectAtIndex:[indexPath row]];
+    return user;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [_searchBar endEditing:YES];
 }
 
-#pragma mark - UISearchBar
-- (void)initializeSearchBar {
-    UIColor *grayColor = RGB(184, 184, 184);
-    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(11, 70, self.view.frame.size.width - 22, 30)];
-    _searchBar.barTintColor = [UIColor whiteColor];
-    _searchBar.tintColor = grayColor;
-    _searchBar.placeholder = @"Search By Name";
-    _searchBar.delegate = self;
-    UITextField *searchField = [_searchBar valueForKey:@"_searchField"];
-    [searchField setValue:grayColor forKeyPath:@"_placeholderLabel.textColor"];
-    
-    // Search Icon Clear
-    UITextField *txtSearchField = [_searchBar valueForKey:@"_searchField"];
-    [txtSearchField setLeftViewMode:UITextFieldViewModeNever];
-    
-    // Add Custom Search Icon
-    _searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"graySearchIcon"]];
-    _searchIconImageView.frame = CGRectMake(40, 14, 14, 14);
-    [_searchBar addSubview:_searchIconImageView];
-    
-    // Text when editing becomes orange
-    for (UIView *subView in _searchBar.subviews) {
-        for (UIView *secondLevelSubview in subView.subviews){
-            if ([secondLevelSubview isKindOfClass:[UITextField class]])
-            {
-                UITextField *searchBarTextField = (UITextField *)secondLevelSubview;
-                searchBarTextField.textColor = grayColor;
-            }
-            else {
-                [secondLevelSubview removeFromSuperview];
-            }
-        }
-    }
-}
-
-- (void)searchPressed {
-    self.navigationItem.leftBarButtonItem = nil;
-    _searchBar.hidden = NO;
-    self.navigationItem.titleView = _searchBar;
-    [_searchBar becomeFirstResponder];
-    [self.navigationItem setHidesBackButton:YES animated:YES];
-    
-    UIButtonAligned *cancelButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@3];
-    [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
-    [cancelButton addTarget:self action: @selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
-    cancelButton.titleLabel.textAlignment = NSTextAlignmentRight;
-    cancelButton.titleLabel.font = [FontProperties getSubtitleFont];
-    [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
-    [barItem setCustomView:cancelButton];
-    self.navigationItem.rightBarButtonItem = barItem;
-}
-
-- (void)cancelPressed {
-    [self.view endEditing:YES];
-    _isSearching = NO;
-    _searchBar.text = @"";
-    [self searchBarTextDidEndEditing:_searchBar];
-    [self.tableView reloadData];
-    [self initializeNavigationItem];
-}
 
 #pragma mark - UISearchBarDelegate
 
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    _searchIconImageView.hidden = YES;
-    _isSearching = YES;
-}
-
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    if (![searchBar.text isEqualToString:@""]) {
-        [UIView animateWithDuration:0.01 animations:^{
-            _searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
-        }  completion:^(BOOL finished){
-            _searchIconImageView.hidden = NO;
-        }];
-    } else {
-        [UIView animateWithDuration:0.01 animations:^{
-            _searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
-        }  completion:^(BOOL finished){
-            _searchIconImageView.hidden = NO;
-        }];
-    }
-}
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    if(searchText.length != 0) {
-        _isSearching = YES;
-        self.filteredContent = nil;
+    if([searchText length] != 0) {
         [self performBlock:^(void){[self searchTableList];}
                 afterDelay:0.25
      cancelPreviousRequest:YES];
     } else {
-        _isSearching = NO;
+        self.content = self.allFriends;
+        self.isSearching = NO;
+        [self.tableView reloadData];
     }
-    [self.tableView reloadData];
+
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -361,34 +187,20 @@ int queryQueueInt;
     if ([oldString isEqualToString:@"Initiate meltdown"]) {
         [self showMeltdown];
     }
-    if (self.filteredContent.hasNextPage == nil) {
-        [[WGProfile currentUser] searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                __strong typeof(self) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    return;
-                }
-                strongSelf.filteredContent = collection;
-                [strongSelf.tableView reloadData];
-                strongSelf.isFetchingEveryone = NO;
-            });
-        }];
-    } else if ([self.filteredContent.hasNextPage boolValue]) {
-        [self.filteredContent addNextPage:^(BOOL success, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                __strong typeof(self) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    return;
-                }
-                [strongSelf.tableView reloadData];
-                strongSelf.isFetchingEveryone = NO;
-            });
-        }];
-    }
+    [WGProfile.currentUser searchNotMe:searchString withHandler:^(WGCollection *collection, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            strongSelf.isFetchingEveryone = NO;
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            strongSelf.isSearching = YES;
+            strongSelf.content = collection;
+            [strongSelf.tableView reloadData];
+        });
+    }];
+  
 }
 
 - (void)showMeltdown {
@@ -422,6 +234,47 @@ int queryQueueInt;
     
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
+}
+
+@end
+
+
+@implementation MessageCell
+
++ (CGFloat) height {
+    return 75.0f;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void) setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [MessageCell height]);
+    self.contentView.frame = self.frame;
+    self.contentView.backgroundColor = UIColor.whiteColor;
+    
+    self.profileImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 7, 60, 60)];
+    self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.profileImageView.clipsToBounds = YES;
+    self.profileImageView.layer.borderWidth = 1.0f;
+    self.profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
+    self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width/2;
+    [self.contentView addSubview:self.profileImageView];
+    
+    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 15, 150, 20)];
+    self.nameLabel.font = [FontProperties getSubtitleFont];
+    [self.contentView addSubview:self.nameLabel];
+}
+
+- (void)setUser:(WGUser *)user {
+    _user = user;
+    [self.profileImageView setSmallImageForUser:user completed:nil];
+    self.nameLabel.text = user.fullName;
 }
 
 @end

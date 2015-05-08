@@ -29,7 +29,7 @@
 {
     [super viewDidLoad];
     
-    UIButton *sendEmailButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, 248, 42)];
+    UIButton *sendEmailButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50, self.view.frame.size.width - 70, 42)];
     sendEmailButton.backgroundColor = RGB(246, 143, 30);
     [sendEmailButton setTitle:@"SEND EMAIL" forState:UIControlStateNormal];
     [sendEmailButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -37,7 +37,7 @@
     [sendEmailButton addTarget:self action:@selector(sendEmail) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:sendEmailButton];
     
-    UIButton *copyEmailButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12, 248, 42)];
+    UIButton *copyEmailButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12, self.view.frame.size.width - 70, 42)];
     copyEmailButton.backgroundColor = [FontProperties getBlueColor];
     [copyEmailButton addTarget:self action:@selector(copyEmail) forControlEvents:UIControlEventTouchUpInside];
     [copyEmailButton setTitle:@"COPY EMAIL ADDRESS" forState:UIControlStateNormal];
@@ -45,7 +45,7 @@
     copyEmailButton.titleLabel.font = [FontProperties getTitleFont];
     [self.view addSubview:copyEmailButton];
     
-    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12 + 42 + 12, 248, 42)];
+    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, 248 + 50 + 42 + 12 + 42 + 12, self.view.frame.size.width - 70, 42)];
     cancelButton.backgroundColor = [UIColor whiteColor];
     [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
@@ -58,7 +58,7 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"Contact Us View"];
+    [WGAnalytics tagView:@"contact_us"];
 }
 
 - (void)sendEmail {

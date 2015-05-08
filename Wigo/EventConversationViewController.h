@@ -20,6 +20,9 @@
 @property (nonatomic, assign) NSInteger lastPage;
 @property (nonatomic, strong) IBOutlet UICollectionView *facesCollectionView;
 @property (nonatomic, strong) NSNumber *index;
+@property (nonatomic, strong) NSNumber *numberOfPagesBefore;
+@property (nonatomic, assign) BOOL isFetchingMessages;
+@property (nonatomic, assign) BOOL isOldEvent;
 
 #pragma mark - Delegate objects
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
@@ -35,6 +38,7 @@
 @property (nonatomic, strong) UIButton *buttonTrash;
 @property (nonatomic, strong) UIImageView *backgroundBottom;
 @property (nonatomic, strong) UILabel *numberOfVotesLabel;
+@property (nonatomic, strong) UIImageView *downArrowImageView;
 @property (nonatomic, strong) UIButton *upVoteButton;
 @property (nonatomic, strong) UIImageView *upvoteImageView;
 @end
@@ -42,26 +46,23 @@
 @interface FaceCell : UICollectionViewCell
 - (void) resetToInactive;
 - (void)setToActiveWithNoAnimation;
-- (void)updateUIToRead:(BOOL)read;
-- (void)setStateForUser:(WGUser *)user;
 @property (nonatomic, strong) WGUser *user;
-@property (nonatomic, assign) BOOL rightLineEnabled;
-@property (nonatomic, assign) BOOL leftLineEnabled;
-
 @property (nonatomic, assign) BOOL isActive;
 @property (nonatomic, strong) UIView *faceAndMediaTypeView;
 @property (nonatomic, strong) UIImageView *faceImageView;
 @property (nonatomic, strong) UIImageView *mediaTypeImageView;
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
-@property (nonatomic, strong) UIView *leftLine;
-@property (nonatomic, strong) UIView *rightLine;
-
 // For Transition
 @property (nonatomic, assign) CGFloat startYPosition;
 @property (nonatomic, assign) CGRect startFrame;
 @property (nonatomic, weak) id<EventConversationDelegate> eventConversationDelegate;
 @property (nonatomic, strong) UIView *holeView;
+@property (nonatomic, strong) WGEventMessage *eventMessage;
+@property (nonatomic, strong) UIView *leftLine;
+@property (nonatomic, strong) UIView *rightLine;
+- (void)setRightLineEnabled:(BOOL)rightLineEnabled;
+- (void)setLeftLineEnabled:(BOOL)leftLineEnabled;
 @end
 
 @interface FaceFlowLayout : UICollectionViewFlowLayout

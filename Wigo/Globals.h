@@ -32,6 +32,8 @@
 #import "WGCollectionArray.h"
 #import "NSDate+WGDate.h"
 #import "WGFollow.h"
+#import "NetworkFetcher.h"
+#import "TabBarAuxiliar.h"
 
 #if !defined(StringOrEmpty)
 #define StringOrEmpty(A)  ({ __typeof__(A) __a = (A); __a ? __a : @""; })

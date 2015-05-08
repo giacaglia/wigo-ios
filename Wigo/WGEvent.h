@@ -26,6 +26,7 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 @property WGEventMessage *highlight;
 @property NSArray *tags;
 @property BOOL isAggregate;
+@property (nonatomic, assign) BOOL isVerified;
 
 -(WGUser *) owner;
 +(WGEvent *) serialize:(NSDictionary *)json;
@@ -36,10 +37,14 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 -(void) setRead:(BoolResultBlock)handler;
 -(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResultBlock)handler;
 
+-(void) getMeta:(WGCollectionResultBlock)handler;
+-(void) getInvites:(WGCollectionResultBlock)handler;
 -(void) getMessages:(WGCollectionResultBlock)handler;
 -(void) getMessagesForHighlights:(WGEventMessage *)highlight
         withHandler:(WGCollectionResultBlock)handler;
 
++ (NSMutableDictionary *)addDictionary:(NSDictionary *)fromDictionary
+                          toDictionary:(NSDictionary *)toDictionary;
 +(void) getAggregateStatsWithHandler:(WGAggregateStats)handler;
 +(void) getWithGroupNumber:(NSNumber *)groupNumber andHandler:(WGCollectionResultBlock)handler;
 +(void) createEventWithName:(NSString *)name andPrivate:(BOOL)isPrivate andHandler:(WGEventResultBlock)handler;

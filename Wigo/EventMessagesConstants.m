@@ -12,6 +12,7 @@
 
 NSString *const kImageEventType = @"image/jpeg";
 NSString *const kVideoEventType = @"video/mp4";
+NSString *const kMediaMimeTypeKey = @"media_mime_type";
 NSString *const kCameraType = @"camera";
 NSString *const kAddStory = @"addStory";
 NSString *const kFaceImage = @"faceImage";

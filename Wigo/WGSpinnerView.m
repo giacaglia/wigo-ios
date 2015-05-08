@@ -52,6 +52,20 @@
 }
 
 #pragma mark - Dancing G at Top of ScrollView
++ (void)addDancingGToUIScrollView:(UIScrollView *)scrollView
+              withBackgroundColor:(UIColor *)backgroundColor
+                 withContentInset:(float)edgeInsetY
+                      withHandler:(void (^)(void))handler
+{
+    __weak UIScrollView *tempScrollView = scrollView;
+    [tempScrollView addPullToRefreshWithDrawingImgs:[WGSpinnerView getDrawingImgs]
+                                     andLoadingImgs:[WGSpinnerView getLoadingImgs]
+                                    andContentInset:edgeInsetY
+                                   andActionHandler:^{
+                                       handler();
+    }];
+    scrollView.refreshControl.backgroundColor = backgroundColor;
+}
 
 + (void)addDancingGToUIScrollView:(UIScrollView *)scrollView withBackgroundColor:(UIColor *)backgroundColor withHandler:(void (^)(void))handler {
     __weak UIScrollView *tempScrollView = scrollView;
@@ -71,7 +85,18 @@
 
 #pragma mark - Dancing G at Center of view
 
++ (BOOL)isDancingGInCenterView:(UIView *)view {
+    for (UIView *subview in [view subviews]) {
+        if ([subview isKindOfClass:[WGImageView class]]) {
+            [(WGImageView *) subview removeFromSuperview];
+            return YES;
+        }
+    }
+    return NO;
+}
+
 + (void)addDancingGToCenterView:(UIView *)view {
+    if ([WGSpinnerView isDancingGInCenterView:view]) return;
     WGImageView *centeredImageView =[[WGImageView alloc] initWithFrame:CGRectMake(view.frame.size.width/2 - 30, view.frame.size.height/2 - 30, 60, 60)];
     NSArray *loadingImages = [WGSpinnerView getLoadingImgs];
     centeredImageView.animationImages = loadingImages;
@@ -81,6 +106,7 @@
 }
 
 + (BOOL)removeDancingGFromCenterView:(UIView *)view {
+    if (![WGSpinnerView isDancingGInCenterView:view]) return NO;
 	for (UIView *subview in [view subviews]) {
 		if ([subview isKindOfClass:[WGImageView class]]) {
             [(WGImageView *) subview removeFromSuperview];

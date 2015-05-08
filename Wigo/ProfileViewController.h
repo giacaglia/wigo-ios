@@ -15,66 +15,63 @@
 #import "ConversationViewController.h"
 #import "ImageScrollView.h"
 #import "Delegate.h"
+#import "MoreViewController.h"
 
-@interface ProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate>
+@interface ProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate, ProfileDelegate>
 
-@property WGUser *user;
+-(id)initWithUser:(WGUser *)user;
+@property (nonatomic, strong) WGUser *user;
 @property State userState;
 
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, assign) BOOL isFetchingNotifications;
 @property (nonatomic, strong) WGCollection *events;
-@property (nonatomic, strong) UILabel *numberOfFollowersLabel;
-@property (nonatomic, strong) UILabel *numberOfFollowingLabel;
-@property (nonatomic, strong) WGCollection *unexpiredNotifications;
+@property (nonatomic, strong) UILabel *numberOfFriendsLabel;
+@property (nonatomic, strong) UILabel *friendsLabel;
 @property (nonatomic, strong) WGCollection *notifications;
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, strong) ImageScrollView *imageScrollView;
-
-
--(id)initWithUser:(WGUser *)user;
-- (void) setStateWithUser: (WGUser *) user;
-
+@property (nonatomic, strong) UIPageControl *pageControl;
+@property (nonatomic, strong) NSDate *lastNotificationRead;
+@property (nonatomic, strong) WGCollection *mutualFriends;
+@property (nonatomic, strong) MoreViewController *moreVc;
+-(void)removeMoreVc;
 @end
 
 
-#define kSummaryCellName @"summaryCellName"
-@interface SummaryCell : UITableViewCell
-@property (nonatomic, strong) UILabel *numberOfRequestsLabel;
+#define kMutualFriendsCellName @"mutualFriendsCellName"
+@interface MutualFriendsCell : UITableViewCell <UICollectionViewDataSource, UICollectionViewDelegate>
++ (CGFloat)height;
+@property (nonatomic, strong) UILabel *mutualFriendsLabel;
+@property (nonatomic, strong) UICollectionView *mutualFriendsCollection;
+@property (nonatomic, strong) WGCollection *users;
 @end
 
 #define kNotificationCellName @"notificationCellName"
 @interface NotificationCell : UITableViewCell
 @property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UILabel *descriptionLabel;
-
 @property (nonatomic, assign) BOOL isTapped;
 @property (nonatomic, strong) UILabel *tapLabel;
-@property (nonatomic, strong) UIImageView *rightPostImageView;
-@end
-
-
-@interface GoOutsCell: UITableViewCell
-- (void) setLabelsForUser: (WGUser *) user;
-+ (CGFloat) rowHeight;
-@property (nonatomic, strong) UILabel *numberLabel;
-@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) WGNotification *notification;
+@property (nonatomic, strong) UIView *orangeNewView;
 @end
 
 #define kInstaCellName @"instaCellName"
 @interface InstaCell : UITableViewCell
-+ (CGFloat) rowHeight;
++ (CGFloat) height;
+@property (nonatomic, strong) WGUser *user;
 @property (nonatomic, strong) UILabel *instaLabel;
-- (void) setLabelForUser: (WGUser *) user;
 - (BOOL)hasInstaTextForUser:(WGUser *)user;
 @end
 
 @interface InviteCell: UITableViewCell
-- (void) setLabelsForUser: (WGUser *) user;
++ (CGFloat) height;
+@property (nonatomic, strong) WGUser *user;
 @property (nonatomic, assign) id<InviteCellDelegate> delegate;
-+ (CGFloat) rowHeight;
-@property (nonatomic, strong) IBOutlet UIButton *inviteButton;
-@property (nonatomic, strong) IBOutlet UILabel *titleLabel;
-@property (nonatomic, strong) UILabel *tappedLabel;
-
+@property (nonatomic, strong) UIButton *chatButton;
+@property (nonatomic, strong) UIButton *tapButton;
+@property (nonatomic, strong) UIImageView *tapImageView;
+@property (nonatomic, strong) UILabel *tapLabel;
+@property (nonatomic, strong) UILabel *underlineTapLabel;
 @end

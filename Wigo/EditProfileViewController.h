@@ -12,5 +12,5 @@
 
 @interface EditProfileViewController : UIViewController <UITextViewDelegate>
 
-
+@property (nonatomic, strong) NSDictionary *initialUserDict;
 @end

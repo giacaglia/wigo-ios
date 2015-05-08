@@ -50,7 +50,7 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"Follow Requests View"];
+    [WGAnalytics tagView:@"follow_requests"];
 }
 
 - (void) initializeFollowRequestTable {
@@ -72,7 +72,7 @@
 }
 
 - (void)acceptUser:(id)sender {
-    [WGAnalytics tagEvent:@"Follow Request Accepted"];
+    [WGAnalytics tagAction:@"accepted_follow_request" atView:@"follow_requests"];
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
@@ -81,7 +81,7 @@
     WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:buttonSender.tag];
     WGUser *user = notification.fromUser;
     
-    [[WGProfile currentUser] acceptFollowRequestForUser:user withHandler:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser acceptFriendRequestFromUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
         }
@@ -116,11 +116,11 @@
     [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [followBackPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchDown];
     
-    if ([user.isFollowing boolValue]) {
+    if (user.isFriend.boolValue) {
         followBackPersonButton.tag = 100;
         [followBackPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
     }
-    if ([user state] == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
+    if (user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
         [followBackPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
         [followBackPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
         [followBackPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
@@ -138,7 +138,7 @@
 }
 
 - (void)rejectUser:(id)sender {
-    [WGAnalytics tagEvent:@"Follow Request Rejected"];
+    [WGAnalytics tagAction:@"follow_request_reject" atView:@"follow_requests"];
     UIButton *buttonSender = (UIButton *)sender;
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:buttonSender.tag inSection:0]];
     for (UIView *subview in [cell.contentView subviews]) {
@@ -147,7 +147,7 @@
         }
     }
     WGNotification *notification = (WGNotification *)[_followRequests objectAtIndex:buttonSender.tag];
-    [[WGProfile currentUser] rejectFollowRequestForUser:notification.fromUser withHandler:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser rejectFriendRequestForUser:notification.fromUser withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionDelete];
         }
@@ -172,23 +172,17 @@
             }];
         }
         else if (buttonSender.tag == -100) {
-            if (user.privacy == PRIVATE) {
-                [buttonSender setBackgroundImage:nil forState:UIControlStateNormal];
-                [buttonSender setTitle:@"Pending" forState:UIControlStateNormal];
-                [buttonSender setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-                buttonSender.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-                buttonSender.titleLabel.textAlignment = NSTextAlignmentCenter;
-                buttonSender.layer.borderWidth = 1;
-                buttonSender.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-                buttonSender.layer.cornerRadius = 3;
-                user.isFollowingRequested = @YES;
-            }
-            else {
-                [buttonSender setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-                user.isFollowing = @YES;
-            }
+            [buttonSender setBackgroundImage:nil forState:UIControlStateNormal];
+            [buttonSender setTitle:@"Pending" forState:UIControlStateNormal];
+            [buttonSender setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            buttonSender.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+            buttonSender.titleLabel.textAlignment = NSTextAlignmentCenter;
+            buttonSender.layer.borderWidth = 1;
+            buttonSender.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            buttonSender.layer.cornerRadius = 3;
+            user.friendRequest = kFriendRequestSent;
             buttonSender.tag = 100;
-            [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
+            [WGProfile.currentUser friendUser:user withHandler:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionSave];
@@ -198,9 +192,8 @@
             [buttonSender setTitle:nil forState:UIControlStateNormal];
             [buttonSender setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
             buttonSender.tag = -100;
-            user.isFollowing = @NO;
-            user.isFollowingRequested = @NO;
-            [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
+            user.isFriend = @NO;
+            [WGProfile.currentUser unfollow:user withHandler:^(BOOL success, NSError *error) {
                 if (error) {
                     [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                     [[WGError sharedInstance] logError:error forAction:WGActionSave];
@@ -301,8 +294,7 @@
     WGUser *user = notification.fromUser;
     
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    [profileViewController setStateWithUser: user];
-    
+    profileViewController.user = user;    
     [self.navigationController pushViewController: profileViewController animated:YES];
 }
 

@@ -8,6 +8,7 @@
 
 #import "WGEvent.h"
 #import "WGProfile.h"
+#import "WGCache.h"
 
 #define kNameKey @"name"
 
@@ -23,10 +24,7 @@
 #define kOwnerKey @"owner"
 #define kTagsKey @"tags"
 #define kAggregateKey @"aggregate"
-
-@interface WGEvent()
-
-@end
+#define kVerifiedKey @"verified"
 
 @implementation WGEvent
 
@@ -49,10 +47,13 @@
 -(void) replaceReferences {
     [super replaceReferences];
     if ([self objectForKey:kAttendeesKey]  && [[self objectForKey:kAttendeesKey] isKindOfClass:[NSDictionary class]]) {
-        [self.parameters setObject:[WGCollection serializeResponse:[self objectForKey:kAttendeesKey] andClass:[WGEventAttendee class]] forKey:kAttendeesKey];
+        [self.parameters setObject:[WGCollection serializeResponse:[self objectForKey:kAttendeesKey] andClass:[WGUser class]] forKey:kAttendeesKey];
     }
     if ([self objectForKey:kHighlightKey]  && [[self objectForKey:kHighlightKey] isKindOfClass:[NSDictionary class]]) {
         [self.parameters setObject:[WGEventMessage serialize:[self objectForKey:kHighlightKey]] forKey:kHighlightKey];
+    }
+    if ([self objectForKey:kMessagesKey] && [[self objectForKey:kMessagesKey] isKindOfClass:[NSDictionary class]]) {
+        [self.parameters setObject:[WGCollection serializeResponse:[self objectForKey:kMessagesKey] andClass:[WGEventMessage class]] forKey:kMessagesKey];
     }
 }
 
@@ -151,6 +152,10 @@
     self.tags = mutableTags;
 }
 
+- (BOOL)isVerified {
+    return self.tags && [self.tags containsObject:kVerifiedKey];
+}
+
 - (WGCollection *)messages {
     return [self objectForKey:kMessagesKey];
 }
@@ -224,6 +229,100 @@
 
 }
 
+-(void) getMeta:(WGCollectionResultBlock)handler {
+    __weak typeof(self) weakSelf = self;
+    [WGApi get:[NSString stringWithFormat:@"events/%@/messages/meta/", self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       __strong typeof(weakSelf) strongSelf = weakSelf;
+       if (error) {
+           handler(nil, error);
+           return;
+       }
+       [strongSelf addMetaInfo:jsonResponse];
+    }];
+}
+
+// The format of the dictionary is going to be like
+// {
+//    "2015-04-28" :  590430140402: {"num_votes": 1, "voted" : 1} },
+//    "2015-04-27" :
+//      { 481374382733: {"num_votes": 10, "voted" : 0}, 481374382733 : {{"num_votes": 10, "voted" : 0}  },
+// }
+-(void)addMetaInfo:(NSDictionary *)meta {
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    NSString *timeString = [dateFormatter stringFromDate:self.created];
+    NSDictionary *toDictionary = @{timeString: meta};
+    NSDictionary *fromDictionary = [[WGCache sharedCache] objectForKey:kEventMessagesKey];
+    NSMutableDictionary *resultingDictionary = [WGEvent addDictionary:fromDictionary
+                                                         toDictionary:toDictionary];
+    [[WGCache sharedCache] setObject:resultingDictionary forKey:kEventMessagesKey];
+}
+
+
+// addedDictionary:  {
+//                     "2015-04-28" : { 590430140402: {"num_votes": 1, "voted" : 1} }
+//                   }
+//    toDictionary:  {
+//                     "2015-04-28" : { 139204923003: {"num_votes": 1, "voted" : 1} }
+//                   }
+//
+//         returns:  {
+//                     "2015-04-28" : { 590430140402: {"num_votes": 1, "voted" : 1},
+//                                      139204923003: {"num_votes": 1, "voted" : 1} }
+//                   }
++ (NSMutableDictionary *)addDictionary:(NSDictionary *)fromDictionary
+                   toDictionary:(NSDictionary *)toDictionary {
+    if (!fromDictionary) return [NSMutableDictionary dictionaryWithDictionary:toDictionary];
+    if ([fromDictionary isEqual:toDictionary]) return [NSMutableDictionary dictionaryWithDictionary:fromDictionary];
+    NSMutableDictionary *resultDictionary = [NSMutableDictionary new];
+    for (NSString *key in fromDictionary.allKeys) {
+        if ([toDictionary.allKeys containsObject:key]) {
+            id toObject = [toDictionary objectForKey:key];
+            if ([toObject isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *fromObject = [fromDictionary objectForKey:key];
+                NSMutableDictionary *subDictionary = [WGEvent addDictionary:fromObject toDictionary:toObject];
+                [resultDictionary setObject:subDictionary forKey:key];
+            }
+            else {
+                
+            }
+        }
+        else {
+            [resultDictionary setObject:[fromDictionary objectForKey:key] forKey:key];
+        }
+    }
+    for (NSString *key in toDictionary.allKeys) {
+        if (![resultDictionary.allKeys containsObject:key]) {
+            [resultDictionary setObject:[toDictionary objectForKey:key] forKey:key];
+        }
+    }
+    return resultDictionary;
+}
+
+-(void) getInvites:(WGCollectionResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"events/%@/invites/", self.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[WGUser class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+}
+
 -(void) getMessages:(WGCollectionResultBlock)handler {
     [WGApi get:@"eventmessages/" withArguments:@{ @"event" : self.id, @"ordering" : @"-id" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
@@ -248,7 +347,10 @@
 }
 
 +(void) get:(WGCollectionResultBlock)handler {
-    [WGApi get:@"events" withArguments:@{ @"attendees_limit" : @10, @"limit" : @10, @"eventmessage_limit": @10 } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    NSString* eventsString;
+    if (WGProfile.isLocal) eventsString = @"events/";
+    else eventsString = @"users/me/events/";
+    [WGApi get:eventsString withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;

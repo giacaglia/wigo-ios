@@ -16,6 +16,6 @@
 - (id)initWithUser: (WGUser *)user;
 @property (nonatomic, strong) WGCollection *messages;
 @property (nonatomic, strong) UIView *viewForEmptyConversation;
-@property (nonatomic, assign) BOOL fetching;
+@property (nonatomic, assign) BOOL isFetching;
 
 @end

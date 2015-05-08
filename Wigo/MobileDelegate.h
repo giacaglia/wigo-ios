@@ -10,9 +10,12 @@
 #import <AddressBook/AddressBook.h>
 
 typedef void (^MobileArray)(NSArray *mobileArray);
+typedef void (^MobileDictionary) (NSDictionary *mobileDictionary);
 
 @interface MobileDelegate : NSObject
 
++ (NSArray *)mobileKeys;
++ (void)getSeparatedMobileContacts:(MobileDictionary)mobileDict;
 + (void)getMobileContacts:(MobileArray)mobileArray;
 + (void)sendChosenPeople:(NSArray *)chosenPeople forContactList:(NSArray *)peopleContactList;
 + (int)changeTag:(int)tag fromArray:(NSArray *)partArray toArray:(NSArray *)totalArray;

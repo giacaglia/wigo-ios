@@ -7,16 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EmailConfirmationViewController.h"
-#import "SignUpViewController.h"
+#import "Delegate.h"
 
 @interface SignViewController : UIViewController <FBLoginViewDelegate, UIAlertViewDelegate>
 
-@property SignUpViewController *signUpViewController;
-@property EmailConfirmationViewController *emailConfirmationViewController;
 @property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
 -(void) reloadedUserInfo:(BOOL)success andError:(NSError *)error;
--(void) showBarrierError:(NSError *)error;
 @property (nonatomic, assign) BOOL fetchingProfilePictures;
-
+@property (nonatomic, strong) UIVisualEffectView *blurredView;
+@property (nonatomic, strong) UIPageControl *pageControl;
+@property (nonatomic, strong) UIScrollView *scrollView;
 @end

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "WGParser.h"
+#import <CoreLocation/CoreLocation.h>
 
 typedef void (^SerializedApiResultBlock)(NSURL *sentURL, NSDictionary *jsonResponse, NSError *error);
 typedef void (^ApiResultBlock)(NSDictionary *jsonResponse, NSError *error);
@@ -23,7 +24,6 @@ typedef void (^WGAggregateStats)(NSNumber *numMessages, NSNumber *numAttending, 
 @property NSNumber *requestNumber;
 
 + (void) setBaseURLString:(NSString *)newBaseURLString;
-
 @property NSCache *cache;
 
 // Serialized
@@ -52,4 +52,8 @@ typedef void (^WGAggregateStats)(NSNumber *numMessages, NSNumber *numAttending, 
 
 +(void) startup:(WGStartupResult)handler;
 
+
+#pragma mark - Analytics API
+
++(void) postURL:(NSString *)url withParameters:(id)parameters andHandler:(ApiResultBlock)handler;
 @end

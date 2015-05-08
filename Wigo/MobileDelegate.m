@@ -11,6 +11,37 @@
 
 @implementation MobileDelegate
 
++ (NSArray *)mobileKeys {
+    return @[@"A", @"B", @"C", @"D", @"E", @"F", @"G", @"H", @"I", @"J", @"K", @"L", @"M", @"N", @"O", @"P", @"Q", @"R", @"S", @"T", @"U", @"V", @"W", @"X", @"Y", @"Z"];
+}
+
++ (void)getSeparatedMobileContacts:(MobileDictionary)mobileDict {
+    [MobileDelegate getMobileContacts:^(NSArray *mobileArray) {
+        NSMutableDictionary *mutDict =  [NSMutableDictionary new];
+        NSArray *keys = [MobileDelegate mobileKeys];
+        for (NSString *key in keys) {
+            [mutDict setObject:[NSMutableArray new] forKey:key];
+        }
+        for (int i = 0; i < mobileArray.count; i++) {
+            ABRecordRef contactPerson;
+            contactPerson = (__bridge ABRecordRef)([mobileArray objectAtIndex:i]);
+            NSString *firstName = StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonFirstNameProperty));
+            NSString *lastName =  StringOrEmpty((__bridge NSString *)ABRecordCopyValue(contactPerson, kABPersonLastNameProperty));
+            if (lastName.length == 0) {
+                NSString *charStr = [firstName substringWithRange:NSMakeRange(0, 1)].capitalizedString;
+                NSMutableArray *mutArray = [mutDict objectForKey:charStr];
+                [mutArray addObject:(__bridge id)(contactPerson)];
+            }
+            else {
+                NSString *charStr = [lastName substringWithRange:NSMakeRange(0, 1)].capitalizedString;
+                NSMutableArray *mutArray = [mutDict objectForKey:charStr];
+                [mutArray addObject:(__bridge id)(contactPerson)];
+            }
+        }
+        mobileDict(mutDict);
+    }];
+}
+
 + (void) getMobileContacts:(MobileArray)mobileArray {
     CFErrorRef error = NULL;
     NSMutableArray *mutableMobileArray = [NSMutableArray new];
@@ -18,8 +49,7 @@
     ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, &error);
     ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
         if (granted && addressBookRef) {
-            [WGAnalytics tagEvent:@"Accepted Apple Contacts"];
-            
+            [WGAnalytics tagAction:@"accepted_mobile_contacts" atView:@"mobile_contacts"];
             
             CFArrayRef all = ABAddressBookCopyArrayOfAllPeople(addressBookRef);
             CFIndex n = ABAddressBookGetPersonCount(addressBookRef);
@@ -53,7 +83,7 @@
             mobileArray([NSArray arrayWithArray:mutableMobileArray]);
         } else {
             
-            [WGAnalytics tagEvent:@"Decline Apple Contacts"];
+            [WGAnalytics tagAction:@"declined_access_mobile" atView:@"mobile_contacts"];
             mobileArray([NSArray new]);
         }
     });

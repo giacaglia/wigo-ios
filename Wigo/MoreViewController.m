@@ -8,51 +8,20 @@
 
 #import "MoreViewController.h"
 #import "Globals.h"
-#import "RWBlurPopover.h"
 
 
-BOOL once;
-WGUser *user;
-State state;
 UIButton *unfollowButton;
 UIButton *blockButton;
 UIButton *cancelButton;
 
 @implementation MoreViewController
 
-- (id)initWithState:(State)newState
+-(void) viewDidLoad
 {
-    self = [super init];
-    if (self) {
-        state = newState;
-    }
-    return self;
-}
-
-- (id)initWithUser:(WGUser *)newUser {
-    self = [super init];
-    if (self) {
-        user = newUser;
-        state = [user state];
-    }
-    return self;
-}
-
-- (id)init
-{
-    self = [super init];
-    return self;
-}
-
-- (void)viewDidLoad
-{
-    once = YES;
     [super viewDidLoad];
-    
-    if (state == FOLLOWING_USER_STATE ||
-        state == ACCEPTED_PRIVATE_USER_STATE ||
-        state == ATTENDING_EVENT_FOLLOWING_USER_STATE ||
-        state == ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE) {
+    self.view.backgroundColor = UIColor.clearColor;
+
+    if (self.user.state == FRIEND_USER_STATE) {
         unfollowButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60 - 2*54, self.view.frame.size.width - 70, 42)];
         unfollowButton.backgroundColor = RGB(246, 143, 30);
         [unfollowButton setTitle:@"UNFOLLOW" forState:UIControlStateNormal];
@@ -71,11 +40,11 @@ UIButton *cancelButton;
     [blockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     blockButton.titleLabel.font = [FontProperties getTitleFont];
     blockButton.layer.borderWidth = 0.5;
-    blockButton.layer.borderColor = [UIColor clearColor].CGColor;
+    blockButton.layer.borderColor = UIColor.clearColor.CGColor;
     [self.view addSubview:blockButton];
 
     cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60, self.view.frame.size.width - 70, 42)];
-    cancelButton.backgroundColor = [UIColor whiteColor];
+    cancelButton.backgroundColor = UIColor.clearColor;
     [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
     [cancelButton setTitleColor:RGB(214, 45, 58) forState:UIControlStateNormal];
@@ -86,42 +55,52 @@ UIButton *cancelButton;
 }
 
 
-- (void) viewWillAppear:(BOOL)animated {
+-(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    
+    self.parentViewController.navigationController.navigationBar.alpha = 0.0f;
     self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
     self.navigationController.navigationBar.backgroundColor = RGB(235, 235, 235);
-    
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self.view addSubview:self.bgView];
+    [self.view sendSubviewToBack:self.bgView];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    self.parentViewController.navigationController.navigationBar.alpha = 1.0f;
+    [self.parentViewController.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.parentViewController.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.parentViewController.navigationController.navigationBar.barTintColor = UIColor.clearColor;
+}
+
+-(void) goBack {
+    [UIView animateWithDuration:0.15 animations:^{
+        self.view.alpha = 0.0f;
+    } completion:^(BOOL finished) {
+        [self.profileDelegate removeMoreVc];
+    }];
+}
+
+-(void) unfollowPressed {
+    [self goBack];
+}
+
+-(void) submitBlockPressed {
+    int type = (int)((int)blockButton.tag / 10)  - 1;
+    NSDictionary *userInfo = @{@"user": self.user.deserialize, @"type":[NSNumber numberWithInt:type]};
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil userInfo:userInfo];
     
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-}
-
-- (void)unfollowPressed {
-    if (once) {
-        once = NO;
-        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void){
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"unfollowPressed" object:nil];
-
-        }];
-    }
-}
-
-- (void)submitBlockPressed {
-    if (once) {
-        once = NO;
-        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:^(void) {
-            int type = (int)((int)blockButton.tag / 10)  - 1;
-            NSDictionary *userInfo = @{@"user": [user deserialize], @"type":[NSNumber numberWithInt:type]};
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"blockPressed" object:nil userInfo:userInfo]; 
-        }];
-    }
+    [self goBack];
 }
 
 - (void)blockButtonPressed {
     [UIView animateWithDuration:1 animations:^(void) {
         if (unfollowButton) unfollowButton.alpha = 1.0f;
-        
     } completion:^(BOOL finished){
         if (unfollowButton) unfollowButton.alpha = 0.0f;
         [self addOptions];
@@ -131,10 +110,7 @@ UIButton *cancelButton;
 }
 
 - (void)cancelPressed {
-    if (once) {
-        once = NO;
-        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
-    }
+    [self goBack];
 }
 
 - (void)addOptions {
@@ -151,7 +127,7 @@ UIButton *cancelButton;
     [self.view.layer insertSublayer:newGradient atIndex:0];
     
     UILabel *blockLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 20, self.view.frame.size.width - 30, 60)];
-    blockLabel.text = [NSString stringWithFormat:@"Block %@", [user fullName]];
+    blockLabel.text = [NSString stringWithFormat:@"Block %@", self.user.fullName];
     blockLabel.textColor = [UIColor whiteColor];
     blockLabel.textAlignment = NSTextAlignmentCenter;
     blockLabel.font = [FontProperties mediumFont:24.0f];
@@ -173,18 +149,18 @@ UIButton *cancelButton;
     [blockButton addTarget:self action:@selector(submitBlockPressed) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
     [self addCheckBoxWithTag:1 atYPosition:150];
-    [self addLabelWithText:[NSString stringWithFormat:@"%@ is just annoying to me", [user firstName]]
+    [self addLabelWithText:[NSString stringWithFormat:@"%@ is just annoying to me", self.user.firstName]
                     andTag:1
                atYPosition:150 - 15];
     
     [self addCheckBoxWithTag:3 atYPosition:220];
-    [self addLabelWithText:[NSString stringWithFormat:@"%@ is not a student at my school", [user firstName]]
+    [self addLabelWithText:[NSString stringWithFormat:@"%@ is not a student at my school", self.user.firstName]
                     andTag:3
                atYPosition:220 - 15];
     
  
     [self addCheckBoxWithTag:5 atYPosition:290];
-    [self addLabelWithText:[NSString stringWithFormat:@"%@ is abusive and should be banned for all users", [user firstName]] andTag:5
+    [self addLabelWithText:[NSString stringWithFormat:@"%@ is abusive and should be banned for all users", self.user.firstName] andTag:5
                atYPosition:290 - 15];
 }
 

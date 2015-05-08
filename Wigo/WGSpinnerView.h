@@ -22,9 +22,18 @@ typedef enum {
 + (WGSpinnerView *)showBlueSpinnerAddedTo:(UIView *)view;
 + (BOOL)hideSpinnerForView:(UIView *)view;
 
-+ (void)addDancingGToUIScrollView:(UIScrollView *)scrollView withBackgroundColor:(UIColor *)backgroundColor withHandler:(void (^)(void))handler;
+
+
++ (void)addDancingGToUIScrollView:(UIScrollView *)scrollView
+              withBackgroundColor:(UIColor *)backgroundColor
+                 withContentInset:(float)edgeInsetY
+                      withHandler:(void (^)(void))handler;
++ (void)addDancingGToUIScrollView:(UIScrollView *)scrollView
+              withBackgroundColor:(UIColor *)backgroundColor
+                      withHandler:(void (^)(void))handler;
 + (void)addDancingGToUIScrollView:(UIScrollView *)scrollView withHandler:(void (^)(void))handler;
 
++ (BOOL)isDancingGInCenterView:(UIView *)view;
 + (void)addDancingGToCenterView:(UIView *)view;
 + (BOOL)removeDancingGFromCenterView:(UIView *)view;
 

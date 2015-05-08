@@ -14,7 +14,7 @@
 @implementation EventPeopleScrollView
 
 - (id)initWithEvent:(WGEvent *)event {
-    if (self.widthOfEachCell == 0) self.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
+    if (self.widthOfEachCell == 0) self.widthOfEachCell = 0.9*(float)[UIScreen mainScreen].bounds.size.width/(float)5.5;
     self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.widthOfEachCell + 50) collectionViewLayout:[[ScrollViewLayout alloc] initWithWidth:self.widthOfEachCell]];
     if (self) {
         self.contentSize = CGSizeMake(15, self.widthOfEachCell + 40);
@@ -30,18 +30,12 @@
     return self;
 }
 
+
 - (void)addInviteButton {
     self.hiddenInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
-    UIImageView *inviteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
-    inviteImageView.image = [UIImage imageNamed:@"inviteButton"];
-    [self.hiddenInviteButton addSubview:inviteImageView];
-    
-    UILabel *inviteLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.widthOfEachCell, self.widthOfEachCell, 25)];
-    inviteLabel.text = @"Invite";
-    inviteLabel.textColor = [FontProperties getBlueColor];
-    inviteLabel.font = [FontProperties scMediumFont:10.0f];
-    inviteLabel.textAlignment = NSTextAlignmentCenter;
-    [self.hiddenInviteButton addSubview:inviteLabel];
+//    UIImageView *inviteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
+//    inviteImageView.image = [UIImage imageNamed:@"inviteButton"];
+//    [self.hiddenInviteButton addSubview:inviteImageView];
     
     self.hiddenInviteButton.hidden = YES;
     self.hiddenInviteButton.transform = CGAffineTransformMakeScale(0.2f, 0.2f);
@@ -49,13 +43,15 @@
 }
 
 + (CGFloat) containerHeight {
-    return (float)[[UIScreen mainScreen] bounds].size.width/(float)3.7;
+    return (float)[UIScreen mainScreen].bounds.size.width/(float)3.7;
 }
 
--(void) updateUI {
+-(void) setEvent:(WGEvent *)event {
+    _event = event;
     [self reloadData];
     [self scrollToSavedPosition];
 }
+
 
 -(void) scrollToSavedPosition {
     if ([self.placesDelegate.eventOffsetDictionary objectForKey:[self.event.id stringValue]]) {
@@ -83,7 +79,7 @@
     int tag = (int)buttonSender.tag;
     UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
     imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
-                                                             tintColor:RGBAlpha(255, 255, 255, 0.5f)
+                                                             tintColor:RGBAlpha(255, 255, 255, 0.85f)
                                                  saturationDeltaFactor:1.3
                                                              maskImage:nil];
     
@@ -95,59 +91,76 @@
 }
 
 - (void)goHerePressed:(id)sender {
-    self.hiddenInviteButton.hidden = NO;
-    ScrollViewCell *scrollCell = (ScrollViewCell *)[self cellForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-    [UIView animateWithDuration:1 animations:^{
-        scrollCell.blueOverlayView.alpha = 1.0f;
-    } completion:^(BOOL finished) {
+    self.animationState = STARTED_ANIMATION_AND_NETWORK;
+    __weak typeof(self) weakSelf = self;
+    [self.placesDelegate startAnimatingAtTop:sender
+                      finishAnimationHandler:^(UICollectionViewCell *cell) {
+        weakSelf.hiddenInviteButton.hidden = NO;
+        ScrollViewCell *scrollCell = (ScrollViewCell *)cell;
         [UIView animateWithDuration:1 animations:^{
-            self.hiddenInviteButton.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
-            scrollCell.blueOverlayView.alpha = 0.0f;
-            scrollCell.profileNameLabel.alpha = 0.5f;
-            scrollCell.profileNameLabel.text = WGProfile.currentUser.firstName;
-            self.transform = CGAffineTransformMakeTranslation(self.widthOfEachCell + 10, 0);
-            self.hiddenInviteButton.transform = CGAffineTransformMakeTranslation(-self.widthOfEachCell, 0);
+            scrollCell.blueOverlayView.alpha = 1.0f;
+            scrollCell.goHereLabel.alpha = 1.0f;
         } completion:^(BOOL finished) {
-            UIButton *buttonSender = (UIButton *)sender;
-            __weak typeof(self) weakSelf = self;
-            [self.placesDelegate goHerePressed:buttonSender withHandler:^(BOOL success, NSError *error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    CGAffineTransform t = CGAffineTransformMakeScale(0.2f, 0.2f);
-                    weakSelf.hiddenInviteButton.transform = CGAffineTransformTranslate(t, 0, 0);
-                    weakSelf.transform = CGAffineTransformMakeTranslation(0, 0);
-                    scrollCell.blueOverlayView.alpha = 0.8f;
-                    [weakSelf.placesDelegate scrollUp];
-                });
+            [UIView animateWithDuration:1 animations:^{
+                weakSelf.hiddenInviteButton.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+                scrollCell.blueOverlayView.alpha = 0.0f;
+                scrollCell.goHereLabel.alpha = 0.0f;
+                scrollCell.profileNameLabel.alpha = 0.5f;
+                scrollCell.profileNameLabel.text = WGProfile.currentUser.firstName;
+                weakSelf.transform = CGAffineTransformMakeTranslation(weakSelf.widthOfEachCell + 10, 0);
+                weakSelf.hiddenInviteButton.transform = CGAffineTransformMakeTranslation(-self.widthOfEachCell, 0);
+            } completion:^(BOOL finished) {
+                UIButton *buttonSender = (UIButton *)sender;
+                buttonSender.tag = 0;
+                [weakSelf finishAnimationOrNetworkRequestForCell:scrollCell];
             }];
-            
         }];
+    } postingHandler:^(BOOL success, NSError *error) {
+        [weakSelf finishAnimationOrNetworkRequestForCell:nil];
     }];
+
+}
+
+- (void)finishAnimationOrNetworkRequestForCell:(ScrollViewCell *)scrollCell {
+    if (self.animationState == STARTED_ANIMATION_AND_NETWORK) {
+        self.animationState = ONE_OF_THEM_IS_CONCLUDED;
+    }
+    else if (self.animationState == ONE_OF_THEM_IS_CONCLUDED) {
+        self.animationState = BOTH_OF_THEM_ARE_DONE;
+    }
+    if (scrollCell != nil) self.scrollCell = scrollCell;
+    
+    
+    if (self.animationState == BOTH_OF_THEM_ARE_DONE) {
+        CGAffineTransform t = CGAffineTransformMakeScale(0.2f, 0.2f);
+        self.hiddenInviteButton.transform = CGAffineTransformTranslate(t, 0, 0);
+        self.transform = CGAffineTransformMakeTranslation(0, 0);
+        self.hiddenInviteButton.hidden = YES;
+        self.scrollCell.blueOverlayView.alpha = 0.8f;
+        self.scrollCell.goHereLabel.alpha = 1.0f;
+        [self.placesDelegate reloadTable];
+    }
+    
 }
 
 
 - (void)fetchEventAttendeesAsynchronous {
-    if (!self.fetchingEventAttendees) {
-        self.fetchingEventAttendees = YES;
-        __weak typeof(self) weakSelf = self;
-        if ([self.event.attendees.hasNextPage boolValue]) {
-            [self.event.attendees addNextPage:^(BOOL success, NSError *error) {
-                __strong typeof(self) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    strongSelf.fetchingEventAttendees = NO;
-                    return;
-                }
-                
-                [strongSelf saveScrollPosition];
-                [strongSelf updateUI];
-                
-                strongSelf.fetchingEventAttendees = NO;
-            }];
-        } else {
-            self.fetchingEventAttendees = NO;
+    if (self.fetchingEventAttendees) return;
+    if (!self.event.attendees.nextPage) return;
+    self.fetchingEventAttendees = YES;
+    __weak typeof(self) weakSelf = self;
+    [self.event.attendees addNextPage:^(BOOL success, NSError *error) {
+        __strong typeof(self) strongSelf = weakSelf;
+        strongSelf.fetchingEventAttendees = NO;
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
         }
-    }
+        
+        [strongSelf reloadData];
+        [strongSelf saveScrollPosition];
+    }];
+    
 }
 
 #pragma mark - UICollectionView Data Source
@@ -155,7 +168,7 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
     if (section == kInviteSection) {
-        if (self.isPeeking || self.event.isAggregate) return 0;
+        if (self.isPeeking || self.event.isAggregate || self.isOld) return 0;
         return 1;
     }
     else if (section == kPeopleSection) {
@@ -173,8 +186,11 @@
     ScrollViewCell *scrollCell = [collectionView dequeueReusableCellWithReuseIdentifier:kScrollViewCellName forIndexPath:indexPath];
     scrollCell.alpha = 1.0f;
     scrollCell.imgView.image = nil;
+    scrollCell.imgViewLabel.hidden = YES;
+    scrollCell.imgView.layer.borderColor = UIColor.clearColor.CGColor;
     if (indexPath.section == kInviteSection) {
-        if (self.event.id && [self.event.id isEqual:WGProfile.currentUser.eventAttending.id]) {
+        if (self.event.attendees.count == 0) return scrollCell;
+        if ([[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) {
             [scrollCell.imageButton removeTarget:nil
                                           action:NULL
                                 forControlEvents:UIControlEventAllEvents];
@@ -185,14 +201,15 @@
             }
             else {
                 scrollCell.alpha = 1.0f;
-                [scrollCell.imageButton addTarget:self.placesDelegate action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
+                [scrollCell.imageButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
             }
-            scrollCell.imgView.image = [UIImage imageNamed:@"inviteButton"];
+            scrollCell.imgViewLabel.hidden = NO;
+            scrollCell.imgView.layer.borderColor = [FontProperties getBlueColor].CGColor;
+            scrollCell.imgView.layer.borderWidth = 1.0f;
+            scrollCell.imgView.layer.cornerRadius = scrollCell.imgView.frame.size.width/2.0f;
             scrollCell.blueOverlayView.hidden = YES;
-            scrollCell.profileNameLabel.text = @"Invite";
-            scrollCell.profileNameLabel.alpha = 1.0f;
-            scrollCell.profileNameLabel.textColor = [FontProperties getBlueColor];
-            scrollCell.profileNameLabel.font = [FontProperties scMediumFont:10.0f];
+            scrollCell.goHereLabel.hidden = YES;
+            scrollCell.profileNameLabel.text = nil;
         }
         else {
             [scrollCell.imageButton removeTarget:nil
@@ -202,6 +219,7 @@
             [scrollCell.imageButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
             [scrollCell.imgView setImageWithURL:WGProfile.currentUser.smallCoverImageURL];
             scrollCell.blueOverlayView.hidden = NO;
+            scrollCell.goHereLabel.hidden = NO;
             scrollCell.profileNameLabel.alpha = 0.0f;
         }
     }
@@ -211,13 +229,18 @@
                                       action:NULL
                             forControlEvents:UIControlEventAllEvents];
         scrollCell.blueOverlayView.hidden = YES;
+        scrollCell.goHereLabel.hidden = YES;
         [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         scrollCell.profileNameLabel.alpha = 1.0f;
-        WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:indexPath.item];
-        [scrollCell setStateForUser:attendee.user];
+        WGUser *attendee = (WGUser *)[self.event.attendees objectAtIndex:indexPath.item];
+        scrollCell.user = attendee;
         if (indexPath.item == self.event.attendees.count - 1) [self fetchEventAttendeesAsynchronous];
     }
     return scrollCell;
+}
+
+- (void)invitePressed {
+    [self.placesDelegate invitePressed:self.event];
 }
 
 #pragma mark - UICollectionView Header
@@ -277,6 +300,14 @@
     self.imgView.layer.borderWidth = 1.0f;
     [self.imageButton addSubview:self.imgView];
     
+    self.imgViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
+    self.imgViewLabel.text = @"INVITE";
+    self.imgViewLabel.font = [FontProperties mediumFont:12.0f];
+    self.imgViewLabel.textColor = [FontProperties getBlueColor];
+    self.imgViewLabel.textAlignment = NSTextAlignmentCenter;
+    self.imgViewLabel.hidden = YES;
+    [self.imageButton addSubview:self.imgViewLabel];
+    
     self.blueOverlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
     self.blueOverlayView.backgroundColor = RGB(109, 166, 206);
     self.blueOverlayView.alpha = 0.8f;
@@ -284,11 +315,12 @@
     [self.imgView addSubview:self.blueOverlayView];
     
     self.goHereLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, imageWidth, imageWidth)];
-    self.goHereLabel.text = @"go here";
+    self.goHereLabel.text = @"Join";
     self.goHereLabel.textAlignment = NSTextAlignmentCenter;
-    self.goHereLabel.font = [FontProperties scMediumFont:12];
+    self.goHereLabel.font = [FontProperties scMediumFont:20.0f];
     self.goHereLabel.textColor = UIColor.whiteColor;
-    [self.blueOverlayView addSubview:self.goHereLabel];
+    [self.imgView bringSubviewToFront:self.goHereLabel];
+    [self.imgView addSubview:self.goHereLabel];
     
     self.profileNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, imageWidth, imageWidth, 20)];
     self.profileNameLabel.textColor = UIColor.blackColor;
@@ -297,7 +329,8 @@
     [self.contentView addSubview:self.profileNameLabel];
 }
 
-- (void)setStateForUser:(WGUser *)user {
+- (void)setUser:(WGUser *)user {
+    _user = user;
     self.profileNameLabel.textColor = UIColor.blackColor;
     self.profileNameLabel.alpha = 0.5f;
     CGFloat fontSize = 12.0f;
@@ -313,12 +346,13 @@
     }
     
     // UI changes
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.imgView setSmallImageForUser:user completed:nil];
-        self.profileNameLabel.text = user.firstName;
-        self.profileNameLabel.font = [FontProperties lightFont:fontSize];
-    });
+    [self.imgView setSmallImageForUser:user completed:nil];
+    self.profileNameLabel.text = user.firstName;
+    self.profileNameLabel.font = [FontProperties lightFont:fontSize];
+
 }
+
+
 
 @end
 

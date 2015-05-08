@@ -9,6 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface MobileContactsViewController : UIViewController  <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
+@end
 
-
+#define kMobileInviteCellName @"MobileInviteCellName"
+@interface MobileInviteCell : UITableViewCell
++ (CGFloat)height;
+@property (nonatomic, strong) UIImageView *selectedPersonImageView;
+@property (nonatomic, strong) UILabel *nameOfPersonLabel;
 @end

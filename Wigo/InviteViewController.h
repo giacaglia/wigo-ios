@@ -16,9 +16,11 @@
 
 @property (nonatomic, strong) UITableView *invitePeopleTableView;
 @property (nonatomic, strong) WGCollection *content;
+@property (nonatomic, strong) WGCollection *bestFriends;
 @property (nonatomic, strong) WGCollection *presentedUsers;
 @property (nonatomic, strong) WGCollection *suggestions;
 @property (nonatomic, strong) WGCollection* presentedSuggestions;
+@property (nonatomic, assign) BOOL isFetching;
 @property (nonatomic, assign) BOOL isSearching;
 @end
 
@@ -26,10 +28,22 @@
 #define kSectionTapAllCell 0
 #define kTapCellName @"tapCellName"
 #define kSectionTapCell 1
+#define kAllFriendsCellName @"allFriendsCellName"
+#define kSectionAllFriends 2
 #define kFollowCellName @"followCellName"
-#define kSectionFollowCell 2
-#define kInviteMobileCellName @"inviteCellName"
-#define kSectionMobileCell 3
+#define kSectionFollowCell 3
+//#define kFollowCellName @"followCellName"
+//#define kSectionFollowCell 2
+//#define kInviteMobileCellName @"inviteCellName"
+//#define kSectionMobileCell 3
+
+@interface TapAllCell : UITableViewCell
++ (CGFloat) height;
+@property (nonatomic, strong) UILabel *tapAllLabel;
+@property (nonatomic, strong) UIButton *aroundTapButton;
+@property (nonatomic, strong) UIImageView *tapImageView;
+@property (nonatomic, strong) UILabel *labelUnderButton;
+@end
 
 @interface TapCell : UITableViewCell
 + (CGFloat) height;
@@ -50,12 +64,4 @@
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIButton *followPersonButton;
 @property (nonatomic, strong) WGUser *user;
-@end
-
-@interface TapAllCell : UITableViewCell
-+ (CGFloat) height;
-@property (nonatomic, strong) UILabel *tapAllLabel;
-@property (nonatomic, strong) UIButton *aroundTapButton;
-@property (nonatomic, strong) UIImageView *tapImageView;
-@property (nonatomic, strong) UILabel *labelUnderButton;
 @end

@@ -46,7 +46,7 @@ UIImageView *searchIconImageView;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"Referal View"];
+    [WGAnalytics tagView:@"referal"];
 }
 
 
@@ -69,7 +69,6 @@ UIImageView *searchIconImageView;
 - (void)tappedView:(UITapGestureRecognizer*)tapSender {
     searchIconImageView.hidden = YES;
     [self.view endEditing:YES];
-    [self searchBarTextDidEndEditing:searchBar];
 }
 
 
@@ -163,7 +162,6 @@ UIImageView *searchIconImageView;
     self.tableViewOfPeople.frame = CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - sizeOfContinueButton);
 }
 
-
 - (void)keyboardDidShow:(NSNotification *)notification {
     NSDictionary* keyboardInfo = [notification userInfo];
     CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
@@ -172,8 +170,6 @@ UIImageView *searchIconImageView;
     int sizeOfContinueButton = (_continueButton.isHidden) ? 0 : 50;
     self.tableViewOfPeople.frame = CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - kbFrame.size.height - sizeOfContinueButton);
 }
-
-
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return [ReferalPeopleCell height];
@@ -323,19 +319,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     searchIconImageView.hidden = YES;
 }
 
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    if (![searchBar.text isEqualToString:@""]) {
-        [UIView animateWithDuration:0.01 animations:^{
-            searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
-        }  completion:^(BOOL finished){
-            searchIconImageView.hidden = NO;
-        }];
-    }
-}
-
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if(searchText.length != 0) {
-        [self performBlock:^(void){[self searchTableList];}
+        __weak typeof(self) weakSelf = self;
+        [self performBlock:^(void){
+            [weakSelf searchTableList];
+        }
                 afterDelay:0.2
      cancelPreviousRequest:YES];
     } else {
@@ -345,7 +334,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self performBlock:^(void){[self searchTableList];}
+    __weak typeof(self) weakSelf = self;
+    [self performBlock:^(void){
+        [weakSelf searchTableList];
+    }
             afterDelay:0.2
  cancelPreviousRequest:YES];
 }

@@ -7,6 +7,7 @@
 //
 
 #import "WGAnalytics.h"
+#import "WGI.h"
 
 @implementation WGAnalytics
 
@@ -22,6 +23,79 @@
     if (num < 30)  return @"<30";
     if (num < 100) return @"30-100";
     return @"100+";
+}
+
+
++ (void)tagView:(NSString *)viewName
+ withTargetUser:(WGUser *)targetUser {
+    if (!WGProfile.currentUser.isFetched) return;
+
+    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
+    [WGI.defaultTracker setUser:WGProfile.currentUser];
+    [WGI.defaultTracker setTargetUser:targetUser];
+    [WGI.defaultTracker postViewWithName:viewName];
+}
+
+
++ (void)tagView:(NSString *)viewName
+withTargetGroup:(WGGroup *)targetGroup
+{
+    if (!WGProfile.currentUser.isFetched) return;
+    
+    WGTracker *wgTracker = [WGI defaultTracker];
+    [wgTracker setGroup:WGProfile.currentUser.group];
+    [wgTracker setUser:WGProfile.currentUser];
+    [wgTracker setTargetGroup:targetGroup];
+    [wgTracker postViewWithName:viewName];
+}
+
++ (void)tagView:(NSString *)viewName {
+    if (!WGProfile.currentUser.isFetched) return;
+    
+    WGTracker *wgTracker = [WGI defaultTracker];
+    [wgTracker setGroup:WGProfile.currentUser.group];
+    [wgTracker setUser:WGProfile.currentUser];
+    [wgTracker postViewWithName:viewName];
+}
+
++ (void)tagAction:(NSString *)actionName
+           atView:(NSString *)viewName
+   withTargetUser:(WGUser *)targetUser {
+    if (!WGProfile.currentUser.isFetched) return;
+    
+    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
+    [WGI.defaultTracker setUser:WGProfile.currentUser];
+    [WGI.defaultTracker setTargetUser:targetUser];
+    [WGI.defaultTracker postAction:actionName
+                            atView:viewName];
+}
+
++ (void)tagAction:(NSString *)actionName
+           atView:(NSString *)viewName {
+    if (!WGProfile.currentUser.isFetched) return;
+    
+    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
+    [WGI.defaultTracker setUser:WGProfile.currentUser];
+    [WGI.defaultTracker postAction:actionName
+                            atView:viewName];
+}
+
++ (void)tagAction:(NSString *)actionName
+   withTargetUser:(WGUser *)targetUser {
+    if (!WGProfile.currentUser.isFetched) return;
+    
+    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
+    [WGI.defaultTracker setUser:WGProfile.currentUser];
+    [WGI.defaultTracker setTargetUser:targetUser];
+    [WGI.defaultTracker postAction:actionName];
+}
+
++ (void)tagAction:(NSString *)actionName {
+    if (!WGProfile.currentUser.isFetched) return;
+    
+    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
+    [WGI.defaultTracker setUser:WGProfile.currentUser];
+    [WGI.defaultTracker postAction:actionName];
 }
 
 +(void) tagEvent:(NSString *)name withDetails:(NSDictionary *)details {
@@ -53,12 +127,10 @@
         [tracker set:[GAIFields customDimensionForIndex:1] value:[profile genderName]];
         
         // Following/Followers
-        NSString *followingBucket = [self bucketizeUsers:[profile.numFollowing intValue]];
-        NSString *followersBucket = [self bucketizeUsers:[profile.numFollowers intValue]];
+        NSString *followingBucket = [self bucketizeUsers:[profile.numFriends intValue]];
         // [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:followingBucket forKey:@"Following"]];
         // [data addEntriesFromDictionary:[NSDictionary dictionaryWithObject:followersBucket forKey:@"Followers"]];
         [tracker set:[GAIFields customDimensionForIndex:2] value:followingBucket];
-        [tracker set:[GAIFields customDimensionForIndex:3] value:followersBucket];
         
         // is Group Locked
         NSString *locked = [profile.group.locked boolValue] ? @"Yes" : @"No";
@@ -84,15 +156,20 @@
                                                             action:name         // Event action (required)
                                                             label:nil           // Event label
                                                             value:nil] build]];
+    
+    
+    
 }
 
 +(void) tagScreen:(NSString *)name {
-    if (![[WGProfile currentUser] isFetched] || [[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {
+    if (![[WGProfile currentUser] isFetched] ||
+        [[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {
         return;
     }
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
     [tracker set:kGAIScreenName value:name];
     [tracker send:[[GAIDictionaryBuilder createAppView] build]];
+    
 }
 
 +(void) setUser:(WGUser *)user {

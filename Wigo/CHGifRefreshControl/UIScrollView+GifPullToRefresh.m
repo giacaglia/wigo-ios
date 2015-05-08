@@ -52,10 +52,27 @@ static char UIScrollViewGifPullToRefresh;
 - (CHGifRefreshControl *)refreshControl {
     return objc_getAssociatedObject(self, &UIScrollViewGifPullToRefresh);
 }
+- (void)addPullToRefreshWithDrawingImgs:(NSArray*)drawingImgs
+                         andLoadingImgs:(NSArray*)loadingImgs
+                        andContentInset:(float)edgeInsetY
+                       andActionHandler:(void (^)(void))actionHandler {
+    CHGifRefreshControl *view = [[CHGifRefreshControl alloc] initWithFrame:CGRectMake(0, -GifRefreshControlHeight, self.bounds.size.width, GifRefreshControlHeight - 10)];
+    view.addedContentInset = edgeInsetY;
+    if ([UIDevice currentDevice].systemVersion.floatValue >= 7.0) {
+        view.originalContentInsectY = 10;
+    }
+    
+    view.scrollView = self;
+    view.pullToRefreshActionHandler = actionHandler;
+    view.drawingImgs = drawingImgs;
+    view.loadingImgs = loadingImgs;
+    [self addSubview:view];
+    self.refreshControl = view;
+    
+}
 
 - (void)addPullToRefreshWithDrawingImgs:(NSArray*)drawingImgs andLoadingImgs:(NSArray*)loadingImgs andActionHandler:(void (^)(void))actionHandler
 {
-    
     CHGifRefreshControl *view = [[CHGifRefreshControl alloc] initWithFrame:CGRectMake(0, -GifRefreshControlHeight, self.bounds.size.width, GifRefreshControlHeight - 10)];
     if ([[UIDevice currentDevice].systemVersion floatValue] >= 7.0) {
         view.originalContentInsectY = 10;
@@ -127,8 +144,7 @@ static char UIScrollViewGifPullToRefresh;
                                     options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState
                                  animations:^{
                                      self.scrollView.contentOffset = CGPointMake(0, -GifRefreshControlHeight - self.originalContentInsectY);
-                                     self.scrollView.contentInset = UIEdgeInsetsMake(GifRefreshControlHeight + self.originalContentInsectY , 100.0f, 0.0f, 0.0f);
- 
+                                     self.scrollView.contentInset = UIEdgeInsetsMake(GifRefreshControlHeight + self.originalContentInsectY + self.addedContentInset, 100.0f, 0.0f, 0.0f);
                                  }
                                  completion:^(BOOL finished) {
                                      if (self.pullToRefreshActionHandler) {
@@ -152,7 +168,7 @@ static char UIScrollViewGifPullToRefresh;
                         options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
                          self.scrollView.contentOffset = CGPointMake(0, -GifRefreshControlHeight - self.originalContentInsectY);
-                         self.scrollView.contentInset = UIEdgeInsetsMake(GifRefreshControlHeight + self.originalContentInsectY , 100.0f, 0.0f, 0.0f);
+                         self.scrollView.contentInset = UIEdgeInsetsMake(GifRefreshControlHeight + self.originalContentInsectY + self.addedContentInset, 100.0f, 0.0f, 0.0f);
                          
                      }
                      completion:^(BOOL finished) {
@@ -223,7 +239,7 @@ static char UIScrollViewGifPullToRefresh;
                               delay:0
                             options:UIViewAnimationOptionAllowUserInteraction|UIViewAnimationOptionBeginFromCurrentState
                          animations:^{
-                             self.scrollView.contentInset = UIEdgeInsetsMake(0, 0.0f, 0.0f, 0.0f);
+                             self.scrollView.contentInset = UIEdgeInsetsMake(self.addedContentInset, 0.0f, 0.0f, 0.0f);
                          }
                          completion:nil];
     }

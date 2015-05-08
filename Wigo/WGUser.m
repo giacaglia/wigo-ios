@@ -22,24 +22,27 @@
 #define kNameKey @"name"
 #define kFacebookAccessTokenKey @"facebook_access_token"
 #define kPrivacyKey @"privacy"
-#define kIsFollowerKey @"is_follower"
 #define kNumFollowingKey @"num_following"
 #define kIsTappedKey @"is_tapped"
+#define kFriendRequestKey @"friend_request"
+#define kIsFriendKey @"is_friend"
 #define kIsBlockedKey @"is_blocked"
 #define kIsBlockingKey @"is_blocking"
 #define kBioKey @"bio"
 #define kImageKey @"image"
 #define kModifiedKey @"modified"
-#define kIsFollowingKey @"is_following"
 #define kLastNameKey @"last_name"
-#define kIsFollowingRequestedKey @"is_following_requested"
 #define kIsGoingOutKey @"is_goingout"
 #define kLastMessageReadKey @"last_message_read"
 #define kLastNotificationReadKey @"last_notification_read"
 #define kLastUserReadKey @"last_user_read"
 
-#define kPropertiesKey @"properties" //: {},
 #define kImagesKey @"images"
+#define kHometownKey @"hometown"
+#define kWorkKey @"work"
+#define kEducationKey @"education"
+#define kFriendsMetaKey @"friends_meta"
+#define kBirthdayKey @"birthday"
 #define kURLKey @"url"
 #define kSmallKey @"small"
 #define kCropKey @"crop"
@@ -57,13 +60,14 @@
 #define kNotificationsKey @"notifications"
 #define kTapsKey @"taps"
 #define kFavoritesGoingOutKey @"favorites_going_out"
-#define kIsFavoriteKey @"is_favorite" //: false,
 #define kFirstNameKey @"first_name" //: "Josh",
 #define kGenderKey @"gender" //: "male",
 #define kFacebookIdKey @"facebook_id" //: "10101301503877593",
-#define kNumFollowersKey @"num_followers" //: 5,
+#define kNumFriendsKey @"num_friends" //: 5,
 #define kUsernameKey @"username" //: "jelman"
 #define kIsAttendingKey @"is_attending"
+#define kPeriodWentOutKey @"period_went_out"
+#define kNumMutualFriends @"num_mutual_friends"
 
 #define kGroupKey @"group" //: {},
 #define kGroupLockedKey @"locked"
@@ -79,6 +83,12 @@
 
 #define kPrivacyPublicValue @"public"
 #define kPrivacyPrivateValue @"private"
+
+#define kFriendRequestSent @"sent"
+#define kFriendRequestReceived @"received"
+#define kDictionaryTappedList @"is_tapped_dictionary"
+#define kDictionaryIsFriendRequestList @"is_friend_request_read_list"
+#define kDayMetaUserKey @"day_met_user_key"
 
 static WGUser *currentUser = nil;
 
@@ -194,28 +204,37 @@ static WGUser *currentUser = nil;
     return [NSDate serialize:[self objectForKey:kModifiedKey]];
 }
 
--(void) setLastMessageRead:(NSNumber *)lastMessageRead {
-    [self setObject:lastMessageRead forKey:kLastMessageReadKey];
+-(void) setLastMessageRead:(NSDate *)lastMessageRead {
+    [[NSUserDefaults standardUserDefaults] setObject:lastMessageRead forKey:kLastMessageReadKey];
 }
 
--(NSNumber *) lastMessageRead {
-    return [self objectForKey:kLastMessageReadKey];
+-(NSDate *) lastMessageRead {
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kLastMessageReadKey]) {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:kLastMessageReadKey];
+    }
+    return nil;
 }
 
--(void) setLastNotificationRead:(NSNumber *)lastNotificationRead {
-    [self setObject:lastNotificationRead forKey:kLastNotificationReadKey];
+-(void) setLastNotificationRead:(NSDate *)lastNotificationRead {
+    [[NSUserDefaults standardUserDefaults] setObject:lastNotificationRead forKey:kLastNotificationReadKey];
 }
 
--(NSNumber *) lastNotificationRead {
-    return [self objectForKey:kLastNotificationReadKey];
+-(NSDate *) lastNotificationRead {
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kLastNotificationReadKey]) {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:kLastNotificationReadKey];
+    }
+    return nil;
 }
 
--(void) setLastUserRead:(NSNumber *)lastUserRead {
-    [self setObject:lastUserRead forKey:kLastUserReadKey];
+-(void) setLastUserRead:(NSDate *)lastUserRead {
+    [[NSUserDefaults standardUserDefaults] setObject:lastUserRead forKey:kLastUserReadKey];
 }
 
--(NSNumber *) lastUserRead {
-    return [self objectForKey:kLastUserReadKey];
+-(NSDate *) lastUserRead {
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kLastUserReadKey]) {
+        return [[NSUserDefaults standardUserDefaults] objectForKey:kLastUserReadKey];
+    }
+    return nil;
 }
 
 -(void) setGender:(Gender)gender {
@@ -277,20 +296,12 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kFacebookAccessTokenKey];
 }
 
--(void) setNumFollowing:(NSNumber *)numFollowing {
-    [self setObject:numFollowing forKey:kNumFollowingKey];
+-(void) setNumFriends:(NSNumber *)numFriends {
+    [self setObject:numFriends forKey:kNumFriendsKey];
 }
 
--(NSNumber *) numFollowing {
-    return [self objectForKey:kNumFollowingKey];
-}
-
--(void) setNumFollowers:(NSNumber *)numFollowers {
-    [self setObject:numFollowers forKey:kNumFollowersKey];
-}
-
--(NSNumber *) numFollowers {
-    return [self objectForKey:kNumFollowersKey];
+-(NSNumber *) numFriends {
+    return [self objectForKey:kNumFriendsKey];
 }
 
 -(void) setGroupRank:(NSNumber *)groupRank {
@@ -304,6 +315,7 @@ static WGUser *currentUser = nil;
 -(void) setProperties:(NSDictionary *)properties {
     [self setObject:properties forKey:kPropertiesKey];
 }
+
 
 -(NSDictionary *) properties {
     return [self objectForKey:kPropertiesKey];
@@ -320,9 +332,115 @@ static WGUser *currentUser = nil;
     self.properties = properties;
 }
 
+- (NSString *)hometown {
+    NSDictionary *properties = self.properties;
+    return [properties objectForKey:kHometownKey];
+}
+
+- (void)setHometown:(NSString *)hometown {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
+    [properties setObject:hometown forKey:kHometownKey];
+    self.properties = properties;
+}
+
+- (NSString *)work {
+    NSDictionary *properties = self.properties;
+    return [properties objectForKey:kWorkKey];
+}
+
+- (void)setWork:(NSString *)work {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
+    [properties setObject:work forKey:kWorkKey];
+    self.properties = properties;
+}
+
+- (NSString *)education {
+    NSDictionary *properties = self.properties;
+    return [properties objectForKey:kEducationKey];
+}
+
+- (void)setEducation:(NSString *)education {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
+    [properties setObject:education forKey:kEducationKey];
+    self.properties = properties;
+}
+
+-(NSString *)age {
+    NSString *birthday = self.birthday;
+    if (!birthday) return @"";
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
+    NSDate *dateFromString = [NSDate new];
+    dateFromString = [dateFormatter dateFromString:birthday];
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+
+    NSDateComponents *conversionInfo = [calendar components:NSYearCalendarUnit fromDate:dateFromString toDate:[NSDate date]  options:0];
+    return [NSString stringWithFormat:@"%ld", (long)[conversionInfo year]];
+}
+
+-(NSDictionary *)friendsMetaDict {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kFriendsMetaKey];
+}
+
+
+-(void) setFriendsMetaDict:(NSDictionary *)friendsMetaDict {
+    [[NSUserDefaults standardUserDefaults] setObject:friendsMetaDict forKey:kFriendsMetaKey];
+}
+
+-(void) setMetaObject:(id)object forKey:(NSString *)key {
+    if (!self.id) return;
+    if (WGProfile.currentUser.friendsMetaDict) {
+        NSMutableDictionary *mutFriendsMetaDict = [NSMutableDictionary dictionaryWithDictionary:WGProfile.currentUser.friendsMetaDict];
+        if ([mutFriendsMetaDict.allKeys containsObject:self.id.stringValue]) {
+            NSMutableDictionary *userDict = [NSMutableDictionary dictionaryWithDictionary:[mutFriendsMetaDict objectForKey:self.id.stringValue]];
+            [userDict setObject:object forKey:key];
+            [mutFriendsMetaDict setObject:userDict forKey:self.id.stringValue];
+        }
+        else {
+            NSDictionary *userDict = @{key : object};
+            [mutFriendsMetaDict setObject:userDict forKey:self.id.stringValue];
+        }
+        WGProfile.currentUser.friendsMetaDict = mutFriendsMetaDict;
+    }
+    else {
+        NSMutableDictionary *mutFriendsMetaDict = [NSMutableDictionary new];
+        NSDictionary *userDict = @{key : object};
+        [mutFriendsMetaDict setObject:userDict forKey:self.id.stringValue];
+        WGProfile.currentUser.friendsMetaDict = mutFriendsMetaDict;
+    }
+
+}
+
+-(id) metaObjectForKey:(NSString *)key {
+    if (!self.id) return nil;
+    NSDictionary *friendsMetaDict = WGProfile.currentUser.friendsMetaDict;
+    if (friendsMetaDict) {
+        if ([friendsMetaDict.allKeys containsObject:self.id.stringValue]) {
+            NSDictionary *userDict = [friendsMetaDict objectForKey:self.id.stringValue];
+            if ([userDict.allKeys containsObject:key]) return [userDict objectForKey:key];
+        }
+    }
+    return nil;
+}
+
+
+-(NSString *)birthday {
+    NSDictionary *properties = self.properties;
+    return [properties objectForKey:kBirthdayKey];
+}
+
+- (void)setBirthday:(NSString *)birthday {
+    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary: self.properties];
+    [properties setObject:birthday forKey:kBirthdayKey];
+    self.properties = properties;
+}
+
 -(NSArray *) images {
     NSDictionary *properties = self.properties;
-    return [properties objectForKey:kImagesKey];
+    if ([properties.allKeys containsObject:kImagesKey]) {
+        return [properties objectForKey:kImagesKey];
+    }
+    return [NSArray new];
 }
 
 -(void) setImages:(NSArray *)images {
@@ -496,7 +614,15 @@ static WGUser *currentUser = nil;
         NSArray *images = [self.properties objectForKey:kImagesKey];
         return [images valueForKey:kURLKey];
     }
-    else return [[NSArray alloc] init];
+    return [NSArray new];
+}
+
+-(NSArray *) smallImagesURL {
+    NSArray *images = [self images];
+    if (self.properties && images) {
+        return [images valueForKey:kSmallKey];
+    }
+    return [NSArray new];
 }
 
 -(NSDictionary *) coverImageArea {
@@ -540,14 +666,6 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kGroupKey];
 }
 
--(void) setEmailValidated:(NSNumber *)emailValidated {
-    [self setObject:emailValidated forKey:kEmailValidatedKey];
-}
-
--(NSNumber *) emailValidated {
-    return [self objectForKey:kEmailValidatedKey];
-}
-
 -(void) setEventAttending:(WGEvent *)eventAttending {
     [self setObject:eventAttending forKey:kIsAttendingKey];
 }
@@ -572,36 +690,27 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kIsBlockingKey];
 }
 
--(void) setIsFavorite:(NSNumber *)isFavorite {
-    [self setObject:isFavorite forKey:kIsFavoriteKey];
+-(void) setIsFriend:(NSNumber *)isFriend {
+    [self setMetaObject:isFriend forKey:kIsFriendKey];
 }
 
--(NSNumber *) isFavorite {
-    return [self objectForKey:kIsFavoriteKey];
+-(NSNumber *) isFriend {
+    return [self metaObjectForKey:kIsFriendKey];
 }
 
--(void) setIsFollower:(NSNumber *)isFollower {
-    [self setObject:isFollower forKey:kIsFollowerKey];
+-(void) setFriendRequest:(NSString *)friendRequest {
+    [self setMetaObject:friendRequest forKey:kFriendRequestKey];
 }
 
--(NSNumber *) isFollower {
-    return [self objectForKey:kIsFollowerKey];
+-(NSString *) friendRequest {
+    return [self metaObjectForKey:kFriendRequestKey];
 }
 
--(void) setIsFollowing:(NSNumber *)isFollowing {
-    [self setObject:isFollowing forKey:kIsFollowingKey];
-}
-
--(NSNumber *) isFollowing {
-    return [self objectForKey:kIsFollowingKey];
-}
-
--(void) setIsFollowingRequested:(NSNumber *)isFollowingRequested {
-    [self setObject:isFollowingRequested forKey:kIsFollowingRequestedKey];
-}
-
--(NSNumber *) isFollowingRequested {
-    return [self objectForKey:kIsFollowingRequestedKey];
+-(void) setFriendsIds:(NSArray*)friendsIds {
+    for (NSString *friendID in friendsIds) {
+        WGUser *user = [[WGUser alloc] initWithJSON:@{@"id": friendID}];
+        [user setIsFriend:@YES];
+    }
 }
 
 -(void) setIsGoingOut:(NSNumber *)isGoingOut {
@@ -612,12 +721,16 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kIsGoingOutKey];
 }
 
--(void) setIsTapped:(NSNumber *)isTapped {
-    [self setObject:isTapped forKey:kIsTappedKey];
+
+-(void) setIsFriendRequestRead:(BOOL)isFriendRequestRead {
+    NSMutableArray *listOfFriendRequestRead = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryIsFriendRequestList]];
+    if (isFriendRequestRead && ![listOfFriendRequestRead containsObject:self.id.stringValue]) [listOfFriendRequestRead addObject:self.id.stringValue];
+    [[NSUserDefaults standardUserDefaults] setObject:listOfFriendRequestRead forKey:kDictionaryIsFriendRequestList];
 }
 
--(NSNumber *) isTapped {
-    return [self objectForKey:kIsTappedKey];
+-(BOOL) isFriendRequestRead {
+    NSArray *listOfFriendRequestRead = [[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryIsFriendRequestList];
+    return [listOfFriendRequestRead containsObject:self.id.stringValue];
 }
 
 -(void) setNumUnreadConversations:(NSNumber *)numUnreadConversations {
@@ -644,6 +757,17 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kNumUnreadUsersKey];
 }
 
+-(NSNumber *)numMutualFriends {
+    if ([self objectForKey:kNumMutualFriends]) {
+        return [self objectForKey:kNumMutualFriends];
+    }
+    return nil;
+}
+
+-(void)setNumMutualFriends:(NSNumber *)numMutualFriends {
+    [self setObject:numMutualFriends forKey:kNumMutualFriends];
+}
+
 -(void) setIsTapPushNotificationEnabled:(NSNumber *)isTapPushNotificationEnabled {
     NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary:self.properties];
     
@@ -668,49 +792,45 @@ static WGUser *currentUser = nil;
     [self setObject:referredByNumber forKey:kReferredByKey];
 }
 
--(void) setIsFavoritesGoingOutNotificationEnabled:(NSNumber *)isFavoritesGoingOutNotificationEnabled {
-    NSMutableDictionary *properties = [[NSMutableDictionary alloc] initWithDictionary:self.properties];
-    
-    NSMutableDictionary *notifications = [[NSMutableDictionary alloc] initWithDictionary:[properties objectForKey:kNotificationsKey]];
-    
-    [notifications setObject:isFavoritesGoingOutNotificationEnabled forKey:kFavoritesGoingOutKey];
-    [properties setObject:notifications forKey:kNotificationsKey];
-    
-    self.properties = properties;
-}
-
--(NSNumber *) isFavoritesGoingOutNotificationEnabled {
-    if (self.properties) {
-        if ([self.properties objectForKey:kNotificationsKey]) {
-            return [[self.properties objectForKey:kNotificationsKey] objectForKey:kFavoritesGoingOutKey];
-        }
-    }
-    return nil;
-}
 
 -(State) state {
     if (self.isCurrentUser) {
-        if (self.privacy == PRIVATE) return PRIVATE_STATE;
-        else return PUBLIC_STATE;
+        return CURRENT_USER_STATE;
     }
-    if ([self.isBlocked boolValue]) {
-        return BLOCKED_USER_STATE;
+    if (self.isBlocked.boolValue) return BLOCKED_USER_STATE;
+    if (self.isFriend.boolValue) return FRIEND_USER_STATE;
+    
+    if ([self.friendRequest isEqual:kFriendRequestSent] ||
+        [self.friendRequest isEqual:kFriendRequestReceived]) {
+        return SENT_OR_RECEIVED_REQUEST_USER_STATE;
     }
-    if (self.privacy == PRIVATE) {
-        if ([self.isFollowingRequested boolValue]) {
-            return NOT_YET_ACCEPTED_PRIVATE_USER_STATE;
-        }
-        else if ([self.isFollowing boolValue]) {
-            if (self.eventAttending) return ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE;
-            return FOLLOWING_USER_STATE;
-        }
-        else return NOT_SENT_FOLLOWING_PRIVATE_USER_STATE;
+   
+    return NOT_FRIEND_STATE;
+}
+
+-(void) followUser {
+    if (self.isBlocked.boolValue) {
+        self.isBlocked = @NO;
+        [WGProfile.currentUser unblock:self withHandler:^(BOOL success, NSError *error) {
+            if (error) [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+        }];
+        return;
     }
-    if ([self.isFollowing boolValue] || [self.isFollowingRequested boolValue]) {
-        if (self.eventAttending) return ATTENDING_EVENT_FOLLOWING_USER_STATE;
-        return FOLLOWING_USER_STATE;
+    if (self.isFriend.boolValue) {
+        self.isFriend = @NO;
+        [WGProfile.currentUser unfollow:self withHandler:^(BOOL success, NSError *error) {
+            if (error) [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+        }];
+        return;
     }
-    return NOT_FOLLOWING_PUBLIC_USER_STATE;
+    
+    
+    self.friendRequest = kFriendRequestSent;
+    [WGProfile.currentUser friendUser:self withHandler:^(BOOL success, NSError *error) {
+        if (error) [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+    }];
+
+    
 }
 
 +(void) get:(WGCollectionResultBlock)handler {
@@ -787,9 +907,68 @@ static WGUser *currentUser = nil;
  
     }
 }
+
+-(void) getNumMutualFriends:(WGNumResultBlock)handler {
+    __weak typeof(self) weakSelf = self;
+    if ([WGProfile.currentUser.id isEqual:self.id]) return;
+    [WGApi get:[NSString stringWithFormat:@"users/%@/friends/common/%@/count/", WGProfile.currentUser.id, self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       if (error) {
+           handler(nil, error);
+           return;
+       }
+       __strong typeof(weakSelf) strongSelf = weakSelf;
+       NSNumber *numberOfFriends = [jsonResponse objectForKey:@"count"];
+       strongSelf.numMutualFriends = numberOfFriends;
+       handler(numberOfFriends, error);
+}];
+}
+
+-(void) getMeta:(BoolResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"users/%@/meta/", self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       if (error) {
+           handler(NO, error);
+           return;
+       }
+       for (NSString *key in jsonResponse) {
+           if ([key isEqual:@"is_tapped"]) {
+               BOOL isTapped = [[jsonResponse objectForKey:key] boolValue];
+               [self setIsTapped:[NSNumber numberWithBool:isTapped]];
+           }
+           else {
+               [self setObject:[jsonResponse objectForKey:key] forKey:key];
+           }
+       }
+       handler(YES, nil);
+   }];
+}
+
+-(void) getMutualFriends:(WGCollectionResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"users/%@/friends/common/%@", WGProfile.currentUser.id, self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       if (error) {
+           handler(nil, error);
+           return;
+       }
+       NSError *dataError;
+       WGCollection *objects;
+       @try {
+           objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+       }
+       @catch (NSException *exception) {
+           NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+           
+           dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+       }
+       @finally {
+           handler(objects, dataError);
+       }
+    }];
+}
+
 -(void) getNotMeForMessage:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/"  withArguments:@{ @"id__ne" : self.id, @"context": @"message"}
-            andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/me/friends/"  withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -814,7 +993,7 @@ static WGUser *currentUser = nil;
     if (!query) {
         return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"text" : query , @"context": contextString} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/me/friends/" withArguments:@{ @"text" : query , @"context": contextString} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -840,7 +1019,7 @@ static WGUser *currentUser = nil;
     if (!query) {
         return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi get:@"users/" withArguments:@{ @"id__ne" : self.id, @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/me/friends/" withArguments:@{ @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -883,6 +1062,50 @@ static WGUser *currentUser = nil;
     }];
 }
 
+- (void)getFriends:(WGCollectionResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"users/%@/friends/", self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       if (error) {
+           handler(nil, error);
+           return;
+       }
+       NSError *dataError;
+       WGCollection *objects;
+       @try {
+           objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+       }
+       @catch (NSException *exception) {
+           NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+           dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+       }
+       @finally {
+           handler(objects, dataError);
+       }
+   }];
+}
+
+-(void) getFriendRequests:(WGCollectionResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"users/%@/friends/requests/", self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       if (error) {
+           handler(nil, error);
+           return;
+       }
+       NSError *dataError;
+       WGCollection *objects;
+       @try {
+           objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+       }
+       @catch (NSException *exception) {
+           NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+           
+           dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+       }
+       @finally {
+           handler(objects, dataError);
+       }
+    }];
+}
 +(void) getOnboarding:(WGCollectionResultBlock)handler {
     [WGApi get:@"users/" withArguments:@{ @"query" : @"onboarding" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
@@ -928,7 +1151,7 @@ static WGUser *currentUser = nil;
 }
 
 +(void) getInvites:(WGCollectionResultBlock)handler {
-    [WGApi get:@"users/" withArguments:@{ @"following" : @"true", @"ordering" : @"invite" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -953,7 +1176,7 @@ static WGUser *currentUser = nil;
     if (!query) {
         return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi get:@"users/" withArguments:@{ @"following" : @"true", @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/suggestions/" withArguments:@{ @"text" : query } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -1028,7 +1251,7 @@ static WGUser *currentUser = nil;
     if (!query) {
         return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi get:@"users/" withArguments:@{ @"text" : query, @"id__ne" : [WGProfile currentUser].id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:@"users/" withArguments:@{ @"text" : query} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -1089,7 +1312,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) sendInvites:(NSArray *)numbers withHandler:(BoolResultBlock)handler {
-    [WGApi post:@"invites/" withArguments:@{ @"force" : @YES } andParameters:numbers andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:@"invites/" withArguments:@{} andParameters:numbers andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
 }
@@ -1104,7 +1327,9 @@ static WGUser *currentUser = nil;
     if (!user.id || !type) {
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi post:@"blocks/" withParameters:@{ @"block" : user.id, @"type" : type } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:@"users/me/blocks/"
+ withParameters:@{ @"block_id" :  user.id }
+     andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isBlocked = @YES;
         }
@@ -1117,7 +1342,7 @@ static WGUser *currentUser = nil;
     if (!user.id) {
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi post:@"taps" withParameters:@{ @"tapped" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:@"users/me/taps/" withParameters:@{ @"tapped_id" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isTapped = @YES;
         }
@@ -1156,40 +1381,39 @@ static WGUser *currentUser = nil;
 }
 
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler {
-    [user saveKey:kIsFollowingKey withValue:@NO andHandler:^(BOOL success, NSError *error) {
-        handler(error == nil, error);
-    }];
+//    [user saveKey:kIsFollowingKey withValue:@NO andHandler:^(BOOL success, NSError *error) {
+//        handler(error == nil, error);
+//    }];
 }
 
--(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler {
-    [user saveKey:kIsFollowingKey withValue:@YES andHandler:^(BOOL success, NSError *error) {
-        if (!error && user.state == NOT_SENT_FOLLOWING_PRIVATE_USER_STATE) {
-            user.isFollowingRequested = @YES;
+-(void) friendUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
+    [WGApi post:[NSString stringWithFormat:@"users/me/friends/"] withParameters:@{ @"friend_id": user.id} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            user.friendRequest = kFriendRequestSent;
+        }
+        handler(error == nil, error);
+    }];
+
+}
+
+-(void) acceptFriendRequestFromUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
+    if (!user.id) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
+    [WGApi post:@"users/me/friends/" withParameters:@{ @"friend_id" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            self.numFriends = @([self.numFriends intValue] + 1);
         }
         handler(error == nil, error);
     }];
 }
 
--(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
+-(void) rejectFriendRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     if (!user.id) {
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi get:@"follows/accept" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi delete:@"users/me/friends/" withArguments:@{ @"friend_id" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isFollower = @YES;
-            self.numFollowers = @([self.numFollowers intValue] + 1);
-        }
-        handler(error == nil, error);
-    }];
-}
-
--(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
-    if (!user.id) {
-        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
-    }
-    [WGApi get:@"follows/reject" withArguments:@{ @"from" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (!error) {
-            user.isFollower = @NO;
         }
         handler(error == nil, error);
     }];
@@ -1208,7 +1432,7 @@ static WGUser *currentUser = nil;
     if (!event.id) {
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi post:@"eventattendees/" withParameters:@{ @"event" : event.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:[NSString stringWithFormat:@"events/%@/attendees/", event.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             self.isGoingOut = @YES;
             self.eventAttending = event;
@@ -1244,7 +1468,8 @@ static WGUser *currentUser = nil;
 }
 
 -(void) getConversation:(WGCollectionResultBlock)handler {
-    [WGApi get:@"messages/" withArguments:@{ @"conversation" : self.id, @"ordering" : @"-id" } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi get:[NSString stringWithFormat:@"conversations/%@/", self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -1267,6 +1492,78 @@ static WGUser *currentUser = nil;
 
 -(void) remove:(BoolResultBlock)handler {
     handler(NO, [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : @"cannot delete user" }]);
+}
+
+#pragma mark - Meta objects
+
+-(void) setIsTapped:(NSNumber *)isTapped {
+    [self setDayMetaObject:isTapped forKey:kIsTappedKey];
+}
+
+-(NSNumber *) isTapped {
+    NSNumber *isTapped = [self dayMetaObjectForKey:kIsTappedKey];
+    return isTapped;
+}
+
+-(void) setDayMetaObject:(id)object forKey:(NSString *)key {
+    if (!self.id) return;
+    NSDictionary *metaEventMessagesProperties = self.dayMetaUserProperties;
+    if (!metaEventMessagesProperties) metaEventMessagesProperties = [NSDictionary new];
+    NSMutableDictionary *mutFriendsMetaDict = [NSMutableDictionary dictionaryWithDictionary:metaEventMessagesProperties];
+    if (!mutFriendsMetaDict) mutFriendsMetaDict = [NSMutableDictionary new];
+    // cleanup of old dates
+    for (NSString *key in mutFriendsMetaDict.allKeys) {
+        if (![key isEqual:self.dayString]) [mutFriendsMetaDict removeObjectForKey:key];
+    }
+    
+    if ([mutFriendsMetaDict.allKeys containsObject:self.dayString]) {
+        NSMutableDictionary *eventMessagesDict = [NSMutableDictionary dictionaryWithDictionary:[mutFriendsMetaDict objectForKey:self.dayString]];
+        if (!eventMessagesDict) eventMessagesDict = [NSMutableDictionary new];
+        if ([eventMessagesDict.allKeys containsObject:self.id.stringValue]) {
+            NSMutableDictionary *metaEventMsg = [NSMutableDictionary dictionaryWithDictionary:[eventMessagesDict objectForKey:self.id.stringValue]];
+            if (!metaEventMsg) metaEventMsg = [NSMutableDictionary dictionaryWithDictionary:@{key: object}];
+            else [metaEventMsg setObject:object forKey:key];
+            [eventMessagesDict setObject:metaEventMsg forKey:self.id.stringValue];
+        }
+        else {
+            [eventMessagesDict setObject:@{key: object} forKey:self.id.stringValue];
+        }
+        [mutFriendsMetaDict setObject:eventMessagesDict forKey:self.dayString];
+    }
+    else {
+        [mutFriendsMetaDict setObject:@{self.id.stringValue: @{key: object}} forKey:self.dayString];
+    }
+    self.dayMetaUserProperties = mutFriendsMetaDict;
+}
+
+-(id) dayMetaObjectForKey:(NSString *)key {
+    if (!self.id) return nil;
+    NSDictionary *metaProperties = self.dayMetaUserProperties;
+    if (metaProperties) {
+        if ([metaProperties.allKeys containsObject:self.dayString]) {
+            NSDictionary *eventMessagesDict = [metaProperties objectForKey:self.dayString];
+            if ([eventMessagesDict.allKeys containsObject:self.id.stringValue]) {
+                NSDictionary *metaDict = [eventMessagesDict objectForKey:self.id.stringValue];
+                if ([metaDict.allKeys containsObject:key]) return [metaDict objectForKey:key];
+            }
+        }
+    }
+    return nil;
+}
+
+-(NSString *) dayString {
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    return [dateFormatter stringFromDate:[NSDate date]];
+}
+
+-(NSDictionary *) dayMetaUserProperties {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kDayMetaUserKey];
+}
+
+
+-(void) setDayMetaUserProperties:(NSDictionary *)dayMetaUserProperties {
+    [[NSUserDefaults standardUserDefaults] setObject:dayMetaUserProperties forKey:kDayMetaUserKey];
 }
 
 @end

@@ -20,7 +20,8 @@ typedef void (^WGNotificationSummaryResultBlock)(NSNumber *follow, NSNumber *fol
 
 +(WGNotification *)serialize:(NSDictionary *)json;
 -(NSDictionary *)properties;
--(NSString *)eventName;
+-(NSString *) eventName;
+-(NSNumber *) eventID;
 -(NSString *) message;
 
 +(void) getFollowRequests:(WGCollectionResultBlock)handler;

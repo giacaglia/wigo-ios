@@ -27,6 +27,7 @@
 #define kShowSchoolStatistics @"school_statistics"
 #define kChosenPeople @"chosenPeople"
 #define kNumberOfTimesWentOut @"numberOfTimesWentOut"
+#define kNumberOfFriends @"num_friends"
 #define kAWSKeyKey @"awsKey"
 #define kCDNPrefix @"cdnPrefix"
 #define kShowedOnboardView @"showedOnboardView"
@@ -45,6 +46,7 @@
 static WGProfile *currentUser = nil;
 static NSNumber *peekingGroupID = nil;
 static BOOL tapAll = NO;
+static BOOL isLocal = YES;
 
 @implementation WGProfile
 
@@ -101,6 +103,14 @@ static BOOL tapAll = NO;
 
 + (BOOL)tapAll {
     return tapAll;
+}
+
++ (void)setIsLocal:(BOOL)newIsLocal {
+    isLocal = newIsLocal;
+}
+
++ (BOOL)isLocal {
+    return isLocal;
 }
 
 -(void) setKey:(NSString *)key {
@@ -268,6 +278,14 @@ static BOOL tapAll = NO;
     return [[NSUserDefaults standardUserDefaults] objectForKey:kTriedToRegisterKey];
 }
 
++(void)setNumFriends:(NSNumber *)numFriends {
+    [[NSUserDefaults standardUserDefaults] setObject:numFriends forKey:kNumberOfFriends];
+}
+
++ (NSNumber *)numFriends {
+    return [[NSUserDefaults standardUserDefaults] objectForKey:kNumberOfFriends];
+}
+
 -(void) setNumberOfTimesWentOut:(NSNumber *)numberOfTimesWentOut {
     [[NSUserDefaults standardUserDefaults] setObject:numberOfTimesWentOut forKey:kNumberOfTimesWentOut];
 }
@@ -356,7 +374,8 @@ static BOOL tapAll = NO;
         }
         NSError *dataError;
         @try {
-            [WGProfile setCurrentUser:[[WGUser alloc] initWithJSON:jsonResponse]];
+            NSArray *objects = (NSArray *)[jsonResponse objectForKey:@"objects"];
+            [WGProfile setCurrentUser:[[WGUser alloc] initWithJSON:[objects objectAtIndex:0]]];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
@@ -376,6 +395,9 @@ static BOOL tapAll = NO;
     if (self.email) {
         [parameters setObject:self.email forKey:kEmailKey];
     }
+    if (self.properties) {
+        [parameters setObject:self.properties forKey:kPropertiesKey];
+    }
     
     [WGApi post:@"login" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
@@ -388,10 +410,13 @@ static BOOL tapAll = NO;
         }
         NSError *dataError;
         @try {
-            if ([jsonResponse objectForKey:kKeyKey]) {
-                self.key = [jsonResponse objectForKey:kKeyKey];
+            WGParser *parser = [[WGParser alloc] init];
+            NSDictionary *response = [parser replaceReferences:jsonResponse];
+            NSDictionary *userDictionary = [[response objectForKey:@"objects"] objectAtIndex:0];
+            if ([userDictionary objectForKey:kKeyKey]) {
+                self.key = [userDictionary objectForKey:kKeyKey];
             }
-            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:jsonResponse];
+            self.parameters = [[NSMutableDictionary alloc] initWithDictionary:userDictionary];
             [self replaceReferences];
             [self.modifiedKeys removeAllObjects];
         }
@@ -450,19 +475,6 @@ static BOOL tapAll = NO;
         @finally {
             handler(dataError == nil, dataError);
         }
-    }];
-}
-
-
--(void) setLastNotificationReadToLatest:(BoolResultBlock)handler {
-    [self saveKey:kLastNotificationReadKey withValue:@"latest" andHandler:^(BOOL success, NSError *error) {
-        handler(success, error);
-    }];
-}
-
--(void) setLastUserReadToLatest:(BoolResultBlock)handler {
-    [self saveKey:kLastUserReadKey withValue:@"latest" andHandler:^(BOOL success, NSError *error) {
-        handler(success, error);
     }];
 }
 

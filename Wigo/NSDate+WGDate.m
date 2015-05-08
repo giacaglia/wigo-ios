@@ -43,21 +43,21 @@
         NSDateComponents *differenceDateComponents = [self differenceBetweenDates:nowDate];
         if ([differenceDateComponents weekOfYear] == 0 && [differenceDateComponents month] == 0) {
             if ([differenceDateComponents day] == 0 || [differenceDateComponents day] == 1) {
-                return @"1 day ago";
+                return @"1 d";
             }
-            return [NSString stringWithFormat:@"%ld days ago", (long)[differenceDateComponents day]];
+            return [NSString stringWithFormat:@"%ld d", (long)[differenceDateComponents day]];
         } else {
             if ([differenceDateComponents month] == 0) {
                 if ([differenceDateComponents weekOfYear] == 1) {
-                    return @"1 week ago";
+                    return @"1 w";
                 }
-                return [NSString stringWithFormat:@"%ld weeks ago", (long)[differenceDateComponents weekOfYear]];
+                return [NSString stringWithFormat:@"%ld w", (long)[differenceDateComponents weekOfYear]];
             }
             else {
                 if ([differenceDateComponents month] == 1) {
-                    return @"1 month ago";
+                    return @"1 mo";
                 }
-                return [NSString stringWithFormat:@"%ld months ago", (long)[differenceDateComponents month]];
+                return [NSString stringWithFormat:@"%ld mo", (long)[differenceDateComponents month]];
             }
             
         }
@@ -67,9 +67,9 @@
 -(BOOL) isFromLastDay {
     NSDate *nowDate = [NSDate date];
     
-//    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
-//    nowDate = [nowDate dateByAddingTimeInterval:timeZoneSeconds];
-//
+    NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
+    nowDate = [nowDate dateByAddingTimeInterval:timeZoneSeconds];
+
     NSDateComponents *otherDay = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit fromDate:self];
     
     NSDateComponents *today = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit fromDate:nowDate];
@@ -130,16 +130,22 @@
     return [differenceDateComponents day] == 1;
 }
 
+-(NSString *)getDayString {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    return [dateFormatter stringFromDate:self];
+}
+
 -(NSString *) deserialize {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSS"];
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     return [dateFormatter stringFromDate:[self dateByAddingTimeInterval:-timeZoneSeconds]];
 }
 
 +(NSDate *) serialize:(NSString *)dateString {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSS"];
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     return [[dateFormatter dateFromString:dateString] dateByAddingTimeInterval:timeZoneSeconds];
 }
@@ -148,8 +154,36 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
     [dateFormatter setTimeZone:timeZone];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSSSS"];
     return [dateFormatter stringFromDate:[NSDate date]];
+}
+
+-(NSString *)timeAgo {
+    NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    unsigned int flags = NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekCalendarUnit|NSWeekOfYearCalendarUnit |NSDayCalendarUnit | NSHourCalendarUnit;
+    NSCalendar* calendar = [NSCalendar currentCalendar];
+    NSDateComponents *otherDay=  [gregorianCalendar
+                                  components:flags
+                                  fromDate:[self dateByAddingTimeInterval:-3600*6]];
+   
+    NSDateComponents *today = [[NSCalendar currentCalendar] components:NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit|NSHourCalendarUnit fromDate:[NSDate date]];
+
+    NSDate *otherDayDate = [calendar dateFromComponents:otherDay];
+    NSDate *nowDayDate = [calendar dateFromComponents:today];
+    
+    double deltaSeconds = fabs([otherDayDate timeIntervalSinceDate:nowDayDate]);
+    double deltaMinutes = deltaSeconds / 60.0f;
+    
+    int minutes;
+    if (deltaMinutes < (24 * 60 * 2))
+    {
+        return @"Yesterday";
+    }
+    else {
+        minutes = (int)floor(deltaMinutes/(60 * 24));
+        return [NSString stringWithFormat:@"%d days ago", minutes];
+    }
+
 }
 
 @end

@@ -13,6 +13,11 @@
 #import "WGCollection.h"
 #import "WGEvent.h"
 #import "WGMessage.h"
+typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
+
+@protocol ProfileDelegate <NSObject>
+-(void)removeMoreVc;
+@end
 
 @protocol UserSelectDelegate <NSObject>
 - (void)showUser:(WGUser *)user;
@@ -23,23 +28,31 @@
 - (void)showConversationForEvent:(WGEvent *)event
                withEventMessages:(WGCollection *)eventMessages
                          atIndex:(int)index;
-- (void)showConversationForEvent:(WGEvent *)event;
-- (void)showStoryForEvent:(WGEvent*)event;
+- (void)showHighlightForEvent:(WGEvent *)event
+              andEventMessage:(WGEventMessage *)eventMessage;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
 - (void)presentViewWithGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
-- (void)showModalAttendees:(UIViewController *)modal;
 - (void)showViewController:(UIViewController *)vc;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 - (void)updateEvent:(WGEvent *)newEvent;
 @property (nonatomic, assign) BOOL doNotReloadOffsets;
-- (void)invitePressed;
+- (void)invitePressed:(WGEvent *)event;
 - (void)showOverlayForInvite:(id)sender;
 - (void)goHerePressed:(id)sender withHandler:(BoolResultBlock)handler;
+- (void)startAnimatingAtTop:(id)sender
+     finishAnimationHandler:(CollectionViewResultBlock)handler
+             postingHandler:(BoolResultBlock)postHandler;
 - (void)presentConversationForUser:(WGUser *)user;
 - (void)presentUserAferModalView:(WGUser *)user forEvent:(WGEvent *)event;
 - (void)scrollUp;
 - (void)showEvent:(WGEvent *)event;
 - (void)fetchEventsFirstPage;
+- (void)reloadTable;
+@property (nonatomic, strong) UIButton *createButton;
+@end
+
+@protocol WGSwitchDelegate <NSObject>
+- (void)switched;
 @end
 
 @protocol PrivacySwitchDelegate <NSObject>
@@ -59,7 +72,6 @@
 - (void)showErrorMessage;
 - (void)showCompletedMessage;
 - (void)dismissView;
-- (void)promptCamera;
 - (void)presentUser:(WGUser *)user
            withView:(UIView *)view
       withStartFrame:(CGRect)startFrame;
@@ -76,7 +88,6 @@
 
 @protocol PeopleViewDelegate <NSObject>
 - (void)presentUser:(WGUser *)user;
-- (void)updateButton:(id)sender withUser:(WGUser *)user;
 @end
 
 @protocol CameraDelegate <NSObject>
@@ -86,7 +97,7 @@
 @protocol InviteCellDelegate
 - (void) inviteTapped;
 @optional
-@property State userState;
+@property (nonatomic, strong) WGUser *user;
 @end
 
 @protocol EventPeopleModalDelegate

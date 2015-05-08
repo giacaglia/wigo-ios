@@ -11,6 +11,10 @@
 #import "WGGroup.h"
 #import "JSQMessagesViewController/JSQMessages.h"
 
+#define kFriendRequestSent @"sent"
+#define kFriendRequestReceived @"received"
+#define kPropertiesKey @"properties"
+
 @class WGEvent;
 
 typedef enum Gender {
@@ -27,17 +31,12 @@ typedef enum Privacy {
 
 typedef enum State {
     NOT_LOADED_STATE,
-    PRIVATE_STATE,
-    PUBLIC_STATE,
-    NOT_FOLLOWING_PUBLIC_USER_STATE,
-    FOLLOWING_USER_STATE,
-    ATTENDING_EVENT_FOLLOWING_USER_STATE,
-    NOT_SENT_FOLLOWING_PRIVATE_USER_STATE,
-    NOT_YET_ACCEPTED_PRIVATE_USER_STATE,
-    ACCEPTED_PRIVATE_USER_STATE,
-    ATTENDING_EVENT_ACCEPTED_PRIVATE_USER_STATE,
+    CURRENT_USER_STATE,
+    NOT_FRIEND_STATE,
+    FRIEND_USER_STATE,
     BLOCKED_USER_STATE,
-    OTHER_SCHOOL_USER_STATE
+    OTHER_SCHOOL_USER_STATE,
+    SENT_OR_RECEIVED_REQUEST_USER_STATE
 } State;
 
 @interface WGUser : WGObject <JSQMessageAvatarImageDataSource>
@@ -46,51 +45,59 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 @property NSString* key;
 @property (nonatomic, assign) Privacy privacy;
-@property NSNumber* isFollower;
-@property NSNumber* numFollowing;
 @property NSNumber* isTapped;
+@property BOOL isFriendRequestRead;
 @property NSNumber* isBlocked;
 @property NSNumber* isBlocking;
-@property NSNumber* emailValidated;
 @property NSString* bio;
 @property NSString* image;
 @property NSDate* modified;
-@property NSNumber* isFollowing;
+
 @property NSString* lastName;
-@property NSNumber* isFollowingRequested;
 @property NSNumber* isGoingOut;
-@property NSNumber* lastMessageRead;
-@property NSNumber* lastNotificationRead;
-@property NSNumber* lastUserRead;
+@property NSDate* lastMessageRead;
+@property NSDate* lastNotificationRead;
+@property NSDate* lastUserRead;
 
 @property NSDictionary* properties;
 @property NSArray* images;
-@property NSString *instaHandle;
-@property NSArray *triggers;
+@property NSString* instaHandle;
+@property NSString* hometown;
+@property NSString* work;
+@property NSString* education;
+@property NSString* birthday;
+@property NSArray* triggers;
 @property BOOL findReferrer;
-@property NSArray *arrayTooltipTracked;
-@property NSDictionary *events;
+@property NSArray* arrayTooltipTracked;
+@property NSDictionary* events;
 
-@property NSNumber* isFavorite;
 @property NSString* firstName;
-
 @property (nonatomic, assign) Gender gender;
 @property NSString* email;
 @property NSString* facebookId;
 @property NSString* facebookAccessToken;
-@property NSNumber* numFollowers;
+@property NSNumber* numFriends;
 @property NSString* username;
 @property WGEvent* eventAttending;
 @property WGGroup* group;
 @property NSNumber* groupRank;
 @property NSNumber* isTapPushNotificationEnabled;
-@property NSNumber* isFavoritesGoingOutNotificationEnabled;
 
 @property NSNumber* numUnreadConversations;
 @property NSNumber* numUnreadNotifications;
 @property NSNumber* numUnreadUsers;
+@property NSNumber *numMutualFriends;
 
+@property NSDictionary *friendsMetaDict;
 @property UIImageView *avatarView;
+
+// meta properties
+- (void)setFriendsIds:(NSArray*)friendsIds;
+@property NSNumber* isFriend;
+@property NSString* friendRequest;
+- (void)setMetaObject:(id)object forKey:(NSString *)key;
+- (id)metaObjectForKey:(NSString *)key;
+
 
 +(WGUser *)serialize:(NSDictionary *)json;
 
@@ -98,6 +105,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(NSString *) genderName;
 +(Gender) genderFromName:(NSString *)name;
 -(NSString *) fullName;
+-(NSString *) age;
 
 -(State) state;
 
@@ -113,8 +121,10 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(NSDictionary *) smallCoverImageArea;
 -(NSArray *) imagesArea;
 -(NSArray *) imagesURL;
+-(NSArray *) smallImagesURL;
 -(void) addImageURL:(NSString *)imageURL;
 -(void) addImageDictionary:(NSDictionary *)imageDictionary;
+-(void) followUser;
 
 -(BOOL) isCurrentUser;
 
@@ -127,16 +137,21 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 +(void) getInvites:(WGCollectionResultBlock)handler;
 +(void) searchInvites:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 
+-(void) getFriends:(WGCollectionResultBlock)handler;
+-(void) getFriendRequests:(WGCollectionResultBlock)handler;
+-(void) getNumMutualFriends:(WGNumResultBlock)handler;
+-(void) getMeta:(BoolResultBlock)handler;
+-(void) getMutualFriends:(WGCollectionResultBlock)handler;
 -(void) getNotMeForMessage:(WGCollectionResultBlock)handler;
 +(void) searchReferals:(NSString *)query withHandler:(WGSerializedCollectionResultBlock)handler;
 -(void) searchNotMe:(NSString *)query withContext:(NSString *)contextString withHandler:(WGCollectionResultBlock)handler;
 -(void) searchNotMe:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
--(void) follow:(WGUser *)user withHandler:(BoolResultBlock)handler;
+-(void) friendUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler;
--(void) acceptFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
--(void) rejectFollowRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
+-(void) acceptFriendRequestFromUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
+-(void) rejectFriendRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) tapUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
-- (void)tapAllUsersWithHandler:(BoolResultBlock)handler;
+-(void) tapAllUsersWithHandler:(BoolResultBlock)handler;
 -(void) tapUsers:(WGCollection *)users withHandler:(BoolResultBlock)handler;
 -(void) untap:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) sendInvites:(NSArray *)numbers withHandler:(BoolResultBlock)handler;
@@ -151,4 +166,8 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(void) broadcastMessage:(NSString *) message withHandler:(BoolResultBlock)handler;
 -(void) resendVerificationEmail:(BoolResultBlock) handler;
 
+#pragma mark - Meta objects
+@property (nonatomic, strong) NSDictionary *dayMetaUserProperties;
+-(void) setDayMetaObject:(id)object forKey:(NSString *)key;
+-(id) dayMetaObjectForKey:(NSString *)key;
 @end

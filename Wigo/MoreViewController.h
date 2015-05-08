@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "WGUser.h"
+#import "Delegate.h"
 
 @interface MoreViewController : UIViewController
-
--(id)initWithState:(State)state;
--(id)initWithUser:(WGUser *)newUser;
+@property (nonatomic, strong) WGUser *user;
+@property (nonatomic, strong) UIView *bgView;
+@property (nonatomic, assign) id <ProfileDelegate> profileDelegate;
 
 @end

@@ -23,28 +23,27 @@
 @end
 
 @interface AddPhotoCell : UICollectionViewCell  <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
++ (CGFloat) width;
++ (CGFloat) height;
 @property (nonatomic, strong) UIImagePickerController *controller;
 @property (nonatomic, strong) UIView *colorView;
 @property (nonatomic, strong) UILabel *addPhotoLabel;
 @end
 
 @interface HighlightCell : UICollectionViewCell
-+ (CGFloat) height;
-- (void) resetToInactive;
-- (void)setToActiveWithNoAnimation;
++ (CGFloat)height;
 - (void)updateUIToRead:(BOOL)read;
-- (void)setStateForUser:(WGUser *)user;
 @property (nonatomic, strong) WGUser *user;
 @property (nonatomic, strong) UIView *orangeDotView;
 
-@property (nonatomic, assign) BOOL isActive;
 @property (nonatomic, strong) UIImageView *faceImageView;
-@property (nonatomic, strong) UIView *blackOverlayView;
 
 // For Transition
 @property (nonatomic, assign) CGFloat startYPosition;
 @property (nonatomic, assign) CGRect startFrame;
 @property (nonatomic, strong) UIView *holeView;
+
+@property (nonatomic, strong) WGEventMessage *eventMessage;
 @end
 
 @interface HighlightsFlowLayout : UICollectionViewFlowLayout

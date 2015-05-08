@@ -95,7 +95,6 @@
         self.firstX = [sender view].frame.origin.x;
     }
     
-//    NSLog(@"")
     translatedPoint = CGPointMake(self.firstX+translatedPoint.x, [sender view].frame.origin.y);
     translatedPoint = CGPointMake(MIN(MAX(2 ,translatedPoint.x), self.frame.size.width - self.frontView.frame.size.width - 2), translatedPoint.y);
     [[sender view] setFrame:CGRectMake(translatedPoint.x, translatedPoint.y, [sender view].frame.size.width, [sender view].frame.size.height)];

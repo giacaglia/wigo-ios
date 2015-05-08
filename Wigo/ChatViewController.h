@@ -7,17 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Globals.h"
+#import "BaseViewController.h"
 
 
-@interface ChatViewController : UIViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface ChatViewController : BaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UIButton *chatButton;
-@property (nonatomic, assign) BOOL fetchingFirstPage;
 @property (nonatomic, strong) UITableView *tableViewOfPeople;
-
-
+@property (nonatomic, strong) WGCollection *messages;
+@property (nonatomic, assign) BOOL isFetching;
+@property (nonatomic, strong) NSDate *lastMessageRead;
 @end
 
+
+#define kSectionEventChat 0
+#define kSectionChats 1
 
 #define kChatCellName @"ChatCellName"
 @interface ChatCell : UITableViewCell
@@ -26,6 +31,7 @@
 @property (nonatomic, strong) UIImageView *profileImageView;
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, strong) UILabel *lastMessageLabel;
-@property (nonatomic, strong) UIImageView *lastMessageImageView;
-
+@property (nonatomic, strong) WGMessage *message;
+@property (nonatomic, strong) UIView *orangeNewView;
+@property (nonatomic, strong) UIImageView *arrowMsgImageView;
 @end

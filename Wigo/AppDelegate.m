@@ -17,12 +17,11 @@
 #import "WGEvent.h"
 #import "PlacesViewController.h"
 #import "RWBlurPopover.h"
+#import "WGI.h"
+#import "WGNavigateParser.h"
 #define kImageQuality @"quality"
 #define kImageMultiple @"multiple"
 
-
-NSNumber *numberOfNewMessages;
-NSNumber *numberOfNewNotifications;
 NSDate *firstLoggedTime;
 
 @implementation AppDelegate
@@ -45,7 +44,7 @@ NSDate *firstLoggedTime;
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"canFetchAppStartup"];
     [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
 
-    if ([[WGProfile currentUser].googleAnalyticsEnabled boolValue]) {
+    if (WGProfile.currentUser.googleAnalyticsEnabled.boolValue) {
         [self initializeGoogleAnalytics];
     }
     
@@ -62,6 +61,7 @@ NSDate *firstLoggedTime;
 
     [self addNotificationHandlers];
     [self logFirstTimeLoading];
+    [WGI openedTheApp];
 
     return YES;
 }
@@ -79,6 +79,7 @@ NSDate *firstLoggedTime;
 {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [WGI closedTheApp];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -86,7 +87,7 @@ NSDate *firstLoggedTime;
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     [self updateGoingOutIfItsAnotherDay];
     [self fetchAppStart];
-
+    [WGI openedTheApp];
 }
 
 - (void) dismissEverythingWithUserInfo:(NSDictionary *)userInfo {
@@ -117,15 +118,10 @@ NSDate *firstLoggedTime;
     }
     if ([[userInfo allKeys] containsObject:@"navigate"]) {
         NSString *place = [userInfo objectForKey:@"navigate"];
-        NSArray *parsedString = [place componentsSeparatedByString:@"/"];
-        NSLog(@"parsed string: %@", parsedString);
-        NSNumberFormatter * f = [[NSNumberFormatter alloc] init];
-        [f setNumberStyle:NSNumberFormatterDecimalStyle];
-        NSNumber * numberID = [f numberFromString:[parsedString objectAtIndex:2]];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"goToEvent"
-                                                            object:nil
-                                                          userInfo:@{@"id": numberID}];
-
+        NSDictionary *notificationUserInfo = [WGNavigateParser userInfoFromString:place];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"navigate"
+                                                             object:nil
+                                                           userInfo:notificationUserInfo];
     }
 }
 
@@ -145,6 +141,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     // Store the deviceToken in the current installation and save it to Parse.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     currentInstallation[@"api_version"] = API_VERSION;
+    [currentInstallation setObject:@2.0f forKey:@"api_version_num"];
     currentInstallation[@"osVersion"] = [UIDevice currentDevice].systemVersion;
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation saveInBackground];
@@ -248,23 +245,7 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 - (void)addNotificationHandlers {
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(goingOutForRateApp) name:@"goingOutForRateApp" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(presentPush) name:@"presentPush" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchAppStart) name:@"fetchAppStart" object:nil];
-}
-
-- (void)presentPush {
-    BOOL triedToRegister =  [[NSUserDefaults standardUserDefaults] boolForKey: @"triedToRegister"];
-    if (!triedToRegister) {
-        UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:@"FYI"
-                                  message:@"Wigo only sends notifications from your closest friends and important updates."
-                                  delegate:self
-                                  cancelButtonTitle:@"OK"
-                                  otherButtonTitles: nil];
-        [alertView show];
-        alertView.delegate = self;
-    }
-
 }
 
 # pragma mark - Facebook Login
@@ -291,7 +272,6 @@ forRemoteNotification:(NSDictionary *)userInfo
     NSDate *dateInUTC = [utcDateFormat dateFromString:[NSDate nowStringUTC]];
     NSTimeInterval timeZoneSeconds = [[NSTimeZone defaultTimeZone] secondsFromGMT];
     firstLoggedTime = [dateInUTC dateByAddingTimeInterval:timeZoneSeconds];
-    [self saveDatesAccessed];
 }
 
 - (void)updateGoingOutIfItsAnotherDay {
@@ -316,90 +296,12 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 #pragma mark - Save Info for showing rate app
 
-- (void)saveDatesAccessed {
-    NSArray *datesAccessed = [[NSUserDefaults standardUserDefaults] objectForKey:@"datesAccessed"];
-    if (!datesAccessed) {
-        NSDate *firstSaveDate = [NSDate dateInLocalTimezone];
-        datesAccessed = @[firstSaveDate];
-        [[NSUserDefaults standardUserDefaults] setObject:datesAccessed forKey: @"datesAccessed"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    else if ([datesAccessed count] < 3){
-        NSDate *lastDateAccessed = (NSDate *)[datesAccessed lastObject];
-        NSCalendar *gregorianCalendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-        NSDateComponents *differenceDateComponents = [gregorianCalendar
-                                                      components:NSYearCalendarUnit|NSMonthCalendarUnit|NSWeekOfYearCalendarUnit|NSDayCalendarUnit |NSMinuteCalendarUnit
-                                                      fromDate:lastDateAccessed
-                                                      toDate:firstLoggedTime
-                                                      options:0];
-        if ([differenceDateComponents day] == 1) {
-            NSMutableArray *mutableDatesAccessed = [[NSMutableArray alloc] initWithArray:datesAccessed];
-            [mutableDatesAccessed addObject:firstLoggedTime];
-            [[NSUserDefaults standardUserDefaults] setObject:[NSArray arrayWithArray:mutableDatesAccessed] forKey: @"datesAccessed"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        }
-        else if ([differenceDateComponents day] > 1) {
-            [[NSUserDefaults standardUserDefaults] setObject:@[firstLoggedTime] forKey: @"datesAccessed"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-        }
-    }
-}
-
--(void)goingOutForRateApp {
-    NSArray *datesAccessed = [[NSUserDefaults standardUserDefaults] objectForKey:@"datesAccessed"];
-    if ([datesAccessed count] == 3) {
-        UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:@"Love Wigo?"
-                                  message:@"Looks like you love Wigo. The feeling is mutual. Share your love on the App Store."
-                                  delegate:self
-                                  cancelButtonTitle:@"Not now"
-                                  otherButtonTitles:@"Rate Wigo", nil];
-        [alertView show];
-        NSMutableArray *mutableDatesAccessed = [[NSMutableArray alloc] initWithArray:datesAccessed];
-        [mutableDatesAccessed addObject:firstLoggedTime];
-        [[NSUserDefaults standardUserDefaults] setObject:[NSArray arrayWithArray:mutableDatesAccessed] forKey: @"datesAccessed"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-}
-
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if ([alertView.title isEqualToString:@"FYI"]) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-        if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-            UIUserNotificationCategory *category = [self registerActions];
-            NSSet *categories = [NSSet setWithObjects:category, nil];
-            [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:categories]];
-            [[UIApplication sharedApplication] registerForRemoteNotifications];
-        } else {
-            [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-             (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
-        }
-#else
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-         (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-#endif
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"triedToRegister"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    } else {
+    if ([alertView.title isEqualToString:@"Love Wigo"]) {
         if ((int)buttonIndex == 1) {
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/wigo-who-is-going-out/id689401759?mt=8"]];
         }
     }
-}
-
-- (UIMutableUserNotificationCategory*)registerActions {
-    UIMutableUserNotificationAction* acceptLeadAction = [[UIMutableUserNotificationAction alloc] init];
-    acceptLeadAction.identifier = @"tap_with_diff_event";
-    acceptLeadAction.title = @"Go Here";
-    acceptLeadAction.activationMode = UIUserNotificationActivationModeForeground;
-    acceptLeadAction.destructive = false;
-    acceptLeadAction.authenticationRequired = false;
-    
-    UIMutableUserNotificationCategory* category = [[UIMutableUserNotificationCategory alloc] init];
-    category.identifier = @"tap_with_diff_event";
-    [category setActions:@[acceptLeadAction] forContext: UIUserNotificationActionContextDefault];
-    return category;
 }
 
 - (void)fetchAppStart {
@@ -409,16 +311,16 @@ forRemoteNotification:(NSDictionary *)userInfo
             if (error) {
                 return;
             }
-            [WGProfile currentUser].cdnPrefix = cdnPrefix;
-            [WGProfile currentUser].googleAnalyticsEnabled = googleAnalyticsEnabled;
-            [WGProfile currentUser].schoolStatistics = schoolStatistics;
-            [WGProfile currentUser].privateEvents = privateEvents;
-            [WGProfile currentUser].videoEnabled = videoEnabled;
-            [WGProfile currentUser].crossEventPhotosEnabled = crossEventPhotosEnabled;
+            WGProfile.currentUser.cdnPrefix = cdnPrefix;
+            WGProfile.currentUser.googleAnalyticsEnabled = googleAnalyticsEnabled;
+            WGProfile.currentUser.schoolStatistics = schoolStatistics;
+            WGProfile.currentUser.privateEvents = privateEvents;
+            WGProfile.currentUser.videoEnabled = videoEnabled;
+            WGProfile.currentUser.crossEventPhotosEnabled = crossEventPhotosEnabled;
             NSNumber *imageMultiple = [imageProperties objectForKey:kImageMultiple];
             NSNumber *imageQuality = [imageProperties objectForKey:kImageQuality];
-            [WGProfile currentUser].imageMultiple = [imageMultiple floatValue];
-            [WGProfile currentUser].imageQuality = [imageQuality floatValue];
+            WGProfile.currentUser.imageMultiple = [imageMultiple floatValue];
+            WGProfile.currentUser.imageQuality = [imageQuality floatValue];
         }];
     }
 }

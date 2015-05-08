@@ -18,13 +18,12 @@
 @interface ImageScrollView : UIView<UIScrollViewDelegate>
 
 @property (nonatomic, assign) id<ImageScrollViewDelegate> delegate;
+@property (nonatomic, strong) UIScrollView *scrollView;
 
 @property (nonatomic, strong) WGUser *user;
 
 - (id) initWithFrame: (CGRect)frame andUser:(WGUser *)user;
 
 - (UIImage *) getCurrentImage;
-
-- (void)updateImages;
 
 @end

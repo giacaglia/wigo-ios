@@ -11,7 +11,6 @@
 #import "RWBlurPopover.h"
 
 UISearchBar *searchBar;
-BOOL isSearching;
 UIImageView *searchIconImageView;
 
 @implementation OnboardFollowViewController
@@ -43,7 +42,7 @@ UIImageView *searchIconImageView;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"Onboard Follow View"];
+    [WGAnalytics tagView:@"onboard_follow"];
 }
 
 - (void)initializeTitle {
@@ -119,18 +118,21 @@ UIImageView *searchIconImageView;
 }
 
 - (void)initializeContinueButton {
-    UIButton *continueButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 54, self.view.frame.size.width, 54)];
-    [continueButton setTitle:@"Continue" forState:UIControlStateNormal];
-    [continueButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-    continueButton.titleLabel.font = [FontProperties getBigButtonFont];
-    continueButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-    continueButton.layer.borderWidth = 1.0f;
-    [continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchDown];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
     
-    UIImageView *rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeRightArrow"]];
-    rightArrowImageView.frame = CGRectMake(continueButton.frame.size.width - 35, 27 - 9, 11, 18);
-    [continueButton addSubview:rightArrowImageView];
-    [self.view addSubview:continueButton];
+    self.continueButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 54, self.view.frame.size.width, 54)];
+    [self.continueButton setTitle:@"Continue" forState:UIControlStateNormal];
+    [self.continueButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    self.continueButton.titleLabel.font = [FontProperties getBigButtonFont];
+    self.continueButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    self.continueButton.layer.borderWidth = 1.0f;
+    [self.continueButton addTarget:self action:@selector(continuePressed) forControlEvents:UIControlEventTouchDown];
+    
+    self.rightArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeRightArrow"]];
+    self.rightArrowImageView.frame = CGRectMake(self.continueButton.frame.size.width - 35, 27 - 9, 11, 18);
+    [self.continueButton addSubview:self.rightArrowImageView];
+    [self.view addSubview:self.continueButton];
 }
 
 
@@ -143,180 +145,114 @@ UIImageView *searchIconImageView;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (isSearching) {
-        return [self.filteredUsers count];
-    } else {
-        int hasNextPage = ([self.users.hasNextPage boolValue] ? 1 : 0);
-        return [self.users count] + hasNextPage;
-    }
+    return self.presentedUsers.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     OnboardCell *cell = [tableView dequeueReusableCellWithIdentifier:kOnboardCellName forIndexPath:indexPath];
     cell.labelName.text = @"";
     cell.profileImageView.image = nil;
-    if (self.users.count == 0) return cell;
-    if (isSearching) {
-        if (indexPath.row == self.filteredUsers.count) {
-            [self getNextPageForFilteredContent];
-            return cell;
-        }
-    }
-    else {
-        if (indexPath.row == self.users.count) {
-            [self fetchEveryone];
-            return cell;
-        }
-    }
+    if (self.presentedUsers.count == 0) return cell;
+    
+    if (indexPath.row == self.presentedUsers.count - 1) [self getNextPage];
     
     WGUser *user = [self getUserAtIndex:(int)indexPath.row];
-    [cell.profileImageView setSmallImageForUser:user completed:nil];
-    cell.labelName.text = user.fullName;
-    cell.labelName.tag = indexPath.row;
-    
-    if (![user isCurrentUser]) {
-        [cell.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-        cell.followPersonButton.tag = -100;
-        [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        
-        if ([user.isFollowing boolValue]) {
-            [cell.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            cell.followPersonButton.tag = 100;
-        }
-        if (user.state == NOT_YET_ACCEPTED_PRIVATE_USER_STATE) {
-            [cell.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
-            [cell.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
-            [cell.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            cell.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-            cell.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            cell.followPersonButton.layer.borderWidth = 1;
-            cell.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            cell.followPersonButton.layer.cornerRadius = 3;
-            cell.followPersonButton.tag = 100;
-        }
-    }
-    
+    cell.user = user;
+    cell.followPersonButton.tag = indexPath.row;
+    [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
+
     return cell;
 }
 
 -(WGUser *) getUserAtIndex:(int)index {
     WGUser *user;
-    if (isSearching) {
-        int sizeOfArray = (int)self.filteredUsers.count;
-        if (sizeOfArray > 0 && sizeOfArray > index)
-            user = (WGUser *)[self.filteredUsers objectAtIndex:index];
-    } else {
-        int sizeOfArray = (int)self.users.count;
-        if (sizeOfArray > 0 && sizeOfArray > index)
-            user = (WGUser *)[self.users objectAtIndex:index];
-    }
+    int sizeOfArray = (int)self.presentedUsers.count;
+    if (sizeOfArray > 0 && sizeOfArray > index)
+        user = (WGUser *)[self.presentedUsers objectAtIndex:index];
     return user;
 }
 
+
+
 - (void) followedPersonPressed:(id)sender {
-    //Get Index Path
-    CGPoint buttonOriginInTableView = [sender convertPoint:CGPointZero toView:self.tableViewOfPeople];
-    NSIndexPath *indexPath = [self.tableViewOfPeople indexPathForRowAtPoint:buttonOriginInTableView];
-    WGUser *user = [self getUserAtIndex:(int)indexPath.row];
-    
-    UIButton *senderButton = (UIButton*)sender;
-    if (senderButton.tag == -100) {
-        if (user.privacy == PRIVATE) {
-            [senderButton setBackgroundImage:nil forState:UIControlStateNormal];
-            [senderButton setTitle:@"Pending" forState:UIControlStateNormal];
-            [senderButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
-            senderButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
-            senderButton.titleLabel.textAlignment = NSTextAlignmentCenter;
-            senderButton.layer.borderWidth = 1;
-            senderButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-            senderButton.layer.cornerRadius = 3;
-            user.isFollowingRequested = @YES;
-        } else {
-            [senderButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
-            user.isFollowing = @YES;
-        }
-        senderButton.tag = 100;
-        [[WGProfile currentUser] follow:user withHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionPost];
-            }
-        }];
-        [self.users replaceObjectAtIndex:[indexPath row] withObject:user];
-    } else {
-        [senderButton setTitle:nil forState:UIControlStateNormal];
-        [senderButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
-        senderButton.tag = -100;
-        
-        [[WGProfile currentUser] unfollow:user withHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-            }
-        }];
-        
-        user.isFollowing = @NO;
-        user.isFollowingRequested = @NO;
-        [self.users replaceObjectAtIndex:[indexPath row] withObject:user];
-    }
+    UIButton *buttonSender = (UIButton *)sender;
+    int row = (int)buttonSender.tag;
+    WGUser *user = (WGUser *)[self.presentedUsers objectAtIndex:buttonSender.tag];
+    [user followUser];
+    [self.presentedUsers replaceObjectAtIndex:row withObject:user];
+    [self.tableViewOfPeople reloadData];
 }
 
 - (void)continuePressed {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - Keyboad notification handlers
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [searchBar endEditing:YES];
+}
+
+- (void)keyboardDidHide:(NSNotification *)notification {
+    NSDictionary* keyboardInfo = [notification userInfo];
+    CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    self.continueButton.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
+    int sizeOfContinueButton = (self.continueButton.isHidden) ? 0 : 50;
+    self.tableViewOfPeople.frame = CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - sizeOfContinueButton);
+}
+
+- (void)keyboardDidShow:(NSNotification *)notification {
+    NSDictionary* keyboardInfo = [notification userInfo];
+    CGRect kbFrame = [[keyboardInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    self.continueButton.frame = CGRectMake(0, kbFrame.origin.y - 50, self.view.frame.size.width, 50);
+    self.rightArrowImageView.frame = CGRectMake(self.continueButton.frame.size.width - 35, self.continueButton.frame.size.height/2 - 7, 7, 14);
+    int sizeOfContinueButton = (self.continueButton.isHidden) ? 0 : 50;
+    self.tableViewOfPeople.frame = CGRectMake(0, 104, self.view.frame.size.width, self.view.frame.size.height - 104 - kbFrame.size.height - sizeOfContinueButton);
+}
+
 #pragma mark - Network functions
 
 - (void)fetchFirstPageEveryone {
+    [WGSpinnerView addDancingGToCenterView:self.view];
     [self fetchEveryone];
 }
 
 - (void) fetchEveryone {
     __weak typeof(self) weakSelf = self;
-    if (!self.users) {
-        [WGSpinnerView addDancingGToCenterView:self.view];
-        [WGUser getOnboarding:^(WGCollection *collection, NSError *error) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                [WGSpinnerView removeDancingGFromCenterView:self.view];
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    return;
-                }
-                strongSelf.users = collection;
-                [strongSelf.tableViewOfPeople reloadData];
-            });
-        }];
-    } else if ([self.users.hasNextPage boolValue]) {
-        [self.users addNextPage:^(BOOL success, NSError *error) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    return;
-                }
-                [strongSelf.tableViewOfPeople reloadData];
-            });
-        }];
-    }
+    [WGUser getOnboarding:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [WGSpinnerView removeDancingGFromCenterView:self.view];
+            if (error) {
+                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            strongSelf.users = collection;
+            strongSelf.presentedUsers = strongSelf.users;
+            [strongSelf.tableViewOfPeople reloadData];
+        });
+    }];
 }
 
-- (void) getNextPageForFilteredContent {
+- (void) getNextPage {
+    if (self.isFetching) return;
+    if (!self.presentedUsers.nextPage) return;
+    self.isFetching = YES;
     __weak typeof(self) weakSelf = self;
-    if ([[self.filteredUsers hasNextPage] boolValue]) {
-        [self.filteredUsers addNextPage:^(BOOL success, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                __strong typeof(self) strongSelf = weakSelf;
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    return;
-                }
-                [strongSelf.tableViewOfPeople reloadData];
-            });
-        }];
-    }
-   
+    [self.presentedUsers addNextPage:^(BOOL success, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(self) strongSelf = weakSelf;
+            strongSelf.isFetching = NO;
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            [strongSelf.tableViewOfPeople reloadData];
+        });
+    }];
+
+    
 }
 
 
@@ -324,19 +260,11 @@ UIImageView *searchIconImageView;
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     searchIconImageView.hidden = YES;
-    isSearching = YES;
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
-    if (![searchBar.text isEqualToString:@""]) {
+    if ([searchBar.text isEqualToString:@""]) {
         [UIView animateWithDuration:0.01 animations:^{
-            searchIconImageView.transform = CGAffineTransformMakeTranslation(-62,0);
-        }  completion:^(BOOL finished){
-            searchIconImageView.hidden = NO;
-        }];
-    } else {
-        [UIView animateWithDuration:0.01 animations:^{
-            searchIconImageView.transform = CGAffineTransformMakeTranslation(0,0);
         }  completion:^(BOOL finished){
             searchIconImageView.hidden = NO;
         }];
@@ -344,17 +272,16 @@ UIImageView *searchIconImageView;
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    [self.filteredUsers removeAllObjects];
     
     if([searchText length] != 0) {
-        isSearching = YES;
         [self performBlock:^(void){[self searchTableList];}
                 afterDelay:0.25
      cancelPreviousRequest:YES];
     } else {
-        isSearching = NO;
+        self.presentedUsers = self.users;
+        [self.tableViewOfPeople reloadData];
+        [self fetchEveryone];
     }
-    [self.tableViewOfPeople reloadData];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
@@ -375,7 +302,7 @@ UIImageView *searchIconImageView;
                 [[WGError sharedInstance] logError:error forAction:WGActionSearch];
                 return;
             }
-            strongSelf.filteredUsers = collection;
+            strongSelf.presentedUsers = collection;
             [strongSelf.tableViewOfPeople reloadData];
         });
     }];
@@ -401,7 +328,8 @@ UIImageView *searchIconImageView;
 - (void)setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [OnboardCell height]);
     self.contentView.frame = self.frame;
-    self.contentView.backgroundColor = [UIColor whiteColor];
+    self.contentView.backgroundColor = UIColor.whiteColor;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, [OnboardCell height]/2 - 30, 60, 60)];
     self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -414,10 +342,50 @@ UIImageView *searchIconImageView;
     self.labelName.userInteractionEnabled = YES;
     [self.contentView addSubview:self.labelName];
     
-   self.followPersonButton = [[UIButton alloc]
+    self.followPersonButton = [[UIButton alloc]
                               initWithFrame:CGRectMake([UIScreen mainScreen
                                                                         ].bounds.size.width - 15 - 49, [OnboardCell height]/2 - 15, 49, 30)];
     [self.contentView addSubview:self.followPersonButton];
 }
 
+-(void) setUser:(WGUser *)user {
+    _user = user;
+    
+    [self.profileImageView setSmallImageForUser:user completed:nil];
+    self.labelName.text = user.fullName;
+    [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
+    [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
+    
+    if (user.isCurrentUser) {
+        [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+        return;
+    }
+    
+    if (user.state == BLOCKED_USER_STATE) {
+        [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+        [self.followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
+        [self.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+        self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+        self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+        self.followPersonButton.layer.borderWidth = 1;
+        self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+        self.followPersonButton.layer.cornerRadius = 3;
+    } else {
+        if (user.isFriend.boolValue) {
+            [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"] forState:UIControlStateNormal];
+            [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
+        }
+        else if (user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
+            [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
+            [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
+            [self.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+            self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
+            self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+            self.followPersonButton.layer.borderWidth = 1;
+            self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+            self.followPersonButton.layer.cornerRadius = 3;
+        }
+    }
+
+}
 @end

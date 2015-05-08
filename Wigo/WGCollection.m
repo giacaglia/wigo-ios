@@ -7,7 +7,28 @@
 //
 
 #import "WGCollection.h"
+#import "WGEvent.h"
+#import "WGEventMessage.h"
+#import "WGEventAttendee.h"
+#import "WGGroup.h"
+#import "WGUser.h"
+#import "WGCache.h"
 #define kMetaKey @"meta"
+
+#define kIsAttendingKey @"is_attending"
+#define kGroupKey @"group"
+#define kAttendeesKey @"attendees"
+#define kHighlightKey @"highlight"
+#define kMessagesKey @"messages"
+#define kUserKey @"user"
+#define kEventKey @"event"
+#define kTypeKey @"$type"
+#define kRefKey @"$ref"
+
+// Meta info
+#define kMetaTotal @"total"
+
+#define kArrayObjectKeys @[kGroupKey, kAttendeesKey, kHighlightKey, kUserKey, kEventKey]
 
 @implementation WGCollection
 
@@ -19,16 +40,17 @@
         self.objects = [[NSMutableArray alloc] init];
         self.type = type;
         self.currentPosition = 0;
+        self.parameters = [NSMutableDictionary new];
     }
     return self;
 }
 
 +(WGCollection *)serializeResponse:(NSDictionary *) jsonResponse andClass:(Class)type {
     WGCollection *newCollection = [[WGCollection alloc] initWithType:type];
-    
+    // First pass : Go through all objects:
+   
     [newCollection setMetaInfo: [jsonResponse objectForKey:kMetaKey]];
-    [newCollection initObjects: [jsonResponse objectForKey:@"objects"]];
-    
+    [newCollection initObjects:[jsonResponse objectForKey:@"objects"]];
     return newCollection;
 }
 
@@ -50,6 +72,7 @@
 }
 
 #pragma mark - Objects
+
 
 -(void) initObjects:(NSArray *)objects {
     self.objects = [[NSMutableArray alloc] init];
@@ -134,7 +157,8 @@
 }
 
 -(void) addObjectsFromCollectionToBeginning:(WGCollection *)collection {
-    for (WGObject *object in collection) {
+    for (int i = 0; i < collection.count; i++) {
+        WGObject *object = [collection objectAtIndex:(collection.count - i - 1)];
         [self insertObject:object atIndex:0];
     }
 }
@@ -308,12 +332,12 @@
 
 -(void)setMetaInfo:(NSDictionary *)metaDictionary {
     self.hasNextPage = [metaDictionary objectForKey:@"has_next_page"];
-    if (self.hasNextPage && [self.hasNextPage  boolValue]) {
+    if ([metaDictionary objectForKey:@"next"]) {
         self.nextPage = [metaDictionary objectForKey:@"next"];
         self.nextPage = [self.nextPage substringFromIndex:5];
     }
-    if ([metaDictionary objectForKey:@"num_results"]) {
-        self.metaNumResults = [metaDictionary objectForKey:@"num_results"];
+    if ([metaDictionary objectForKey:kMetaTotal]) {
+        self.total = [metaDictionary objectForKey:kMetaTotal];
     }
     if ([metaDictionary objectForKey:@"previous"]) {
         self.previousPage = [metaDictionary objectForKey:@"previous"];
@@ -321,5 +345,16 @@
     }
 }
 
++ (NSString *)classFromDictionary:(NSDictionary *)objDict {
+    NSMutableString *mutTypeString = [objDict objectForKey:@"$type"];
+    return [NSString stringWithFormat:@"WG%@", mutTypeString];
+}
+
++ (BOOL)isKeyAGroup:(NSString *)key {
+    if ([key isEqual:kAttendeesKey] || [key isEqual:kMessagesKey]) {
+        return YES;
+    }
+    return NO;
+}
 
 @end
