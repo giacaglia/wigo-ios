@@ -49,7 +49,6 @@ ProfileViewController *profileViewController;
 {
     [super viewDidLoad];
     
-    [self initializeNotificationObservers];
     [self initializeMessageForEmptyConversation];
     
     bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
@@ -64,21 +63,6 @@ ProfileViewController *profileViewController;
     self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
     
     self.automaticallyScrollsToMostRecentMessage = YES;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(textChanged:)
-                                                 name:UITextViewTextDidChangeNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -103,6 +87,7 @@ ProfileViewController *profileViewController;
     [super viewDidAppear:animated];
     
     [WGAnalytics tagView:@"conversation"];
+    [self initializeNotificationObservers];
 }
 
 -(void) textChanged:(id)sender {
@@ -112,24 +97,24 @@ ProfileViewController *profileViewController;
     }
 }
 
--(void) keyboardWillShow: (NSNotification *)notification {
-    if (self.viewForEmptyConversation) {
-        [UIView
-         animateWithDuration:0.5
-         animations:^{
-             self.viewForEmptyConversation.frame = CGRectMake(self.viewForEmptyConversation.frame.origin.x, self.viewForEmptyConversation.frame.origin.y / 2, self.viewForEmptyConversation.frame.size.width, self.viewForEmptyConversation.frame.size.height);
-         }];
-    }
+-(void) keyboardWillShow:(NSNotification *)notification {
+    if (!self.viewForEmptyConversation) return;
+    
+    [UIView
+     animateWithDuration:0.5
+     animations:^{
+         self.viewForEmptyConversation.frame = CGRectMake(self.viewForEmptyConversation.frame.origin.x, self.viewForEmptyConversation.frame.origin.y / 2, self.viewForEmptyConversation.frame.size.width, self.viewForEmptyConversation.frame.size.height);
+     }];
+    
 }
 
--(void) keyboardWillHide: (NSNotification *)notification {
-    if (self.viewForEmptyConversation) {
-        [UIView
-         animateWithDuration:0.5
-         animations:^{
-             self.viewForEmptyConversation.frame = CGRectMake(self.viewForEmptyConversation.frame.origin.x, self.viewForEmptyConversation.frame.origin.y * 2, self.viewForEmptyConversation.frame.size.width, self.viewForEmptyConversation.frame.size.height);
-         }];
-    }
+-(void) keyboardWillHide:(NSNotification *)notification {
+    if (!self.viewForEmptyConversation) return;
+    [UIView
+     animateWithDuration:0.5
+     animations:^{
+         self.viewForEmptyConversation.frame = CGRectMake(self.viewForEmptyConversation.frame.origin.x, self.viewForEmptyConversation.frame.origin.y * 2, self.viewForEmptyConversation.frame.size.width, self.viewForEmptyConversation.frame.size.height);
+     }];
 }
 
 - (NSString *)senderDisplayName {
@@ -320,6 +305,20 @@ ProfileViewController *profileViewController;
                                              selector:@selector(addMessage:)
                                                  name:@"updateConversation"
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(textChanged:)
+                                                 name:UITextViewTextDidChangeNotification
+                                               object:nil];
 }
 
 - (void)addMessage:(NSNotification *)notification {
@@ -367,13 +366,13 @@ ProfileViewController *profileViewController;
     self.viewForEmptyConversation.center = CGPointMake(self.viewForEmptyConversation.center.x, self.view.center.y);
     [self.view addSubview:self.viewForEmptyConversation];
     
-    UILabel *everyDayLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , [UIScreen mainScreen].bounds.size.width, 30)];
-    everyDayLabel.text = @"Start a new chat today";
-    everyDayLabel.textColor = UIColor.grayColor;
-    everyDayLabel.textAlignment = NSTextAlignmentCenter;
-    everyDayLabel.font = [FontProperties getBigButtonFont];
+    UILabel *startANewChat = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , [UIScreen mainScreen].bounds.size.width, 30)];
+    startANewChat.text = @"Start a new chat today";
+    startANewChat.textColor = UIColor.grayColor;
+    startANewChat.textAlignment = NSTextAlignmentCenter;
+    startANewChat.font = [FontProperties getBigButtonFont];
     self.viewForEmptyConversation.hidden = YES;
-    [self.viewForEmptyConversation addSubview:everyDayLabel];
+    [self.viewForEmptyConversation addSubview:startANewChat];
 }
 
 # pragma mark - Network functions

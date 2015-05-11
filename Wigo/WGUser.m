@@ -1395,9 +1395,14 @@ static WGUser *currentUser = nil;
 }
 
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler {
-//    [user saveKey:kIsFollowingKey withValue:@NO andHandler:^(BOOL success, NSError *error) {
-//        handler(error == nil, error);
-//    }];
+    [WGApi delete:[NSString stringWithFormat:@"users/me/friends/"]
+    withArguments:@{ @"friend_id": user.id}
+       andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            user.friendRequest = kFriendRequestSent;
+        }
+        handler(error == nil, error);
+    }];
 }
 
 -(void) friendUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
