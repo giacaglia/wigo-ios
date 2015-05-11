@@ -239,16 +239,17 @@
 
 }
 
--(void) getMeta:(WGCollectionResultBlock)handler {
+-(void) getMeta:(BoolResultBlock)handler {
     __weak typeof(self) weakSelf = self;
     [WGApi get:[NSString stringWithFormat:@"events/%@/messages/meta/", self.id]
    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
        __strong typeof(weakSelf) strongSelf = weakSelf;
        if (error) {
-           handler(nil, error);
+           handler(NO, error);
            return;
        }
        [strongSelf addMetaInfo:jsonResponse];
+       handler(YES, error);
     }];
 }
 

@@ -39,7 +39,7 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 -(void) setRead:(BoolResultBlock)handler;
 -(void) setMessagesRead:(WGCollection *) messages andHandler:(BoolResultBlock)handler;
 
--(void) getMeta:(WGCollectionResultBlock)handler;
+-(void) getMeta:(BoolResultBlock)handler;
 -(void) getInvites:(WGCollectionResultBlock)handler;
 -(void) getMessages:(WGCollectionResultBlock)handler;
 -(void) getMessagesForHighlights:(WGEventMessage *)highlight

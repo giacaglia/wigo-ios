@@ -70,6 +70,7 @@
 @property (nonatomic, strong) UIView *grayView;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @property (nonatomic, strong) UIView *verifiedView;
+@property (nonatomic, strong) UIView *lineView;
 @end
 
 @interface OneLineEventCell : EventCell
@@ -111,6 +112,7 @@
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
+@property (nonatomic, strong) UIView *whiteView;
 @end
 
 @interface OldTwoLinesEventCell : HighlightOldEventCell

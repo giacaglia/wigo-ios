@@ -71,7 +71,7 @@ BOOL firstTimeLoading;
     [self initializeWhereView];
     [TabBarAuxiliar startTabBarItems];
     [self addCenterButton];
-    [NetworkFetcher.defaultGetter fetchMeta];
+    [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {}];
     [NetworkFetcher.defaultGetter fetchFriendsIds];
     [NetworkFetcher.defaultGetter fetchSuggestions];
 }
@@ -659,7 +659,7 @@ BOOL firstTimeLoading;
         }
         WGEvent *event = [eventObjectArray objectAtIndex:indexPath.row];
         if ([event isEvent2Lines]) {
-            OldOneLineEventCell *cell = (OldOneLineEventCell *)[tableView dequeueReusableCellWithIdentifier:kOldOneLineEventCellName forIndexPath:indexPath];
+            OldTwoLinesEventCell *cell = (OldTwoLinesEventCell *)[tableView dequeueReusableCellWithIdentifier:kOldTwoLinesEventCellName forIndexPath:indexPath];
             cell.event = event;
             cell.placesDelegate = self;
             cell.eventPeopleScrollView.isOld = YES;
@@ -672,7 +672,7 @@ BOOL firstTimeLoading;
             return cell;
         }
         else {
-            OldTwoLinesEventCell *cell = (OldTwoLinesEventCell *)[tableView dequeueReusableCellWithIdentifier:kOldTwoLinesEventCellName forIndexPath:indexPath];
+            OldOneLineEventCell *cell = (OldOneLineEventCell *)[tableView dequeueReusableCellWithIdentifier:kOldOneLineEventCellName forIndexPath:indexPath];
             cell.event = event;
             cell.placesDelegate = self;
             cell.eventPeopleScrollView.isOld = YES;
@@ -683,6 +683,7 @@ BOOL firstTimeLoading;
             }
             cell.highlightsCollectionView.placesDelegate = self;
             return cell;
+
         }
         
     }
@@ -1430,11 +1431,13 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
     [self.whiteView addSubview:self.eventNameLabel];
     
-    self.verifiedView.hidden = YES;
-    UIImageView *verifiedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+    self.lineView.backgroundColor = RGB(215, 215, 215);
+    [self.whiteView addSubview:self.lineView];
+    
+    UIImageView *verifiedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 10, 11)];
     verifiedImageView.image = [UIImage imageNamed:@"verifiedImage"];
     [self.verifiedView addSubview:verifiedImageView];
-    UILabel *verifiedLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 100, 10)];
+    UILabel *verifiedLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 100, 11)];
     verifiedLabel.text = @"Wigo Verified";
     verifiedLabel.textAlignment = NSTextAlignmentLeft;
     verifiedLabel.textColor = RGB(165, 165, 165);
@@ -1463,28 +1466,32 @@ BOOL firstTimeLoading;
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
+        self.verifiedView.hidden = !event.isVerified;
         if ([event isEvent2Lines]) {
-            self.eventNameLabel.frame = CGRectMake(15, 5, self.frame.size.width - 40, 50);
+            if (event.isVerified) {
+                self.lineView.frame = CGRectMake(15, 66, 85, 0.5);
+                self.eventNameLabel.frame = CGRectMake(15, 1, self.frame.size.width - 40, 50);
+            }
+            else {
+                self.lineView.frame = CGRectMake(15, 60, 85, 0.5);
+                self.eventNameLabel.frame = CGRectMake(15, 5, self.frame.size.width - 40, 50);
+            }
         }
         else {
-            self.eventNameLabel.frame = CGRectMake(15, 16.5, self.frame.size.width - 40, 20);
+            if (event.isVerified) {
+                self.lineView.frame = CGRectMake(15, 52, 85, 0.5);
+                self.eventNameLabel.frame = CGRectMake(15, 10, self.frame.size.width - 40, 20);
+            }
+            else {
+                self.lineView.frame = CGRectMake(15, 48, 85, 0.5);
+                self.eventNameLabel.frame = CGRectMake(15, 14, self.frame.size.width - 40, 20);
+            }
         }
     });
     
     self.privacyLockImageView.hidden = !_event.isPrivate;
     self.privacyLockButton.enabled = _event.isPrivate;
     self.eventPeopleScrollView.event = _event;
-    if (_event.isVerified) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.verifiedView.hidden = NO;
-            self.eventNameLabel.frame = CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y - 30, self.eventNameLabel.frame.size.width, self.eventNameLabel.frame.size.height);
-        });
-    }
-    else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.verifiedView.hidden = YES;
-        });
-    }
 }
 
 @end
@@ -1512,14 +1519,15 @@ BOOL firstTimeLoading;
     self.whiteView.backgroundColor = UIColor.whiteColor;
     [self.contentView addSubview:self.whiteView];
     
+    
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 16.5, self.frame.size.width - 40, 20)];
+    
+    self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 40, 100, 11)];
+    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 48, 85, 0.5)];
+    
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 40 + 15, self.frame.size.width, 20)];
-    self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 40, 20, 10)];
     self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
     
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 48, 85, 0.5)];
-    lineView.backgroundColor = RGB(215, 215, 215);
-    [self.whiteView addSubview:lineView];
     
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] init];
     self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
@@ -1558,13 +1566,11 @@ BOOL firstTimeLoading;
     self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, [TwoLineEventCell height] - 20)];
  
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 16.5, self.frame.size.width - 40, 20)];
-    self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 52, 20, 10)];
+    
+    self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 52, 20, 11)];
+    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 60, 85, 0.5)];
+    
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 52 + 15, self.frame.size.width, 20)];
-    
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 60, 85, 0.5)];
-    lineView.backgroundColor = RGB(215, 215, 215);
-    [self.whiteView addSubview:lineView];
-    
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] init];
     self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
     self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 72 + 4, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
@@ -1669,45 +1675,41 @@ BOOL firstTimeLoading;
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
-    backgroundView.backgroundColor = UIColor.whiteColor;
-    backgroundView.clipsToBounds = YES;
-    [self.contentView addSubview:backgroundView];
+    self.whiteView.backgroundColor = UIColor.whiteColor;
+    self.whiteView.clipsToBounds = YES;
+    [self.contentView addSubview:self.whiteView];
     
     self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.font = [FontProperties semiboldFont:18.0f];
     self.eventNameLabel.textColor = RGB(121, 121, 121);
-    [backgroundView addSubview:self.eventNameLabel];
+    [self.whiteView addSubview:self.eventNameLabel];
 
     self.dateLabel.textAlignment = NSTextAlignmentLeft;
     self.dateLabel.textColor = RGB(165, 165, 165);
     self.dateLabel.font = [FontProperties mediumFont:10.0f];
     [self.contentView addSubview:self.dateLabel];
 
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 63, 85, 0.5)];
-    lineView.backgroundColor = RGB(215, 215, 215);
-    [backgroundView addSubview:lineView];
-    
+  
     self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
-    [backgroundView addSubview:self.numberOfPeopleGoingLabel];
+    [self.whiteView addSubview:self.numberOfPeopleGoingLabel];
     
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
-    [backgroundView addSubview:self.eventPeopleScrollView];
+    [self.whiteView addSubview:self.eventPeopleScrollView];
     
     UILabel *topBuzzLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, 100, 20)];
     topBuzzLabel.textColor = RGB(121, 121, 121);
     topBuzzLabel.text = @"Top Buzz";
     topBuzzLabel.textAlignment = NSTextAlignmentLeft;
     topBuzzLabel.font = [FontProperties mediumFont:15.0];
-    [backgroundView addSubview:topBuzzLabel];
+    [self.whiteView addSubview:topBuzzLabel];
     
     self.highlightsCollectionView = [[HighlightsCollectionView alloc]
                                      initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 20 + 5, self.frame.size.width, [HighlightCell height])
                                      collectionViewLayout:[HighlightsFlowLayout new]];
-    [backgroundView addSubview:self.highlightsCollectionView];
+    [self.whiteView addSubview:self.highlightsCollectionView];
 }
 
 -(void) chooseImage:(id)sender {
@@ -1738,40 +1740,6 @@ BOOL firstTimeLoading;
 
 @end
 
-@implementation OldTwoLinesEventCell
-
-+ (CGFloat)height {
-    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 5;
-}
-
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self setup];
-    }
-    return self;
-}
-
-- (void)setup {
-    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [OldTwoLinesEventCell height]);
-    
-    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [OldTwoLinesEventCell height] - 20 - 7, self.frame.size.width + 10, 12)];
-    shadowImageView.image = [UIImage imageNamed:@"shadow"];
-    [self.contentView addSubview:shadowImageView];
-    
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, self.frame.size.width - 40, 50)];
-    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 50, 100, 10)];
-    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 70, self.frame.size.width, 20)];
-
-    self.eventPeopleScrollView = [EventPeopleScrollView new];
-    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 89, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
-
-    [super setup];
-}
-
-@end
 
 @implementation OldOneLineEventCell
 
@@ -1791,22 +1759,70 @@ BOOL firstTimeLoading;
 - (void)setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [OldOneLineEventCell height]);
     
+    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
+    
     UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [OldOneLineEventCell height] - 20 - 7, self.frame.size.width + 10, 12)];
     shadowImageView.image = [UIImage imageNamed:@"shadow"];
     [self.contentView addSubview:shadowImageView];
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 16.5, self.frame.size.width - 40, 20)];
-    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 50, 100, 10)];
-    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 70, self.frame.size.width, 20)];
-
+    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 45, 100, 12)];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 60, 85, 0.5)];
+    lineView.backgroundColor = RGB(215, 215, 215);
+    [self.whiteView addSubview:lineView];
+   
+    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 67, self.frame.size.width, 20)];
     
     self.eventPeopleScrollView = [EventPeopleScrollView new];
-    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 89, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
-
+    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[UIScreen mainScreen].bounds.size.width/(float)5.5;
+    self.eventPeopleScrollView.frame = CGRectMake(0, 96, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
     
     [super setup];
 }
 
 @end
+
+@implementation OldTwoLinesEventCell
+
++ (CGFloat)height {
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50 + 5 + 10;
+}
+
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void)setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [OldTwoLinesEventCell height]);
+    
+    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
+    
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [OldTwoLinesEventCell height] - 20 - 7, self.frame.size.width + 10, 12)];
+    shadowImageView.image = [UIImage imageNamed:@"shadow"];
+    [self.contentView addSubview:shadowImageView];
+    
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, self.frame.size.width - 40, 50)];
+    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 56, 100, 12)];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 70, 85, 0.5)];
+    lineView.backgroundColor = RGB(215, 215, 215);
+    [self.whiteView addSubview:lineView];
+
+    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 82, self.frame.size.width, 20)];
+
+    self.eventPeopleScrollView = [EventPeopleScrollView new];
+    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[UIScreen mainScreen].bounds.size.width/(float)5.5;
+    self.eventPeopleScrollView.frame = CGRectMake(0, 111, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
+
+    [super setup];
+}
+
+@end
+
 

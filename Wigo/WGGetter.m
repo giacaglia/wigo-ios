@@ -64,7 +64,7 @@
     }];
 }
 
-- (void)fetchMeta {
+- (void)fetchMetaWithHandler:(BoolResultBlock)handler {
     [WGApi get:@"users/me/meta/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) return;
         if ([jsonResponse objectForKey:@"last_notification"]) {
@@ -83,6 +83,7 @@
             [TabBarAuxiliar checkIndex:kIndexOfFriends forDate:lastUser];
         }
         [WGProfile setNumFriends:[jsonResponse objectForKey:@"num_friends"]];
+        handler(YES, nil);
     }];
 }
 
