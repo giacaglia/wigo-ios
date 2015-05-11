@@ -54,6 +54,11 @@ static NSString * const headerCellIdentifier = @"HeaderContentCell";
 #define PEOPLEVIEW_HEIGHT_OF_CELLS 80
 #define kGoHereState @"goHereState"
 
+static NSString * const kWGTabHome = @"WGTabHome";
+static NSString * const kWGTabChat = @"WGTabChat";
+static NSString * const kWGTabDiscover = @"WGTabDiscover";
+static NSString * const kWGTabProfile = @"WGTabProfile";
+
 @protocol Globals <NSObject>
 
 @end

@@ -19,6 +19,10 @@
 #import "RWBlurPopover.h"
 #import "WGI.h"
 #import "WGNavigateParser.h"
+#import "ChatViewController.h"
+#import "PeopleViewController.h"
+#import "ProfileViewController.h"
+
 #define kImageQuality @"quality"
 #define kImageMultiple @"multiple"
 
@@ -90,23 +94,68 @@ NSDate *firstLoggedTime;
     [WGI openedTheApp];
 }
 
+- (void) switchToTab:(NSString *)tab withOptions:(NSDictionary *)options {
+    
+    // dismiss any existing modal or navigation views
+    [self dismissEverythingWithUserInfo:nil];
+    
+    
+    UITabBarController *tabController = nil;
+    
+    UINavigationController *navController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    
+    if([navController isKindOfClass:[UITabBarController class]]) {
+        tabController = (UITabBarController *)navController;
+    }
+    else {
+        if(navController.viewControllers.count > 0 && [navController.viewControllers[0] isKindOfClass:[UITabBarController class]]) {
+            tabController = navController.viewControllers[0];
+        }
+    }
+    
+    if(!tabController) {
+        return;
+    }
+    
+    Class selectedClass = nil;
+    
+    if([tab isEqualToString:kWGTabHome]) {
+        selectedClass = [PlacesViewController class];
+    }
+    else if([tab isEqualToString:kWGTabChat]) {
+        selectedClass = [ChatViewController class];
+    }
+    else if([tab isEqualToString:kWGTabDiscover]) {
+        selectedClass = [PeopleViewController class];
+    }
+    else if([tab isEqualToString:kWGTabProfile]) {
+        selectedClass = [ProfileViewController class];
+    }
+    
+    if(selectedClass) {
+        for(UIViewController *vc in tabController.viewControllers) {
+            if([vc isKindOfClass:selectedClass]) {
+                tabController.selectedViewController = vc;
+            }
+        }
+    }
+}
+
 - (void) dismissEverythingWithUserInfo:(NSDictionary *)userInfo {
     if ([RWBlurPopover instance]) [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:nil];
     
     UINavigationController *navController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
     UIViewController *presentedController = [navController presentedViewController];
-    UIViewController *visibleController = [navController topViewController];
-
-    if (![visibleController isKindOfClass:[PlacesViewController class]]) {
-        if (presentedController != nil) {
-            [presentedController dismissViewControllerAnimated:NO completion:^{[self dismissEverythingWithUserInfo:userInfo];}];
-        } else {
-            [navController popViewControllerAnimated:NO];
-            [self dismissEverythingWithUserInfo:userInfo];
-        }
-    } else {
-        [self doneWithUserInfo:userInfo];
+    //UIViewController *visibleController = [navController topViewController];
+    
+    if(presentedController) {
+        [navController dismissViewControllerAnimated:NO
+                                          completion:nil];
     }
+    
+    [navController popToRootViewControllerAnimated:NO];
+    
+    [self doneWithUserInfo:userInfo];
 }
 
 - (void) doneWithUserInfo:(NSDictionary *)userInfo {

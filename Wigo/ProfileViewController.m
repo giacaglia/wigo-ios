@@ -13,6 +13,7 @@
 #import "RWBlurPopover.h"
 #import "FollowRequestsViewController.h"
 #import "EventPeopleScrollView.h"
+#import "AppDelegate.h"
 
 @interface ProfileViewController()<ImageScrollViewDelegate> {
     UIImageView *_gradientImageView;
@@ -851,15 +852,23 @@ BOOL blockShown;
 
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
     if (indexPath.section == kNotificationsSection && self.user.isCurrentUser) {
         WGNotification *notification = (WGNotification *)[self.notifications objectAtIndex:indexPath.row];
         WGUser *user = notification.fromUser;
-       
+        
         if ([notification.type isEqualToString:@"follow"] ||
             [notification.type isEqualToString:@"follow.accepted"] ||
             [notification.type isEqualToString:@"facebook.follow"]) {
             [self presentUser:user];
-        } else if (user.state != SENT_OR_RECEIVED_REQUEST_USER_STATE &&
+        }
+        else if([notification.type isEqualToString:@"tap"]) {
+            [(AppDelegate *)[UIApplication sharedApplication].delegate
+             switchToTab:kWGTabHome
+             withOptions:nil];
+            
+        }
+        else if (user.state != SENT_OR_RECEIVED_REQUEST_USER_STATE &&
                    user.state != NOT_FRIEND_STATE) {
             if (![user.eventAttending.id isEqual:notification.eventID]) return;
             if (user.eventAttending) [self presentEvent:user.eventAttending];
