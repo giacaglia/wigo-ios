@@ -30,7 +30,8 @@
 #import "ReferalView.h"
 
 #define kEventCellName @"EventCell"
-#define kMoreThan2PhotosOldEventCell @"MoreThan2PhotosOldEventCell"
+#define kOneLineEventCellName @"OneLineEventCell"
+#define kTwoLineEventCellName @"TwoLineEventCell"
 #define kLessThan2PhotosOldEventCell @"LessThan2PhotosOldEventCell"
 #define kOldEventCellName @"OldEventCell"
 
@@ -348,6 +349,8 @@ BOOL firstTimeLoading;
     self.placesTableView.showsHorizontalScrollIndicator = NO;
     [self.placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
+    [self.placesTableView registerClass:[OneLineEventCell class] forCellReuseIdentifier:kOneLineEventCellName];
+    [self.placesTableView registerClass:[TwoLineEventCell class] forCellReuseIdentifier:kTwoLineEventCellName];
     [self.placesTableView registerClass:[LessThan2PhotosOldEventCell class] forCellReuseIdentifier:kLessThan2PhotosOldEventCell];
     self.placesTableView.backgroundColor = UIColor.whiteColor;
     self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -518,7 +521,12 @@ BOOL firstTimeLoading;
         WGEvent *event = [self getEventAtIndexPath:indexPath];
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
-            return [EventCell height];
+            if ([EventCell isEvent2Lines:event]) {
+                return [TwoLineEventCell height];
+            }
+            else {
+                [OneLineEventCell height];
+            }
         }
         if (indexPath.row == self.events.count + 1 &&
             [self.allEvents.hasNextPage boolValue] &&
@@ -531,7 +539,12 @@ BOOL firstTimeLoading;
            return 0.3;
         }
         if (event == nil) return 0.3;
-        return [EventCell height];
+        if ([EventCell isEvent2Lines:event]) {
+            return [TwoLineEventCell height];
+        }
+        else {
+            [OneLineEventCell height];
+        }
     }
     else if (indexPath.section == kHighlightsEmptySection) {
         return 0;
@@ -546,21 +559,21 @@ BOOL firstTimeLoading;
 -(UITableViewCell *)tableView:(UITableView *)tableView
         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
-        EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
-        cell.highlightsCollectionView.event = nil;
-        cell.highlightsCollectionView.eventMessages = nil;
-        [cell.highlightsCollectionView reloadData];
-        cell.placesDelegate = self;
-        if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
-        cell.loadingView.hidden = YES;
-        cell.placesDelegate = self;
-        cell.eventPeopleScrollView.rowOfEvent = (int)indexPath.row;
-        cell.eventPeopleScrollView.isPeeking = [self isPeeking];
-        cell.eventPeopleScrollView.hidden = NO;
-        cell.privacyLockButton.tag = indexPath.row;
-        [cell.privacyLockButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
         if (indexPath.row == self.events.count &&
             [self shouldShowAggregatePrivateEvents] == 1) {
+            EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
+            cell.highlightsCollectionView.event = nil;
+            cell.highlightsCollectionView.eventMessages = nil;
+            [cell.highlightsCollectionView reloadData];
+            cell.placesDelegate = self;
+            if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
+            cell.loadingView.hidden = YES;
+            cell.placesDelegate = self;
+            cell.eventPeopleScrollView.rowOfEvent = (int)indexPath.row;
+            cell.eventPeopleScrollView.isPeeking = [self isPeeking];
+            cell.eventPeopleScrollView.hidden = NO;
+            cell.privacyLockButton.tag = indexPath.row;
+            [cell.privacyLockButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
             cell.event = self.aggregateEvent;
             cell.eventPeopleScrollView.groupID = self.groupNumberID;
             cell.eventPeopleScrollView.placesDelegate = self;
@@ -571,6 +584,19 @@ BOOL firstTimeLoading;
             return cell;
         }
         if (indexPath.row == self.events.count && [self shouldShowAggregatePrivateEvents] == 0) {
+            EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
+            cell.highlightsCollectionView.event = nil;
+            cell.highlightsCollectionView.eventMessages = nil;
+            [cell.highlightsCollectionView reloadData];
+            cell.placesDelegate = self;
+            if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
+            cell.loadingView.hidden = YES;
+            cell.placesDelegate = self;
+            cell.eventPeopleScrollView.rowOfEvent = (int)indexPath.row;
+            cell.eventPeopleScrollView.isPeeking = [self isPeeking];
+            cell.eventPeopleScrollView.hidden = NO;
+            cell.privacyLockButton.tag = indexPath.row;
+            [cell.privacyLockButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
             cell.loadingView.hidden = NO;
             [cell.loadingView startAnimating];
@@ -582,19 +608,34 @@ BOOL firstTimeLoading;
             cell.highlightsCollectionView.isPeeking = [self isPeeking];
             return cell;
         }
-        
         WGEvent *event = [self getEventAtIndexPath:indexPath];
-        if (event == nil) return cell;
-
-        cell.event = event;
-        cell.eventPeopleScrollView.groupID = self.groupNumberID;
-        cell.eventPeopleScrollView.placesDelegate = self;
-        if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
-            cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
+        if ([EventCell isEvent2Lines:event]) {
+            TwoLineEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kTwoLineEventCellName forIndexPath:indexPath];
+            if (event == nil) return cell;
+            cell.event = event;
+            cell.eventPeopleScrollView.groupID = self.groupNumberID;
+            cell.eventPeopleScrollView.placesDelegate = self;
+            if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
+                cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
+            }
+            cell.highlightsCollectionView.placesDelegate = self;
+            cell.highlightsCollectionView.isPeeking = [self isPeeking];
+            return cell;
         }
-        cell.highlightsCollectionView.placesDelegate = self;
-        cell.highlightsCollectionView.isPeeking = [self isPeeking];
-        return cell;
+        else {
+            OneLineEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kOneLineEventCellName forIndexPath:indexPath];
+            if (event == nil) return cell;
+            cell.event = event;
+            cell.eventPeopleScrollView.groupID = self.groupNumberID;
+            cell.eventPeopleScrollView.placesDelegate = self;
+            if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
+                cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
+            }
+            cell.highlightsCollectionView.placesDelegate = self;
+            cell.highlightsCollectionView.isPeeking = [self isPeeking];
+            return cell;
+        }
+      
     } else if (indexPath.section == kHighlightsEmptySection) {
         return nil;
     }
@@ -853,7 +894,6 @@ BOOL firstTimeLoading;
     __weak  typeof(event) weakEvent = event;
     [eventConversationViewController.eventMessages addNextPage:^(BOOL success, NSError *error) {
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
@@ -1327,7 +1367,16 @@ BOOL firstTimeLoading;
 @implementation EventCell
 
 + (CGFloat)height {
-    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50;
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 35;
+}
+
++ (BOOL)isEvent2Lines:(WGEvent *)event {
+    CGSize size = [event.name sizeWithAttributes:
+                   @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
+    if (size.width > [UIScreen mainScreen].bounds.size.width - 30) {
+        return YES;
+    }
+    return NO;
 }
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -1339,25 +1388,17 @@ BOOL firstTimeLoading;
 }
 
 - (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [EventCell height]);
-    self.contentView.frame = self.frame;
     self.backgroundColor = RGB(232, 232, 232);
     self.clipsToBounds = YES;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [EventCell height] - 20 - 4, self.frame.size.width + 10, 12)];
-    shadowImageView.image = [UIImage imageNamed:@"shadow"];
-    [self.contentView addSubview:shadowImageView];
-    
-    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, [EventCell height] - 20)];
     self.whiteView.backgroundColor = UIColor.whiteColor;
     [self.contentView addSubview:self.whiteView];
-    
+
     self.loadingView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(self.center.x - 20, self.center.y - 20, 40, 40)];
     self.loadingView.hidden = YES;
     [self.whiteView addSubview:self.loadingView];
     
-    self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
     [self.whiteView addSubview:self.privacyLockButton];
     
     self.privacyLockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 26.5 - 8., 12, 16)];
@@ -1365,14 +1406,13 @@ BOOL firstTimeLoading;
     self.privacyLockImageView.hidden = YES;
     [self.privacyLockButton addSubview:self.privacyLockImageView];
     
-    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 16.5, self.frame.size.width - 40, 20)];
+    self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 14, self.frame.size.width - 40, 20)];
     self.eventNameLabel.textAlignment = NSTextAlignmentLeft;
     self.eventNameLabel.numberOfLines = 2;
     self.eventNameLabel.font = [FontProperties semiboldFont:18.0f];
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
     [self.whiteView addSubview:self.eventNameLabel];
     
-    self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 40, 20, 10)];
     self.verifiedView.hidden = YES;
     UIImageView *verifiedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
     verifiedImageView.image = [UIImage imageNamed:@"verifiedImage"];
@@ -1385,26 +1425,13 @@ BOOL firstTimeLoading;
     [self.verifiedView addSubview:verifiedLabel];
     [self.contentView addSubview:self.verifiedView];
     
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 53, 85, 0.5)];
-    lineView.backgroundColor = RGB(215, 215, 215);
-    [self.whiteView addSubview:lineView];
-    
-    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 40 + 20, self.frame.size.width, 20)];
     self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
     [self.whiteView addSubview:self.numberOfPeopleGoingLabel];
 
-    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
-    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 60 + 9, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
     self.eventPeopleScrollView.backgroundColor = UIColor.clearColor;
     [self.whiteView addSubview:self.eventPeopleScrollView];
-    
-    self.highlightsCollectionView = [[HighlightsCollectionView alloc]
-                                     initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 20 + 5, self.frame.size.width, [HighlightCell height])
-                                     collectionViewLayout:[HighlightsFlowLayout new]];
-    [self.whiteView addSubview:self.highlightsCollectionView];
 }
 
 - (void)setEvent:(WGEvent *)event {
@@ -1422,10 +1449,10 @@ BOOL firstTimeLoading;
                 @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
     dispatch_async(dispatch_get_main_queue(), ^{
         if (size.width > self.eventNameLabel.frame.size.width) {
-            self.eventNameLabel.frame = CGRectMake(10, 3, self.frame.size.width - 40, 50);
+            self.eventNameLabel.frame = CGRectMake(15, 5, self.frame.size.width - 40, 50);
         }
         else {
-            self.eventNameLabel.frame = CGRectMake(10, 16.5, self.frame.size.width - 40, 20);
+            self.eventNameLabel.frame = CGRectMake(15, 16.5, self.frame.size.width - 40, 20);
         }
     });
     
@@ -1457,6 +1484,93 @@ BOOL firstTimeLoading;
         self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     }
 }
+
+@end
+
+@implementation OneLineEventCell
+
++ (CGFloat)height {
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 35;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+-(void) setup {
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [OneLineEventCell height] - 20 - 4, self.frame.size.width + 10, 12)];
+    shadowImageView.image = [UIImage imageNamed:@"shadow"];
+    [self.contentView addSubview:shadowImageView];
+    
+    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, [OneLineEventCell height] - 20)];
+    self.whiteView.backgroundColor = UIColor.whiteColor;
+    [self.contentView addSubview:self.whiteView];
+    self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 40, 20, 10)];
+    self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 48, 85, 0.5)];
+    lineView.backgroundColor = RGB(215, 215, 215);
+    [self.whiteView addSubview:lineView];
+    
+    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
+    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
+    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 60 + 4, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
+    
+    self.highlightsCollectionView = [[HighlightsCollectionView alloc]
+                                     initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height +   15, self.frame.size.width, [HighlightCell height])
+                                     collectionViewLayout:[HighlightsFlowLayout new]];
+    [self.whiteView addSubview:self.highlightsCollectionView];
+
+
+    [super setup];
+}
+
+@end
+
+@implementation TwoLineEventCell
+
++ (CGFloat)height {
+    return 20 + 64 + [EventPeopleScrollView containerHeight] + [HighlightCell height] + 50;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+-(void) setup {
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [TwoLineEventCell height] - 20 - 4, self.frame.size.width + 10, 12)];
+    shadowImageView.image = [UIImage imageNamed:@"shadow"];
+    [self.contentView addSubview:shadowImageView];
+    
+    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, [TwoLineEventCell height] - 20)];
+ 
+    self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 52, 20, 10)];
+    self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 52 + 15, self.frame.size.width, 20)];
+    
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 60, 85, 0.5)];
+    lineView.backgroundColor = RGB(215, 215, 215);
+    [self.whiteView addSubview:lineView];
+    
+    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:self.event];
+    self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
+    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 72 + 4, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
+    
+    self.highlightsCollectionView = [[HighlightsCollectionView alloc]
+                                     initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height +   15, self.frame.size.width, [HighlightCell height])
+                                     collectionViewLayout:[HighlightsFlowLayout new]];
+    [self.whiteView addSubview:self.highlightsCollectionView];
+
+    [super setup];
+}
+
 
 @end
 

@@ -256,7 +256,7 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
     if (section == kInviteSection) {
-        return CGSizeMake(10, 1);
+        return CGSizeMake(15, 1);
     }
     else return CGSizeMake(0.5, 0.5);
 }
