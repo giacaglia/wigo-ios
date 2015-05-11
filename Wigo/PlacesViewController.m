@@ -1431,11 +1431,13 @@ BOOL firstTimeLoading;
     self.eventNameLabel.textColor = [FontProperties getBlueColor];
     [self.whiteView addSubview:self.eventNameLabel];
     
-    self.verifiedView.hidden = YES;
-    UIImageView *verifiedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+    self.lineView.backgroundColor = RGB(215, 215, 215);
+    [self.whiteView addSubview:self.lineView];
+    
+    UIImageView *verifiedImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 10, 11)];
     verifiedImageView.image = [UIImage imageNamed:@"verifiedImage"];
     [self.verifiedView addSubview:verifiedImageView];
-    UILabel *verifiedLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 100, 10)];
+    UILabel *verifiedLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 100, 11)];
     verifiedLabel.text = @"Wigo Verified";
     verifiedLabel.textAlignment = NSTextAlignmentLeft;
     verifiedLabel.textColor = RGB(165, 165, 165);
@@ -1464,28 +1466,32 @@ BOOL firstTimeLoading;
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
+        self.verifiedView.hidden = !event.isVerified;
         if ([event isEvent2Lines]) {
-            self.eventNameLabel.frame = CGRectMake(15, 5, self.frame.size.width - 40, 50);
+            if (event.isVerified) {
+                self.lineView.frame = CGRectMake(15, 66, 85, 0.5);
+                self.eventNameLabel.frame = CGRectMake(15, 1, self.frame.size.width - 40, 50);
+            }
+            else {
+                self.lineView.frame = CGRectMake(15, 60, 85, 0.5);
+                self.eventNameLabel.frame = CGRectMake(15, 5, self.frame.size.width - 40, 50);
+            }
         }
         else {
-            self.eventNameLabel.frame = CGRectMake(15, 16.5, self.frame.size.width - 40, 20);
+            if (event.isVerified) {
+                self.lineView.frame = CGRectMake(15, 52, 85, 0.5);
+                self.eventNameLabel.frame = CGRectMake(15, 10, self.frame.size.width - 40, 20);
+            }
+            else {
+                self.lineView.frame = CGRectMake(15, 48, 85, 0.5);
+                self.eventNameLabel.frame = CGRectMake(15, 14, self.frame.size.width - 40, 20);
+            }
         }
     });
     
     self.privacyLockImageView.hidden = !_event.isPrivate;
     self.privacyLockButton.enabled = _event.isPrivate;
     self.eventPeopleScrollView.event = _event;
-    if (_event.isVerified) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.verifiedView.hidden = NO;
-            self.eventNameLabel.frame = CGRectMake(self.eventNameLabel.frame.origin.x, self.eventNameLabel.frame.origin.y - 30, self.eventNameLabel.frame.size.width, self.eventNameLabel.frame.size.height);
-        });
-    }
-    else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.verifiedView.hidden = YES;
-        });
-    }
 }
 
 @end
@@ -1516,11 +1522,8 @@ BOOL firstTimeLoading;
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 16.5, self.frame.size.width - 40, 20)];
     
-    self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 40, 20, 10)];
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 48, 85, 0.5)];
-    lineView.backgroundColor = RGB(215, 215, 215);
-    [self.whiteView addSubview:lineView];
-
+    self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 40, 100, 11)];
+    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 48, 85, 0.5)];
     
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 40 + 15, self.frame.size.width, 20)];
     self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
@@ -1563,13 +1566,11 @@ BOOL firstTimeLoading;
     self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, [TwoLineEventCell height] - 20)];
  
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 16.5, self.frame.size.width - 40, 20)];
-    self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 52, 20, 10)];
+    
+    self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 52, 20, 11)];
+    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 60, 85, 0.5)];
+    
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 52 + 15, self.frame.size.width, 20)];
-    
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 60, 85, 0.5)];
-    lineView.backgroundColor = RGB(215, 215, 215);
-    [self.whiteView addSubview:lineView];
-    
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] init];
     self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
     self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 72 + 4, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);

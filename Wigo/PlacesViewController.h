@@ -70,6 +70,7 @@
 @property (nonatomic, strong) UIView *grayView;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @property (nonatomic, strong) UIView *verifiedView;
+@property (nonatomic, strong) UIView *lineView;
 @end
 
 @interface OneLineEventCell : EventCell
