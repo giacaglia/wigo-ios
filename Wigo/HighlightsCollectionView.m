@@ -65,7 +65,6 @@
 
 - (void)collectionView:(UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (![[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser] && _event.messages.count == 0 && !WGProfile.currentUser.crossEventPhotosEnabled) return;
     if (indexPath.section == kAddPhotoSection && self.isPeeking) return;
     if (self.event.isExpired.boolValue) {
         [self.placesDelegate showConversationForEvent:self.event
@@ -74,6 +73,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         return;
     }
     
+
     if (indexPath.section != kAddPhotoSection) {
         int index = (int)indexPath.item;
         if ([[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) {
@@ -82,7 +82,13 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
         [self.placesDelegate showConversationForEvent:self.event
                                     withEventMessages:self.event.messages
                                               atIndex:index];
+        return;
     }
+    
+    [self.placesDelegate showConversationForEvent:self.event
+                                withEventMessages:self.event.messages
+                                          atIndex:indexPath.item];
+
 }
 
 

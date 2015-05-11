@@ -9,7 +9,6 @@
 #import "InviteViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
-#import "MobileContactsViewController.h"
 
 @interface InviteViewController() {
     NSMutableArray *chosenPeople;
@@ -73,23 +72,8 @@
     doneLabel.textAlignment = NSTextAlignmentLeft;
     doneLabel.font = [FontProperties getTitleFont];
     [aroundDoneButton addSubview:doneLabel];
-    
-    UIButton *aroundMobileButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 10 - 70, 40 - 5, 60 + 10, 15 + 10)];
-    [aroundMobileButton addTarget:self action:@selector(mobilePressed) forControlEvents:UIControlEventTouchUpInside];
-    [aroundMobileButton setShowsTouchWhenHighlighted:YES];
-    [self.view addSubview:aroundMobileButton];
-    UILabel *mobileLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, 3, 60, 15)];
-    mobileLabel.text = @"Mobile";
-    mobileLabel.textColor = [FontProperties getBlueColor];
-    mobileLabel.textAlignment = NSTextAlignmentRight;
-    mobileLabel.font = [FontProperties getTitleFont];
-    [aroundMobileButton addSubview:mobileLabel];
 }
 
-
-- (void)mobilePressed {
-    [self presentViewController:[MobileContactsViewController new] animated:YES completion:nil];
-}
 
 - (void)donePressed {
     [self dismissViewControllerAnimated:YES completion:nil];
