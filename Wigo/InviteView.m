@@ -22,6 +22,7 @@
 
 - (void) setUser:(WGUser *)user {
     _user = user;
+    self.tapButton.hidden = NO;
     
     if (self.delegate.user.state == OTHER_SCHOOL_USER_STATE) {
         self.tapButton.hidden = YES;

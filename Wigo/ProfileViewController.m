@@ -48,7 +48,6 @@ BOOL blockShown;
     self = [super init];
     if (self) {
         self.user = user;
-        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -62,7 +61,7 @@ BOOL blockShown;
 #pragma mark - View Delegate
 - (void) viewDidLoad {
     [super viewDidLoad];
-    
+    self.view.backgroundColor = UIColor.whiteColor;
     blockShown = NO;
     [self pageChangedTo: 0];
 
@@ -84,7 +83,12 @@ BOOL blockShown;
     if ([self.tableView respondsToSelector:@selector(layoutMargins)]) {
         self.tableView.layoutMargins = UIEdgeInsetsZero;
     }
-    self.tableView.frame = CGRectMake( self.tableView.frame.origin.x, self.tableView.frame.origin.y, self.tableView.frame.size.width,  [UIApplication sharedApplication].keyWindow.frame.size.height - 44);
+    if (self.tabBarController) {
+        self.tableView.frame = CGRectMake( self.tableView.frame.origin.x, self.tableView.frame.origin.y, self.tableView.frame.size.width,  [UIApplication sharedApplication].keyWindow.frame.size.height - 44);
+    }
+    else {
+         self.tableView.frame = CGRectMake( self.tableView.frame.origin.x, self.tableView.frame.origin.y, self.tableView.frame.size.width,  [UIApplication sharedApplication].keyWindow.frame.size.height);
+    }
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
