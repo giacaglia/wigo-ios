@@ -188,7 +188,7 @@
 
 - (void)fetchEventMeta {
     __weak typeof(self) weakSelf = self;
-    [self.event getMeta:^(WGCollection *collection, NSError *error) {
+    [self.event getMeta:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         dispatch_async(dispatch_get_main_queue(), ^{
             NSInteger page = [strongSelf getPageForScrollView:strongSelf.mediaScrollView toLeft:YES];
