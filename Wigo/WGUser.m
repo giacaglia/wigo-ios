@@ -1396,10 +1396,10 @@ static WGUser *currentUser = nil;
 
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler {
     [WGApi delete:[NSString stringWithFormat:@"users/me/friends/"]
-    withArguments:@{ @"friend_id": user.id}
+    withParameters:@{ @"friend_id": user.id}
        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.friendRequest = kFriendRequestSent;
+            user.isFriend = @NO;
         }
         handler(error == nil, error);
     }];

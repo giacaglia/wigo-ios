@@ -31,6 +31,7 @@ dispatch_queue_t postQueue;
 #define kGZip @"gzip"
 #define kTrue @"true"
 #define kPOST @"POST"
+#define kDELETE @"DELETE"
 #define kContentType @"application/json; charset=utf-8"
 
 #define kVideoKey @"video"
@@ -167,28 +168,45 @@ static CLLocationManager *locationManager;
 }
 
 +(void) delete:(NSString *)endpoint withHandler:(ApiResultBlock)handler {
-    [WGApi deleteURL:[WGApi getUrlStringForEndpoint:endpoint] withHandler:handler];
+    [WGApi deleteURL:[WGApi getUrlStringForEndpoint:endpoint]
+      withParameters:nil
+          andHandler:handler];
 }
 
 +(void) delete:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResultBlock)handler {
     NSString *fullEndpoint = [WGApi getStringWithEndpoint:endpoint andArguments:arguments];
-    [WGApi deleteURL:[WGApi getUrlStringForEndpoint:fullEndpoint] withHandler:handler];
+    [WGApi deleteURL:[WGApi getUrlStringForEndpoint:fullEndpoint]
+      withParameters:nil
+          andHandler:handler];
 }
 
-+(void) deleteURL:(NSString *)url withHandler:(ApiResultBlock)handler {
-    NSLog(@"DELETE %@", url);
++(void) delete:(NSString *)endpoint
+withParameters:(id)parameters
+    andHandler:(ApiResultBlock)handler {
+    [WGApi deleteURL:[WGApi getUrlStringForEndpoint:endpoint]
+     withParameters:parameters
+         andHandler:handler];
+}
+
++(void) deleteURL:(NSString *)url
+   withParameters:(id)parameters
+       andHandler:(ApiResultBlock)handler {
+    NSLog(@"DELETE %@, %@", url, parameters);
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    
-    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    [WGApi addWigoHeaders:manager.requestSerializer passKey:NO];
-    
-    if (!postQueue) {
-        postQueue = dispatch_queue_create("com.whoisgoingout.wigo.postqueue", DISPATCH_QUEUE_CONCURRENT);
-    }
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters
+                                                       options:NSJSONWritingPrettyPrinted
+                                                         error:nil];
+    [request setHTTPBody:jsonData];
+    NSString *contentLength = [NSString stringWithFormat:@"%lu", (unsigned long) jsonData.length];
+    [request addValue:contentLength forHTTPHeaderField:kContentLengthKey];
+    [request setHTTPMethod:kDELETE];
+
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    operation.responseSerializer = [AFJSONResponseSerializer serializer];
     
     dispatch_async(postQueue, ^(void) {
-        [manager DELETE:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
             NSError *dataError;
             NSDictionary *response;
             @try {

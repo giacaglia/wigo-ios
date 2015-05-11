@@ -36,9 +36,16 @@ typedef void (^WGAggregateStats)(NSNumber *numMessages, NSNumber *numAttending, 
 
 +(void) get:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResultBlock)handler;
 
-+(void) delete:(NSString *)endpoint withHandler:(ApiResultBlock)handler;
++(void) delete:(NSString *)endpoint
+withHandler:(ApiResultBlock)handler;
 
-+(void) delete:(NSString *)endpoint withArguments:(NSDictionary *)arguments andHandler:(ApiResultBlock)handler;
++(void) delete:(NSString *)endpoint
+withArguments:(NSDictionary *)arguments
+andHandler:(ApiResultBlock)handler;
+
++(void) delete:(NSString *)endpoint
+withParameters:(id)parameters
+andHandler:(ApiResultBlock)handler;
 
 +(void) post:(NSString *)endpoint withParameters:(id)parameters andHandler:(ApiResultBlock)handler;
 
