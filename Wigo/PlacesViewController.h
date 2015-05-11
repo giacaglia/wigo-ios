@@ -111,6 +111,7 @@
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
+@property (nonatomic, strong) UIView *whiteView;
 @end
 
 @interface OldTwoLinesEventCell : HighlightOldEventCell

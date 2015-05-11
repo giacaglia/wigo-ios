@@ -172,7 +172,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (CGSize)collectionView:(UICollectionView *)collectionView
                   layout:(UICollectionViewLayout *)collectionViewLayout
   sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kAddPhotoSection) return CGSizeMake(5 + [AddPhotoCell width], [HighlightCell height]);
+    if (indexPath.section == kAddPhotoSection) return CGSizeMake(10 + [AddPhotoCell width], [HighlightCell height]);
     return CGSizeMake([HighlightCell height], [HighlightCell height]);
 }
 
@@ -217,14 +217,14 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void) setup {
     self.backgroundColor = UIColor.clearColor;
-    self.frame = CGRectMake(0, 0, 5 + [AddPhotoCell width], [HighlightCell height]);
+    self.frame = CGRectMake(0, 0, 10 + [AddPhotoCell width], [HighlightCell height]);
     self.contentView.frame = self.frame;
     
-    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, self.contentView.frame.size.height/2 - 5 - 31, [AddPhotoCell width], [AddPhotoCell width])];
+    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.contentView.frame.size.height/2 - 5 - 31, [AddPhotoCell width], [AddPhotoCell width])];
     cameraImageView.image = [UIImage imageNamed:@"addPhoto"];
     [self.contentView addSubview:cameraImageView];
     
-    UILabel *addBuzzLabel = [[UILabel alloc] initWithFrame:CGRectMake(5, cameraImageView.frame.size.height + cameraImageView.frame.origin.y + 10, [AddPhotoCell width], 15)];
+    UILabel *addBuzzLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, cameraImageView.frame.size.height + cameraImageView.frame.origin.y + 10, [AddPhotoCell width], 15)];
     addBuzzLabel.text = @"Add Buzz";
     addBuzzLabel.textAlignment = NSTextAlignmentCenter;
     addBuzzLabel.textColor = [FontProperties getBlueColor];
