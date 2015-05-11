@@ -239,10 +239,9 @@ NSIndexPath *userIndex;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kSectionFollowPeople && [self.currentTab isEqual:@2]) {
-        if (self.isSearching) return 0;
         return self.friendRequestUsers.count;
     }
-    else return (int)self.users.count + self.users.hasNextPage.intValue;
+    else return (int)self.users.count;
 }
 
 
@@ -272,19 +271,12 @@ NSIndexPath *userIndex;
     cell.contentView.frame = CGRectMake(0, 0, self.view.frame.size.width, [self tableView:tableView heightForRowAtIndexPath:indexPath]);
 
     int tag = (int)indexPath.row;
-    if (tag == self.users.count - 5) {
+    if (tag == self.users.count - 5 || tag == self.users.count - 1) {
         [self fetchNextPage];
-    }
-    if (tag == self.users.count) {
-        [self fetchNextPage];
-        return cell;
     }
     
     WGUser *user = [self getUserAtIndex:tag];
     if (!user) {
-        if (self.users.hasNextPage.boolValue) {
-          [cell.spinnerView startAnimating];
-        }
         cell.profileImageView.image = nil;
         cell.nameLabel.text =  nil;
         cell.mutualFriendsLabel.text = nil;
@@ -317,7 +309,6 @@ NSIndexPath *userIndex;
 -(CGFloat) tableView:(UITableView *)tableView
 heightForHeaderInSection:(NSInteger)section
 {
-    if (self.isSearching) return 0;
     if ([self.currentTab isEqual:@2]) {
         if (section == 0 && self.friendRequestUsers.count == 0) return 0;
         return 30.0f;
@@ -547,60 +538,42 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     if(searchText.length != 0) {
-        [self performBlock:^(void){[self searchTableList];}
+        [self performBlock:^(void){[self searchTableList:searchText];}
                 afterDelay:0.3
      cancelPreviousRequest:YES];
     } else {
-        self.isSearching = NO;
         self.users = NetworkFetcher.defaultGetter.suggestions;
         [self.tableViewOfPeople reloadData];
     }
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self performBlock:^(void){[self searchTableList];}
+    [self performBlock:^(void){[self searchTableList:searchBar.text];}
             afterDelay:0.3
  cancelPreviousRequest:YES];
 }
 
 
-- (void)searchTableList {
-    NSString *oldString = _searchBar.text;
+- (void)searchTableList:(NSString *)oldString {
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
-    if ([self.currentTab isEqualToNumber:@2]) {
-        __weak typeof(self) weakSelf = self;
-        [WGUser searchUsers:searchString withHandler:^(WGCollection *collection, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^(void) {
-                __strong typeof(weakSelf) strongSelf = weakSelf;
-                strongSelf.fetching = NO;
-                [WGSpinnerView removeDancingGFromCenterView:self.view];
-                if (error) {
-                    [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
-                    [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-                    return;
-                }
-                strongSelf.isSearching = YES;
-                strongSelf.users = collection;
-                [strongSelf.tableViewOfPeople reloadData];
-            });
-        }];
-    }
-}
-
-- (void) getNextPageForFilteredContent {
+    if (![self.currentTab isEqual:@2]) return;
     __weak typeof(self) weakSelf = self;
-    [self.filteredUsers addNextPage:^(BOOL success, NSError *error) {
+    [WGUser searchUsers:searchString withHandler:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
-            __strong typeof(self) strongSelf = weakSelf;
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            strongSelf.fetching = NO;
+            [WGSpinnerView removeDancingGFromCenterView:self.view];
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
+            strongSelf.users = collection;
             [strongSelf.tableViewOfPeople reloadData];
         });
     }];
+    
 }
+
 
 @end
 
