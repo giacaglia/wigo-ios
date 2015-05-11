@@ -16,13 +16,12 @@
 @end
 
 @interface ImageScrollView : UIView<UIScrollViewDelegate>
+- (id) initWithFrame: (CGRect)frame andUser:(WGUser *)user;
 
 @property (nonatomic, assign) id<ImageScrollViewDelegate> delegate;
 @property (nonatomic, strong) UIScrollView *scrollView;
-
+@property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, strong) WGUser *user;
-
-- (id) initWithFrame: (CGRect)frame andUser:(WGUser *)user;
 
 - (UIImage *) getCurrentImage;
 

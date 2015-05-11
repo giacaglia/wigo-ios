@@ -11,7 +11,7 @@
 
 @interface ImageScrollView() {
     CGPoint _currentPoint;
-    NSInteger _currentPage;
+  
 }
 
 @property (nonatomic, strong) NSMutableArray *imageViews;
@@ -21,7 +21,7 @@
 @implementation ImageScrollView
 
 
-- (id)initWithFrame: (CGRect) frame andUser:(WGUser *)user {
+- (id)initWithFrame:(CGRect) frame andUser:(WGUser *)user {
     if (self = [super initWithFrame: frame]) {
         self.scrollView = [[UIScrollView alloc] initWithFrame: frame];
         self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -31,7 +31,7 @@
         self.scrollView.showsHorizontalScrollIndicator = NO;
         [self addSubview: self.scrollView];
         self.user = user;
-        _currentPage = 0;
+        self.currentPage = 0;
     }
     
     return self;
@@ -73,8 +73,9 @@
                         __strong typeof(weakSelf) strongSelf = weakSelf;
                         NSNumber *index = [outputDictionary objectForKey:@"i"];
                         [weakSpinner stopAnimating];
-                        if ([index isEqualToNumber:@0] && strongSelf.delegate) {
-                            [strongSelf.delegate pageChangedTo:0];
+                        if ((index.integerValue == strongSelf.currentPage) && strongSelf.delegate)
+                        {
+                            [strongSelf.delegate pageChangedTo:strongSelf.currentPage];
                         }
                     });
                 }];
@@ -87,10 +88,10 @@
 }
 
 - (UIImage *) getCurrentImage {
-    if (_currentPage < self.imageViews.count) {
-        UIImageView *imageView = ((UIImageView *)[self.imageViews objectAtIndex: _currentPage]);
+    if (self.currentPage < self.imageViews.count) {
+        UIImageView *imageView = ((UIImageView *)[self.imageViews objectAtIndex: self.currentPage]);
         
-        UIGraphicsBeginImageContext(CGSizeMake([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.width));
+        UIGraphicsBeginImageContext(CGSizeMake([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.width));
         CGContextRef context = UIGraphicsGetCurrentContext();
         [imageView.layer renderInContext:context];
         UIImage *result = UIGraphicsGetImageFromCurrentImageContext();
@@ -122,8 +123,8 @@
     float fractionalPage = scrollView.contentOffset.x / pageWidth;
     NSInteger page = lround(fractionalPage);
     
-    if (page != _currentPage) {
-        _currentPage = page;
+    if (page != self.currentPage) {
+        self.currentPage = page;
         [self.delegate pageChangedTo: page];
     }
 
