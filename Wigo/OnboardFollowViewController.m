@@ -10,7 +10,6 @@
 #import "Globals.h"
 #import "RWBlurPopover.h"
 
-UISearchBar *searchBar;
 UIImageView *searchIconImageView;
 
 @implementation OnboardFollowViewController
@@ -64,39 +63,39 @@ UIImageView *searchIconImageView;
 - (void)tappedView:(UITapGestureRecognizer*)tapSender {
     searchIconImageView.hidden = YES;
     [self.view endEditing:YES];
-    [self searchBarTextDidEndEditing:searchBar];
+    [self searchBarTextDidEndEditing:self.searchBar];
 }
 
 
 - (void)initializeSearchBar {
-    searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
-    searchBar.barTintColor = [FontProperties getOrangeColor];
-    searchBar.tintColor = [FontProperties getOrangeColor];
-    searchBar.placeholder = @"Search By Name";
-    searchBar.delegate = self;
-    searchBar.layer.borderWidth = 1.0f;
-    searchBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
-    UITextField *searchField = [searchBar valueForKey:@"_searchField"];
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 40)];
+    self.searchBar.barTintColor = [FontProperties getOrangeColor];
+    self.searchBar.tintColor = [FontProperties getOrangeColor];
+    self.searchBar.placeholder = @"Search By Name";
+    self.searchBar.delegate = self;
+    self.searchBar.layer.borderWidth = 1.0f;
+    self.searchBar.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    UITextField *searchField = [self.searchBar valueForKey:@"_searchField"];
     [searchField setValue:[FontProperties getOrangeColor] forKeyPath:@"_placeholderLabel.textColor"];
-    [self.view addSubview:searchBar];
+    [self.view addSubview:self.searchBar];
     
     // Search Icon Clear
-    UITextField *txfSearchField = [searchBar valueForKey:@"_searchField"];
+    UITextField *txfSearchField = [self.searchBar valueForKey:@"_searchField"];
     [txfSearchField setLeftViewMode:UITextFieldViewModeNever];
     
     // Add Custom Search Icon
     searchIconImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"orangeSearchIcon"]];
     searchIconImageView.frame = CGRectMake(85, 13, 15, 16);
-    [searchBar addSubview:searchIconImageView];
-    [self.view addSubview:searchBar];
-    [self.view bringSubviewToFront:searchBar];
+    [self.searchBar addSubview:searchIconImageView];
+    [self.view addSubview:self.searchBar];
+    [self.view bringSubviewToFront:self.searchBar];
     
     // Remove Clear Button on the right
-    UITextField *textField = [searchBar valueForKey:@"_searchField"];
+    UITextField *textField = [self.searchBar valueForKey:@"_searchField"];
     textField.clearButtonMode = UITextFieldViewModeNever;
     
     // Text when editing becomes orange
-    for (UIView *subView in searchBar.subviews) {
+    for (UIView *subView in self.searchBar.subviews) {
         for (UIView *secondLevelSubview in subView.subviews){
             if ([secondLevelSubview isKindOfClass:[UITextField class]])
             {
@@ -190,7 +189,7 @@ UIImageView *searchIconImageView;
 #pragma mark - Keyboad notification handlers
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [searchBar endEditing:YES];
+    [self.searchBar endEditing:YES];
 }
 
 - (void)keyboardDidHide:(NSNotification *)notification {
@@ -291,19 +290,24 @@ UIImageView *searchIconImageView;
 }
 
 - (void)searchTableList {
-    NSString *oldString = searchBar.text;
+    NSString *oldString = self.searchBar.text;
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     __weak typeof(self) weakSelf = self;
-    [WGUser searchUsers:searchString withHandler:^(WGCollection *collection, NSError *error) {
+    
+    [WGUser searchUsers:searchString withHandler:^(NSURL *url, WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
+            [WGSpinnerView removeDancingGFromCenterView:self.view];
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionSearch retryHandler:nil];
-                [[WGError sharedInstance] logError:error forAction:WGActionSearch];
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
-            strongSelf.presentedUsers = collection;
-            [strongSelf.tableViewOfPeople reloadData];
+            NSArray *separateArray = [url.absoluteString componentsSeparatedByString:@"="];
+            NSString *searchedString = (NSString *)separateArray.lastObject;
+            if ([searchedString isEqual:strongSelf.searchBar.text]) {
+                strongSelf.presentedUsers = collection;
+                [strongSelf.tableViewOfPeople reloadData];
+            }
         });
     }];
 }

@@ -18,6 +18,7 @@
 @property (nonatomic, strong) WGCollection *presentedUsers;
 @property (nonatomic, strong) UIButton *continueButton;
 @property (nonatomic, strong) UIImageView *rightArrowImageView;
+@property (nonatomic, strong) UISearchBar *searchBar;
 @end
 
 #define kOnboardCellName @"OnboardCellName"

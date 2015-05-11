@@ -1260,13 +1260,14 @@ static WGUser *currentUser = nil;
 }
 
 
-+(void) searchUsers:(NSString *)query withHandler:(WGCollectionResultBlock)handler {
++(void) searchUsers:(NSString *)query withHandler:(WGSerializedCollectionResultBlock)handler {
     if (!query) {
-        return handler(nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+        return handler(nil, nil, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi get:@"users/" withArguments:@{ @"text" : query} andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    
+    [WGApi get:@"users/" withArguments:@{ @"text" : query} andSerializedHandler:^(NSURL *sentURL, NSDictionary *jsonResponse, NSError *error) {
         if (error) {
-            handler(nil, error);
+            handler(nil, nil, error);
             return;
         }
         NSError *dataError;
@@ -1280,7 +1281,7 @@ static WGUser *currentUser = nil;
             dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
-            handler(objects, dataError);
+            handler(sentURL, objects, dataError);
         }
     }];
 }

@@ -136,7 +136,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 +(void) getNewestUser:(WGUserResultBlock)handler;
 +(void) getReferals:(WGCollectionResultBlock)handler;
 +(void) getOnboarding:(WGCollectionResultBlock)handler;
-+(void) searchUsers:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
++(void) searchUsers:(NSString *)query withHandler:(WGSerializedCollectionResultBlock)handler;
 +(void) getSuggestions:(WGCollectionResultBlock)handler;
 +(void) getInvites:(WGCollectionResultBlock)handler;
 +(void) searchInvites:(NSString *)query withHandler:(WGCollectionResultBlock)handler;

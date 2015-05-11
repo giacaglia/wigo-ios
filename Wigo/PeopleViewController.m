@@ -15,7 +15,6 @@
 #import <FBSDKShareKit/FBSDKShareKit.h>
 
 @interface PeopleViewController () <FBSDKAppInviteDialogDelegate>
-@property UISearchBar *searchBar;
 @end
 
 BOOL didProfileSegue;
@@ -28,7 +27,6 @@ NSIndexPath *userIndex;
     if (self) {
         self.user = user;
         self.currentTab = tab;
-        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -37,7 +35,6 @@ NSIndexPath *userIndex;
     self = [super init];
     if (self) {
         self.user = user;
-        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -46,6 +43,7 @@ NSIndexPath *userIndex;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.backgroundColor = UIColor.whiteColor;
     didProfileSegue = NO;
     if (!self.currentTab) self.currentTab = @2;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
@@ -170,11 +168,11 @@ NSIndexPath *userIndex;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableViewOfPeople.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableViewOfPeople.showsVerticalScrollIndicator = NO;
-    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 44, self.view.frame.size.width, 50)];
-    _searchBar.delegate = self;
-    _searchBar.placeholder = @"Search by Name";
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 44, self.view.frame.size.width, 50)];
+    self.searchBar.delegate = self;
+    self.searchBar.placeholder = @"Search by Name";
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44 + 50)];
-    [headerView addSubview:_searchBar];
+    [headerView addSubview:self.searchBar];
     self.tableViewOfPeople.tableHeaderView = headerView;
     self.tableViewOfPeople.contentOffset = CGPointMake(0, 50);
     [self.view addSubview:self.tableViewOfPeople];
@@ -335,7 +333,7 @@ viewForHeaderInSection:(NSInteger)section
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [_searchBar endEditing:YES];
+    [self.searchBar endEditing:YES];
 //    CGRect frame = self.navigationController.navigationBar.frame;
 //    frame = CGRectMake(frame.origin.x, frame.origin.y + 50, frame.size.width, frame.size.height);
 //    CGFloat size = frame.size.height - 20;
@@ -558,7 +556,7 @@ viewForHeaderInSection:(NSInteger)section
     NSString *searchString = [oldString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     if (![self.currentTab isEqual:@2]) return;
     __weak typeof(self) weakSelf = self;
-    [WGUser searchUsers:searchString withHandler:^(WGCollection *collection, NSError *error) {
+    [WGUser searchUsers:searchString withHandler:^(NSURL *url, WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             strongSelf.fetching = NO;
@@ -567,8 +565,12 @@ viewForHeaderInSection:(NSInteger)section
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
-            strongSelf.users = collection;
-            [strongSelf.tableViewOfPeople reloadData];
+            NSArray *separateArray = [url.absoluteString componentsSeparatedByString:@"="];
+            NSString *searchedString = (NSString *)separateArray.lastObject;
+            if ([searchedString isEqual:strongSelf.searchBar.text]) {
+                strongSelf.users = collection;
+                [strongSelf.tableViewOfPeople reloadData];
+            }
         });
     }];
     

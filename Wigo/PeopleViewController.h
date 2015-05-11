@@ -27,6 +27,7 @@
 @property (nonatomic, strong) WGCollection *friendRequestUsers;
 @property (nonatomic, assign) BOOL fetching;
 @property (nonatomic, strong) NSDate *lastUserRead;
+@property (nonatomic, strong) UISearchBar *searchBar;
 @end
 
 @interface TablePersonCell : UITableViewCell
