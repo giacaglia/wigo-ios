@@ -34,7 +34,6 @@
 #define kLessThan2PhotosOldEventCell @"LessThan2PhotosOldEventCell"
 #define kOldEventCellName @"OldEventCell"
 
-#define kOldEventShowHighlightsCellName @"OldEventShowHighlightsCellName"
 
 @interface PlacesViewController ()
 // Events By Days
@@ -350,7 +349,6 @@ BOOL firstTimeLoading;
     [self.placesTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self.placesTableView registerClass:[EventCell class] forCellReuseIdentifier:kEventCellName];
     [self.placesTableView registerClass:[LessThan2PhotosOldEventCell class] forCellReuseIdentifier:kLessThan2PhotosOldEventCell];
-    [self.placesTableView registerClass:[OldEventShowHighlightsCell class] forCellReuseIdentifier:kOldEventShowHighlightsCellName];
     self.placesTableView.backgroundColor = UIColor.whiteColor;
     self.placesTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self addRefreshToScrollView];
@@ -454,11 +452,7 @@ BOOL firstTimeLoading;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if ([self shouldShowHighlights]) {
-        //[Today section]  [Button show highlights]
-        return 1 + 1 + 1;
-    }
-    else if (self.pastDays.count > 0) {
+   if (self.pastDays.count > 0) {
         //[Today section] [Highlighs section] (really just space for a header) + pastDays sections
 //        return 1 + 1;
         return 1 + 1 + self.pastDays.count;
@@ -473,9 +467,6 @@ BOOL firstTimeLoading;
     }
     else if (section == kHighlightsEmptySection) {
         return 0;
-    }
-    else if ([self shouldShowHighlights] && section > 1) {
-        return 1;
     }
     else if (self.pastDays.count > 0 && section > 1) {
         NSString *day = [self.pastDays objectAtIndex: section - 2];
@@ -492,9 +483,6 @@ BOOL firstTimeLoading;
     else if (section == kHighlightsEmptySection) { //highlights section seperator
         return 0;
     }
-    else if ([self shouldShowHighlights] && section > 1) {
-        return 0;
-    }
     else if (self.pastDays.count > 0 && section > 1) { //past day headers
         return [PastDayHeader height: (section - 2 == 0)];
     }
@@ -507,9 +495,6 @@ BOOL firstTimeLoading;
         return [TodayHeader new];
     }
     else if (section == kHighlightsEmptySection) {
-        return nil;
-    }
-    else if ([self shouldShowHighlights] && section > 1) {
         return nil;
     }
     else if (self.pastDays.count > 0 && section > 1) { //past day headers
@@ -550,9 +535,6 @@ BOOL firstTimeLoading;
     }
     else if (indexPath.section == kHighlightsEmptySection) {
         return 0;
-    }
-    else if ([self shouldShowHighlights] && indexPath.section > 1) {
-        return [EventCell height];
     }
     else if (self.pastDays.count > 0 && indexPath.section > 1) { //past day rows
         return [LessThan2PhotosOldEventCell height];
@@ -615,11 +597,8 @@ BOOL firstTimeLoading;
         return cell;
     } else if (indexPath.section == kHighlightsEmptySection) {
         return nil;
-    } else if ([self shouldShowHighlights] && indexPath.section > 1) {
-        OldEventShowHighlightsCell *cell = [tableView dequeueReusableCellWithIdentifier:kOldEventShowHighlightsCellName forIndexPath:indexPath];
-        cell.placesDelegate = self;
-        return cell;
-    } else if (self.pastDays.count > 0 && indexPath.section > 1) {
+    }
+    else if (self.pastDays.count > 0 && indexPath.section > 1) {
         // past day rows
         NSString *day = [self.pastDays objectAtIndex: indexPath.section - 2];
         NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
@@ -693,10 +672,6 @@ BOOL firstTimeLoading;
     }
 }
 
-- (BOOL) shouldShowHighlights {
-    BOOL shownHighlights =  [[NSUserDefaults standardUserDefaults] boolForKey: @"shownHighlights"];
-    return !shownHighlights && self.pastDays.count;
-}
 
 #pragma mark - ToolTip 
 
@@ -1609,7 +1584,7 @@ BOOL firstTimeLoading;
     [backgroundView addSubview:self.eventPeopleScrollView];
     
     UILabel *topBuzzLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height + 5, 100, 20)];
-    topBuzzLabel.textColor = [FontProperties getBlueColor];
+    topBuzzLabel.textColor = RGB(121, 121, 121);
     topBuzzLabel.text = @"Top Buzz";
     topBuzzLabel.textAlignment = NSTextAlignmentLeft;
     topBuzzLabel.font = [FontProperties mediumFont:15.0];
@@ -1707,38 +1682,3 @@ BOOL firstTimeLoading;
 
 @end
 
-@implementation OldEventShowHighlightsCell
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self setup];
-    }
-    return self;
-}
-
-- (void) setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [OldEventShowHighlightsCell height]);
-    self.backgroundColor = RGB(241, 241, 241);
-    
-    self.showHighlightsButton = [[UIButton alloc] initWithFrame:CGRectMake(45, 0, self.frame.size.width - 90, 64)];
-    self.showHighlightsButton.backgroundColor = RGB(248, 248, 248);
-    [self.showHighlightsButton setTitle:@"Show Past Highlights" forState:UIControlStateNormal];
-    [self.showHighlightsButton setTitleColor:RGB(160, 160, 160) forState:UIControlStateNormal];
-    self.showHighlightsButton.titleLabel.font = [FontProperties scMediumFont: 18];
-    [self.showHighlightsButton addTarget:self action:@selector(showHighlightsPressed) forControlEvents:UIControlEventTouchUpInside];
-    self.showHighlightsButton.layer.borderColor = RGB(232, 232, 232).CGColor;
-    self.showHighlightsButton.layer.borderWidth = 1;
-    self.showHighlightsButton.layer.cornerRadius = 8;
-    [self.contentView addSubview:self.showHighlightsButton];
-}
-
-- (void)showHighlightsPressed {
-    [self.placesDelegate showHighlights];
-}
-
-+ (CGFloat) height {
-    return 150;
-}
-
-@end

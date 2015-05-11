@@ -89,6 +89,7 @@ BOOL blockShown;
     else {
          self.tableView.frame = CGRectMake( self.tableView.frame.origin.x, self.tableView.frame.origin.y, self.tableView.frame.size.width,  [UIApplication sharedApplication].keyWindow.frame.size.height);
     }
+
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
