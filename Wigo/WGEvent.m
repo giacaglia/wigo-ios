@@ -9,6 +9,7 @@
 #import "WGEvent.h"
 #import "WGProfile.h"
 #import "WGCache.h"
+#import "FontProperties.h"
 
 #define kNameKey @"name"
 
@@ -170,6 +171,15 @@
 
 -(WGCollection *) attendees {
     return [self objectForKey:kAttendeesKey];
+}
+
+-(BOOL)isEvent2Lines {
+    CGSize size = [self.name sizeWithAttributes:
+                   @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
+    if (size.width > [UIScreen mainScreen].bounds.size.width - 30) {
+        return YES;
+    }
+    return NO;
 }
 
 -(void) addAttendee:(WGEventAttendee *)attendee {

@@ -32,7 +32,6 @@ typedef enum  {
 
 @interface EventPeopleScrollView : UICollectionView <UICollectionViewDataSource, UICollectionViewDelegate, UIGestureRecognizerDelegate>
 
--(id) initWithEvent:(WGEvent*)event;
 +(CGFloat) containerHeight;
 -(void) scrollToSavedPosition;
 -(void) saveScrollPosition;

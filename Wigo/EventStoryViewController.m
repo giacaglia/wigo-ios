@@ -604,12 +604,12 @@
     self.lineViewAtTop.hidden = YES;
     [self.view addSubview:self.lineViewAtTop];
     
-    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
-    self.eventPeopleScrollView.event = _event;
-    self.eventPeopleScrollView.userSelectDelegate = self;
-    self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 10, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
-    [self.backgroundScrollview addSubview:self.eventPeopleScrollView];
+//    self.eventPeopleScrollView = [[EventPeopleScrollView alloc] initWithEvent:_event];
+//    self.eventPeopleScrollView.event = _event;
+//    self.eventPeopleScrollView.userSelectDelegate = self;
+//    self.eventPeopleScrollView.placesDelegate = self.placesDelegate;
+//    self.eventPeopleScrollView.frame = CGRectMake(0, 10, self.view.frame.size.width, self.eventPeopleScrollView.frame.size.height);
+//    [self.backgroundScrollview addSubview:self.eventPeopleScrollView];
 }
 
 - (void)loadEventTitle {

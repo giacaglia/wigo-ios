@@ -13,7 +13,7 @@
 
 @implementation EventPeopleScrollView
 
-- (id)initWithEvent:(WGEvent *)event {
+-(id) init {
     if (self.widthOfEachCell == 0) self.widthOfEachCell = 0.9*(float)[UIScreen mainScreen].bounds.size.width/(float)5.5;
     self = [super initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, self.widthOfEachCell + 50) collectionViewLayout:[[ScrollViewLayout alloc] initWithWidth:self.widthOfEachCell]];
     if (self) {
@@ -22,14 +22,12 @@
         self.delegate = self;
         self.dataSource = self;
         self.clipsToBounds = NO;
-        self.event = event;
         [self registerClass:[ScrollViewCell class] forCellWithReuseIdentifier:kScrollViewCellName];
         [self registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:kScrollViewHeader];
         [self addInviteButton];
     }
     return self;
 }
-
 
 - (void)addInviteButton {
     self.hiddenInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];

@@ -31,6 +31,8 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
 -(WGUser *) owner;
 +(WGEvent *) serialize:(NSDictionary *)json;
 
+-(BOOL) isEvent2Lines;
+
 -(void) addAttendee:(WGEventAttendee *)attendee;
 
 -(void) setPrivacyOn:(BOOL)privacy andHandler:(BoolResultBlock)handler;

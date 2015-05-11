@@ -55,7 +55,6 @@
 #import "HighlightsCollectionView.h"
 
 @interface EventCell : UITableViewCell
-+ (BOOL)isEvent2Lines:(WGEvent *)event;
 + (CGFloat)height;
 @property (nonatomic, strong) UIView *whiteView;
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
@@ -71,7 +70,6 @@
 @property (nonatomic, strong) UIView *grayView;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @property (nonatomic, strong) UIView *verifiedView;
-@property (nonatomic, assign) BOOL isOldEvent;
 @end
 
 @interface OneLineEventCell : EventCell
@@ -115,11 +113,11 @@
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @end
 
-@interface MoreThan2PhotosOldEventCell : HighlightOldEventCell
+@interface OldTwoLinesEventCell : HighlightOldEventCell
 +(CGFloat)height;
 @end
 
-@interface LessThan2PhotosOldEventCell : HighlightOldEventCell
+@interface OldOneLineEventCell : HighlightOldEventCell
 +(CGFloat)height;
 @end
 
