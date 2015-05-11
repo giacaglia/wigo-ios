@@ -964,6 +964,16 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         [strongSelf reloadViewForUserState];
     }];
     
+    if (!WGProfile.numFriends) {
+        __weak typeof(self) weakSelf = self;
+        [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            strongSelf.numberOfFriendsLabel.text = WGProfile.numFriends.stringValue;
+            if (WGProfile.numFriends.intValue == 0 || WGProfile.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
+            else strongSelf.friendsLabel.text = @"Friends";
+        }];
+    }
+    
 }
 
 - (void)fetchFirstPageNotifications {
