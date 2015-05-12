@@ -22,6 +22,7 @@
 #import "ChatViewController.h"
 #import "PeopleViewController.h"
 #import "ProfileViewController.h"
+#import "NetworkFetcher.h"
 
 #define kImageQuality @"quality"
 #define kImageMultiple @"multiple"
@@ -239,6 +240,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {}];
     if (application.applicationState == UIApplicationStateInactive) {
         [self dismissEverythingWithUserInfo:userInfo];
     }
