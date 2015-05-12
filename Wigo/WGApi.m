@@ -129,6 +129,7 @@ static CLLocationManager *locationManager;
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.requestSerializer.cachePolicy = NSURLRequestUseProtocolCachePolicy;
     
     // Hack for Ambassador View
     BOOL shouldPassKey = [url rangeOfString:@"key="].location != NSNotFound;

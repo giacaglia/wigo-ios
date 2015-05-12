@@ -404,9 +404,10 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
     label.font = [FontProperties lightFont:27.0f];
     [self.scrollView addSubview:label];
     
-    UIImageView *fourthImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 92 + index*self.view.frame.size.width, 95, 184, 355)];
-    fourthImgView.image = [UIImage imageNamed:imageName];
-    [self.scrollView addSubview:fourthImgView];
+    float widthOfImage = 0.575*[UIScreen mainScreen].bounds.size.width;
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - widthOfImage/2 + index*self.view.frame.size.width, 95, widthOfImage, 1.9*widthOfImage)];
+    imgView.image = [UIImage imageNamed:imageName];
+    [self.scrollView addSubview:imgView];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {

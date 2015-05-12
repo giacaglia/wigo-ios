@@ -72,7 +72,6 @@ BOOL firstTimeLoading;
     [TabBarAuxiliar startTabBarItems];
     [self addCenterButton];
     [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {}];
-    [NetworkFetcher.defaultGetter fetchFriendsIds];
     [NetworkFetcher.defaultGetter fetchSuggestions];
 }
 
@@ -106,6 +105,7 @@ BOOL firstTimeLoading;
     }
     [self updateNavigationBar];
     [self fetchUserInfo];
+    [NetworkFetcher.defaultGetter fetchFriendsIds];
     [LocationPrimer startPrimer];
 }
 
