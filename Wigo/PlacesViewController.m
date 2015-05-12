@@ -1511,6 +1511,8 @@ BOOL firstTimeLoading;
 }
 
 -(void) setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [OneLineEventCell height]);
+    self.contentView.frame = self.frame;
     UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [OneLineEventCell height] - 20 - 4, self.frame.size.width + 10, 12)];
     shadowImageView.image = [UIImage imageNamed:@"shadow"];
     [self.contentView addSubview:shadowImageView];
@@ -1559,6 +1561,9 @@ BOOL firstTimeLoading;
 }
 
 -(void) setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TwoLineEventCell height]);
+    self.contentView.frame = self.frame;
+
     UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [TwoLineEventCell height] - 20 - 4, self.frame.size.width + 10, 12)];
     shadowImageView.image = [UIImage imageNamed:@"shadow"];
     [self.contentView addSubview:shadowImageView];

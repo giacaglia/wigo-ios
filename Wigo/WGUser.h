@@ -154,6 +154,9 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) acceptFriendRequestFromUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) rejectFriendRequestForUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
+-(void)inviteUser:(WGUser *)user
+          atEvent:(WGEvent *)event
+      withHandler:(BoolResultBlock)handler;
 -(void) tapUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) tapAllUsersWithHandler:(BoolResultBlock)handler;
 -(void) tapUsers:(WGCollection *)users withHandler:(BoolResultBlock)handler;

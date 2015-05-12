@@ -273,22 +273,13 @@ heightForHeaderInSection:(NSInteger)section
     if (tag >= self.presentedUsers.count) return;
     
     WGUser *user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
-    
-    
-    if (user.isTapped.boolValue) {
-        [WGProfile.currentUser untap:user withHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-            }
-        }];
-        user.isTapped = @NO;
-        [WGAnalytics tagAction:@"untap" atView:@"invite"];
-    } else {
-        [WGProfile.currentUser tapUser:user withHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionSave];
-            }
-        }];
+
+    if (!user.isTapped.boolValue) {
+        [WGProfile.currentUser inviteUser:user
+                                  atEvent:event
+                              withHandler:^(BOOL success, NSError *error) {
+                                  
+                              }];
         user.isTapped = @YES;
         [WGAnalytics tagAction:@"tap" atView:@"invite"];
     }
