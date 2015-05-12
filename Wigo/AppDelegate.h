@@ -18,6 +18,8 @@ typedef void (^IsThereResult)(NSNumber *numberOfNewMessages, NSNumber *numberOfN
 @property NSMutableDictionary *notificationDictionary;
 
 - (void) initializeGoogleAnalytics;
+
+- (void) navigate:(NSString *)navigateString;
 - (void) switchToTab:(NSString *)tab withOptions:(NSDictionary *)options;
 
 @end

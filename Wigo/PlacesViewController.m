@@ -710,6 +710,22 @@ BOOL firstTimeLoading;
     return event;
 }
 
+// return index path for event specified by ID,
+// or nil if it is not found
+
+- (NSIndexPath *)getIndexPathForEventId:(NSNumber *)eventId {
+    
+    NSInteger section = 0;
+    
+    for(int i = 0; i < self.events.count; i++) {
+        WGEvent *event  = self.events.objects[i];
+        if([event.id integerValue] == [eventId integerValue]) {
+            return [NSIndexPath indexPathForRow:i inSection:section];
+        }
+    }
+    return nil;
+}
+
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
     // Remove seperator inset
     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
@@ -1010,21 +1026,105 @@ BOOL firstTimeLoading;
 
 - (void)updateViewWithOptions:(NSDictionary *)options {
     
-    if(options[kWGViewOptionKeyEventId]) {
+    NSString *destinationPage = options[kNameOfObjectKey];
+    NSDictionary *userInfo = options[@"objects"];
+    
+    if([destinationPage isEqualToString:@"events"]) {
         
-    }
-    else if(options[kWGViewOptionKeyAction]) {
-        
-        if([options[kWGViewOptionKeyAction] isEqualToString:kWGViewOptionActionScrollToTop]) {
+        if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
+            NSNumber *eventId = userInfo[@"events"];
             
-            if(self.placesTableView.numberOfSections > 0 &&
-               [self.placesTableView numberOfRowsInSection:0] > 0) {
-                
-                [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                                            atScrollPosition:UITableViewScrollPositionTop animated:NO];
-            }
+            [self scrollToEventId:eventId];
+        }
+        else {
+            [self scrollToTop];
         }
     }
+    else if([destinationPage isEqualToString:@"messages"]) {
+        
+        // scroll to appropriate event on events page
+        
+        if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
+            NSNumber *eventId = userInfo[@"events"];
+            
+            [self scrollToEventId:eventId];
+            
+            // show message in event details view
+            
+            NSNumber *messageId = userInfo[@"messages"];
+            
+            // locate event, conversation index for message
+            
+            WGEvent *event = nil;
+            for(int i = 0; i < self.events.count; i++) {
+                WGEvent *e  = self.events.objects[i];
+                if([e.id integerValue] == [eventId integerValue]) {
+                    event = e;
+                }
+            }
+            
+            if(event) {
+                
+                NSInteger conversationIndex = NSNotFound;
+                NSInteger idx = 0;
+                
+                for(int i = 0; i < event.messages.count; i++) {
+                    WGEventMessage *message = event.messages.objects[i];
+                    
+                    if([message.id integerValue] == [messageId integerValue]) {
+                        conversationIndex = idx;
+                    }
+                    idx++;
+                }
+                
+                if(conversationIndex != NSNotFound) {
+                    
+                    if (! event.isExpired.boolValue) {
+                        conversationIndex++;
+                    }
+                    
+                    [self showConversationForEvent:event
+                                 withEventMessages:event.messages
+                                           atIndex:(int)conversationIndex];
+                }
+                
+            }
+            
+        }
+        else {
+            [self scrollToTop];
+        }
+    }
+}
+
+- (void)scrollToEventId:(NSNumber *)eventId {
+    
+    NSIndexPath *indexPath = [self getIndexPathForEventId:eventId];
+    
+    if(indexPath) {
+        
+        // need to animate the scroll motion down slightly, otherwise
+        // the scrolling nav header gets put in an awkward place
+        
+        [self.placesTableView scrollToRowAtIndexPath:indexPath
+                                    atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+        [self.placesTableView scrollToRowAtIndexPath:indexPath
+                                    atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    }
+    else {
+        [self scrollToTop];
+    }
+}
+
+- (void)scrollToTop {
+    
+    if(self.placesTableView.numberOfSections > 0 &&
+       [self.placesTableView numberOfRowsInSection:0] > 0) {
+        
+        [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                                    atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    }
+    
 }
 
 #pragma mark - EventPeopleScrollView Delegate

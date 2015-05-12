@@ -94,6 +94,19 @@ NSDate *firstLoggedTime;
     [WGI openedTheApp];
 }
 
+- (void)navigate:(NSString *)navigateString {
+    
+    NSDictionary *navigationDict = [WGNavigateParser dictionaryFromString:navigateString];
+    navigationDict = [WGNavigateParser userInfoFromString:navigateString];
+    
+    NSString *presentedView = navigationDict[kNameOfObjectKey];
+    NSString *tab = [WGNavigateParser applicationTabForObject:presentedView];
+    
+    if(tab) {
+        [self switchToTab:tab withOptions:navigationDict];
+    }
+}
+
 - (void) switchToTab:(NSString *)tab withOptions:(NSDictionary *)options {
     
     // dismiss any existing modal or navigation views

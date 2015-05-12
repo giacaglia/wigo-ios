@@ -59,11 +59,6 @@ static NSString * const kWGTabChat = @"WGTabChat";
 static NSString * const kWGTabDiscover = @"WGTabDiscover";
 static NSString * const kWGTabProfile = @"WGTabProfile";
 
-static NSString * const kWGViewOptionKeyAction = @"WGViewOptionKeyAction";
-static NSString * const kWGViewOptionKeyEventId = @"GViewOptionKeyEventId";
-
-static NSString * const kWGViewOptionActionScrollToTop = @"WGViewOptionActionScrollToTop";
-
 @protocol Globals <NSObject>
 
 @end

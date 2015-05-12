@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+#define kArrayNamesOfObjects @[@"group", @"user", @"event", @"message", @"eventmessage", @"notification"]
+#define kObjectsKey @"objects"
+#define kNameOfObjectKey @"nameOfObject"
+
 @interface WGNavigateParser : NSObject
 
 + (NSDictionary *)dictionaryFromString:(NSString *)navigateString;
@@ -15,4 +19,6 @@
 + (NSDictionary *)userInfoFromString:(NSString *)navigateString;
 + (NSDictionary *)objectsFromUserInfo:(NSDictionary *)userInfo;
 + (NSString *)nameOfObjectFromUserInfo:(NSDictionary *)userInfo;
++ (NSString *)applicationTabForObject:(NSString *)objectName;
+
 @end

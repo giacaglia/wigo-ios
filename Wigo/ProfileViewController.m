@@ -857,9 +857,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         WGNotification *notification = (WGNotification *)[self.notifications objectAtIndex:indexPath.row];
         WGUser *user = notification.fromUser;
         
-//        NSLog(@"notification type: %@", notification.type);
-//        NSLog(@"notification details: %@", notification.parameters.description);
-//        
         if ([notification.type isEqualToString:@"follow"] ||
             [notification.type isEqualToString:@"follow.accepted"] ||
             [notification.type isEqualToString:@"facebook.follow"]) {
@@ -867,20 +864,20 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         }
         else if([notification.type isEqualToString:@"tap"]) {
             
-            NSDictionary *options = @{kWGViewOptionKeyAction:kWGViewOptionActionScrollToTop};
-            
             [(AppDelegate *)[UIApplication sharedApplication].delegate
-             switchToTab:kWGTabHome
-             withOptions:options];
+             navigate:@"/events"];
             
         }
-        else if([notification.type isEqualToString:@"tap"]) {
-            
-            NSDictionary *options = @{kWGViewOptionKeyEventId:@""};
+        else if([notification.type isEqualToString:@"invite"]) {
             
             [(AppDelegate *)[UIApplication sharedApplication].delegate
-             switchToTab:kWGTabHome
-             withOptions:options];
+             navigate:notification.parameters[@"navigate"]];
+            
+        }
+        else if([notification.type isEqualToString:@"eventmessage.vote"]) {
+            
+            [(AppDelegate *)[UIApplication sharedApplication].delegate
+             navigate:notification.parameters[@"navigate"]];
             
         }
         else if (user.state != SENT_OR_RECEIVED_REQUEST_USER_STATE &&
