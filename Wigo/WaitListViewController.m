@@ -112,7 +112,7 @@
     FBSDKAppInviteContent *content = [[FBSDKAppInviteContent alloc] init];
     content.appLinkURL = [NSURL URLWithString:@"https://fb.me/847330831988239"];
     //optionally set previewImageURL
-    content.previewImageURL = [NSURL URLWithString:@"http://www.wigo.us/static/img/logo.png"];
+    content.previewImageURL = [NSURL URLWithString:@"https://scontent.xx.fbcdn.net/hphotos-xta1/v/t1.0-9/11238216_1439554293026893_6205650579948710271_n.jpg?oh=2bd7fda52e6044eb96f3a5d7c9e5115e&oe=55DB23AB"];
     
     // present the dialog. Assumes self implements protocol `FBSDKAppInviteDialogDelegate`
     [FBSDKAppInviteDialog showWithContent:content
