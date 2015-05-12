@@ -22,7 +22,6 @@
 #define kImageMultiple @"imageMultiple"
 #define kGoogleAnalyticsEnabledKey @"googleAnalyticsEnabled"
 #define kCanFetchAppStartupKey @"canFetchAppStartup"
-#define kTriedToRegisterKey @"triedToRegister"
 #define kDatesAccessedKey @"datesAccessed"
 #define kShowSchoolStatistics @"school_statistics"
 #define kChosenPeople @"chosenPeople"
@@ -268,14 +267,6 @@ static BOOL isLocal = YES;
 
 -(NSNumber *) showSchoolStatistics {
     return [[NSUserDefaults standardUserDefaults] objectForKey:kShowSchoolStatistics];
-}
-
--(void) setTriedToRegister:(NSNumber *)triedToRegister {
-    [[NSUserDefaults standardUserDefaults] setObject:triedToRegister forKey:kTriedToRegisterKey];
-}
-
--(NSNumber *) triedToRegister {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kTriedToRegisterKey];
 }
 
 +(void)setNumFriends:(NSNumber *)numFriends {

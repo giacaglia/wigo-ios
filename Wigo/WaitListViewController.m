@@ -121,6 +121,8 @@
 
 - (void)appInviteDialog:(FBSDKAppInviteDialog *)appInviteDialog
  didCompleteWithResults:(NSDictionary *)result {
+    WGProfile.currentUser.status = @"active";
+    [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

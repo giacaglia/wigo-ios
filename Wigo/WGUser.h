@@ -89,7 +89,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSNumber* numUnreadNotifications;
 @property NSNumber* numUnreadUsers;
 @property NSNumber *numMutualFriends;
-
+@property NSString *status;
 @property NSDictionary *friendsMetaDict;
 @property UIImageView *avatarView;
 
@@ -108,7 +108,6 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 +(Gender) genderFromName:(NSString *)name;
 -(NSString *) fullName;
 -(NSString *) age;
--(NSString *) status;
 -(NSNumber *) waitListPos;
 
 -(State) state;

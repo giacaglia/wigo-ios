@@ -12,6 +12,7 @@
 #import <Parse/Parse.h>
 #import "ReferalViewController.h"
 #import "WaitListViewController.h"
+#import "LocationPrimer.h"
 
 #define kPushNotificationMessage @"When your friends are counting on you to go out, we need to reach you via push notifications."
 #define kPushNotificationKey @"push_notification_key"
@@ -417,8 +418,8 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
 #pragma mark - Push Notification
 
 -(void) presentPushNotification {
-    NSNumber *wasSentPushNotification = [[NSUserDefaults standardUserDefaults] objectForKey:kPushNotificationKey];
-    if (!wasSentPushNotification) {
+    BOOL wasPushNotificationEnabled = [LocationPrimer wasPushNotificationEnabled];
+    if (!wasPushNotificationEnabled) {
         UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
         self.blurredView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
         self.blurredView.frame = self.view.bounds;
@@ -463,8 +464,6 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"triedToRegister"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
     [self.blurredView removeFromSuperview];
     [self navigate];
 }

@@ -384,6 +384,10 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kStatusKey];
 }
 
+-(void) setStatus:(NSString *)status {
+    [self setObject:status forKey:kStatusKey];
+}
+
 -(NSNumber *)waitListPos {
     if ([self objectForKey:kWaitListPosKey]) {
         return [self objectForKey:kWaitListPosKey];

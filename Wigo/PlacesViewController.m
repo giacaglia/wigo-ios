@@ -106,8 +106,7 @@ BOOL firstTimeLoading;
     }
     [self updateNavigationBar];
     [self fetchUserInfo];
-//    ReferalView *referalView = [[ReferalView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-//    [self.view addSubview:referalView];
+    [LocationPrimer wasPushNotificationEnabled];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

@@ -119,11 +119,13 @@ static UIButton *mainButton;
 +(BOOL) wasPushNotificationEnabled {
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)]){
         UIUserNotificationSettings *grantedSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
-//        if (gran)
+        if (grantedSettings.types == UIUserNotificationTypeNone) {
+            return NO;
+        }
         return YES;
     }
     else {
-        return NO;
+        return [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
     }
   
 }
