@@ -136,6 +136,10 @@ NSDate *firstLoggedTime;
         for(UIViewController *vc in tabController.viewControllers) {
             if([vc isKindOfClass:selectedClass]) {
                 tabController.selectedViewController = vc;
+                
+                if([vc conformsToProtocol:@protocol(WGViewController)]) {
+                    [(id <WGViewController>)vc updateViewWithOptions:options];
+                }
             }
         }
     }

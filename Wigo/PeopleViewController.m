@@ -199,6 +199,13 @@ NSIndexPath *userIndex;
        didFailWithError:(NSError *)error {
     
 }
+
+#pragma mark WGViewController methods
+
+- (void)updateViewWithOptions:(NSDictionary *)options {
+    
+}
+
 #pragma mark - Filter handlers
 
 

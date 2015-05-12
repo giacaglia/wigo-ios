@@ -13,11 +13,14 @@
 #import "SignViewController.h"
 #import "LabelSwitch.h"
 #import "BaseViewController.h"
+#import "Globals.h"
 
 @interface PlacesViewController : BaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
     UIGestureRecognizerDelegate,
     PlacesDelegate,
-    CLLocationManagerDelegate>
+    CLLocationManagerDelegate,
+    WGViewController>
+
 #define kTodaySection 0
 #define kHighlightsEmptySection 1
 

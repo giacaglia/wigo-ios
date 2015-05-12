@@ -11,7 +11,7 @@
 #import "BaseViewController.h"
 
 
-@interface ChatViewController : BaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface ChatViewController : BaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, WGViewController>
 
 @property (nonatomic, strong) UIButton *chatButton;
 @property (nonatomic, strong) UITableView *tableViewOfPeople;

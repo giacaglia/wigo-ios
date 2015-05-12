@@ -1006,6 +1006,27 @@ BOOL firstTimeLoading;
     [self.placesTableView reloadData];
 }
 
+#pragma mark WGViewController methods
+
+- (void)updateViewWithOptions:(NSDictionary *)options {
+    
+    if(options[kWGViewOptionKeyEventId]) {
+        
+    }
+    else if(options[kWGViewOptionKeyAction]) {
+        
+        if([options[kWGViewOptionKeyAction] isEqualToString:kWGViewOptionActionScrollToTop]) {
+            
+            if(self.placesTableView.numberOfSections > 0 &&
+               [self.placesTableView numberOfRowsInSection:0] > 0) {
+                
+                [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                                            atScrollPosition:UITableViewScrollPositionTop animated:NO];
+            }
+        }
+    }
+}
+
 #pragma mark - EventPeopleScrollView Delegate
 
 - (void) startAnimatingAtTop:(id)sender

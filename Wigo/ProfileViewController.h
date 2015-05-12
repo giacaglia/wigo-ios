@@ -17,7 +17,7 @@
 #import "Delegate.h"
 #import "MoreViewController.h"
 
-@interface ProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate, ProfileDelegate>
+@interface ProfileViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate, InviteCellDelegate, ProfileDelegate, WGViewController>
 
 -(id)initWithUser:(WGUser *)user;
 @property (nonatomic, strong) WGUser *user;

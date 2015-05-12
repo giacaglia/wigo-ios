@@ -109,6 +109,12 @@
     [self addRefreshToTableView];
 }
 
+#pragma mark WGViewController methods
+
+- (void)updateViewWithOptions:(NSDictionary *)options {
+    
+}
+
 #pragma mark - RefreshTableView 
 
 - (void)addRefreshToTableView {

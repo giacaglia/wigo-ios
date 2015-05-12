@@ -857,15 +857,30 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         WGNotification *notification = (WGNotification *)[self.notifications objectAtIndex:indexPath.row];
         WGUser *user = notification.fromUser;
         
+//        NSLog(@"notification type: %@", notification.type);
+//        NSLog(@"notification details: %@", notification.parameters.description);
+//        
         if ([notification.type isEqualToString:@"follow"] ||
             [notification.type isEqualToString:@"follow.accepted"] ||
             [notification.type isEqualToString:@"facebook.follow"]) {
             [self presentUser:user];
         }
         else if([notification.type isEqualToString:@"tap"]) {
+            
+            NSDictionary *options = @{kWGViewOptionKeyAction:kWGViewOptionActionScrollToTop};
+            
             [(AppDelegate *)[UIApplication sharedApplication].delegate
              switchToTab:kWGTabHome
-             withOptions:nil];
+             withOptions:options];
+            
+        }
+        else if([notification.type isEqualToString:@"tap"]) {
+            
+            NSDictionary *options = @{kWGViewOptionKeyEventId:@""};
+            
+            [(AppDelegate *)[UIApplication sharedApplication].delegate
+             switchToTab:kWGTabHome
+             withOptions:options];
             
         }
         else if (user.state != SENT_OR_RECEIVED_REQUEST_USER_STATE &&
@@ -918,6 +933,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         }
         [self.tableView reloadData];
     }];
+}
+
+#pragma mark WGViewController methods
+
+- (void)updateViewWithOptions:(NSDictionary *)options {
+    
 }
 
 #pragma mark - ScrollViewDelegate
