@@ -439,6 +439,36 @@ BOOL firstTimeLoading;
     [self.navigationController pushViewController: profileViewController animated: YES];
 }
 
+- (void)scrollToEventId:(NSNumber *)eventId {
+    
+    NSIndexPath *indexPath = [self getIndexPathForEventId:eventId];
+    
+    if(indexPath) {
+        
+        // need to animate the scroll motion down slightly, otherwise
+        // the scrolling nav header gets put in an awkward place
+        
+        [self.placesTableView scrollToRowAtIndexPath:indexPath
+                                    atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+        [self.placesTableView scrollToRowAtIndexPath:indexPath
+                                    atScrollPosition:UITableViewScrollPositionTop animated:YES];
+    }
+    else {
+        [self scrollToTop];
+    }
+}
+
+- (void)scrollToTop {
+    
+    if(self.placesTableView.numberOfSections > 0 &&
+       [self.placesTableView numberOfRowsInSection:0] > 0) {
+        
+        [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
+                                    atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    }
+    
+}
+
 #pragma mark - Where Are You Going? View and Delegate
 
 -(void)updateEvent:(WGEvent *)newEvent {
@@ -1095,36 +1125,6 @@ BOOL firstTimeLoading;
             [self scrollToTop];
         }
     }
-}
-
-- (void)scrollToEventId:(NSNumber *)eventId {
-    
-    NSIndexPath *indexPath = [self getIndexPathForEventId:eventId];
-    
-    if(indexPath) {
-        
-        // need to animate the scroll motion down slightly, otherwise
-        // the scrolling nav header gets put in an awkward place
-        
-        [self.placesTableView scrollToRowAtIndexPath:indexPath
-                                    atScrollPosition:UITableViewScrollPositionBottom animated:NO];
-        [self.placesTableView scrollToRowAtIndexPath:indexPath
-                                    atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    }
-    else {
-        [self scrollToTop];
-    }
-}
-
-- (void)scrollToTop {
-    
-    if(self.placesTableView.numberOfSections > 0 &&
-       [self.placesTableView numberOfRowsInSection:0] > 0) {
-        
-        [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
-                                    atScrollPosition:UITableViewScrollPositionTop animated:NO];
-    }
-    
 }
 
 #pragma mark - EventPeopleScrollView Delegate
