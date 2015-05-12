@@ -12,6 +12,7 @@
 +(UILabel *)defaultTitleLabel;
 +(UIView *) defaultBlackOverlay;
 +(UIButton *)defaultButton;
++(BOOL) shouldFetchEvents;
 +(void) addLocationPrimer;
 +(void) removePrimer;
 +(void) addErrorMessage;

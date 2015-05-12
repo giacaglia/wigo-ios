@@ -106,13 +106,14 @@ BOOL firstTimeLoading;
     }
     [self updateNavigationBar];
     [self fetchUserInfo];
-    [LocationPrimer wasPushNotificationEnabled];
+    [LocationPrimer startPrimer];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
+    [LocationPrimer removePrimer];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -1139,6 +1140,10 @@ BOOL firstTimeLoading;
 
 - (void) fetchEventsWithHandler:(BoolResultBlock)handler {
     if (self.fetchingEventAttendees || !WGProfile.currentUser.key) {
+        handler(NO, nil);
+        return;
+    }
+    if (![LocationPrimer shouldFetchEvents]) {
         handler(NO, nil);
         return;
     }
