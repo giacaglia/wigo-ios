@@ -117,13 +117,23 @@ static UIButton *mainButton;
 }
 
 +(BOOL) wasPushNotificationEnabled {
-    if([CLLocationManager locationServicesEnabled] &&
-       [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied)
-    {
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)]){
+        UIUserNotificationSettings *grantedSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+//        if (gran)
         return YES;
     }
-    return NO;
+    else {
+        return NO;
+    }
+  
 }
+//
+//if([CLLocationManager locationServicesEnabled] &&
+//   [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied)
+//{
+//    return YES;
+//}
+//return NO;
 
 
 
