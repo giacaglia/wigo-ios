@@ -390,7 +390,9 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
     [self addText:@"See who's going\nin real-time" andImage:@"whoPreview" atIndex:1];
     [self addText:@"Share moments\nwith friends" andImage:@"share" atIndex:2];
     [self addText:@"Finalize plans\nvia chats" andImage:@"chatPreview" atIndex:3];
-    [self addText:@"Forget FOMO, forever!" andImage:@"wigoPreview" atIndex:4] 
+    [self addText:@"Forget FOMO, forever!" andImage:@"wigoPreview" atIndex:4];
+
+ 
 }
 
 -(void)addText:(NSString *)text
@@ -405,7 +407,8 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
     [self.scrollView addSubview:label];
     
     float widthOfImage = 0.575*[UIScreen mainScreen].bounds.size.width;
-    UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - widthOfImage/2 + index*self.view.frame.size.width, (label.frame.origin.y + label.frame.size.height)/2 + self.pageControl.frame.origin.y/2, widthOfImage, 1.9*widthOfImage)];
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - widthOfImage/2 + index*self.view.frame.size.width, 95, widthOfImage, 1.9*widthOfImage)];
+    imgView.center = CGPointMake(imgView.center.x, (label.center.y + self.pageControl.center.y)/2);
     imgView.image = [UIImage imageNamed:imageName];
     [self.scrollView addSubview:imgView];
 }
