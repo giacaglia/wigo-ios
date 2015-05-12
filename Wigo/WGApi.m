@@ -51,8 +51,8 @@ static CLLocationManager *locationManager;
 + (CLLocationManager *)defaultLocationManager {
     if (!locationManager) {
         locationManager = [[CLLocationManager alloc] init];
-        locationManager.distanceFilter = 500;
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters; // 100 m
+        locationManager.distanceFilter = 10;
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters;
         [locationManager startUpdatingLocation];
     }
     return locationManager;
@@ -75,6 +75,7 @@ static CLLocationManager *locationManager;
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.requestSerializer.cachePolicy = NSURLRequestUseProtocolCachePolicy;
     
     // Hack for Ambassador View
     BOOL shouldPassKey = [url rangeOfString:@"key="].location != NSNotFound;
@@ -129,12 +130,10 @@ static CLLocationManager *locationManager;
     AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    manager.requestSerializer.cachePolicy = NSURLRequestUseProtocolCachePolicy;
     
     // Hack for Ambassador View
     BOOL shouldPassKey = [url rangeOfString:@"key="].location != NSNotFound;
-    if (shouldPassKey) {
-        NSLog(@"url: %@", url);
-    }
     [WGApi addWigoHeaders:manager.requestSerializer passKey:shouldPassKey];
     
     if (!postQueue) {

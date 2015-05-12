@@ -15,6 +15,9 @@ static UILabel *titleLabel;
 static UIView *blackOverlayView;
 static UIButton *mainButton;
 
+@interface LocationPrimer () <CLLocationManagerDelegate>
+@end
+
 @implementation LocationPrimer
 
 +(UIView *) defaultTitleLabel {
@@ -59,9 +62,12 @@ static UIButton *mainButton;
     UIView *window = [UIApplication sharedApplication].delegate.window;
     
     LocationPrimer.defaultBlackOverlay.frame = window.frame;
+    LocationPrimer.defaultBlackOverlay.hidden = NO;
+
     
     LocationPrimer.defaultTitleLabel.text = @"Please enable location so\nwe can show the amazing events\nand awesome people nearby";
     [window bringSubviewToFront:LocationPrimer.defaultTitleLabel];
+    LocationPrimer.defaultTitleLabel.hidden = NO;
     
     LocationPrimer.defaultButton.layer.borderColor = UIColor.clearColor.CGColor;
     LocationPrimer.defaultButton.backgroundColor = [FontProperties getBlueColor];
@@ -69,13 +75,18 @@ static UIButton *mainButton;
     [LocationPrimer.defaultButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
     [LocationPrimer.defaultButton addTarget:[LocationPrimer class] action:@selector(enableLocationPressed:) forControlEvents:UIControlEventTouchUpInside];
     [window bringSubviewToFront:LocationPrimer.defaultButton];
+    LocationPrimer.defaultButton.hidden = NO;
+
 }
 
 +(void) addErrorMessage {
     UIView *window = [UIApplication sharedApplication].delegate.window;
+    
     LocationPrimer.defaultBlackOverlay.frame = window.frame;
-
+    LocationPrimer.defaultBlackOverlay.hidden = NO;
+    
     LocationPrimer.defaultTitleLabel.text = @"Wigo can’t be used until you\nprovide location permissions. Go into\nyour phone settings to do this.";
+    LocationPrimer.defaultTitleLabel.hidden = NO;
     
     LocationPrimer.defaultButton.layer.borderColor = UIColor.whiteColor.CGColor;
     LocationPrimer.defaultButton.backgroundColor = UIColor.clearColor;
@@ -83,17 +94,20 @@ static UIButton *mainButton;
     [LocationPrimer.defaultButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
     [LocationPrimer.defaultButton addTarget:[LocationPrimer class] action:@selector(phoneSettingsPressed) forControlEvents:UIControlEventTouchUpInside];
     [window bringSubviewToFront:LocationPrimer.defaultButton];
+    LocationPrimer.defaultButton.hidden = NO;
 }
 
 +(void) removePrimer {
-    [LocationPrimer.defaultBlackOverlay removeFromSuperview];
+    LocationPrimer.defaultBlackOverlay.hidden = YES;
+    LocationPrimer.defaultButton.hidden = YES;
+    LocationPrimer.defaultTitleLabel.hidden = YES;
 }
 
 +(void) phoneSettingsPressed {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
 }
 
-+(void)startPrimer {
++(void) startPrimer {
     if (![CLLocationManager locationServicesEnabled] &&
         [CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         [LocationPrimer addErrorMessage];
@@ -105,35 +119,54 @@ static UIButton *mainButton;
     }
 }
 
++(BOOL) shouldFetchEvents {
+    if (![CLLocationManager locationServicesEnabled] &&
+        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+        return NO;
+    }
+    if (![CLLocationManager locationServicesEnabled]) {
+        return NO;
+    }
+    return YES;
+}
+
 +(void) enableLocationPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     [UIView animateWithDuration:1.5f animations:^{
         buttonSender.alpha = 0.0f;
     }];
     locationManager = [[CLLocationManager alloc] init];
+    locationManager.delegate = self;
     if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
         [locationManager requestWhenInUseAuthorization];
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    if (status == kCLAuthorizationStatusDenied) {
+        NSLog(@"user denied authorization");
+        [LocationPrimer startPrimer];
+    }
+    else if (status == kCLAuthorizationStatusAuthorized) {
+        NSLog(@"user allowed authorization");
+        [LocationPrimer removePrimer];
     }
 }
 
 +(BOOL) wasPushNotificationEnabled {
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(currentUserNotificationSettings)]){
         UIUserNotificationSettings *grantedSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
-//        if (gran)
+        if (grantedSettings.types == UIUserNotificationTypeNone) {
+            return NO;
+        }
         return YES;
     }
     else {
-        return NO;
+        return [[UIApplication sharedApplication] isRegisteredForRemoteNotifications];
     }
   
 }
-//
-//if([CLLocationManager locationServicesEnabled] &&
-//   [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied)
-//{
-//    return YES;
-//}
-//return NO;
 
 
 

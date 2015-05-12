@@ -12,6 +12,7 @@
 #import <Parse/Parse.h>
 #import "ReferalViewController.h"
 #import "WaitListViewController.h"
+#import "LocationPrimer.h"
 
 #define kPushNotificationMessage @"When your friends are counting on you to go out, we need to reach you via push notifications."
 #define kPushNotificationKey @"push_notification_key"
@@ -403,9 +404,10 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
     label.font = [FontProperties lightFont:27.0f];
     [self.scrollView addSubview:label];
     
-    UIImageView *fourthImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 92 + index*self.view.frame.size.width, 95, 184, 355)];
-    fourthImgView.image = [UIImage imageNamed:imageName];
-    [self.scrollView addSubview:fourthImgView];
+    float widthOfImage = 0.575*[UIScreen mainScreen].bounds.size.width;
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - widthOfImage/2 + index*self.view.frame.size.width, 95, widthOfImage, 1.9*widthOfImage)];
+    imgView.image = [UIImage imageNamed:imageName];
+    [self.scrollView addSubview:imgView];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -417,8 +419,8 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
 #pragma mark - Push Notification
 
 -(void) presentPushNotification {
-    NSNumber *wasSentPushNotification = [[NSUserDefaults standardUserDefaults] objectForKey:kPushNotificationKey];
-    if (!wasSentPushNotification) {
+    BOOL wasPushNotificationEnabled = [LocationPrimer wasPushNotificationEnabled];
+    if (!wasPushNotificationEnabled) {
         UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
         self.blurredView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
         self.blurredView.frame = self.view.bounds;
@@ -463,8 +465,6 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
      (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"triedToRegister"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
     [self.blurredView removeFromSuperview];
     [self navigate];
 }

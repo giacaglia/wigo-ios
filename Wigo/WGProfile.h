@@ -18,7 +18,6 @@
 @property NSNumber *showedOnboardView;
 @property NSNumber *googleAnalyticsEnabled;
 @property NSNumber *canFetchAppStartup;
-@property NSNumber *triedToRegister;
 @property NSNumber *showSchoolStatistics;
 @property NSNumber *numberOfTimesWentOut;
 @property NSArray *datesAccessed;

@@ -384,6 +384,10 @@ static WGUser *currentUser = nil;
     return [self objectForKey:kStatusKey];
 }
 
+-(void) setStatus:(NSString *)status {
+    [self setObject:status forKey:kStatusKey];
+}
+
 -(NSNumber *)waitListPos {
     if ([self objectForKey:kWaitListPosKey]) {
         return [self objectForKey:kWaitListPosKey];
@@ -1351,6 +1355,22 @@ static WGUser *currentUser = nil;
     }];
 }
 
+
+-(void)inviteUser:(WGUser *)user
+          atEvent:(WGEvent *)event
+withHandler:(BoolResultBlock)handler {
+    if (!user.id) {
+        return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
+    }
+    [WGApi post:[NSString stringWithFormat:@"events/%@/invites/", event.id]
+withParameters:@{ @"invited_id" : user.id }
+     andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!error) {
+            user.isTapped = @YES;
+        }
+        handler(error == nil, error);
+    }];
+}
 
 -(void) tapUser:(WGUser *)user withHandler:(BoolResultBlock)handler {
     if (!user.id) {

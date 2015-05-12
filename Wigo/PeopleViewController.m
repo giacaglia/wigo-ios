@@ -463,7 +463,6 @@ viewForHeaderInSection:(NSInteger)section
     self.users = NetworkFetcher.defaultGetter.suggestions;
     [self.tableViewOfPeople reloadData];
     [self cleanupUsers];
-    if (self.users.count > 0) return;
     if (self.fetching) return;
     self.fetching = YES;
     __weak typeof(self) weakSelf = self;

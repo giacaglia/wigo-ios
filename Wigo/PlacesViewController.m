@@ -72,7 +72,6 @@ BOOL firstTimeLoading;
     [TabBarAuxiliar startTabBarItems];
     [self addCenterButton];
     [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {}];
-    [NetworkFetcher.defaultGetter fetchFriendsIds];
     [NetworkFetcher.defaultGetter fetchSuggestions];
 }
 
@@ -106,14 +105,15 @@ BOOL firstTimeLoading;
     }
     [self updateNavigationBar];
     [self fetchUserInfo];
-//    ReferalView *referalView = [[ReferalView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-//    [self.view addSubview:referalView];
+    [NetworkFetcher.defaultGetter fetchFriendsIds];
+    [LocationPrimer startPrimer];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
+    [LocationPrimer removePrimer];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -1264,6 +1264,10 @@ BOOL firstTimeLoading;
         handler(NO, nil);
         return;
     }
+    if (![LocationPrimer shouldFetchEvents]) {
+        handler(NO, nil);
+        return;
+    }
     self.fetchingEventAttendees = YES;
     if (self.spinnerAtCenter) [WGSpinnerView addDancingGToCenterView:self.view];
     __weak typeof(self) weakSelf = self;
@@ -1632,6 +1636,8 @@ BOOL firstTimeLoading;
 }
 
 -(void) setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [OneLineEventCell height]);
+    self.contentView.frame = self.frame;
     UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [OneLineEventCell height] - 20 - 4, self.frame.size.width + 10, 12)];
     shadowImageView.image = [UIImage imageNamed:@"shadow"];
     [self.contentView addSubview:shadowImageView];
@@ -1680,6 +1686,9 @@ BOOL firstTimeLoading;
 }
 
 -(void) setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TwoLineEventCell height]);
+    self.contentView.frame = self.frame;
+
     UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [TwoLineEventCell height] - 20 - 4, self.frame.size.width + 10, 12)];
     shadowImageView.image = [UIImage imageNamed:@"shadow"];
     [self.contentView addSubview:shadowImageView];
