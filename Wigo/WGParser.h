@@ -11,5 +11,5 @@
 @interface WGParser : NSObject
 
 -(id) replaceReferences:(id) object;
-
+@property (nonatomic, strong) NSMutableDictionary *localCache;
 @end

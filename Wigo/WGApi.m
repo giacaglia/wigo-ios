@@ -76,7 +76,7 @@ static CLLocationManager *locationManager;
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     manager.requestSerializer.cachePolicy = NSURLRequestUseProtocolCachePolicy;
-    
+    manager.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions: NSJSONReadingMutableContainers];
     // Hack for Ambassador View
     BOOL shouldPassKey = [url rangeOfString:@"key="].location != NSNotFound;
     
@@ -131,7 +131,8 @@ static CLLocationManager *locationManager;
     
     manager.requestSerializer = [AFJSONRequestSerializer serializer];
     manager.requestSerializer.cachePolicy = NSURLRequestUseProtocolCachePolicy;
-    
+    manager.responseSerializer = [AFJSONResponseSerializer serializerWithReadingOptions: NSJSONReadingMutableContainers];
+
     // Hack for Ambassador View
     BOOL shouldPassKey = [url rangeOfString:@"key="].location != NSNotFound;
     [WGApi addWigoHeaders:manager.requestSerializer passKey:shouldPassKey];
