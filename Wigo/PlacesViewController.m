@@ -61,6 +61,7 @@ BOOL firstTimeLoading;
     self.shouldReloadEvents = YES;
     self.eventOffsetDictionary = [NSMutableDictionary new];
     self.spinnerAtCenter = YES;
+    _isLocal = YES;
     UITabBarController *tab = self.tabBarController;
     ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
     profileVc.user = [WGUser new];
@@ -81,7 +82,6 @@ BOOL firstTimeLoading;
         [WGAnalytics tagView:@"where"];
     }
     
-    self.isLocal = YES;
     [self updateNavigationBar];
     [self.placesTableView reloadData];
 }
@@ -162,12 +162,16 @@ BOOL firstTimeLoading;
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
-
-    UIView *toggleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 30)];
-    toggleView.layer.borderColor = UIColor.whiteColor.CGColor;
-    toggleView.layer.borderWidth = 1.0f;
-    toggleView.layer.cornerRadius = 7.0F;
-    toggleView.clipsToBounds = YES;
+   
+    
+    self.tabBarController.navigationItem.titleView = self.toggleView;
+    if (self.bostonLabel) return;
+    
+    self.toggleView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 140, 30)];
+    self.toggleView.layer.borderColor = UIColor.whiteColor.CGColor;
+    self.toggleView.layer.borderWidth = 1.0f;
+    self.toggleView.layer.cornerRadius = 7.0F;
+    self.toggleView.clipsToBounds = YES;
     self.bostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 70, 30)];
     self.bostonLabel.text = @"Local";
     self.bostonLabel.textColor = UIColor.whiteColor;
@@ -182,14 +186,14 @@ BOOL firstTimeLoading;
                                                action:@selector(handleLongPress:)];
     longPress.minimumPressDuration = 0.5;
     [self.bostonLabel addGestureRecognizer:longPress];
-    [toggleView addSubview:self.bostonLabel];
+    [self.toggleView addSubview:self.bostonLabel];
     
     self.friendsButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 0, 70, 30)];
     [self.friendsButton addTarget:self action:@selector(friendsPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.friendsButton setTitle:@"Friends" forState:UIControlStateNormal];
     self.friendsButton.titleLabel.font = [FontProperties mediumFont:12.0f];
-    [toggleView addSubview:self.friendsButton];
-    self.tabBarController.navigationItem.titleView = toggleView;
+    [self.toggleView addSubview:self.friendsButton];
+    self.tabBarController.navigationItem.titleView = self.toggleView;
     self.isLocal = self.isLocal;
 }
 

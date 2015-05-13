@@ -45,6 +45,7 @@
 @property (nonatomic, assign) BOOL spinnerAtCenter;
 
 @property (nonatomic, strong) LabelSwitch *labelSwitch;
+@property (nonatomic, strong) UIView *toggleView;
 @property (nonatomic, strong) UILabel *bostonLabel;
 @property (nonatomic, strong) UIButton *friendsButton;
 @property (nonatomic, assign) BOOL isLocal;

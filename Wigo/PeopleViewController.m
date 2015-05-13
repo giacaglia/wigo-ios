@@ -527,7 +527,6 @@ viewForHeaderInSection:(NSInteger)section
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
                 return;
             }
