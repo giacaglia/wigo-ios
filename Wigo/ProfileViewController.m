@@ -1283,16 +1283,17 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     }
     self.tapButton.hidden = NO;
     self.chatButton.hidden = NO;
+    float heightOfButton = self.frame.size.width/4.0f;
     if (user.isTapped.boolValue) {
         self.tapImageView.image = [UIImage imageNamed:@"blueTappedImageView"];
         self.tapLabel.text = @"TAPPED";
-        self.tapLabel.frame = CGRectMake(55, 40 - 10, 70, 20);
+        self.tapLabel.frame = CGRectMake(self.tapLabel.frame.origin.x, heightOfButton/2 - 10, 70, 20);
         self.underlineTapLabel.hidden = YES;
 
     } else {
         self.tapImageView.image = [UIImage imageNamed:@"blueTapImageView"];
         self.tapLabel.text = @"TAP";
-        self.tapLabel.frame = CGRectMake(55, 40 - 10 - 5, 70, 20);
+        self.tapLabel.frame = CGRectMake(self.tapLabel.frame.origin.x, heightOfButton/2 - 10 - 5, 70, 20);
         self.underlineTapLabel.hidden = NO;
     }
     
@@ -1302,42 +1303,44 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [InviteCell height]);
     self.backgroundColor = RGB(252, 252, 252);
 
-    self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(20, 20, 130, 80)];
+    float widthOfButton = [UIScreen mainScreen].bounds.size.width/2.4f;
+    float heightOfButton = self.frame.size.width/4.0f;
+    self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width/2 - widthOfButton - 20, 20, widthOfButton, heightOfButton)];
     self.chatButton.layer.cornerRadius = 27.0f;
     self.chatButton.layer.borderColor = RGB(216, 216, 216).CGColor;
     self.chatButton.layer.borderWidth = 0.5f;
     [self.contentView addSubview:self.chatButton];
     
-    UIImageView *chatImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 40 - 20, 40, 40)];
+    UIImageView *chatImageView = [[UIImageView alloc] initWithFrame:CGRectMake(widthOfButton/2 - 40 - 10, heightOfButton/2 - 20, 40, 40)];
     chatImageView.image = [UIImage imageNamed:@"blueChatImageView"];
     [self.chatButton addSubview:chatImageView];
     
-    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(65, 40 - 10, 60, 20)];
+    UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(widthOfButton/2 - 10 + 5, heightOfButton/2 - 10, 60, 20)];
     chatLabel.text = @"CHAT";
     chatLabel.textAlignment = NSTextAlignmentCenter;
     chatLabel.font = [FontProperties mediumFont:20.0f];
     chatLabel.textColor = [FontProperties getBlueColor];
     [self.chatButton addSubview:chatLabel];
     
-    self.tapButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 130 - 20, 20, 130, 80)];
+    self.tapButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width/2 + 20, 20, widthOfButton, heightOfButton)];
     [self.tapButton addTarget:self action:@selector(inviteTapped) forControlEvents:UIControlEventTouchUpInside];
     self.tapButton.layer.cornerRadius = 27.0f;
     self.tapButton.layer.borderColor = RGB(216, 216, 216).CGColor;
     self.tapButton.layer.borderWidth = 0.5f;
     [self.contentView addSubview:self.tapButton];
     
-    self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 40 - 20, 40, 40)];
+    self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake(widthOfButton/2 - 40 - 15 - 2.5, heightOfButton/2 - 20, 40, 40)];
     self.tapImageView.image = [UIImage imageNamed:@"blueTapImageView"];
     [self.tapButton addSubview:self.tapImageView];
 
-    self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 40 - 10 - 5, 70, 20)];
+    self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(widthOfButton/2 - 15 + 5, heightOfButton/2 - 10 - 5, 70, 20)];
     self.tapLabel.text = @"TAP";
     self.tapLabel.textAlignment = NSTextAlignmentLeft;
     self.tapLabel.font = [FontProperties mediumFont:20.0f];
     self.tapLabel.textColor = [FontProperties getBlueColor];
     [self.tapButton addSubview:self.tapLabel];
     
-    self.underlineTapLabel = [[UILabel alloc] initWithFrame:CGRectMake(55, 50 - 5, 70, 15)];
+    self.underlineTapLabel = [[UILabel alloc] initWithFrame:CGRectMake(widthOfButton/2 - 15 + 5, heightOfButton/2 + 10 - 5, 70, 15)];
     self.underlineTapLabel.text = @"to see out";
     self.underlineTapLabel.textAlignment = NSTextAlignmentLeft;
     self.underlineTapLabel.textColor = [FontProperties getBlueColor];
