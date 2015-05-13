@@ -21,7 +21,6 @@ int imageWidth;
     if (self) {
         self.event = event;
         self.backgroundImage = image;
-        self.fetchingEventAttendees = NO;
         self.startIndex = index;
     }
     return self;
@@ -29,7 +28,8 @@ int imageWidth;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.fetchingEventAttendees = NO;
+
     imageWidth = [UIScreen mainScreen].bounds.size.width - kBorderWidth * 2 - 40;
     
     self.view.backgroundColor = UIColor.clearColor;
@@ -110,14 +110,14 @@ int imageWidth;
     [super viewWillAppear:animated];
     self.placesDelegate.createButton.hidden = YES;
     self.tabBarController.tabBar.hidden = YES;
-    [[self navigationController] setNavigationBarHidden:YES animated:NO];
+    [self.navigationController setNavigationBarHidden:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     self.placesDelegate.createButton.hidden = NO;
     self.tabBarController.tabBar.hidden = NO;
-    [[self navigationController] setNavigationBarHidden:NO animated:NO];
+    [self.navigationController setNavigationBarHidden:NO];
 }
 
 

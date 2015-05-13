@@ -231,6 +231,11 @@ BOOL firstTimeLoading;
         self.bostonLabel.textColor = UIColor.whiteColor;
         self.bostonLabel.backgroundColor = [FontProperties getBlueColor];
     }
+    self.allEvents = nil;
+    self.pastDays = nil;
+    self.events = nil;
+    [self.placesTableView reloadData];
+    [WGSpinnerView addDancingGToCenterView:self.view];
     [self fetchEventsFirstPage];
 }
 
