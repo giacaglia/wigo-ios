@@ -126,9 +126,7 @@ int imageWidth;
 }
 
 - (void)dismissView {
-//    [self.placesDelegate.eventOffsetDictionary setObject:@200
-//                                                  forKey:self.event.id.stringValue];
-//    self.placesDelegate.doNotReloadOffsets = YES;
+    [self.navigationController setNavigationBarHidden:NO];
     [self willMoveToParentViewController:nil];
     [self.view removeFromSuperview];
     [self removeFromParentViewController];

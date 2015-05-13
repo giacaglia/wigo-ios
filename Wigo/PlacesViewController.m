@@ -882,8 +882,10 @@ BOOL firstTimeLoading;
 }
 
 - (void)showViewController:(UIViewController *)vc {
-    [self addChildViewController:vc];
-    [self.view addSubview:vc.view];
+    UITabBarController *tabBarController = self.tabBarController;
+    [self.navigationController setNavigationBarHidden:YES];
+    [tabBarController addChildViewController:vc];
+    [tabBarController.view addSubview:vc.view];
     vc.view.alpha = 0.0f;
     [vc didMoveToParentViewController:self];
 
