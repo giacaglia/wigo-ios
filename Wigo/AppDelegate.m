@@ -177,12 +177,6 @@ NSDate *firstLoggedTime;
 }
 
 - (void) doneWithUserInfo:(NSDictionary *)userInfo {
-    if ([self doesUserInfo:userInfo hasString:@"M"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"goToChat" object:nil];
-    }
-    if ([self doesUserInfo:userInfo hasString:@"T"]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"goToProfile" object:nil userInfo:[userInfo objectForKey:@"event"]];
-    }
     if ([[userInfo allKeys] containsObject:@"navigate"]) {
         NSString *place = [userInfo objectForKey:@"navigate"];
         NSDictionary *notificationUserInfo = [WGNavigateParser userInfoFromString:place];

@@ -62,12 +62,11 @@ BOOL firstTimeLoading;
     self.fetchingEventAttendees = NO;
     self.shouldReloadEvents = YES;
     self.eventOffsetDictionary = [NSMutableDictionary new];
-    
+    self.spinnerAtCenter = YES;
     UITabBarController *tab = self.tabBarController;
     ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
     profileVc.user = [WGUser new];
     
-    self.spinnerAtCenter = YES;
     [self initializeWhereView];
     [TabBarAuxiliar startTabBarItems];
     [self addCenterButton];
@@ -233,7 +232,6 @@ BOOL firstTimeLoading;
 
 -(void) initializeFlashScreen {
     if (firstTimeLoading) return;
-
     firstTimeLoading = YES;
     self.signViewController = [SignViewController new];
     self.signViewController.placesDelegate = self;
@@ -246,8 +244,6 @@ BOOL firstTimeLoading;
 
 
 - (void)initializeNotificationObservers {
-
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(scrollUp)
                                                  name:@"scrollUp"
@@ -262,77 +258,11 @@ BOOL firstTimeLoading;
                                              selector:@selector(fetchUserInfo)
                                                  name:@"fetchUserInfo"
                                                object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(goToChat:)
-                                                 name:@"goToChat"
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(goToProfile)
-                                                 name:@"goToProfile"
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(goToEvent:)
-                                                 name:@"goToEvent"
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(navigate:)
-                                                 name:@"navigate"
-                                               object:nil];
 }
 
-- (void)goToChat:(NSNotification *)notification {
-    ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    profileViewController.user = WGProfile.currentUser;
-    profileViewController.events = self.events;
-    [self.navigationController pushViewController: profileViewController animated: NO];
-    
-    ChatViewController *chatViewController = [ChatViewController new];
-    chatViewController.view.backgroundColor = UIColor.whiteColor;
-    [profileViewController.navigationController pushViewController:chatViewController animated:YES];
-}
-
-- (void)goToProfile {
-    ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-    profileViewController.user = WGProfile.currentUser;
-    profileViewController.events = self.events;
-    [self.navigationController pushViewController: profileViewController animated: NO];
-}
-
-- (void)goToEvent:(NSNotification *)notification {
-    NSDictionary *eventInfo = notification.userInfo;
-    WGEvent *newEvent = [[WGEvent alloc] initWithJSON:eventInfo];
-    if ([self.events containsObject:newEvent]) {
-        NSInteger integer = [self.events indexOfObject:newEvent];
-        [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:integer inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-    }
-}
-
-- (void)navigate:(NSNotification *)notification {
-    NSDictionary *userInfo = notification.userInfo;
-    NSDictionary *objects = [WGNavigateParser objectsFromUserInfo:userInfo];
-    NSString *nameOfObject = [WGNavigateParser nameOfObjectFromUserInfo:userInfo];
-    if ([nameOfObject isEqual:@"eventmessage"]) {
-        
-    }
-    else if ([nameOfObject isEqual:@"event"]) {
-        
-    }
-}
 
 - (void)scrollUp {
     [self.placesTableView setContentOffset:CGPointZero animated:YES];
-}
-
-- (void)dismissKeyboard {
-    [self.view endEditing:YES];
-    [UIView animateWithDuration:0.2 animations:^{
-        self.placesTableView.transform = CGAffineTransformMakeTranslation(0, 0);
-    } completion:^(BOOL finished) {
-    }];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
@@ -370,15 +300,6 @@ BOOL firstTimeLoading;
     if ([self.placesTableView numberOfRowsInSection:kTodaySection] > index) {
         [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:index inSection:kTodaySection] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
-}
-
-
-- (void)followPressed {
-    if (!WGProfile.currentUser.key) return;
-    
-    if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
-    [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:WGProfile.currentUser] animated:YES];
 }
 
 - (void)invitePressed:(WGEvent *)event {
