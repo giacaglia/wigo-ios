@@ -9,6 +9,8 @@
 #import "ReferalView.h"
 #import "Globals.h"
 
+#define kReferalCellName @"referalCellName"
+
 @interface ReferalView () <UITextFieldDelegate, UITableViewDataSource>
 @end
 
@@ -71,7 +73,9 @@
     self.referalTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 70, window.frame.size.width, window.frame.size.height)];
     self.referalTableView.dataSource = self;
     self.referalTableView.hidden = YES;
+    [self.referalTableView registerClass:[ReferalCell class] forCellReuseIdentifier:kReferalCellName];
     [window addSubview:self.referalTableView];
+    [self fetchReferals];
 }
 
 - (BOOL)textField:(UITextField *)textField
@@ -84,10 +88,56 @@ replacementString:(NSString *)string {
     return YES;
 }
 
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    ReferalCell *cell = [tableView dequeueReusableCellWithIdentifier:kReferalCellName forIndexPath:indexPath];
+    cell.faceImageView.image = nil;
+    cell.nameLabel.text = @"";
+    if (self.presentedUsers.count == 0) return cell;
+    WGUser *user = (WGUser *)[self.presentedUsers objectAtIndex:(int)indexPath.item];
+    [cell.faceImageView setSmallImageForUser:user completed:nil];
+    cell.nameLabel.text = user.fullName;
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [ReferalCell height];
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.presentedUsers.count;
+}
+
+#pragma mark - Network function
+
+-(void) fetchReferals {
+    [WGSpinnerView addDancingGToCenterView:self];
+    __weak typeof(self) weakSelf = self;
+    [WGUser getReferals:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            [WGSpinnerView removeDancingGFromCenterView: strongSelf];
+            if (error) {
+                [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+                return;
+            }
+            strongSelf.presentedUsers = collection;
+            [strongSelf.referalTableView reloadData];
+        });
+    }];
+}
+
 @end
 
 
 @implementation ReferalCell
+
++(CGFloat) height {
+    return 50.0f;
+}
 
 -(id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -98,14 +148,14 @@ replacementString:(NSString *)string {
 }
 
 -(void) setup {
-    self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 0, 50, 50)];
+    self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 0, 50, [ReferalCell height])];
     self.faceImageView.center = self.center;
     self.faceImageView.layer.borderColor = UIColor.clearColor.CGColor;
     self.faceImageView.layer.borderWidth = 1.0f;
     self.faceImageView.layer.cornerRadius = self.faceImageView.frame.size.width/2;
     [self.contentView addSubview:self.faceImageView];
     
-    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, 150, 50)];
+    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 0, 150, [ReferalCell height])];
     self.nameLabel.textColor = UIColor.whiteColor;
     self.nameLabel.textAlignment = NSTextAlignmentLeft;
     self.nameLabel.font = [FontProperties lightFont:20.0f];

@@ -8,14 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "WGUser.h"
+#import "WGCollection.h"
 
 @interface ReferalView : UIView
-
 @property (nonatomic, strong) UITextField *typeNameField;
 @property (nonatomic, strong) UITableView *referalTableView;
+@property (nonatomic, strong) WGCollection *presentedUsers;
 @end
 
 @interface ReferalCell : UITableViewCell
++(CGFloat) height;
 @property (nonatomic, strong) WGUser *user;
 @property (nonatomic, strong) UIImageView *faceImageView;
 @property (nonatomic, strong) UILabel *nameLabel;
