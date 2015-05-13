@@ -72,26 +72,26 @@
         self.eventDetails.frame = CGRectMake(0, 67, [UIScreen mainScreen].bounds.size.width, 30);
     }
     
-    self.wgSwitchView = [[WGSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 90, 240, 40)];
-    self.wgSwitchView.firstString = @"Today";
-    self.wgSwitchView.secondString = @"Future";
-    self.wgSwitchView.movingImageView.image = [UIImage imageNamed:@"calendarIcon"];
-    self.wgSwitchView.switchDelegate = self;
-    self.wgSwitchView.backgroundColor = UIColor.whiteColor;
-    [self.eventDetails addSubview:self.wgSwitchView];
-    
-    self.fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 170, self.view.frame.size.width, 250)];
-    self.fsCalendar.flow = FSCalendarFlowHorizontal;
-    self.fsCalendar.hidden = YES;
-    self.fsCalendar.delegate = self;
-    self.fsCalendar.backgroundColor = UIColor.whiteColor;
-    [self.eventDetails addSubview:self.fsCalendar];
-    
-    self.fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 140, self.view.frame.size.width, 30)];
-    self.fsCalendar.header = self.fsCalendarHeader;
-    self.fsCalendarHeader.hidden = YES;
-    self.fsCalendarHeader.backgroundColor = UIColor.whiteColor;
-    [self.eventDetails addSubview:self.fsCalendarHeader];
+//    self.wgSwitchView = [[WGSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 90, 240, 40)];
+//    self.wgSwitchView.firstString = @"Today";
+//    self.wgSwitchView.secondString = @"Future";
+//    self.wgSwitchView.movingImageView.image = [UIImage imageNamed:@"calendarIcon"];
+//    self.wgSwitchView.switchDelegate = self;
+//    self.wgSwitchView.backgroundColor = UIColor.whiteColor;
+//    [self.eventDetails addSubview:self.wgSwitchView];
+//    
+//    self.fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 170, self.view.frame.size.width, 250)];
+//    self.fsCalendar.flow = FSCalendarFlowHorizontal;
+//    self.fsCalendar.hidden = YES;
+//    self.fsCalendar.delegate = self;
+//    self.fsCalendar.backgroundColor = UIColor.whiteColor;
+//    [self.eventDetails addSubview:self.fsCalendar];
+//    
+//    self.fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 140, self.view.frame.size.width, 30)];
+//    self.fsCalendar.header = self.fsCalendarHeader;
+//    self.fsCalendarHeader.hidden = YES;
+//    self.fsCalendarHeader.backgroundColor = UIColor.whiteColor;
+//    [self.eventDetails addSubview:self.fsCalendarHeader];
 
     //    [UIView animateWithDuration: 0.2 animations:^{
     //        self.tabBarController.navigationItem.titleView.alpha = 0.0f;
