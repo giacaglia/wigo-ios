@@ -40,7 +40,6 @@
 @interface PlacesViewController ()
 // Events By Days
 @property (nonatomic, strong) NSMutableArray *pastDays;
-@property (nonatomic, strong) UIView *blackViewOnTop;
 @end
 BOOL firstTimeLoading;
 
@@ -197,7 +196,6 @@ BOOL firstTimeLoading;
         self.isLocal = YES;
     }
     if (sender.state == UIGestureRecognizerStateEnded) {
-        if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
         PeekViewController *peekViewController = [PeekViewController new];
         peekViewController.placesDelegate = self;
         [self presentViewController:peekViewController animated:YES completion:nil];
@@ -263,10 +261,6 @@ BOOL firstTimeLoading;
 
 - (void)scrollUp {
     [self.placesTableView setContentOffset:CGPointZero animated:YES];
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return YES;
 }
 
 - (void)initializeWhereView {
@@ -351,7 +345,6 @@ BOOL firstTimeLoading;
 }
 
 - (void)profileSegue {
-    if (_blackViewOnTop) _blackViewOnTop.alpha = 0.0f;
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     profileViewController.user = WGProfile.currentUser;
     profileViewController.placesDelegate = self;
@@ -363,9 +356,7 @@ BOOL firstTimeLoading;
 - (void)scrollToEventId:(NSNumber *)eventId {
     
     NSIndexPath *indexPath = [self getIndexPathForEventId:eventId];
-    
     if(indexPath) {
-        
         // need to animate the scroll motion down slightly, otherwise
         // the scrolling nav header gets put in an awkward place
         
@@ -380,10 +371,8 @@ BOOL firstTimeLoading;
 }
 
 - (void)scrollToTop {
-    
     if(self.placesTableView.numberOfSections > 0 &&
        [self.placesTableView numberOfRowsInSection:0] > 0) {
-        
         [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                                     atScrollPosition:UITableViewScrollPositionTop animated:NO];
     }
@@ -634,7 +623,6 @@ BOOL firstTimeLoading;
             }
             cell.highlightsCollectionView.placesDelegate = self;
             return cell;
-
         }
         
     }
@@ -647,10 +635,6 @@ BOOL firstTimeLoading;
     OverlayViewController *overlayViewController = [OverlayViewController new];
     [self presentViewController:overlayViewController animated:YES completion:nil];
     overlayViewController.event = event;
-}
-
-- (BOOL)isFullCellForEvent:(WGEvent *)event {
-    return [self isPeeking] || (event.id && [event isEqual:WGProfile.currentUser.eventAttending]);
 }
 
 - (WGEvent *)getEventAtIndexPath:(NSIndexPath *)indexPath {
@@ -708,64 +692,6 @@ BOOL firstTimeLoading;
 }
 
 
-#pragma mark - ToolTip 
-
-- (void)showToolTip {
-    NSArray *arrayTooltip = WGProfile.currentUser.arrayTooltipTracked;
-    
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] ;
-    NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate:[NSDate date]];
-    int weekday = (int)comps.weekday;
-    NSString *weekdayString = [NSString stringWithFormat:@"%d", weekday];
-    BOOL didShowToday = (arrayTooltip.count > 0) && [arrayTooltip containsObject:weekdayString];
-    if ((weekday == 5 || weekday == 6 || weekday == 7) &&  !didShowToday && !_blackViewOnTop) {
-        _blackViewOnTop = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
-        _blackViewOnTop.backgroundColor = RGBAlpha(0, 0, 0, 0.9f);
-        [self.view addSubview:_blackViewOnTop];
-        
-        UIImageView *tooltipImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 110, 0, 220, 80)];
-        tooltipImageView.image = [UIImage imageNamed:@"tooltipRectangle"];
-        [_blackViewOnTop addSubview:tooltipImageView];
-        
-        UILabel *tooltipLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, tooltipImageView.frame.size.width - 15, tooltipImageView.frame.size.height - 10)];
-        tooltipLabel.numberOfLines = 0;
-        tooltipLabel.textAlignment = NSTextAlignmentCenter;
-        NSMutableAttributedString *mutAttributedString = [[NSMutableAttributedString alloc] initWithString:@"Peek at trending\nWigo schools"];
-        [mutAttributedString addAttribute:NSForegroundColorAttributeName
-                                    value:[FontProperties getBlueColor]
-                                    range:NSMakeRange(0, 4)];
-        [mutAttributedString addAttribute:NSForegroundColorAttributeName
-                                    value:RGB(162, 162, 162)
-                                    range:NSMakeRange(4, mutAttributedString.string.length - 4)];
-        tooltipLabel.attributedText = mutAttributedString;
-        [tooltipImageView addSubview:tooltipLabel];
-        
-
-        UIButton *gotItButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 65, 150, 130, 40)];
-        [gotItButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-        [gotItButton setTitle:@"GOT IT" forState:UIControlStateNormal];
-        gotItButton.layer.borderColor = UIColor.whiteColor.CGColor;
-        gotItButton.layer.borderWidth = 1.0f;
-        gotItButton.layer.cornerRadius = 5.0f;
-        [gotItButton addTarget:self action:@selector(dismissToolTip) forControlEvents:UIControlEventTouchUpInside];
-        [_blackViewOnTop addSubview:gotItButton];
-        [WGProfile.currentUser addTootltipTracked:weekdayString];
-        [WGProfile.currentUser save:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionSave];
-                return;
-            }
-            
-        }];
-    }
-}
-
-- (void)dismissToolTip {
-    [UIView animateWithDuration:0.5f animations:^{
-        _blackViewOnTop.alpha = 0.0f;
-    }];
-}
-
 #pragma mark - PlacesDelegate
 
 - (void)showHighlights {
@@ -775,10 +701,9 @@ BOOL firstTimeLoading;
 
 - (void)showUser:(WGUser *)user {
     self.shouldReloadEvents = NO;
-    
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     profileViewController.user = user;
-     profileViewController.userState = OTHER_SCHOOL_USER_STATE;
+    profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     [self.navigationController pushViewController: profileViewController animated: YES];
 }
@@ -906,7 +831,6 @@ BOOL firstTimeLoading;
             [weakEventConversation highlightCellAtPage:messageIndex animated:NO];
         }
     }];
-
     
 }
 
@@ -927,40 +851,6 @@ BOOL firstTimeLoading;
     [self.placesTableView reloadData];
     self.spinnerAtCenter = YES;
     [self fetchEventsFirstPage];
-}
-
-- (void)presentViewWithGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName {
-    self.presentingLockedView = YES;
-    UIButtonAligned *leftButton = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 10, 30, 30) andType:@2];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(5, 8, 8, 14)];
-    imageView.image = [UIImage imageNamed:@"backToBattery"];
-    [leftButton addTarget:self action:@selector(backPressed)
-         forControlEvents:UIControlEventTouchUpInside];
-    [leftButton addSubview:imageView];
-    [leftButton setShowsTouchWhenHighlighted:YES];
-    UIBarButtonItem *leftBarButton = [[UIBarButtonItem alloc] initWithCustomView:leftButton];
-    self.tabBarController.navigationItem.leftBarButtonItem = leftBarButton;
-}
-
-- (void)backPressed {
-    self.presentingLockedView = NO;
-    
-//    BatteryViewController *batteryViewController = [BatteryViewController new];
-//    
-//    UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
-//    imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
-//                                                             tintColor:RGBAlpha(0, 0, 0, 0.75)
-//                                                 saturationDeltaFactor:1.3
-//                                                             maskImage:nil];
-//    batteryViewController.blurredBackgroundImage = imageOfUnderlyingView;
-//    batteryViewController.placesDelegate = self;
-//    [self presentViewController:batteryViewController animated:YES completion:nil];
-}
-
-
-- (int)createUniqueIndexFromUserIndex:(int)userIndex andEventIndex:(int)eventIndex {
-    int numberOfEvents = (int)self.events.count;
-    return numberOfEvents * userIndex + eventIndex;
 }
 
 - (NSDictionary *)getUserIndexAndEventIndexFromUniqueIndex:(int)uniqueIndex {
@@ -1390,7 +1280,6 @@ BOOL firstTimeLoading;
         }
         if (!strongSelf.presentingLockedView) {
             [strongSelf showReferral];
-            [strongSelf showToolTip];
         }
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];

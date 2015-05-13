@@ -15,10 +15,9 @@
 #import "BaseViewController.h"
 #import "Globals.h"
 
-@interface PlacesViewController : BaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
-    UIGestureRecognizerDelegate,
-    PlacesDelegate,
-    CLLocationManagerDelegate,
+@interface PlacesViewController : BaseViewController
+    <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
+    UIGestureRecognizerDelegate, PlacesDelegate, CLLocationManagerDelegate,
     WGViewController>
 
 #define kTodaySection 0

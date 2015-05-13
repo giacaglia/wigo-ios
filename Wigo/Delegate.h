@@ -31,7 +31,6 @@ typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
 - (void)showHighlightForEvent:(WGEvent *)event
               andEventMessage:(WGEventMessage *)eventMessage;
 - (void)setGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
-- (void)presentViewWithGroupID:(NSNumber *)groupID andGroupName:(NSString *)groupName;
 - (void)showViewController:(UIViewController *)vc;
 @property (nonatomic, strong) NSMutableDictionary *eventOffsetDictionary;
 - (void)updateEvent:(WGEvent *)newEvent;
