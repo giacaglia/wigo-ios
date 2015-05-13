@@ -11,9 +11,15 @@
 #import "WGCollection.h"
 
 @interface ReferalView : UIView
+@property (nonatomic, strong) UIView *topView;
+@property (nonatomic, strong) UIButton *aroundSkipButton;
+@property (nonatomic, strong) UILabel *skipLabel;
+@property (nonatomic, strong) UIView *aroundTypeNameView;
 @property (nonatomic, strong) UITextField *typeNameField;
 @property (nonatomic, strong) UITableView *referalTableView;
 @property (nonatomic, strong) WGCollection *presentedUsers;
+@property (nonatomic, strong) UILabel *beforeWeStartLabel;
+@property (nonatomic, strong) UILabel *didReferLabel;
 @end
 
 @interface ReferalCell : UITableViewCell

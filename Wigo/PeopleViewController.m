@@ -579,7 +579,6 @@ viewForHeaderInSection:(NSInteger)section
             }
         });
     }];
-    
 }
 
 
