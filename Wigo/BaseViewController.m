@@ -30,6 +30,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [self.navigationController setNavigationBarHidden:NO];
     self.blueBannerView.hidden = NO;
 //    CGRect frame =  self.navigationController.navigationBar.frame;
 //    self.navigationController.navigationBar.frame =  CGRectMake(frame.origin.x, 20, frame.size.width, frame.size.height);
@@ -52,8 +53,6 @@
     self.blueBannerView.hidden = NO;
     [self.view addSubview:self.blueBannerView];
 }
-
-
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGRect frame = self.navigationController.navigationBar.frame;
