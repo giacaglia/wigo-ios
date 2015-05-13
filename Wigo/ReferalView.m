@@ -38,7 +38,7 @@
     [self.aroundSkipButton addTarget:self action:@selector(aroundSkipPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.topView addSubview:self.aroundSkipButton];
     
-    self.skipLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 38, 55, 20)];
+    self.skipLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 32, 55, 20)];
     self.skipLabel.text = @"Skip";
     self.skipLabel.textColor = UIColor.whiteColor;
     self.skipLabel.textAlignment = NSTextAlignmentRight;
@@ -78,6 +78,7 @@
     self.referalTableView.backgroundColor = UIColor.clearColor;
     [self.referalTableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
     [self.referalTableView registerClass:[ReferalCell class] forCellReuseIdentifier:kReferalCellName];
+    self.referalTableView.separatorColor = RGB(151, 151, 151);
     [self.topView addSubview:self.referalTableView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
@@ -102,7 +103,7 @@ replacementString:(NSString *)string {
         if (self.aroundTypeNameView.frame.origin.y != 0) {
             self.typeNameField.textAlignment = NSTextAlignmentLeft;
             self.skipLabel.font = [FontProperties lightFont:18.0f];
-            self.typeNameField.frame = CGRectMake(15, 34, window.frame.size.width - 15, 30);
+            self.typeNameField.frame = CGRectMake(15, 27, window.frame.size.width - 15, 30);
             [UIView animateWithDuration:0.15f animations:^{
                 self.didReferLabel.hidden = YES;
                 self.beforeWeStartLabel.hidden = YES;
@@ -217,6 +218,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 -(void) setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [ReferalCell height]);
     self.contentView.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [ReferalCell height]);
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     self.backgroundColor = UIColor.clearColor;
     self.faceImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 0, 50, 50)];
@@ -246,9 +248,13 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [super setSelected:selected animated:animated];
     if (selected) {
         self.nameLabel.textColor = [FontProperties getBlueColor];
+        self.nameLabel.font = [FontProperties mediumFont:20.0f];
+        self.backgroundColor = UIColor.whiteColor;
     }
     else {
         self.nameLabel.textColor = UIColor.whiteColor;
+        self.nameLabel.font = [FontProperties lightFont:20.0f];
+        self.backgroundColor = UIColor.clearColor;
     }
 }
 
