@@ -123,7 +123,9 @@ BOOL firstTimeLoading;
 - (void)showReferral {
     if (WGProfile.currentUser.findReferrer) {
         //Maybe referalView
-//        [self presentViewController:[ReferalViewController new] animated:YES completion:nil];
+        ReferalView *referalView = [ReferalView new];
+        [self.view addSubview:referalView];
+        [self.view bringSubviewToFront:referalView];
         WGProfile.currentUser.findReferrer = NO;
         [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
     }

@@ -10,7 +10,6 @@
 #import "SignViewController.h"
 #import "FacebookHelper.h"
 #import <Parse/Parse.h>
-#import "ReferalViewController.h"
 #import "WaitListViewController.h"
 #import "LocationPrimer.h"
 
