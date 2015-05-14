@@ -27,6 +27,7 @@
 #import "WhereAreYouViewController.h"
 #import "LocationPrimer.h"
 #import "ReferalView.h"
+#import "WaitListViewController.h"
 
 #define kEventCellName @"EventCell"
 #define kOneLineEventCellName @"OneLineEventCell"
@@ -1291,6 +1292,9 @@ BOOL firstTimeLoading;
         }
         if (!strongSelf.presentingLockedView) {
             [strongSelf showReferral];
+        }
+        if ([WGProfile.currentUser.status isEqual:kStatusWaiting]) {
+            [self presentViewController:[WaitListViewController new] animated:NO completion:nil];
         }
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"canFetchAppStartup"];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchAppStart" object:nil];
