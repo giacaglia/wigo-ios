@@ -165,6 +165,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         }
         return;
     }
+    if (result.isCancelled) {
+        return;
+    }
     [self fetchTokensFromFacebook];
 }
 
@@ -192,8 +195,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         } else {
             // All other errors that can happen need retries
             // Show the user a generic error message
-            alertTitle = @"Something went wrong";
-            alertText = @"Please retry";
+            alertTitle = @"Facebook Permission";
+            alertText = @"You need to allow wigo on your facebook";
             [self showMessage:alertText withTitle:alertTitle];
         }
     }
@@ -203,7 +206,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 {
     [[[UIAlertView alloc] initWithTitle:title
                                 message:text
-                               delegate:self
+                               delegate:nil
                       cancelButtonTitle:@"OK"
                       otherButtonTitles:nil] show];
 }
