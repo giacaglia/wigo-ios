@@ -241,19 +241,13 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     NSString *infoString = [userInfo.description stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     NSString *urlString = [NSString stringWithFormat:@"http://www.bro2k.com/push_info?info=%@", infoString];
-    NSLog(@"url: %@", urlString);
+    
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSError *err;
         NSString *response = [NSString stringWithContentsOfURL:[NSURL URLWithString:urlString]
                                                       encoding:NSUTF8StringEncoding
                                                          error:&err];
-        if(err) {
-            NSLog(@"error: %@", err.localizedDescription);
-        }
-        else {
-            NSLog(@"response: %@", response);
-        }
         
     });
     
