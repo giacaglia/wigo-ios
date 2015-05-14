@@ -128,8 +128,8 @@
 
 + (void) get3ProfilePictures:(NSString *)albumID
                  withHandler:(PicturesHandler)handler {
-    NSMutableArray *profilePictures = [NSMutableArray new];
-    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"/%@/photos"
+    NSString *graphPath = [NSString stringWithFormat:@"/%@/photos", albumID];
+    [[[FBSDKGraphRequest alloc] initWithGraphPath:graphPath
                                        parameters:nil]
      startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
          if (error) {
@@ -137,6 +137,7 @@
              handler(nil, NO);
              return;
           }
+         NSMutableArray *profilePictures = [NSMutableArray new];
          FBGraphObject *resultObject = result[@"data"];
          for (FBGraphObject *photoRepresentation in resultObject) {
              FBGraphObject *images = photoRepresentation[@"images"];
