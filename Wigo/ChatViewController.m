@@ -90,7 +90,7 @@
     [self.chatButton addTarget:self action:@selector(writeMessage) forControlEvents:UIControlEventTouchUpInside];
     self.chatButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
     [self.chatButton setTitle:@"Start a New Chat" forState:UIControlStateNormal];
-    [self.chatButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    [self.chatButton setTitleColor:UIColor.grayColor forState:UIControlStateNormal];
     self.chatButton.hidden = YES;
     [self.view addSubview:self.chatButton];
 }

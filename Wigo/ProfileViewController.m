@@ -460,16 +460,26 @@ BOOL blockShown;
         numberOfProperties -= 1;
     }
     if (numberOfProperties == 1) {
-        _workLabel.font = [FontProperties lightFont:18.0f];
-        _schoolLabel.font = [FontProperties lightFont:18.0f];
-        _locationLabel.font = [FontProperties lightFont:18.0f];
-        _workImgView.transform = CGAffineTransformMakeScale(2.0f, 2.0f);
-        _schoolImgView.transform = CGAffineTransformMakeScale(2.0f, 2.0f);
-        _locationImgView.transform = CGAffineTransformMakeScale(2.0f, 2.0f);
+        CGAffineTransform scaleTrans  = CGAffineTransformMakeScale(2.0f, 2.0f);
+        CGAffineTransform leftToRightTrans  = CGAffineTransformMakeTranslation(15.0f, 0);
+        CGAffineTransform transl = CGAffineTransformConcat(scaleTrans, leftToRightTrans);
+        _workLabel.textColor = RGB(170, 170, 170);
+        _workLabel.font = [FontProperties mediumFont:18.0f];
+        _schoolLabel.textColor = RGB(170, 170, 170);
+        _schoolLabel.font = [FontProperties mediumFont:18.0f];
+        _locationLabel.textColor = RGB(170, 170, 170);
+        _locationLabel.font = [FontProperties mediumFont:18.0f];
+        _workImgView.transform = transl;
+        _schoolImgView.transform = transl;
+        _locationImgView.transform = transl;
+       
+        _locationLabel.transform = leftToRightTrans;
         _locationLabel.center = _schoolLabel.center;
-        _workLabel.center = _schoolLabel.center;
         _locationImgView.center = _schoolImgView.center;
-        _workImgView.center = _schoolImgView.center;
+        
+        _workLabel.transform = leftToRightTrans;
+        _workLabel.center = _schoolLabel.center;
+        _workImgView.center = _workImgView.center;
     }
     if (numberOfProperties == 2) {
         _workLabel.font = [FontProperties lightFont:16.0f];
