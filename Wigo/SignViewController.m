@@ -180,8 +180,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     NSString *alertTitle;
     if ([FBErrorUtility shouldNotifyUserForError:error] == YES){
         // Error requires people using you app to make an action outside your app to recover
-        alertTitle = @"Facebook Permission";
-        alertText = @"You need to allow wigo on your facebook";
+        alertTitle = @"Something went wrong";
         alertText = [FBErrorUtility userMessageForError:error];
         [self showMessage:alertText withTitle:alertTitle];
         
@@ -196,8 +195,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         } else {
             // All other errors that can happen need retries
             // Show the user a generic error message
-            alertTitle = @"Something went wrong";
-            alertText = @"Please retry";
+            alertTitle = @"Facebook Permission";
+            alertText = @"You need to allow wigo on your facebook";
             [self showMessage:alertText withTitle:alertTitle];
         }
     }
