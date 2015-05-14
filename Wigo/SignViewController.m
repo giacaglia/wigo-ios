@@ -119,10 +119,8 @@
         }
         WGProfile.currentUser.properties = strongSelf.properties;
         [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
-        if ([WGProfile.currentUser.status isEqual:kStatusWaiting]) {
-            [strongSelf.navigationController pushViewController:[WaitListViewController new] animated:YES];
-        }
-        else [strongSelf dismissViewControllerAnimated:YES completion:nil];
+        [TabBarAuxiliar clearOutAllNotifications];
+        [strongSelf presentPushNotification];
     }];
 }
 
