@@ -22,8 +22,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchMessages) name:@"fetchMessages" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
     self.messages = NetworkFetcher.defaultGetter.messages;
-    [self initializeNewChatButton];
     [self initializeTableOfChats];
+    [self initializeNewChatButton];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -145,10 +145,8 @@
         }
         strongSelf.messages = collection;
         if (strongSelf.messages.count == 0) {
-            strongSelf.tableViewOfPeople.hidden = YES;
             strongSelf.chatButton.hidden = NO;
         } else {
-            strongSelf.tableViewOfPeople.hidden = NO;
             strongSelf.chatButton.hidden = YES;
         }
         [strongSelf.tableViewOfPeople reloadData];
