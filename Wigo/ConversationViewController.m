@@ -31,16 +31,6 @@ ProfileViewController *profileViewController;
     self = [super init];
     if (self) {
         self.user = user;
-        self.view.backgroundColor = [UIColor whiteColor];
-    }
-    return self;
-}
-
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        self.view.backgroundColor = UIColor.whiteColor;
     }
     return self;
 }
@@ -48,7 +38,8 @@ ProfileViewController *profileViewController;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    self.view.backgroundColor = UIColor.whiteColor;
+
     [self initializeMessageForEmptyConversation];
     
     bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];

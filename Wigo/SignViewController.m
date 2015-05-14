@@ -88,7 +88,6 @@
     [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/" parameters:nil]
      startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
          if (!error) {
-             NSLog(@"fetched user:%@", result);
              WGProfile.currentUser.email = result[@"email"];
              self.fbID = result[@"id"];
              self.profilePic = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", self.fbID];

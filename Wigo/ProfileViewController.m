@@ -556,9 +556,7 @@ BOOL blockShown;
 
 - (void)chatPressed {
     if (self.user.isCurrentUser) {
-        ChatViewController *chatViewController = [ChatViewController new];
-        chatViewController.view.backgroundColor = UIColor.whiteColor;
-        [self.navigationController pushViewController:chatViewController animated:YES];
+        [self.navigationController pushViewController:[ChatViewController new] animated:YES];
         return;
     }
  

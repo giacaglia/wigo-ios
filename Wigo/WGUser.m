@@ -1228,7 +1228,6 @@ static WGUser *currentUser = nil;
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-            
             dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
         }
         @finally {
