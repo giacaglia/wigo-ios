@@ -172,19 +172,8 @@ NSDate *firstLoggedTime;
     }
     
     [navController popToRootViewControllerAnimated:NO];
-    
-    [self doneWithUserInfo:userInfo];
 }
 
-- (void) doneWithUserInfo:(NSDictionary *)userInfo {
-    if ([[userInfo allKeys] containsObject:@"navigate"]) {
-        NSString *place = [userInfo objectForKey:@"navigate"];
-        NSDictionary *notificationUserInfo = [WGNavigateParser userInfoFromString:place];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"navigate"
-                                                             object:nil
-                                                           userInfo:notificationUserInfo];
-    }
-}
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
@@ -255,7 +244,12 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     if (application.applicationState == UIApplicationStateInactive) {
         [self dismissEverythingWithUserInfo:userInfo];
     }
-
+    
+    if ([[userInfo allKeys] containsObject:@"navigate"]) {
+        NSString *navigateString = [userInfo objectForKey:@"navigate"];
+        [self navigate:navigateString];
+    }
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if (application.applicationState == UIApplicationStateActive) {
         NSDictionary *aps = [userInfo objectForKey:@"aps"];
