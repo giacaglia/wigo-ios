@@ -108,6 +108,7 @@
     WGProfile.currentUser.images = profilePictures;
     self.fetchingProfilePictures = NO;
     [WGSpinnerView removeDancingGFromCenterView:self.view];
+    self.properties = WGProfile.currentUser.properties;
     __weak typeof(self) weakSelf = self;
     [WGProfile.currentUser signup:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -116,6 +117,8 @@
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
+        WGProfile.currentUser.properties = strongSelf.properties;
+        [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
         if ([WGProfile.currentUser.status isEqual:kStatusWaiting]) {
             [strongSelf.navigationController pushViewController:[WaitListViewController new] animated:YES];
         }
