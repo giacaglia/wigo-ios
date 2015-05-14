@@ -85,12 +85,100 @@
     if (collegeName) WGProfile.currentUser.education = collegeName;
     NSString *workName = [FacebookHelper nameOFWorkFromUser:fbGraphUser];
     if (workName) WGProfile.currentUser.work = workName;
-
     NSDictionary *userResponse = (NSDictionary *) fbGraphUser;
     if ([[userResponse allKeys] containsObject:@"gender"]) {
         WGProfile.currentUser.gender = [WGUser genderFromName:[userResponse objectForKey:@"gender"]];
     }
 }
+
++ (void) fetchProfilePicturesWithHandler:(PicturesHandler)handler {
+    if (![FBSDKAccessToken currentAccessToken]) {
+        handler(nil, NO);
+        return;
+    }
+    
+    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/albums" parameters:nil]
+     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+         if (error) {
+             [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
+         }
+         BOOL foundProfilePicturesAlbum = NO;
+         FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
+         for (FBGraphObject *album in resultObject) {
+             if ([album[@"name"] isEqual:@"Profile Pictures"]) {
+                 foundProfilePicturesAlbum = YES;
+                 NSString *profilePicsAlbumID = (NSString *)album[@"id"];
+                 [FacebookHelper get3ProfilePictures:profilePicsAlbumID
+                                         withHandler:^(NSArray *imagesArray, BOOL success) {
+                                             handler(imagesArray, success);
+                                             return;
+                 }];
+                 break;
+             }
+         }
+         if (!foundProfilePicturesAlbum) {
+             NSMutableArray *profilePictures = [NSMutableArray new];
+             NSString *profilePic = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", WGProfile.currentUser.facebookId];
+             [profilePictures addObject:@{@"url": profilePic}];
+             handler(profilePictures, YES);
+             return;
+         }
+     }];
+}
+
++ (void) get3ProfilePictures:(NSString *)albumID
+                 withHandler:(PicturesHandler)handler {
+    NSMutableArray *profilePictures = [NSMutableArray new];
+    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"/%@/photos"
+                                       parameters:nil]
+     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+         if (error) {
+             [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
+             handler(nil, NO);
+             return;
+          }
+         FBGraphObject *resultObject = result[@"data"];
+         for (FBGraphObject *photoRepresentation in resultObject) {
+             FBGraphObject *images = photoRepresentation[@"images"];
+             FBGraphObject *newPhoto = [FacebookHelper getFirstFacebookPhotoGreaterThanX:600 inPhotoArray:images];
+             FBGraphObject *smallPhoto = [FacebookHelper getFirstFacebookPhotoGreaterThanX:200 inPhotoArray:images];
+             if (newPhoto) {
+                 NSDictionary *newImage;
+                 if (smallPhoto) {
+                     newImage =
+                        @{
+                          @"url": [newPhoto objectForKey:@"source"],
+                          @"id": [photoRepresentation objectForKey:@"id"],
+                          @"type": @"facebook",
+                          @"small": [smallPhoto objectForKey:@"source"]
+                        };
+                        }
+                 else {
+                     newImage =
+                          @{
+                            @"url": [newPhoto objectForKey:@"source"],
+                            @"id": [photoRepresentation objectForKey:@"id"],
+                            @"type": @"facebook",
+                            };
+                 }
+                  [profilePictures addObject:newImage];
+                  if (profilePictures.count == 1) {
+                      WGProfile.currentUser.image = [profilePictures objectAtIndex:0];
+                  }
+                  if (profilePictures.count >= 3) {
+                      handler(profilePictures, YES);
+                      break;
+                  }
+             }
+        }
+        if (profilePictures.count == 0) {
+          [profilePictures addObject:@{@"url": @"https://api.wigo.us/static/img/wigo_profile_gray.png"}];
+        }
+         handler(profilePictures, YES);
+         return;
+  }];
+}
+
 
 
 

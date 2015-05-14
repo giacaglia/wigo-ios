@@ -7,13 +7,22 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <FacebookSDK/FacebookSDK.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 @interface FacebookHelper : NSObject
+typedef void (^PicturesHandler)(NSArray *imagesArray, BOOL success);
 
-+ (FBGraphObject *)getFirstFacebookPhotoGreaterThanX:(int)X
-                                         inPhotoArray:(FBGraphObject *)photoArray;
-+ (NSString *)nameOfCollegeFromUser:(id<FBGraphUser>)object;
-+ (NSString *)nameOFWorkFromUser:(id<FBGraphUser>)fbGraphUser;
-+ (void)fillProfileWithUser:(id<FBGraphUser>)fbGraphUser;
+
++(FBGraphObject *) getFirstFacebookPhotoGreaterThanX:(int)X
+                                        inPhotoArray:(FBGraphObject *)photoArray;
+
++(NSString *) nameOfCollegeFromUser:(id<FBGraphUser>)object;
++(NSString *) nameOFWorkFromUser:(id<FBGraphUser>)fbGraphUser;
++(void) fillProfileWithUser:(id<FBGraphUser>)fbGraphUser;
+
++ (void) fetchProfilePicturesWithHandler:(PicturesHandler)handler;
++ (void) get3ProfilePictures:(NSString *)albumID
+                 withHandler:(PicturesHandler)handler;
+
 @end

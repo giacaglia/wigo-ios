@@ -17,6 +17,10 @@
 @property (nonatomic, strong) UIPageControl *pageControl;
 @property (nonatomic, strong) UIScrollView *scrollView;
 
+@property (nonatomic, assign) BOOL pushed;
+@property (nonatomic, assign) BOOL alertShown;
+
+
 //Facebook properties
 @property (nonatomic, strong) NSString *fbID;
 @property (nonatomic, strong) NSString *profilePic;
