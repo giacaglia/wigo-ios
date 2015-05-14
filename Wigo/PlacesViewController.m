@@ -380,7 +380,7 @@ BOOL firstTimeLoading;
     else {
         if(updateOnFail) {
             
-            [self fetchEventsWithHandler:^(BOOL success, NSError *error) {
+            [self fetchEventsFirstPageWithHandler:^(BOOL success, NSError *error) {
                 [self scrollToEventId:eventId updateEventsOnFail:NO];
             }];
         }
@@ -1080,6 +1080,10 @@ BOOL firstTimeLoading;
 #pragma mark - Network Asynchronous Functions
 
 - (void) fetchEventsFirstPage {
+    [self fetchEventsFirstPageWithHandler:^(BOOL success, NSError *error) {}];
+}
+
+- (void)fetchEventsFirstPageWithHandler:(BoolResultBlock)handler {
     if (!self.doNotReloadOffsets) {
         for (NSString *key in [self.eventOffsetDictionary allKeys]) {
             [self.eventOffsetDictionary setValue:@0 forKey:key];
@@ -1090,7 +1094,7 @@ BOOL firstTimeLoading;
     else self.shouldReloadEvents = YES;
     self.aggregateEvent = nil;
     self.allEvents = nil;
-    [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
+    [self fetchEventsWithHandler:handler];
 }
 
 - (void) fetchEventsWithHandler:(BoolResultBlock)handler {
