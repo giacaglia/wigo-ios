@@ -254,7 +254,7 @@ BOOL blockShown;
         NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:[self.user deserialize]];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUserAtTable" object:nil userInfo:userInfo];
     }
-    
+    [self.navigationController setNavigationBarHidden:self.hideNavBar];
     //if presented sudo-modally
     if (!self.navigationController || self == self.navigationController.viewControllers[0]) {
         [self dismissViewControllerAnimated:YES completion:nil];

@@ -725,6 +725,7 @@ BOOL firstTimeLoading;
     profileViewController.user = user;
     if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    profileViewController.hideNavBar = YES;
     [self.navigationController pushViewController: profileViewController animated: YES];
 
 }

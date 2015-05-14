@@ -35,6 +35,7 @@
 @property (nonatomic, strong) NSDate *lastNotificationRead;
 @property (nonatomic, strong) WGCollection *mutualFriends;
 @property (nonatomic, strong) MoreViewController *moreVc;
+@property (nonatomic, assign) BOOL hideNavBar;
 -(void)removeMoreVc;
 @end
 
