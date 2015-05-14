@@ -365,7 +365,7 @@ BOOL firstTimeLoading;
     [self.navigationController pushViewController: profileViewController animated: YES];
 }
 
-- (void)scrollToEventId:(NSNumber *)eventId {
+- (void)scrollToEventId:(NSNumber *)eventId updateEventsOnFail:(BOOL)updateOnFail {
     
     NSIndexPath *indexPath = [self getIndexPathForEventId:eventId];
     if(indexPath) {
@@ -378,7 +378,15 @@ BOOL firstTimeLoading;
                                     atScrollPosition:UITableViewScrollPositionTop animated:YES];
     }
     else {
-        [self scrollToTop];
+        if(updateOnFail) {
+            
+            [self fetchEventsWithHandler:^(BOOL success, NSError *error) {
+                [self scrollToEventId:eventId updateEventsOnFail:NO];
+            }];
+        }
+        else {
+            [self scrollToTop];
+        }
     }
 }
 
@@ -890,7 +898,7 @@ BOOL firstTimeLoading;
         if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
             NSNumber *eventId = userInfo[@"events"];
             
-            [self scrollToEventId:eventId];
+            [self scrollToEventId:eventId updateEventsOnFail:YES];
         }
         else {
             [self scrollToTop];
@@ -903,7 +911,7 @@ BOOL firstTimeLoading;
         if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
             NSNumber *eventId = userInfo[@"events"];
             
-            [self scrollToEventId:eventId];
+            [self scrollToEventId:eventId updateEventsOnFail:YES];
             
             // show message in event details view
             
