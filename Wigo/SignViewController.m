@@ -1,6 +1,5 @@
-    //
-//  SignUpViewController.m
-//  webPays
+//
+//  SignViewController.m
 //
 //  Created by Giuliano Giacaglia on 9/26/13.
 //  Copyright (c) 2013 Giuliano Giacaglia. All rights reserved.
@@ -12,19 +11,18 @@
 #import <Parse/Parse.h>
 #import "WaitListViewController.h"
 #import "LocationPrimer.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 #define kPushNotificationMessage @"When your friends are counting on you to go out, we need to reach you via push notifications."
 #define kPushNotificationKey @"push_notification_key"
 
 
-@interface SignViewController () <UIScrollViewDelegate>
+@interface SignViewController () <UIScrollViewDelegate, FBSDKLoginButtonDelegate>
 @property UIView *facebookConnectView;
 @property BOOL pushed;
-@property FBLoginView *loginView;
+@property FBSDKLoginButton *loginButton;
 @property NSString * profilePicturesAlbumId;
-@property NSString *profilePic;
-@property NSString *accessToken;
-@property NSString *fbID;
 @property UIAlertView * alert;
 @property BOOL alertShown;
 @end
@@ -60,12 +58,12 @@
 }
 
 - (void) getFacebookTokensAndLoginORSignUp {
-    _fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"];
-    _accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
-
+    self.fbID = [[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_id"];
+    self.accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"accessToken"];
+    
     NSString *key = [[NSUserDefaults standardUserDefaults] objectForKey:@"key"];
     if (!key || key.length <= 0) {
-        if (!_fbID || !_accessToken) {
+        if (!self.fbID || !self.accessToken) {
             [self fetchTokensFromFacebook];
         } else {
             [self loginUserAsynchronous];
@@ -74,18 +72,19 @@
 }
 
 - (void)fetchTokensFromFacebook {
-    if (_loginView) [_loginView removeFromSuperview];
+    if (_loginButton) [_loginButton removeFromSuperview];
     
-    _loginView = [[FBLoginView alloc] initWithReadPermissions: @[@"user_friends", @"user_photos", @"user_work_history", @"user_education_history"]];
-    _loginView.loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
-    _loginView.delegate = self;
-    _loginView.frame = CGRectMake(0, self.view.frame.size.height - 0.2*self.view.frame.size.width, self.view.frame.size.width, 0.2*self.view.frame.size.width);
+    _loginButton = [[FBSDKLoginButton alloc] init];
+    _loginButton.readPermissions = @[@"user_friends", @"user_photos", @"user_work_history", @"user_education_history"];
+    _loginButton.loginBehavior = FBSessionLoginBehaviorUseSystemAccountIfPresent;
+    _loginButton.delegate = self;
+    _loginButton.frame = CGRectMake(0, self.view.frame.size.height - 0.2*self.view.frame.size.width, self.view.frame.size.width, 0.2*self.view.frame.size.width);
     UIImageView *connectFacebookImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"connectFacebook"]];
     connectFacebookImageView.backgroundColor = [UIColor whiteColor];
     connectFacebookImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, 0.2*self.view.frame.size.width);
-    [_loginView addSubview:connectFacebookImageView];
-    [_loginView bringSubviewToFront:connectFacebookImageView];
-    [self.view addSubview:_loginView];
+    [_loginButton addSubview:connectFacebookImageView];
+    [_loginButton bringSubviewToFront:connectFacebookImageView];
+    [self.view addSubview:_loginButton];
     
 }
 
@@ -93,36 +92,34 @@
 #pragma mark - Sign Up Process
 
 - (void) fetchProfilePicturesAlbumFacebook {
-    [FBRequestConnection startWithGraphPath:@"/me/albums"
-                                 parameters:nil
-                                 HTTPMethod:@"GET"
-                          completionHandler:^(
-                                              FBRequestConnection *connection,
-                                              id result,
-                                              NSError *error
-                                              ) {
-                              if (error) {
-                                  self.fetchingProfilePictures = NO;
-                                  [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
-                              }
-                              BOOL foundProfilePicturesAlbum = NO;
-                              FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
-                              for (FBGraphObject *album in resultObject) {
-                                  if ([[album objectForKey:@"name"] isEqualToString:@"Profile Pictures"]) {
-                                      foundProfilePicturesAlbum = YES;
-                                      _profilePicturesAlbumId = (NSString *)[album objectForKey:@"id"];
-                                      [self get3ProfilePictures];
-                                      break;
-                                  }
-                              }
-                              if (!foundProfilePicturesAlbum) {
-                                  self.fetchingProfilePictures = NO;
-                                  NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
-                                  [profilePictures addObject:@{@"url": _profilePic}];
-                                  [self saveProfilePictures:profilePictures];
-                              }
-                          }];
+    if (![FBSDKAccessToken currentAccessToken]) return;
+   
+    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/albums" parameters:nil]
+     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+        if (error) {
+           self.fetchingProfilePictures = NO;
+           [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
+        }
+        BOOL foundProfilePicturesAlbum = NO;
+        FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
+        for (FBGraphObject *album in resultObject) {
+           if ([[album objectForKey:@"name"] isEqualToString:@"Profile Pictures"]) {
+               foundProfilePicturesAlbum = YES;
+               _profilePicturesAlbumId = (NSString *)[album objectForKey:@"id"];
+               [self get3ProfilePictures];
+               break;
+           }
+        }
+        if (!foundProfilePicturesAlbum) {
+           self.fetchingProfilePictures = NO;
+           NSMutableArray *profilePictures = [[NSMutableArray alloc] initWithCapacity:0];
+           [profilePictures addObject:@{@"url": _profilePic}];
+           [self saveProfilePictures:profilePictures];
+        }
+     }];
+    
 
+    
 }
 
 - (void) get3ProfilePictures {
@@ -149,11 +146,11 @@
                                       NSDictionary *newImage;
                                       if (smallPhoto) {
                                           newImage =
-                                            @{
-                                              @"url": [newPhoto objectForKey:@"source"],
-                                              @"id": [photoRepresentation objectForKey:@"id"],
-                                              @"type": @"facebook",
-                                              @"small": [smallPhoto objectForKey:@"source"]
+                                          @{
+                                            @"url": [newPhoto objectForKey:@"source"],
+                                            @"id": [photoRepresentation objectForKey:@"id"],
+                                            @"type": @"facebook",
+                                            @"small": [smallPhoto objectForKey:@"source"]
                                             };
                                       }
                                       else {
@@ -171,13 +168,13 @@
                                       if ([profilePictures count] >= 3) {
                                           break;
                                       }
-
+                                      
                                   }
-                                }
-                                if ([profilePictures count] == 0) {
-                                    [profilePictures addObject:@{@"url": @"https://api.wigo.us/static/img/wigo_profile_gray.png"}];
-                                }
-                                [self saveProfilePictures:profilePictures];
+                              }
+                              if ([profilePictures count] == 0) {
+                                  [profilePictures addObject:@{@"url": @"https://api.wigo.us/static/img/wigo_profile_gray.png"}];
+                              }
+                              [self saveProfilePictures:profilePictures];
                           }];
 }
 
@@ -185,12 +182,12 @@
 - (void)saveProfilePictures:(NSMutableArray *)profilePictures {
     WGProfile.currentUser.images = profilePictures;
     if (_pushed) return;
-
+    
     _pushed = YES;
     self.fetchingProfilePictures = NO;
     [WGSpinnerView removeDancingGFromCenterView:self.view];
     __weak typeof(self) weakSelf = self;
-    [WGProfile.currentUser save:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser signup:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         if (error) {
@@ -208,17 +205,17 @@
 #pragma mark - UIAlertView Methods
 
 - (void)showErrorNoConnection {
-    if (!_alertShown) {
-        _alertShown = YES;
-        _alert = [[UIAlertView alloc] initWithTitle:@"No Connection"
-                                            message:@"Please check your network connection and try again."
-                                           delegate:self
-                                  cancelButtonTitle:@"Ok"
-                                  otherButtonTitles: nil];
-        [_alert show];
-        [self logout];
-        _alert.delegate = self;
-    }
+    if (!_alertShown) return;
+    
+    _alertShown = YES;
+    _alert = [[UIAlertView alloc] initWithTitle:@"No Connection"
+                                        message:@"Please check your network connection and try again."
+                                       delegate:self
+                              cancelButtonTitle:@"Ok"
+                              otherButtonTitles: nil];
+    [_alert show];
+    [self logout];
+    _alert.delegate = self;
 }
 
 - (void)alertView:(UIAlertView *)alertView
@@ -229,29 +226,43 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
 
 #pragma mark - Facebook Delegate Methods
 
-- (void) loginViewFetchedUserInfo:(FBLoginView *)loginView user:(id<FBGraphUser>)fbGraphUser {
+- (void) loginButton:(FBSDKLoginButton *)loginButton
+didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
+               error:(NSError *)error
+{
+    if (error) {
+        if ([[[error userInfo] allKeys] containsObject:@"com.facebook.sdk:ErrorInnerErrorKey"]) {
+            NSError *innerError = [[error userInfo] objectForKey:@"com.facebook.sdk:ErrorInnerErrorKey"];
+            if ([[innerError domain] isEqualToString:NSURLErrorDomain]) {
+                [self showErrorNoConnection];
+            }
+            
+        } else {
+            [self handleAuthError:error];
+        }
+        return;
+    }
+    
     if (_pushed) return;
     
-    _fbID = [fbGraphUser objectID];
-    _profilePic = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", [fbGraphUser objectForKey:@"id"]];
-    _accessToken = [FBSession activeSession].accessTokenData.accessToken;
-    [FacebookHelper fillProfileWithUser:fbGraphUser];
-    if (!_alertShown && !self.fetchingProfilePictures) {
-        [self loginUserAsynchronous];
+    if ([FBSDKAccessToken currentAccessToken]) {
+        self.accessToken = [FBSDKAccessToken currentAccessToken].tokenString;
+        [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/" parameters:nil]
+         startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+             if (!error) {
+                 NSLog(@"fetched user:%@", result);
+                 self.fbID = result[@"id"];
+                 self.profilePic = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", self.fbID];
+                 [FacebookHelper fillProfileWithUser:result];
+                 if (!_alertShown && !self.fetchingProfilePictures) {
+                     [self loginUserAsynchronous];
+                 }
+             }
+         }];
     }
-    
 }
-
-- (void) loginView:(FBLoginView *)loginView handleError:(NSError *)error {
-    if ([[[error userInfo] allKeys] containsObject:@"com.facebook.sdk:ErrorInnerErrorKey"]) {
-        NSError *innerError = [[error userInfo] objectForKey:@"com.facebook.sdk:ErrorInnerErrorKey"];
-        if ([[innerError domain] isEqualToString:NSURLErrorDomain]) {
-            [self showErrorNoConnection];
-        }
-
-    } else {
-        [self handleAuthError:error];
-    }
+- (void) loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
+    
 }
 
 - (void)handleAuthError:(NSError *)error {
@@ -311,9 +322,9 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
 #pragma mark - Asynchronous methods
 
 -(void) loginUserAsynchronous {
-    [Crashlytics setUserIdentifier:_fbID];
+    [Crashlytics setUserIdentifier:self.fbID];
     
-    WGProfile.currentUser.facebookId = _fbID;
+    WGProfile.currentUser.facebookId = self.fbID;
     WGProfile.currentUser.facebookAccessToken = _accessToken;
     
     [WGSpinnerView addDancingGToCenterView:self.view];
@@ -328,7 +339,6 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
             if ([error.localizedDescription isEqual:@"Request failed: not found (404)"]) {
                 [strongSelf fetchProfilePicturesAlbumFacebook];
             }
-            [[WGError sharedInstance] handleError:error actionType:WGActionLogin retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLogin];
             return;
         }
@@ -346,7 +356,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
     if (_pushed) return;
     _pushed = YES;
-
+    
     if ([WGProfile.currentUser.status isEqual:kStatusWaiting]) {
         [self.navigationController pushViewController:[WaitListViewController new] animated:YES];
     }
@@ -356,7 +366,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
 - (void)reloadedUserInfo:(BOOL)success andError:(NSError *)error {
     [WGSpinnerView removeDancingGFromCenterView:self.view];
     if (error || !success) {
-        if (!_fbID || !_accessToken) {
+        if (!self.fbID || !_accessToken) {
             [self fetchTokensFromFacebook];
         } else {
             [self loginUserAsynchronous];
@@ -390,8 +400,8 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
     [self addText:@"Share moments\nwith friends" andImage:@"share" atIndex:2];
     [self addText:@"Finalize plans\nvia chats" andImage:@"chatPreview" atIndex:3];
     [self addText:@"Forget FOMO, forever!" andImage:@"wigoPreview" atIndex:4];
-
- 
+    
+    
 }
 
 -(void)addText:(NSString *)text
@@ -432,7 +442,7 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
     else {
         [self navigate];
     }
-   
+    
 }
 
 - (void)presentAlertView {
@@ -450,9 +460,9 @@ didDismissWithButtonIndex:(NSInteger)buttonIndex {
         [self presentAlertView];
         return;
     }
-   
+    
     [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:kPushNotificationKey];
-
+    
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
         UIUserNotificationCategory *category = [self registerActions];
