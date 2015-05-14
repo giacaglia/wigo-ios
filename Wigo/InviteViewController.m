@@ -118,7 +118,7 @@
         else return 0;
     }
     else if (section == kSectionTapCell) {
-        return 5;
+        return MIN(5, self.presentedUsers.count);
     }
     else if (section == kSectionAllFriends) {
         return MAX(self.presentedUsers.count - 5, 0);
