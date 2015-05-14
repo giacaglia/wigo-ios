@@ -203,7 +203,7 @@ NSIndexPath *userIndex;
 #pragma mark WGViewController methods
 
 - (void)updateViewWithOptions:(NSDictionary *)options {
-    
+    [self fetchFirstPageFriendRequests];
 }
 
 #pragma mark - Filter handlers

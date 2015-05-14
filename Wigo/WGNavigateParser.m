@@ -98,6 +98,9 @@
        [objectName isEqualToString:@"events"]) {
         return kWGTabHome;
     }
+    else if([objectName isEqualToString:@"users"]) {
+        return kWGTabDiscover;
+    }
     return nil;
 }
 
