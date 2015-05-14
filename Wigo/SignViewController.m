@@ -165,6 +165,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         }
         return;
     }
+    if (result.isCancelled) {
+        return;
+    }
     [self fetchTokensFromFacebook];
 }
 
@@ -177,7 +180,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     NSString *alertTitle;
     if ([FBErrorUtility shouldNotifyUserForError:error] == YES){
         // Error requires people using you app to make an action outside your app to recover
-        alertTitle = @"Something went wrong";
+        alertTitle = @"Facebook Permission";
+        alertText = @"You need to allow wigo on your facebook";
         alertText = [FBErrorUtility userMessageForError:error];
         [self showMessage:alertText withTitle:alertTitle];
         
@@ -203,7 +207,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 {
     [[[UIAlertView alloc] initWithTitle:title
                                 message:text
-                               delegate:self
+                               delegate:nil
                       cancelButtonTitle:@"OK"
                       otherButtonTitles:nil] show];
 }
