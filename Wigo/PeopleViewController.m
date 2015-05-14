@@ -203,6 +203,7 @@ NSIndexPath *userIndex;
 #pragma mark WGViewController methods
 
 - (void)updateViewWithOptions:(NSDictionary *)options {
+    [NetworkFetcher.defaultGetter fetchFriendsIds];
     [self fetchFirstPageFriendRequests];
 }
 

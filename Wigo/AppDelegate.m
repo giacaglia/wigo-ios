@@ -67,7 +67,7 @@ NSDate *firstLoggedTime;
     [self addNotificationHandlers];
     [self logFirstTimeLoading];
     [WGI openedTheApp];
-
+    
     return YES;
 }
 
@@ -243,11 +243,11 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     
     if (application.applicationState == UIApplicationStateInactive) {
         [self dismissEverythingWithUserInfo:userInfo];
-    }
     
-    if ([[userInfo allKeys] containsObject:@"navigate"]) {
-        NSString *navigateString = [userInfo objectForKey:@"navigate"];
-        [self navigate:navigateString];
+        if ([[userInfo allKeys] containsObject:@"navigate"]) {
+            NSString *navigateString = [userInfo objectForKey:@"navigate"];
+            [self navigate:navigateString];
+        }
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
