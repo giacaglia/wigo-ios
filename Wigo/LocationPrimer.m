@@ -10,7 +10,7 @@
 #import "Globals.h"
 #import <CoreLocation/CoreLocation.h>
 
-#define kPleaseEnableLocation @"Please enable location services so\nwe can showyou the amazing events\nand awesome people nearby";
+#define kPleaseEnableLocation @"Please enable location services so\nwe can show you sweet stuff nearby.";
 
 
 static CLLocationManager *locationManager;
@@ -72,7 +72,7 @@ static UIButton *mainButton;
     
     LocationPrimer.defaultButton.layer.borderColor = UIColor.clearColor.CGColor;
     LocationPrimer.defaultButton.backgroundColor = [FontProperties getBlueColor];
-    [LocationPrimer.defaultButton setTitle:@"Enable Location" forState:UIControlStateNormal];
+    [LocationPrimer.defaultButton setTitle:@"Allow" forState:UIControlStateNormal];
     [LocationPrimer.defaultButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
     [LocationPrimer.defaultButton addTarget:[LocationPrimer class] action:@selector(enableLocationPressed:) forControlEvents:UIControlEventTouchUpInside];
     [window bringSubviewToFront:LocationPrimer.defaultButton];
