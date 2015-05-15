@@ -108,7 +108,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)startPrimer {
-    if ([UIApplication sharedApplication].keyWindow.rootViewController.navigationController.visibleViewController == self.navigationController) {
+    if ([self.navigationController.visibleViewController isKindOfClass:[UITabBarController class]]) {
         [LocationPrimer startPrimer];
     }
 }
