@@ -99,6 +99,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This will be used to obtain or track your location.</string>
+	<string>Events will be presented based on your location</string>
 </dict>
 </plist>
