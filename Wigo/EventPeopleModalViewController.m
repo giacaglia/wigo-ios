@@ -373,10 +373,10 @@ referenceSizeForFooterInSection:(NSInteger)section {
     self.addFriendButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 50, imageWidth, 70)];
     self.addFriendButton.backgroundColor = [FontProperties getOrangeColor];
     [self.addFriendButton addTarget:self action:@selector(followPressed:) forControlEvents:UIControlEventTouchUpInside];
-    UIImageView *whiteOrangeFollowImage = [[UIImageView alloc] initWithFrame:CGRectMake(imageWidth/2 - 60, 35 - 15, 30, 30)];
+    UIImageView *whiteOrangeFollowImage = [[UIImageView alloc] initWithFrame:CGRectMake(imageWidth/2 - 60, 35 - 10, 30, 20)];
     whiteOrangeFollowImage.image = [UIImage imageNamed:@"whiteOrangeFollow"];
     [self.addFriendButton addSubview:whiteOrangeFollowImage];
-    UILabel *addFriendLabel = [[UILabel alloc] initWithFrame:CGRectMake(imageWidth/2 - 20, 35 - 12.5f, 90, 25)];
+    UILabel *addFriendLabel = [[UILabel alloc] initWithFrame:CGRectMake(imageWidth/2 - 20, 35 - 10, 90, 20)];
     addFriendLabel.text = @"Add Friend";
     addFriendLabel.textColor = UIColor.whiteColor;
     addFriendLabel.textAlignment = NSTextAlignmentLeft;
