@@ -1175,8 +1175,8 @@ BOOL firstTimeLoading;
             }
             
             strongSelf.shouldReloadEvents = YES;
-            [strongSelf removeDancingG];
             [strongSelf.placesTableView reloadData];
+            [strongSelf removeDancingG];
             handler(success, error);
         }];
         
@@ -1227,9 +1227,8 @@ BOOL firstTimeLoading;
                     [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
                 }
             }
-            
-            [strongSelf removeDancingG];
             [strongSelf.placesTableView reloadData];
+            [strongSelf removeDancingG];
             handler(YES, error);
         }];
     } else {
@@ -1272,8 +1271,8 @@ BOOL firstTimeLoading;
                 [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
             }
 
-            [strongSelf removeDancingG];
             [strongSelf.placesTableView reloadData];
+            [strongSelf removeDancingG];
             handler(YES, error);
         }];
     }
