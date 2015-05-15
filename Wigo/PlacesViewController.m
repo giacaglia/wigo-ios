@@ -751,9 +751,10 @@ BOOL firstTimeLoading;
 }
 
 - (void)presentConversationForUser:(WGUser *)user {
-    [self.navigationController pushViewController:[[ConversationViewController alloc] initWithUser:user] animated:YES];
+    ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithUser:user];
+    conversationViewController.hideNavBar = YES;
+    [self.navigationController pushViewController:conversationViewController animated:YES];
 }
-
 
 - (void)showModalAttendees:(UIViewController *)modal {
     self.shouldReloadEvents = NO;

@@ -248,7 +248,8 @@ ProfileViewController *profileViewController;
 - (void) goBack {
     self.navigationController.navigationBar.barTintColor = UIColor.clearColor;
     self.navigationController.navigationBar.translucent = YES;
-    
+    self.navigationController.navigationBarHidden = self.hideNavBar;
+
     [self.navigationController popViewControllerAnimated:YES];
 }
 

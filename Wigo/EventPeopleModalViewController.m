@@ -66,7 +66,8 @@ int imageWidth;
     [self.view addSubview:titleLabel];
     
     UILabel *numberOfPeopleGoing = [[UILabel alloc] initWithFrame:CGRectMake(15, titleLabel.frame.origin.y + titleLabel.frame.size.height + 6, self.view.frame.size.width - 30, 20)];
-    numberOfPeopleGoing.text = [NSString stringWithFormat:@"%@ going", self.event.numAttending.stringValue];
+    if (self.event.isExpired.boolValue) numberOfPeopleGoing.text = [NSString stringWithFormat:@"%@ went", self.event.numAttending.stringValue];
+    else numberOfPeopleGoing.text = [NSString stringWithFormat:@"%@ going", self.event.numAttending.stringValue];
     numberOfPeopleGoing.font = [FontProperties lightFont:16.0f];
     numberOfPeopleGoing.textColor = RGB(119, 119, 119);
     numberOfPeopleGoing.textAlignment = NSTextAlignmentCenter;

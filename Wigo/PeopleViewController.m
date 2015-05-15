@@ -158,6 +158,12 @@ NSIndexPath *userIndex;
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20)];
     if ([self.currentTab isEqual:@2]) {
+        UILabel *discoverLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        discoverLabel.text = @"Discover";
+        discoverLabel.font = [FontProperties mediumFont:18.0f];
+        discoverLabel.textAlignment = NSTextAlignmentCenter;
+        discoverLabel.textColor = UIColor.whiteColor;
+        self.tabBarController.navigationItem.titleView = discoverLabel;
         self.tableViewOfPeople.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 108 + 44);
     }
     [self.tableViewOfPeople registerClass:[PeopleCell class] forCellReuseIdentifier:kPeopleCellName];
