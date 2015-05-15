@@ -31,7 +31,7 @@
 {
     [super viewDidLoad];
     self.fetchingProfilePictures = NO;
-    self.pushed = NO;
+//    self.pushed = NO;
     self.alertShown = NO;
     self.view.backgroundColor = UIColor.whiteColor;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeAlertToNotShown) name:@"changeAlertToNotShown" object:nil];
@@ -48,6 +48,12 @@
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self getFacebookTokensAndLoginORSignUp];
+    [LocationPrimer removePrimer];
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [LocationPrimer removePrimer];
 }
 
 - (void) changeAlertToNotShown {
