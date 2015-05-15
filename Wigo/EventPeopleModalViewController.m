@@ -422,7 +422,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
         });
         
     }];
-    if (user.isFriend && !user.isFriend.boolValue) {
+    if (!user.isFriend || !user.isFriend.boolValue) {
         [user getNumMutualFriends:^(NSNumber *numMutualFriends, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 __strong typeof(weakSelf) strongSelf = weakSelf;
