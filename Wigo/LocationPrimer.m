@@ -95,6 +95,7 @@ static UIButton *mainButton;
     [LocationPrimer.defaultButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
     [LocationPrimer.defaultButton addTarget:[LocationPrimer class] action:@selector(phoneSettingsPressed) forControlEvents:UIControlEventTouchUpInside];
     [window bringSubviewToFront:LocationPrimer.defaultButton];
+    LocationPrimer.defaultButton.alpha = 1.0f;
     LocationPrimer.defaultButton.hidden = NO;
 }
 
