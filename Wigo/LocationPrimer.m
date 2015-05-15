@@ -147,6 +147,9 @@ static UIButton *mainButton;
     locationManager.delegate = self;
     if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
         [locationManager requestWhenInUseAuthorization];
+        UIAlertView *successAlert = [[UIAlertView alloc] initWithTitle: @"Sent!" message: @"Thanks! We'll send it out to your school asap!" delegate: self cancelButtonTitle: @"OK" otherButtonTitles: nil];
+        [successAlert show];
+        
     }
 }
 
