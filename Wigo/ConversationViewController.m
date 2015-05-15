@@ -76,7 +76,8 @@ ProfileViewController *profileViewController;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+
     [WGAnalytics tagView:@"conversation"];
     [self initializeNotificationObservers];
 }

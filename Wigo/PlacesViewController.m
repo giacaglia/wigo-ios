@@ -164,7 +164,6 @@ BOOL firstTimeLoading;
     self.navigationController.navigationBar.tintColor = UIColor.whiteColor;
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:UIColor.whiteColor}];
     self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:UIColor.whiteColor forKey:NSForegroundColorAttributeName];
-    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
    
@@ -1061,9 +1060,9 @@ BOOL firstTimeLoading;
     __weak typeof(self) weakSelf = self;
     [WGEvent get:^(WGCollection *collection, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
-        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         strongSelf.fetchingEventAttendees = NO;
         if (error) {
+            [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
             handler(NO, error);
             return;
         }
@@ -1096,7 +1095,7 @@ BOOL firstTimeLoading;
             }
             [[strongSelf.dayToEventObjArray objectForKey: eventDate] addObject: event];
         }
-        
+        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         handler(YES, error);
     }];
 }

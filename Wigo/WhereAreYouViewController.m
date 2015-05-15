@@ -21,17 +21,25 @@
     [super viewDidAppear:animated];
     [self.privateSwitchView.closeLockImageView stopAnimating];
     [self.privateSwitchView.openLockImageView stopAnimating];
+    CGRect frame =  self.navigationController.navigationBar.frame;
+    self.navigationController.navigationBar.frame =  CGRectMake(frame.origin.x, 20, frame.size.width, frame.size.height);
 }
 
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.navigationController.navigationBar.backgroundColor = [FontProperties getBlueColor];
+    CGRect frame =  self.navigationController.navigationBar.frame;
+    self.navigationController.navigationBar.frame =  CGRectMake(frame.origin.x, 20, frame.size.width, frame.size.height);
 }
 
 -(void) setup {
     self.view.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height);
     self.view.backgroundColor = RGB(248, 248, 248);
     [self initializeNavigationItem];
+    
+    UIView *blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
+    blueBannerView.backgroundColor = [FontProperties getBlueColor];
+    [self.view addSubview:blueBannerView];
     
     self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 80)];
     self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Señor Frogs @ 8pm (3rd & Main)" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
