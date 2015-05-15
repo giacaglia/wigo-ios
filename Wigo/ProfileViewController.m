@@ -345,7 +345,8 @@ BOOL blockShown;
     
     _nameOfPersonLabel = [[UILabel alloc] initWithFrame:CGRectMake(7, 15, self.view.frame.size.width - 14, 50)];
     _nameOfPersonLabel.textAlignment = NSTextAlignmentCenter;
-    _nameOfPersonLabel.text = [NSString stringWithFormat:@"%@, %@", self.user.fullName, self.user.age];
+    if (self.user.age.length > 0) _nameOfPersonLabel.text = [NSString stringWithFormat:@"%@, %@", self.user.fullName, self.user.age];
+    else _nameOfPersonLabel.text = self.user.fullName;
     _nameOfPersonLabel.textColor = UIColor.whiteColor;
     _nameOfPersonLabel.font = [FontProperties lightFont:20.0f];
     _nameOfPersonLabel.userInteractionEnabled = NO;
@@ -658,7 +659,7 @@ BOOL blockShown;
     [popViewController.view addSubview:backButton];
     
     UILabel *blockedLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.view.frame.size.height/2 - 60 - 40, popViewController.view.frame.size.width - 40, 120)];
-    blockedLabel.text = [NSString stringWithFormat:@"%@ can't follow you or see any of your activity.", [user fullName]];
+    blockedLabel.text = [NSString stringWithFormat:@"%@ can't follow you or see any of your activity.", user.fullName];
     blockedLabel.textColor = [UIColor whiteColor];
     blockedLabel.numberOfLines = 0;
     blockedLabel.lineBreakMode = NSLineBreakByWordWrapping;

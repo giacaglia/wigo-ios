@@ -24,7 +24,7 @@ UIButton *cancelButton;
     if (self.user.state == FRIEND_USER_STATE) {
         unfollowButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60 - 2*54, self.view.frame.size.width - 70, 42)];
         unfollowButton.backgroundColor = RGB(246, 143, 30);
-        [unfollowButton setTitle:@"UNFOLLOW" forState:UIControlStateNormal];
+        [unfollowButton setTitle:@"UNFRIEND" forState:UIControlStateNormal];
         [unfollowButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         unfollowButton.titleLabel.font = [FontProperties getTitleFont];
         unfollowButton.layer.borderWidth = 1;
