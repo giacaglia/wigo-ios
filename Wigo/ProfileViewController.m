@@ -992,7 +992,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.user = WGProfile.currentUser;
         strongSelf.numberOfFriendsLabel.text = WGProfile.numFriends.stringValue;
-        if (WGProfile.numFriends.intValue == 0 || WGProfile.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
+        if (WGProfile.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
         else strongSelf.friendsLabel.text = @"Friends";
         strongSelf.imageScrollView.user = WGProfile.currentUser;
         strongSelf.pageControl.numberOfPages = WGProfile.currentUser.images.count;
@@ -1004,7 +1004,7 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             strongSelf.numberOfFriendsLabel.text = WGProfile.numFriends.stringValue;
-            if (WGProfile.numFriends.intValue == 0 || WGProfile.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
+            if (WGProfile.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
             else strongSelf.friendsLabel.text = @"Friends";
         }];
     }
