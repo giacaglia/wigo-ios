@@ -39,6 +39,9 @@ ProfileViewController *profileViewController;
 {
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.whiteColor;
+    UIView *blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
+    blueBannerView.backgroundColor = [FontProperties getBlueColor];
+    [self.view addSubview:blueBannerView];
 
     [self initializeMessageForEmptyConversation];
     
