@@ -417,9 +417,10 @@ viewForHeaderInSection:(NSInteger)section
     [WGProfile.currentUser rejectFriendRequestForUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
-            user.isFriend = nil;
-            user.friendRequest = kFriendRequestReceived;
+            return;
         }
+        user.isFriend = nil;
+        user.friendRequest = kFriendRequestReceived;
     }];
     [self.friendRequestUsers replaceObjectAtIndex:buttonSender.tag withObject:user];
     [self.tableViewOfPeople reloadData];

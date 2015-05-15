@@ -94,7 +94,10 @@ static NSDate *biggestDate;
 
     [TabBarAuxiliar addTabBarImage:@"chatTabIcon"
                      withBlueImage:@"blueChatsIcon" atIndex:1 atTabBar:tabBar];
-
+    
+    UITabBarItem *item = [tabBar.items objectAtIndex:2];
+    item.enabled = NO;
+    
     [TabBarAuxiliar addTabBarImage:@"friendsIcon"
                      withBlueImage:@"blueFriendsIcon" atIndex:3 atTabBar:tabBar];
 
