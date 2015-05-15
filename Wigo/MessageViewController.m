@@ -26,7 +26,11 @@
     self.allFriends = [[WGCollection alloc] initWithType:[WGUser class]];
     self.content = [[WGCollection alloc] initWithType:[WGUser class]];
     self.isFetchingEveryone = NO;
-    
+        
+    UIView *blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
+    blueBannerView.backgroundColor = [FontProperties getBlueColor];
+    [self.view addSubview:blueBannerView];
+
     // Title setup
     [self initializeNavigationItem];
     [self initializeTableListOfFriends];
