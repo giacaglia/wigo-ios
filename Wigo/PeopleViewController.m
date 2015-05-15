@@ -174,13 +174,18 @@ NSIndexPath *userIndex;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableViewOfPeople.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableViewOfPeople.showsVerticalScrollIndicator = NO;
-    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 44, self.view.frame.size.width, 50)];
-    self.searchBar.delegate = self;
-    self.searchBar.placeholder = @"Search by Name";
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44 + 50)];
-    [headerView addSubview:self.searchBar];
-    self.tableViewOfPeople.tableHeaderView = headerView;
-    self.tableViewOfPeople.contentOffset = CGPointMake(0, 50);
+    if ([self.currentTab isEqual:@2]) {
+        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 44, self.view.frame.size.width, 50)];
+        self.searchBar.delegate = self;
+        self.searchBar.placeholder = @"Search by Name";
+        UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44 + 50)];
+        [headerView addSubview:self.searchBar];
+        self.tableViewOfPeople.tableHeaderView = headerView;
+        self.tableViewOfPeople.contentOffset = CGPointMake(0, 50);
+    }
+    else {
+        self.tableViewOfPeople.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
+    }
     [self.view addSubview:self.tableViewOfPeople];
 }
 
