@@ -424,6 +424,7 @@ BOOL blockShown;
     [_headerButtonView addSubview:_rightProfileButton];
     
     _followButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 75, 10, 65, 50)];
+    _followButton.center = CGPointMake((lineDividerView.frame.size.width + lineDividerView.frame.origin.x + _headerButtonView.frame.size.width)/2, _followButton.center.y);
     [_followButton setImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
     [_headerButtonView addSubview: _followButton];
