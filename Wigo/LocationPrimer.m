@@ -63,8 +63,6 @@ static UIButton *mainButton;
     
     LocationPrimer.defaultBlackOverlay.frame = window.frame;
     LocationPrimer.defaultBlackOverlay.hidden = NO;
-
-    
     LocationPrimer.defaultTitleLabel.text = @"Please enable location so\nwe can show the amazing events\nand awesome people nearby";
     [window bringSubviewToFront:LocationPrimer.defaultTitleLabel];
     LocationPrimer.defaultTitleLabel.hidden = NO;
@@ -108,23 +106,32 @@ static UIButton *mainButton;
 }
 
 +(void) startPrimer {
-    if (![CLLocationManager locationServicesEnabled] &&
+    if (![CLLocationManager locationServicesEnabled] ||
+        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted ||
         [CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         [LocationPrimer addErrorMessage];
         return;
     }
-    if (![CLLocationManager locationServicesEnabled]) {
+    if (![CLLocationManager locationServicesEnabled] ||
+        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
         [LocationPrimer addLocationPrimer];
+        return;
+    }
+    if ([CLLocationManager locationServicesEnabled] &&
+        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse  ){
+        [LocationPrimer removePrimer];
         return;
     }
 }
 
 +(BOOL) shouldFetchEvents {
-    if (![CLLocationManager locationServicesEnabled] &&
+    if (![CLLocationManager locationServicesEnabled] ||
+        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted ||
         [CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
         return NO;
     }
-    if (![CLLocationManager locationServicesEnabled]) {
+    if (![CLLocationManager locationServicesEnabled] ||
+        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
         return NO;
     }
     return YES;

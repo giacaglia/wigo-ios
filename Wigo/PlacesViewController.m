@@ -104,6 +104,10 @@ BOOL firstTimeLoading;
     [self updateNavigationBar];
     [self fetchUserInfo];
     [NetworkFetcher.defaultGetter fetchFriendsIds];
+    [self startPrimer];
+}
+
+- (void)startPrimer {
     [LocationPrimer startPrimer];
 }
 
@@ -267,6 +271,11 @@ BOOL firstTimeLoading;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(fetchUserInfo)
                                                  name:@"fetchUserInfo"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(startPrimer)
+                                                 name:@"startPrimer"
                                                object:nil];
 }
 
