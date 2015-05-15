@@ -68,7 +68,7 @@
     [self.privateSwitch.openLockImageView stopAnimating];
     [self.privateSwitch.closeLockImageView stopAnimating];
     self.privateSwitch.privateString = @"Only the creator can invite people and only\nthose invited can see the event.";
-    self.privateSwitch.publicString =  @"The whole school can see and attend your event.";
+    self.privateSwitch.publicString =  @"Everyone around you can see and\nattend your event.";
     self.explanationLabel.text = self.privateSwitch.privateString;
 }
 

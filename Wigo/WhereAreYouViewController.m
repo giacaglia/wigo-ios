@@ -62,7 +62,7 @@
     self.privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 10, 240, 40)];
     [self.eventDetails addSubview:self.privateSwitchView];
     self.privateSwitchView.privateString = @"Only you can invite people and only\nthose invited can see the event.";
-    self.privateSwitchView.publicString =  @"The whole school can see and attend your event.";
+    self.privateSwitchView.publicString =  @"Everyone around you can see and\nattend your event.";
     self.privateSwitchView.privateDelegate = self;
     self.privateSwitchView.backgroundColor = UIColor.whiteColor;
     [self.privateSwitchView.closeLockImageView stopAnimating];
