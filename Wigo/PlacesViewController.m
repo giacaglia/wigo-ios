@@ -365,7 +365,7 @@ BOOL firstTimeLoading;
     [self.navigationController pushViewController: profileViewController animated: YES];
 }
 
-- (void)scrollToEventId:(NSNumber *)eventId updateEventsOnFail:(BOOL)updateOnFail {
+- (void)scrollToEventId:(NSNumber *)eventId updateEventsOnFail:(BOOL)updateOnFail completion:(BoolResultBlock)completion {
     
     NSIndexPath *indexPath = [self getIndexPathForEventId:eventId];
     if(indexPath) {
@@ -376,16 +376,18 @@ BOOL firstTimeLoading;
                                     atScrollPosition:UITableViewScrollPositionBottom animated:NO];
         [self.placesTableView scrollToRowAtIndexPath:indexPath
                                     atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        completion(YES, nil);
     }
     else {
         if(updateOnFail) {
             
             [self fetchEventsFirstPageWithHandler:^(BOOL success, NSError *error) {
-                [self scrollToEventId:eventId updateEventsOnFail:NO];
+                [self scrollToEventId:eventId updateEventsOnFail:NO completion:completion];
             }];
         }
         else {
             [self scrollToTop];
+            completion(NO, nil);
         }
     }
 }
@@ -898,7 +900,7 @@ BOOL firstTimeLoading;
         if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
             NSNumber *eventId = userInfo[@"events"];
             
-            [self scrollToEventId:eventId updateEventsOnFail:YES];
+            [self scrollToEventId:eventId updateEventsOnFail:YES completion:NULL];
         }
         else {
             [self scrollToTop];
@@ -911,48 +913,61 @@ BOOL firstTimeLoading;
         if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
             NSNumber *eventId = userInfo[@"events"];
             
-            [self scrollToEventId:eventId updateEventsOnFail:YES];
-            
-            // show message in event details view
-            
-            NSNumber *messageId = userInfo[@"messages"];
-            
-            // locate event, conversation index for message
-            
-            WGEvent *event = nil;
-            for(int i = 0; i < self.events.count; i++) {
-                WGEvent *e  = self.events.objects[i];
-                if([e.id integerValue] == [eventId integerValue]) {
-                    event = e;
-                }
-            }
-            
-            if(event) {
+            [self scrollToEventId:eventId updateEventsOnFail:YES completion:^(BOOL success, NSError *error) {
                 
-                NSInteger conversationIndex = NSNotFound;
-                NSInteger idx = 0;
-                
-                for(int i = 0; i < event.messages.count; i++) {
-                    WGEventMessage *message = event.messages.objects[i];
+                if(success) {
                     
-                    if([message.id integerValue] == [messageId integerValue]) {
-                        conversationIndex = idx;
-                    }
-                    idx++;
-                }
-                
-                if(conversationIndex != NSNotFound) {
+                    // show message in event details view
                     
-                    if (! event.isExpired.boolValue) {
-                        conversationIndex++;
+                    NSNumber *messageId = userInfo[@"messages"];
+                    
+                    // locate event, conversation index for message
+                    
+                    WGEvent *event = nil;
+                    for(int i = 0; i < self.events.count; i++) {
+                        WGEvent *e  = self.events.objects[i];
+                        if([e.id integerValue] == [eventId integerValue]) {
+                            event = e;
+                        }
                     }
                     
-                    [self showConversationForEvent:event
-                                 withEventMessages:event.messages
-                                           atIndex:(int)conversationIndex];
+                    if(event) {
+                        
+                        NSInteger conversationIndex = NSNotFound;
+                        NSInteger idx = 0;
+                        
+                        for(int i = 0; i < event.messages.count; i++) {
+                            WGEventMessage *message = event.messages.objects[i];
+                            
+                            if([message.id integerValue] == [messageId integerValue]) {
+                                conversationIndex = idx;
+                            }
+                            idx++;
+                        }
+                        
+                        if(conversationIndex != NSNotFound) {
+                            
+                            // message index needs to be adjusted depending on whether the
+                            // camera cell is being shown
+                            
+                            // (logic taken from (showConversationForEvent:withEventMessages:atIndex:)
+                            
+                            if ([self isPeeking] ||
+                                (!WGProfile.currentUser.crossEventPhotosEnabled && ![[event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) ||
+                                event.isExpired.boolValue) {
+                                // do nothing
+                            }
+                            else {
+                                conversationIndex++;
+                            }
+                            
+                            [self showConversationForEvent:event
+                                         withEventMessages:event.messages
+                                                   atIndex:(int)conversationIndex];
+                        }
+                    }
                 }
-                
-            }
+            }];
             
         }
         else {
