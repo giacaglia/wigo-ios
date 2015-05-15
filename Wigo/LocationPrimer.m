@@ -10,6 +10,9 @@
 #import "Globals.h"
 #import <CoreLocation/CoreLocation.h>
 
+#define kPleaseEnableLocation @"Please enable location services so\nwe can showyou the amazing events\nand awesome people nearby";
+
+
 static CLLocationManager *locationManager;
 static UILabel *titleLabel;
 static UIView *blackOverlayView;
@@ -63,7 +66,7 @@ static UIButton *mainButton;
     
     LocationPrimer.defaultBlackOverlay.frame = window.frame;
     LocationPrimer.defaultBlackOverlay.hidden = NO;
-    LocationPrimer.defaultTitleLabel.text = @"Please enable location so\nwe can show the amazing events\nand awesome people nearby";
+    LocationPrimer.defaultTitleLabel.text = kPleaseEnableLocation;
     [window bringSubviewToFront:LocationPrimer.defaultTitleLabel];
     LocationPrimer.defaultTitleLabel.hidden = NO;
     
