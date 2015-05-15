@@ -1127,6 +1127,7 @@ BOOL firstTimeLoading;
         return;
     }
     if (![LocationPrimer shouldFetchEvents]) {
+        [WGSpinnerView removeDancingGFromCenterView:self.view];
         handler(NO, nil);
         return;
     }

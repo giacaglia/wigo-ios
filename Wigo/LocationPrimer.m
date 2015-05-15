@@ -96,6 +96,7 @@ static UIButton *mainButton;
 }
 
 +(void) removePrimer {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
     LocationPrimer.defaultBlackOverlay.hidden = YES;
     LocationPrimer.defaultButton.hidden = YES;
     LocationPrimer.defaultTitleLabel.hidden = YES;
