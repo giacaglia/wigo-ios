@@ -86,7 +86,7 @@ static UIButton *mainButton;
     LocationPrimer.defaultBlackOverlay.frame = window.frame;
     LocationPrimer.defaultBlackOverlay.hidden = NO;
     
-    LocationPrimer.defaultTitleLabel.text = @"Wigo can’t be used until you\nprovide location permissions. Go into\nyour phone settings to do this.";
+    LocationPrimer.defaultTitleLabel.text = @"To use Wigo, please go to \nSettings > Privacy > Location Services,\n and switch Wigo to ON.";
     LocationPrimer.defaultTitleLabel.hidden = NO;
     
     LocationPrimer.defaultButton.layer.borderColor = UIColor.whiteColor.CGColor;

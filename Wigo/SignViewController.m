@@ -71,7 +71,7 @@
 
 -(void)initializeLoginButton {
     _loginButton = [[FBSDKLoginButton alloc] init];
-    _loginButton.loginBehavior = FBSDKLoginBehaviorSystemAccount;
+//    _loginButton.loginBehavior = FBSDKLoginBehaviorSystemAccount;
     _loginButton.readPermissions = @[@"user_friends", @"email", @"user_photos", @"user_work_history", @"user_education_history"];
     _loginButton.delegate = self;
     _loginButton.frame = CGRectMake(0, self.view.frame.size.height - 0.2*self.view.frame.size.width, self.view.frame.size.width, 0.2*self.view.frame.size.width);
@@ -198,7 +198,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
             // All other errors that can happen need retries
             // Show the user a generic error message
             alertTitle = @"Facebook Permission";
-            alertText = @"You need to allow wigo on your facebook";
+            alertText = @"You must login with Facebook so we know you're not a robot.";
             [self showMessage:alertText withTitle:alertTitle];
         }
     }
