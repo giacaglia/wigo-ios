@@ -108,7 +108,9 @@ BOOL firstTimeLoading;
 }
 
 - (void)startPrimer {
-    [LocationPrimer startPrimer];
+    if ([UIApplication sharedApplication].keyWindow.rootViewController.navigationController.visibleViewController == self.navigationController) {
+        [LocationPrimer startPrimer];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
