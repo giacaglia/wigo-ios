@@ -10,7 +10,7 @@
 #import "Globals.h"
 #import <CoreLocation/CoreLocation.h>
 
-#define kPleaseEnableLocation @"Please enable location services so\nwe can show you sweet stuff nearby.";
+#define kPleaseEnableLocation @"Please allow location\nservices so we can show you\nsweet stuff nearby";
 
 
 static CLLocationManager *locationManager;
@@ -30,7 +30,7 @@ static UIButton *mainButton;
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.textColor = UIColor.whiteColor;
         titleLabel.numberOfLines = 0;
-        titleLabel.font = [FontProperties lightFont:18.0f];
+        titleLabel.font = [FontProperties lightFont:22.0f];
         [window addSubview:titleLabel];
     }
     return titleLabel;
@@ -50,7 +50,7 @@ static UIButton *mainButton;
     if (mainButton == nil) {
         UIView *window = [UIApplication sharedApplication].delegate.window;
         mainButton = [UIButton new];
-        mainButton.frame = CGRectMake(0, 0, 200, 80);
+        mainButton.frame = CGRectMake(0, 0, 140, 60);
         mainButton.center = CGPointMake(window.center.x, window.center.y + 50);
         mainButton.layer.borderWidth = 1.0f;
         mainButton.layer.cornerRadius = 15.0f;
@@ -86,12 +86,12 @@ static UIButton *mainButton;
     LocationPrimer.defaultBlackOverlay.frame = window.frame;
     LocationPrimer.defaultBlackOverlay.hidden = NO;
     
-    LocationPrimer.defaultTitleLabel.text = @"To use Wigo, please go to \nSettings > Privacy > Location Services,\n and switch Wigo to ON.";
+    LocationPrimer.defaultTitleLabel.text = @"To use Wigo, please go to \nSettings > Privacy > Location Services, and switch Wigo to ON.";
     LocationPrimer.defaultTitleLabel.hidden = NO;
     
     LocationPrimer.defaultButton.layer.borderColor = UIColor.whiteColor.CGColor;
     LocationPrimer.defaultButton.backgroundColor = UIColor.clearColor;
-    [LocationPrimer.defaultButton setTitle:@"Phone Settings" forState:UIControlStateNormal];
+    [LocationPrimer.defaultButton setTitle:@"Settings" forState:UIControlStateNormal];
     [LocationPrimer.defaultButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
     [LocationPrimer.defaultButton addTarget:[LocationPrimer class] action:@selector(phoneSettingsPressed) forControlEvents:UIControlEventTouchUpInside];
     [window bringSubviewToFront:LocationPrimer.defaultButton];
