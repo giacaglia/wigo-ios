@@ -194,12 +194,15 @@ withParameters:(id)parameters
     NSLog(@"DELETE %@, %@", url, parameters);
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters
-                                                       options:NSJSONWritingPrettyPrinted
-                                                         error:nil];
-    [request setHTTPBody:jsonData];
-    NSString *contentLength = [NSString stringWithFormat:@"%lu", (unsigned long) jsonData.length];
-    [request addValue:contentLength forHTTPHeaderField:kContentLengthKey];
+    if (parameters) {
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters
+                                                           options:NSJSONWritingPrettyPrinted
+                                                             error:nil];
+        [request setHTTPBody:jsonData];
+        NSString *contentLength = [NSString stringWithFormat:@"%lu", (unsigned long) jsonData.length];
+        [request addValue:contentLength forHTTPHeaderField:kContentLengthKey];
+    }
+   
     [request setHTTPMethod:kDELETE];
 
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];

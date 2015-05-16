@@ -213,6 +213,12 @@
     return [[WGUser alloc] initWithJSON:[self objectForKey:kOwnerKey]];
 }
 
+-(void) removeMessage:(WGEventMessage *)eventMessage withHandler:(BoolResultBlock)handler {
+    [WGApi delete:[NSString stringWithFormat:@"events/%@/messages/%@", self.id, eventMessage.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        handler(error == nil, error);
+    }];
+}
+
 - (void)getMessagesForHighlights:(WGEventMessage *)highlight
                      withHandler:(WGCollectionResultBlock)handler {
     [WGApi get:@"eventmessages/" withArguments:@{ @"event" : self.id, @"start": highlight.id, @"limit": @10}

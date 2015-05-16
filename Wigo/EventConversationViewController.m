@@ -157,8 +157,8 @@
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0, self.facesCollectionView.frame.size.height);
             self.buttonCancel.alpha = 0;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, -self.buttonCancel.frame.size.height);
-//            self.buttonTrash.alpha = 0;
-//            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, self.buttonTrash.frame.size.height);
+            self.buttonTrash.alpha = 0;
+            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, -self.buttonTrash.frame.size.height);
             self.upVoteButton.alpha = 0;
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, -self.numberOfVotesLabel.frame.size.height);
             self.numberOfVotesLabel.alpha = 0;
@@ -173,8 +173,8 @@
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,0);
             self.buttonCancel.alpha = 1;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, 0);
-//            self.buttonTrash.alpha = 1;
-//            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, 0);
+            self.buttonTrash.alpha = 1;
+            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, 0);
             self.upVoteButton.alpha = 1;
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, 0);
             self.numberOfVotesLabel.alpha = 1;
@@ -401,6 +401,12 @@
 - (void)hideOrShowFacesForPage:(int)page {
     if (page < self.eventMessages.count) {
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+        if (eventMessage.user.isCurrentUser) {
+            self.trashImageView.image = [UIImage imageNamed:@"trashIcon"];
+        }
+        else {
+            self.trashImageView.image = [UIImage imageNamed:@"flagImage"];
+        }
 //        self.buttonTrash.hidden = ![eventMessage.user isEqual:WGProfile.currentUser];
         if (eventMessage.upVotes) {
             if (eventMessage.upVotes.intValue == 0) {
@@ -490,12 +496,12 @@
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
    
-//    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 29, self.view.frame.size.height - 65 - 8, 58, 65)];
-//    UIImageView *buttonImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.buttonTrash.frame.size.width/2 - 14, self.buttonTrash.frame.size.height - 32, 29, 32)];
-//    buttonImageView.image = [UIImage imageNamed:@"trashIcon"];
-//    [self.buttonTrash addSubview:buttonImageView];
-//    [self.buttonTrash addTarget:self action:@selector(trashPressed) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:self.buttonTrash];
+    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 29, 0, 58, 65)];
+    self.trashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.buttonTrash.frame.size.width/2 - 8, 8, 14.5, 16)];
+    self.trashImageView.image = [UIImage imageNamed:@"trashIcon"];
+    [self.buttonTrash addSubview:self.trashImageView];
+    [self.buttonTrash addTarget:self action:@selector(trashPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.buttonTrash];
     
     self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 58 - 20, 8, 36, 28)];
     self.numberOfVotesLabel.textColor = UIColor.whiteColor;
@@ -575,40 +581,39 @@
 
 - (void)trashPressed {
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
-    
-    if (page < self.eventMessages.count && page >= 0) {
-        [WGAnalytics tagAction:@"delete" atView:@"event_conversation"];
-        
-        WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-        if ([eventMessage objectForKey:@"id"]) {
-            [eventMessage remove:^(BOOL success, NSError *error) {
-                if (error) {
-                    [[WGError sharedInstance] logError:error forAction:WGActionDelete];
-                    return;
-                }
-                [self.eventMessages removeObject:eventMessage];
-                [self.mediaScrollView.eventMessages removeObject:eventMessage];
-                
-                if (self.eventMessages.count == 0) {
-                    if ([self.event.isExpired boolValue]) {
-                        [self.mediaScrollView closeViewWithHandler:^(BOOL success, NSError *error) {
-                            if (success) {
-                                [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
-                            }
-                        }];
-                        [self dismissViewControllerAnimated:YES completion:nil];
-                    } else {
-                        [self.facesCollectionView reloadData];
-                        [self.mediaScrollView reloadData];
-                    }
-                } else {
-                    [self.facesCollectionView reloadData];
-                    [self.mediaScrollView reloadData];
-                }
-                [self hideOrShowFacesForPage:(int) MIN(page, self.eventMessages.count - 1)];
-            }];
+    if (page >= self.eventMessages.count || page < 0) return;
+    [WGAnalytics tagAction:@"delete" atView:@"event_conversation"];
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+    if (!eventMessage.user.isCurrentUser) return;
+    if (!eventMessage.id) return;
+    [self.event removeMessage:eventMessage withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionDelete];
+            return;
         }
+    }];
+    [self.eventMessages removeObject:eventMessage];
+    [self.mediaScrollView.eventMessages removeObject:eventMessage];
+    
+    if (self.eventMessages.count == 0) {
+        if (self.event.isExpired.boolValue) {
+            [self.mediaScrollView closeViewWithHandler:^(BOOL success, NSError *error) {
+                if (success) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
+                }
+            }];
+            [self dismissViewControllerAnimated:YES completion:nil];
+        } else {
+            [self.facesCollectionView reloadData];
+            [self.mediaScrollView reloadData];
+        }
+    } else {
+        [self.facesCollectionView reloadData];
+        [self.mediaScrollView reloadData];
     }
+    [self hideOrShowFacesForPage:(int) MIN(page, self.eventMessages.count - 1)];
+    
+    
 }
 
 - (void)cancelPressed:(id)sender {
