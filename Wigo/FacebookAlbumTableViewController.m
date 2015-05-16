@@ -10,11 +10,10 @@
 #import "FacebookImagesViewController.h"
 #import "Globals.h"
 #import "UIButtonAligned.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 @interface FacebookAlbumTableViewController ()
-
 @property NSArray *albumArray;
-
 @end
 
 NSMutableArray *idAlbumArray;
@@ -23,23 +22,15 @@ NSMutableArray *coverAlbumArray;
 
 @implementation FacebookAlbumTableViewController
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-        _albumArray = [NSArray new];
-        idAlbumArray = [NSMutableArray new];
-        coverIDArray = [NSMutableArray new];
-        coverAlbumArray = [NSMutableArray new];
-        self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    }
-    return self;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    _albumArray = [NSArray new];
+    idAlbumArray = [NSMutableArray new];
+    coverIDArray = [NSMutableArray new];
+    coverAlbumArray = [NSMutableArray new];
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+
     [self initializeBackBarButton];
     [self getFacebookAlbums];
 }
@@ -61,41 +52,32 @@ NSMutableArray *coverAlbumArray;
 }
 
 - (void)getFacebookAlbums {
-    [FBSession openActiveSessionWithReadPermissions:@[@"public_profile", @"user_photos"]
-      allowLoginUI:YES
- completionHandler:^(FBSession *session, FBSessionState state, NSError *error) {
-     dispatch_async(dispatch_get_main_queue(), ^{
-         if (error) {
-             if (![self gaveUserPermission:[error userInfo]]) [self requestReadPermissions];
-             else [self showErrorNotAccess];
-         } else if (session.isOpen) {
-             [FBRequestConnection startWithGraphPath:@"/me/albums"
-                                          parameters:nil
-                                          HTTPMethod:@"GET"
-                                   completionHandler:^(FBRequestConnection *connection,
-                                                       id result,
-                                                       NSError *error) {
-                                       dispatch_async(dispatch_get_main_queue(), ^(void){
-                                           if (error) NSLog(@"Error: %@", error.localizedDescription);
-                NSArray *nonCleanAlbums = (NSArray *)[result objectForKey:@"data"];
-                if (nonCleanAlbums.count == 0) [self requestReadPermissions];
-                NSMutableArray *cleanAlbums = [NSMutableArray new];
-                for (FBGraphObject *albumFBGraphObject in nonCleanAlbums) {
-                    NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
-                    if ([nameFBAlbum isEqualToString:@"Profile Pictures"] ||  [nameFBAlbum isEqualToString:@"Instagram Photos"]) {
-                        [cleanAlbums addObject:albumFBGraphObject];
-                        [idAlbumArray addObject:[albumFBGraphObject objectForKey:@"id"]];
-                        if ([albumFBGraphObject objectForKey:@"cover_photo"]) [coverIDArray addObject:[albumFBGraphObject objectForKey:@"cover_photo"]];
-                    }
-                }
-                _albumArray = [NSArray arrayWithArray:cleanAlbums];
-                [self getAlbumDetails];
-                [self.tableView reloadData];
-            });
-        }];
-        }
-    });
- }];
+    if ([FBSDKAccessToken currentAccessToken]) {
+        [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/albums" parameters:nil]
+         startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+             if (error) {
+                 if (![self gaveUserPermission:[error userInfo]]) [self requestReadPermissions];
+                 else [self showErrorNotAccess];
+                 [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
+                 return;
+             }
+             NSArray *nonCleanAlbums = (NSArray *)[result objectForKey:@"data"];
+             if (nonCleanAlbums.count == 0) [self requestReadPermissions];
+             NSMutableArray *cleanAlbums = [NSMutableArray new];
+             for (FBGraphObject *albumFBGraphObject in nonCleanAlbums) {
+                 NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
+                 if ([nameFBAlbum isEqualToString:@"Profile Pictures"] ||  [nameFBAlbum isEqualToString:@"Instagram Photos"]) {
+                     [cleanAlbums addObject:albumFBGraphObject];
+                     [idAlbumArray addObject:[albumFBGraphObject objectForKey:@"id"]];
+                     if ([albumFBGraphObject objectForKey:@"cover_photo"]) [coverIDArray addObject:[albumFBGraphObject objectForKey:@"cover_photo"]];
+                 }
+             }
+             _albumArray = [NSArray arrayWithArray:cleanAlbums];
+             [self getAlbumDetails];
+             [self.tableView reloadData];
+
+         }];
+    }
 }
 
 
@@ -142,15 +124,10 @@ NSMutableArray *coverAlbumArray;
         [coverAlbumArray addObject:@""];
     }
     for (int i = 0; i < [coverIDArray count]; i++) {
-        NSString *photoID = [coverIDArray objectAtIndex:i];
-        [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@", photoID]
-                                     parameters:nil
-                                     HTTPMethod:@"GET"
-                              completionHandler:^(
-                                                  FBRequestConnection *connection,
-                                                  id result,
-                                                  NSError *error
-                                                  ) {
+        NSString *graphPath = [NSString stringWithFormat:@"/%@", [coverIDArray objectAtIndex:i]];
+        [[[FBSDKGraphRequest alloc] initWithGraphPath:graphPath
+                                           parameters:nil]
+         startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
                                 if (!error) {
                                     NSString *resultObject = [result objectForKey:@"source"];
                                     for (int j = 0; j < [coverIDArray count]; j++) {

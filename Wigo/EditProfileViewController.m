@@ -181,22 +181,34 @@ UIViewController *webViewController;
     privacyLabel.textColor = RGB(152, 152, 152);
     [_scrollView addSubview:privacyLabel];
     
-    UILabel *publicDetailLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 185, self.view.frame.size.width, 40)];
-    publicDetailLabel.text = @"Turn privacy ON to restrict your\nplans to only your friends.";
-    publicDetailLabel.textAlignment = NSTextAlignmentCenter;
-    publicDetailLabel.font = [FontProperties getSmallPhotoFont];
-    publicDetailLabel.numberOfLines = 0;
-    publicDetailLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    [_scrollView addSubview:publicDetailLabel];
+    self.publicDetailLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 185, self.view.frame.size.width, 40)];
+    self.publicDetailLabel.text = @"Turn privacy ON to restrict your\nplans to only your friends.";
+    self.publicDetailLabel.textAlignment = NSTextAlignmentCenter;
+    self.publicDetailLabel.font = [FontProperties getSmallPhotoFont];
+    self.publicDetailLabel.numberOfLines = 0;
+    self.publicDetailLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    [_scrollView addSubview:self.publicDetailLabel];
     
     _privacySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 30, 185 + 40, 60, 25)];
     _privacySwitch.on = [WGProfile currentUser].privacy == PRIVATE;
     _privacySwitch.onTintColor = [FontProperties getBlueColor];
+    [_privacySwitch addTarget:self action:@selector(setState:) forControlEvents:UIControlEventValueChanged];
     [_scrollView addSubview:_privacySwitch];
     
     UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 276, self.view.frame.size.width, 1)];
     lineView.backgroundColor = RGB(230, 230, 230);
     [_scrollView addSubview:lineView];
+}
+
+- (void)setState:(id)sender
+{
+    if ([sender isOn]) {
+        self.publicDetailLabel.text =  @"Turn privacy OFF to share your\nplans with everyone nearby.";
+    }
+    else {
+        self.publicDetailLabel.text =  @"Turn privacy ON to restrict your\nplans to only your friends.";
+    }
+    
 }
 
 - (void) initializeWiGoSection {

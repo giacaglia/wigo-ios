@@ -13,4 +13,5 @@
 @interface EditProfileViewController : UIViewController <UITextViewDelegate>
 
 @property (nonatomic, strong) NSDictionary *initialUserDict;
+@property (nonatomic, strong) UILabel *publicDetailLabel;
 @end
