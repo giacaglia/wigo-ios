@@ -39,10 +39,6 @@ ProfileViewController *profileViewController;
 {
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.whiteColor;
-    UIView *blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
-    blueBannerView.backgroundColor = [FontProperties getBlueColor];
-    [self.view addSubview:blueBannerView];
-
     [self initializeMessageForEmptyConversation];
     
     bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
@@ -286,12 +282,13 @@ ProfileViewController *profileViewController;
             [strongSelf scrollToBottomAnimated:YES];
         });
     }];
+    
     [self updateLastMessagesRead:message];
     self.viewForEmptyConversation.alpha = 0.0f;
     
     self.inputToolbar.contentView.textView.text = @"";
     self.inputToolbar.contentView.rightBarButtonItem.enabled = NO;
-    
+    message.id = [NSNumber numberWithInt:(arc4random() % 500000) + 1];
     [self.messages addObject:message];
     [self finishReceivingMessageAnimated:YES];
 }
