@@ -31,9 +31,9 @@ UIViewController *webViewController;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhotos) name:@"updatePhotos" object:nil];
     
-    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height + 100)];
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     _scrollView.showsVerticalScrollIndicator = NO;
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 550);
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 110);
     _scrollView.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:_scrollView];
     
