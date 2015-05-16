@@ -33,7 +33,7 @@ UIViewController *webViewController;
     
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     _scrollView.showsVerticalScrollIndicator = NO;
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 110);
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 50);
     _scrollView.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:_scrollView];
     
@@ -232,7 +232,7 @@ UIViewController *webViewController;
     iconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
     [_scrollView addSubview:iconImageView];
     
-    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, iconImageView.frame.size.height + iconImageView.frame.origin.y, self.view.frame.size.width, 40)];
+    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, iconImageView.frame.size.height + iconImageView.frame.origin.y, self.view.frame.size.width, 25)];
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
     NSString *versionString = [info objectForKey:@"CFBundleShortVersionString"];
     versionLabel.text = [NSString stringWithFormat:@"Version %@", versionString];
@@ -240,13 +240,13 @@ UIViewController *webViewController;
     versionLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:versionLabel];
     
-    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, versionLabel.frame.origin.y + versionLabel.frame.size.height, self.view.frame.size.width, 50)];
+    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, versionLabel.frame.origin.y + versionLabel.frame.size.height, self.view.frame.size.width, 25)];
     builtInBostonLabel.text = @"Built in Boston";
     builtInBostonLabel.font = [FontProperties getSmallFont];
     builtInBostonLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:builtInBostonLabel];
     
-    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, builtInBostonLabel.frame.origin.y + builtInBostonLabel.frame.size.height, self.view.frame.size.width, 50)];
+    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, builtInBostonLabel.frame.origin.y + builtInBostonLabel.frame.size.height, self.view.frame.size.width, 25)];
     NSString *gitCount = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitCount"];
     NSString *gitHash = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitHash"];
     gitCountLabel.text = [NSString stringWithFormat:@"Git Count %@, Git Hash %@", gitCount, gitHash];
@@ -254,7 +254,7 @@ UIViewController *webViewController;
     gitCountLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:gitCountLabel];
     
-    UILabel *debugLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, gitCountLabel.frame.origin.y + gitCountLabel.frame.size.height, self.view.frame.size.width, 50)];
+    UILabel *debugLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, gitCountLabel.frame.origin.y + gitCountLabel.frame.size.height, self.view.frame.size.width, 25)];
     NSString *debugString = @"";
     
 #if defined(DEBUG)
@@ -272,7 +272,7 @@ UIViewController *webViewController;
 }
 
 - (void)openPrivacy {
-    NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/legal/privacy.html"];
+    NSURL *currentURL = [NSURL URLWithString:@"http://www.wigo.us/privacy"];
     [self openViewControllerWithURL:currentURL];
 }
 
