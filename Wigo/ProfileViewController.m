@@ -271,7 +271,7 @@ BOOL blockShown;
     UIButtonAligned *barBt =[[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
     [barBt setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
-    [barBt setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [barBt setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     barBt.titleLabel.font = [FontProperties getSubtitleFont];
     [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
@@ -621,7 +621,7 @@ BOOL blockShown;
     }
     
     if (self.userState == CURRENT_USER_STATE) {
-        [_rightBarBt setTitle:@"Edit" forState:UIControlStateNormal];
+        [_rightBarBt setTitle:@" Edit" forState:UIControlStateNormal];
         [_rightBarBt removeTarget:nil
                            action:NULL
                  forControlEvents:UIControlEventAllEvents];
