@@ -103,7 +103,7 @@
             </objects>
             <point key="canvasLocation" x="1888" y="-2658"/>
         </scene>
-        <!--Chats-->
+        <!--Chat-->
         <scene sceneID="twL-Dd-UjL">
             <objects>
                 <viewController id="Qnu-C5-NeM" customClass="ChatViewController" sceneMemberID="viewController">
@@ -116,7 +116,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Chats" image="chatTabIcon" id="MwE-5g-eh6"/>
+                    <tabBarItem key="tabBarItem" title="Chat" image="chatTabIcon" id="MwE-5g-eh6"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DGC-ZB-xGW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

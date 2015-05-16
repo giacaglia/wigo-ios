@@ -36,6 +36,7 @@ UIViewController *webViewController;
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 550);
+    _scrollView.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:_scrollView];
     
     self.title = @"Edit Profile";
@@ -57,9 +58,9 @@ UIViewController *webViewController;
     [super viewWillAppear: animated];
     self.initialUserDict = WGProfile.currentUser.deserialize;
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
-    self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
-    self.navigationController.navigationBar.backgroundColor = RGB(235, 235, 235);
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    self.navigationItem.titleView.tintColor = [FontProperties getBlueColor];
+    self.navigationController.navigationBar.backgroundColor = UIColor.whiteColor;
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getBlueColor], NSFontAttributeName:[FontProperties getTitleFont]};
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -70,7 +71,7 @@ UIViewController *webViewController;
 - (void) initializeBarButton {
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 75, 44) andType:@1];
     [barBt setTitle:@"Done" forState:UIControlStateNormal];
-    [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    [barBt setTitleColor:RGB(196, 196, 196) forState:UIControlStateNormal];
     barBt.titleLabel.font = [FontProperties getSubtitleFont];
     [barBt addTarget:self action: @selector(saveDataAndGoBack) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
@@ -96,24 +97,17 @@ UIViewController *webViewController;
 
 
 - (void) initializePhotosSection {
-    UILabel *photosLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 10, 100, 20)];
+    UILabel *photosLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, 20)];
     photosLabel.text = @"Photos";
-    photosLabel.font = [FontProperties getNormalFont];
-    photosLabel.textAlignment = NSTextAlignmentLeft;
+    photosLabel.font = [FontProperties mediumFont:18.0f];
+    photosLabel.textColor = RGB(152, 152, 152);
+    photosLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:photosLabel];
     
-    _photosScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 110)];
+    _photosScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 40 + 10, self.view.frame.size.width, 110)];
     _photosScrollView.backgroundColor = UIColor.whiteColor;
     _photosScrollView.showsHorizontalScrollIndicator = NO;
     [self updatePhotos];
-    
-    UILabel *coverLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 90, 70, 15)];
-    coverLabel.text = @"COVER";
-    coverLabel.font = [FontProperties getBioFont];
-    coverLabel.textAlignment = NSTextAlignmentCenter;
-    coverLabel.textColor = [FontProperties getOrangeColor];
-    [_photosScrollView addSubview:coverLabel];
-
     [_scrollView addSubview:_photosScrollView];
 }
 
@@ -128,8 +122,11 @@ UIViewController *webViewController;
         NSString *imageURL = [imageArrayURL objectAtIndex:i];
         UIButton *imageButton = [[UIButton alloc] init];
         imageButton.tag = i;
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 70, 70)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 80, 80)];
         imageView.contentMode = UIViewContentModeScaleAspectFill;
+        imageView.layer.borderColor = UIColor.clearColor.CGColor;
+        imageView.layer.cornerRadius = 5.0f;
+        imageView.layer.borderWidth = 1.0f;
         imageView.clipsToBounds = YES;
         [imageView setImageWithURL:[NSURL URLWithString:imageURL] imageArea:[imageAreaArray objectAtIndex:i]];
         [imageButton addSubview:imageView];
@@ -152,9 +149,9 @@ UIViewController *webViewController;
     
     int xPosition = 15;
     for (UIButton *photoButton in photosArray) {
-        photoButton.frame = CGRectMake(xPosition, 10, 70, 70);
+        photoButton.frame = CGRectMake(xPosition, 10, 80, 80);
         [_photosScrollView addSubview:photoButton];
-        xPosition += 75;
+        xPosition += 85;
     }
     _photosScrollView.contentSize = CGSizeMake(xPosition, _photosScrollView.frame.size.height);
 
@@ -175,41 +172,31 @@ UIViewController *webViewController;
 
 
 - (void) initializePrivacySection {
-    UILabel *privacyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 150 + 15, 100, 20)];
-    privacyLabel.text = @"Privacy";
-    privacyLabel.textAlignment = NSTextAlignmentLeft;
-    privacyLabel.font = [FontProperties getNormalFont];
+    UILabel *privacyLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 150 + 15, self.view.frame.size.width, 20)];
+    privacyLabel.text = @"Private Account";
+    privacyLabel.textAlignment = NSTextAlignmentCenter;
+    privacyLabel.font = [FontProperties mediumFont:18.0f];
+    privacyLabel.textColor = RGB(152, 152, 152);
     [_scrollView addSubview:privacyLabel];
     
-    UIView *publicView = [[UIView alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 50)];
-    publicView.backgroundColor = [UIColor whiteColor];
-    UILabel *publicLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 160, publicView.frame.size.height)];
-    publicLabel.text = @"Private account";
-    publicLabel.font = [FontProperties getNormalFont];
-    [publicView addSubview:publicLabel];
-    _privacySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 60, 10, 40, 20)];
-    _privacySwitch.on = [WGProfile currentUser].privacy == PRIVATE;
-    
-    [publicView addSubview:_privacySwitch];
-    [_scrollView addSubview:publicView];
-    
-    UILabel *publicDetailLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 255, self.view.frame.size.width, 40)];
-    publicDetailLabel.text = @"Turn privacy ON to approve follow requests and restrict your plans to only your followers.";
+    UILabel *publicDetailLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 185, self.view.frame.size.width, 40)];
+    publicDetailLabel.text = @"Turn privacy ON to restrict your\nplans to only your friends.";
     publicDetailLabel.textAlignment = NSTextAlignmentCenter;
     publicDetailLabel.font = [FontProperties getSmallPhotoFont];
     publicDetailLabel.numberOfLines = 0;
     publicDetailLabel.lineBreakMode = NSLineBreakByWordWrapping;
     [_scrollView addSubview:publicDetailLabel];
+    
+    _privacySwitch = [[UISwitch alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 30, 185 + 40, 60, 25)];
+    _privacySwitch.on = [WGProfile currentUser].privacy == PRIVATE;
+    _privacySwitch.onTintColor = [FontProperties getBlueColor];
+    [_scrollView addSubview:_privacySwitch];
+    
+
 }
 
 - (void) initializeWiGoSection {
-    UILabel *wiGoLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 255 + 40, 100, 20)];
-    wiGoLabel.text = @"Wigo";
-    wiGoLabel.textAlignment = NSTextAlignmentLeft;
-    wiGoLabel.font = [FontProperties getNormalFont];
-    [_scrollView addSubview:wiGoLabel];
-    
-    UIButton *helpButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 325, self.view.frame.size.width, 50)];
+    UIButton *helpButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 295, self.view.frame.size.width, 50)];
     helpButton.backgroundColor = [UIColor whiteColor];
     UILabel *helpLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 200, helpButton.frame.size.height)];
     helpLabel.text = @"Contact Us";
@@ -218,7 +205,7 @@ UIViewController *webViewController;
     [helpButton addTarget:self action:@selector(sendEmail) forControlEvents:UIControlEventTouchUpInside];
     [_scrollView addSubview:helpButton];
     
-    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 375, self.view.frame.size.width, 50)];
+    UIButton *privacyButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 345, self.view.frame.size.width, 50)];
     privacyButton.backgroundColor = [UIColor whiteColor];
     UILabel *privacyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, 150, privacyButton.frame.size.height)];
     privacyLabel.text = @"Terms and Privacy";

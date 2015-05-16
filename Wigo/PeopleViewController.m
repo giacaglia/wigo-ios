@@ -76,6 +76,7 @@ NSIndexPath *userIndex;
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    self.navigationItem.titleView.tintColor = UIColor.whiteColor;
     self.title = self.user.firstName;
     [self initializeRightBarButton];
 
