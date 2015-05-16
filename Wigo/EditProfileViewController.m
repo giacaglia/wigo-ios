@@ -15,11 +15,9 @@
 #import "RWBlurPopover.h"
 
 @interface EditProfileViewController ()
-
 @property UIScrollView *scrollView;
 @property UISwitch *privacySwitch;
 @property UIScrollView *photosScrollView;
-
 @end
 
 UIViewController *webViewController;
@@ -33,7 +31,7 @@ UIViewController *webViewController;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updatePhotos) name:@"updatePhotos" object:nil];
     
-    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height + 100)];
     _scrollView.showsVerticalScrollIndicator = NO;
     _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, 550);
     _scrollView.backgroundColor = UIColor.whiteColor;
@@ -230,11 +228,11 @@ UIViewController *webViewController;
     line2View.backgroundColor = RGB(230, 230, 230);
     [_scrollView addSubview:line2View];
     
-    UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, 545, 50, 50)];
+    UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, [UIScreen mainScreen].bounds.size.height, 50, 50)];
     iconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
     [_scrollView addSubview:iconImageView];
     
-    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 585, self.view.frame.size.width, 50)];
+    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, iconImageView.frame.size.height + iconImageView.frame.origin.y, self.view.frame.size.width, 40)];
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
     NSString *versionString = [info objectForKey:@"CFBundleShortVersionString"];
     versionLabel.text = [NSString stringWithFormat:@"Version %@", versionString];
@@ -242,13 +240,13 @@ UIViewController *webViewController;
     versionLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:versionLabel];
     
-    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 610, self.view.frame.size.width, 50)];
+    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, versionLabel.frame.origin.y + versionLabel.frame.size.height, self.view.frame.size.width, 50)];
     builtInBostonLabel.text = @"Built in Boston";
     builtInBostonLabel.font = [FontProperties getSmallFont];
     builtInBostonLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:builtInBostonLabel];
     
-    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 635, self.view.frame.size.width, 50)];
+    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, builtInBostonLabel.frame.origin.y + builtInBostonLabel.frame.size.height, self.view.frame.size.width, 50)];
     NSString *gitCount = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitCount"];
     NSString *gitHash = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitHash"];
     gitCountLabel.text = [NSString stringWithFormat:@"Git Count %@, Git Hash %@", gitCount, gitHash];
@@ -256,7 +254,7 @@ UIViewController *webViewController;
     gitCountLabel.textAlignment = NSTextAlignmentCenter;
     [_scrollView addSubview:gitCountLabel];
     
-    UILabel *debugLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 655, self.view.frame.size.width, 50)];
+    UILabel *debugLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, gitCountLabel.frame.origin.y + gitCountLabel.frame.size.height, self.view.frame.size.width, 50)];
     NSString *debugString = @"";
     
 #if defined(DEBUG)
