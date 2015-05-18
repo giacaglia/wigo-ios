@@ -220,16 +220,9 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     self.frame = CGRectMake(0, 0, 10 + [AddPhotoCell width], [HighlightCell height]);
     self.contentView.frame = self.frame;
     
-    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.contentView.frame.size.height/2 - 5 - 31, [AddPhotoCell width], [AddPhotoCell width])];
+    UIImageView *cameraImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.contentView.frame.size.height/2 - [AddPhotoCell height]/2, [AddPhotoCell width], [AddPhotoCell width])];
     cameraImageView.image = [UIImage imageNamed:@"addPhoto"];
     [self.contentView addSubview:cameraImageView];
-    
-    UILabel *addBuzzLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, cameraImageView.frame.size.height + cameraImageView.frame.origin.y + 10, [AddPhotoCell width], 15)];
-    addBuzzLabel.text = @"Add Buzz";
-    addBuzzLabel.textAlignment = NSTextAlignmentCenter;
-    addBuzzLabel.textColor = [FontProperties getBlueColor];
-    addBuzzLabel.font = [FontProperties mediumFont:13.0f];
-    [self.contentView addSubview:addBuzzLabel];
 }
 
 -(BOOL)prefersStatusBarHidden   // iOS8 definitely needs this one. checked.
