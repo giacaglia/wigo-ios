@@ -196,13 +196,13 @@ NSMutableArray *coverAlbumArray;
 -(void) setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [AlbumTableCell height]);
     
-    self.coverImageView = [[UIImageView alloc] initWithFrame: CGRectMake(10, 10, 55, 55)];
+    self.coverImageView = [[UIImageView alloc] initWithFrame: CGRectMake(15, 10, 55, 55)];
     self.coverImageView.center = CGPointMake(self.coverImageView.center.x, self.center.y);
     self.coverImageView.contentMode = UIViewContentModeScaleAspectFill;
     self.coverImageView.clipsToBounds = YES;
     [self.contentView addSubview:self.coverImageView];
     
-    self.albumNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(65 + 10, 20, self.frame.size.width - 75, 20)];
+    self.albumNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70 + 10, 20, self.frame.size.width - 75, 20)];
     self.albumNameLabel.center = CGPointMake(self.albumNameLabel.center.x, self.center.y);
     self.albumNameLabel.font = [FontProperties mediumFont:18.0f];
     self.albumNameLabel.textColor = UIColor.blackColor;

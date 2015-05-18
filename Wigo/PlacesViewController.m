@@ -70,8 +70,11 @@ BOOL firstTimeLoading;
     [self initializeWhereView];
     [TabBarAuxiliar startTabBarItems];
     [self addCenterButton];
-    [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {}];
-    [NetworkFetcher.defaultGetter fetchSuggestions];
+    if (WGProfile.currentUser.key) {
+        [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {}];
+        [NetworkFetcher.defaultGetter fetchSuggestions];
+        [NetworkFetcher.defaultGetter fetchFriendsIds];
+    }
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -103,7 +106,6 @@ BOOL firstTimeLoading;
     }
     [self updateNavigationBar];
     [self fetchUserInfo];
-    [NetworkFetcher.defaultGetter fetchFriendsIds];
     [self startPrimer];
 }
 
