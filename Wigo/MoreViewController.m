@@ -13,6 +13,8 @@
 UIButton *unfriendButton;
 UIButton *blockButton;
 UIButton *cancelButton;
+UIView *grayView;
+float heighBkgButtonsView;
 
 @implementation MoreViewController
 
@@ -20,46 +22,55 @@ UIButton *cancelButton;
 {
     [super viewDidLoad];
     
-    float heighBkgButtonsView;
+    self.bgView = [[UIView alloc] initWithFrame:self.view.frame];
+    self.bgView.backgroundColor = RGBAlpha(74, 74, 74, 0.6f);
+    self.bgView.alpha = 0.0f;
+    [self.view addSubview:self.bgView];
+    [self.view sendSubviewToBack:self.bgView];
+    
     if (self.user.state == FRIEND_USER_STATE)
         heighBkgButtonsView = 3*68 +2*6 + 7;
     else
         heighBkgButtonsView = 2*68 + 2*6 + 7;
-    UIView *bkgButtonsView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - heighBkgButtonsView, self.view.frame.size.width, heighBkgButtonsView)];
-    bkgButtonsView.backgroundColor = RGB(247, 247, 247);
-    [self.view addSubview:bkgButtonsView];
+    grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, heighBkgButtonsView)];
+    grayView.backgroundColor = RGB(247, 247, 247);
+    [self.view addSubview:grayView];
 
+    
+    int yPosition = 7;
     if (self.user.state == FRIEND_USER_STATE) {
-        unfriendButton = [[UIButton alloc] initWithFrame:CGRectMake(6, self.view.frame.size.height - 3*68 - 6 - 7 - 1, self.view.frame.size.width - 12, 68)];
+        unfriendButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68)];
         unfriendButton.backgroundColor = UIColor.whiteColor;
         [unfriendButton setTitle:@"UNFRIEND" forState:UIControlStateNormal];
         [unfriendButton setTitleColor:RGB(236, 61, 83) forState:UIControlStateNormal];
         unfriendButton.titleLabel.font = [FontProperties getTitleFont];
         unfriendButton.layer.borderColor = RGB(177, 177, 177).CGColor;
-        unfriendButton.layer.borderWidth = 1.0f;
+        unfriendButton.layer.borderWidth = 0.5f;
         [unfriendButton addTarget:self action:@selector(unfriendPressed) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:unfriendButton];
+        [grayView addSubview:unfriendButton];
+        yPosition += 68 + 1;
     }
     
-    blockButton = [[UIButton alloc] initWithFrame:CGRectMake(6, self.view.frame.size.height - 2*68 - 6 - 7, self.view.frame.size.width - 12, 68)];
+    blockButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68)];
     blockButton.backgroundColor = UIColor.whiteColor;
     [blockButton addTarget:self action:@selector(blockButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [blockButton setTitle:@"BLOCK or REPORT" forState:UIControlStateNormal];
     [blockButton setTitleColor:RGB(236, 61, 83) forState:UIControlStateNormal];
     blockButton.titleLabel.font = [FontProperties getTitleFont];
     blockButton.layer.borderColor = RGB(177, 177, 177).CGColor;
-    blockButton.layer.borderWidth = 1.0f;
-    [self.view addSubview:blockButton];
+    blockButton.layer.borderWidth = 0.5f;
+    [grayView addSubview:blockButton];
+    yPosition += 68 + 7;
 
-    cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(6, self.view.frame.size.height - 68 - 6, self.view.frame.size.width - 12, 68)];
+    cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68)];
     cancelButton.backgroundColor = UIColor.whiteColor;
     [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
     [cancelButton setTitleColor:RGB(74, 74, 74) forState:UIControlStateNormal];
     cancelButton.titleLabel.font = [FontProperties getTitleFont];
     cancelButton.layer.borderColor = RGB(177, 177, 177).CGColor;
-    cancelButton.layer.borderWidth = 1.0f;
-    [self.view addSubview:cancelButton];
+    cancelButton.layer.borderWidth = 0.5f;
+    [grayView addSubview:cancelButton];
 }
 
 
@@ -70,8 +81,10 @@ UIButton *cancelButton;
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self.view addSubview:self.bgView];
-    [self.view sendSubviewToBack:self.bgView];
+    [UIView animateWithDuration:0.2f animations:^{
+        self.bgView.alpha = 1.0f;
+        grayView.frame = CGRectMake(0, self.view.frame.size.height - heighBkgButtonsView, self.view.frame.size.width, heighBkgButtonsView);
+    }];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -81,8 +94,8 @@ UIButton *cancelButton;
 
 -(void) goBack {
     [UIView animateWithDuration:0.15 animations:^{
-        self.view.alpha = 0.0f;
-    } completion:^(BOOL finished) {
+        self.bgView.alpha = 0.0f;
+        grayView.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, heighBkgButtonsView);    } completion:^(BOOL finished) {
         [self.profileDelegate removeMoreVc];
     }];
 }

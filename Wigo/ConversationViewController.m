@@ -58,6 +58,8 @@ ProfileViewController *profileViewController;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.title = self.user.fullName;
+    [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor]
+                                                  forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     self.navigationController.navigationBar.translucent = NO;
     
@@ -178,7 +180,7 @@ ProfileViewController *profileViewController;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return [self.messages count];
+    return self.messages.count;
 }
 
 - (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {

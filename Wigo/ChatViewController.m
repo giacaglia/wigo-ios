@@ -29,6 +29,7 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.lastMessageRead = WGProfile.currentUser.lastMessageRead;
+    if (!self.messages) [WGSpinnerView addDancingGToCenterView:self.view];
     [self fetchMessages];
     [self initializeTitleView];
     [self initializeRightBarButtonItem];
