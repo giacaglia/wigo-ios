@@ -11,6 +11,7 @@
 #import "Globals.h"
 #import "UIButtonAligned.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 @interface FacebookAlbumTableViewController ()
 @property NSArray *albumArray;
@@ -30,7 +31,7 @@ NSMutableArray *coverAlbumArray;
     coverIDArray = [NSMutableArray new];
     coverAlbumArray = [NSMutableArray new];
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-
+    [self.tableView registerClass:[AlbumTableCell class] forCellReuseIdentifier:kAlbumTableCellName];
     [self initializeBackBarButton];
     [self getFacebookAlbums];
 }
@@ -39,7 +40,7 @@ NSMutableArray *coverAlbumArray;
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
     [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
-    [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    [barBt setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
     barBt.titleLabel.font = [FontProperties getSubtitleFont];
     [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
@@ -52,50 +53,46 @@ NSMutableArray *coverAlbumArray;
 }
 
 - (void)getFacebookAlbums {
-    if ([FBSDKAccessToken currentAccessToken]) {
-        [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/albums" parameters:nil]
-         startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-             if (error) {
-                 if (![self gaveUserPermission:[error userInfo]]) [self requestReadPermissions];
-                 else [self showErrorNotAccess];
-                 [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
-                 return;
-             }
-             NSArray *nonCleanAlbums = (NSArray *)[result objectForKey:@"data"];
-             if (nonCleanAlbums.count == 0) [self requestReadPermissions];
-             NSMutableArray *cleanAlbums = [NSMutableArray new];
-             for (FBGraphObject *albumFBGraphObject in nonCleanAlbums) {
-                 NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
-                 if ([nameFBAlbum isEqualToString:@"Profile Pictures"] ||  [nameFBAlbum isEqualToString:@"Instagram Photos"]) {
-                     [cleanAlbums addObject:albumFBGraphObject];
-                     [idAlbumArray addObject:[albumFBGraphObject objectForKey:@"id"]];
-                     if ([albumFBGraphObject objectForKey:@"cover_photo"]) [coverIDArray addObject:[albumFBGraphObject objectForKey:@"cover_photo"]];
-                 }
-             }
-             _albumArray = [NSArray arrayWithArray:cleanAlbums];
-             [self getAlbumDetails];
-             [self.tableView reloadData];
-
-         }];
+    if (![FBSDKAccessToken currentAccessToken]) {
+        [self requestReadPermissions];
+        return;
     }
+    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/albums" parameters:nil]
+     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+         if (error) {
+             [self requestReadPermissions];
+             [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
+             return;
+         }
+         NSArray *nonCleanAlbums = (NSArray *)[result objectForKey:@"data"];
+         if (nonCleanAlbums.count == 0) [self requestReadPermissions];
+         NSMutableArray *cleanAlbums = [NSMutableArray new];
+         for (FBGraphObject *albumFBGraphObject in nonCleanAlbums) {
+             NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
+             if ([nameFBAlbum isEqualToString:@"Profile Pictures"] ||  [nameFBAlbum isEqualToString:@"Instagram Photos"]) {
+                 [cleanAlbums addObject:albumFBGraphObject];
+                 [idAlbumArray addObject:[albumFBGraphObject objectForKey:@"id"]];
+                 if ([albumFBGraphObject objectForKey:@"cover_photo"]) [coverIDArray addObject:[albumFBGraphObject objectForKey:@"cover_photo"]];
+             }
+         }
+         _albumArray = [NSArray arrayWithArray:cleanAlbums];
+         [self getAlbumDetails];
+         [self.tableView reloadData];
+
+     }];
 }
 
 
 - (void)requestReadPermissions {
-    [FBSession.activeSession requestNewReadPermissions:@[@"user_photos"]
-                                     completionHandler:^(FBSession *session, NSError *error) {
-                                         if (!error) {
-                                             if ([FBSession.activeSession.permissions
-                                                  indexOfObject:@"user_photos"] == NSNotFound){
-                                                 [self showErrorNotAccess];
-                                             } else {
-                                                 [self getFacebookAlbums];
-                                             }
-                                             
-                                         } else {
-                                             [self showErrorNotAccess];
-                                         }
-                                     }];
+    FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
+    [loginManager logInWithReadPermissions:@[@"user_photos"] handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        if (error) {
+            [self showErrorNotAccess];
+        }
+        else {
+            [self getFacebookAlbums];
+        }
+    }];
 }
 
 - (BOOL)gaveUserPermission:(NSDictionary *)userInfo {
@@ -105,7 +102,6 @@ NSMutableArray *coverAlbumArray;
             return NO;
         }
         return YES;
-        
     }
     return YES;
 }
@@ -146,7 +142,6 @@ NSMutableArray *coverAlbumArray;
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Table view data source
@@ -162,50 +157,57 @@ NSMutableArray *coverAlbumArray;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 60;
+    return [AlbumTableCell height];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = (UITableViewCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    AlbumTableCell *cell = (AlbumTableCell*)[tableView dequeueReusableCellWithIdentifier:kAlbumTableCellName forIndexPath:indexPath];
+    FBGraphObject *albumFBGraphObject = [_albumArray objectAtIndex:indexPath.row];
+    cell.albumNameLabel.text = [albumFBGraphObject objectForKey:@"name"];
+    if (indexPath.row < coverAlbumArray.count) {
+        NSString *imageURL = [coverAlbumArray objectAtIndex:indexPath.row];
+        [cell.coverImageView setImageWithURL:[NSURL URLWithString:imageURL]];
     }
-    [[cell.contentView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
-
-    
-    FBGraphObject *albumFBGraphObject = [_albumArray objectAtIndex:[indexPath row]];
-    
-    UILabel *albumName = [[UILabel alloc] initWithFrame:CGRectMake(75, 20, self.view.frame.size.width - 75, 20)];
-    albumName.text = [albumFBGraphObject objectForKey:@"name"];
-    albumName.font = [FontProperties lightFont:18.0f];
-    albumName.textColor = [UIColor blackColor];
-    albumName.textAlignment = NSTextAlignmentLeft;
-    [cell.contentView addSubview:albumName];
-    
-    
-    if ([indexPath row] < [coverAlbumArray count]) {
-        NSString *imageURL = [coverAlbumArray objectAtIndex:[indexPath row]];
-        UIImageView *coverImageView = [[UIImageView alloc] init];
-        coverImageView.frame = CGRectMake(10, 10, 45, 45);
-        coverImageView.contentMode = UIViewContentModeScaleAspectFill;
-        coverImageView.clipsToBounds = YES;
-        [coverImageView setImageWithURL:[NSURL URLWithString:imageURL]];
-        coverImageView.backgroundColor = [UIColor whiteColor];
-        [cell.contentView addSubview:coverImageView];
-    }
-    
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    int tag = (int)[indexPath row];
-    NSString *albumID = [idAlbumArray objectAtIndex:tag];
+    NSString *albumID = [idAlbumArray objectAtIndex:(int)indexPath.row];
     [self.navigationController pushViewController:[[FacebookImagesViewController alloc] initWithAlbumID:albumID] animated:YES];
 }
 
+@end
 
+@implementation AlbumTableCell
+
++ (CGFloat)height {
+    return 70.0f;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+-(void) setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [AlbumTableCell height]);
+    
+    self.coverImageView = [[UIImageView alloc] initWithFrame: CGRectMake(10, 10, 55, 55)];
+    self.coverImageView.center = CGPointMake(self.coverImageView.center.x, self.center.y);
+    self.coverImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.coverImageView.clipsToBounds = YES;
+    [self.contentView addSubview:self.coverImageView];
+    
+    self.albumNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(65 + 10, 20, self.frame.size.width - 75, 20)];
+    self.albumNameLabel.center = CGPointMake(self.albumNameLabel.center.x, self.center.y);
+    self.albumNameLabel.font = [FontProperties mediumFont:18.0f];
+    self.albumNameLabel.textColor = UIColor.blackColor;
+    self.albumNameLabel.textAlignment = NSTextAlignmentLeft;
+    [self.contentView addSubview:self.albumNameLabel];
+}
 
 @end

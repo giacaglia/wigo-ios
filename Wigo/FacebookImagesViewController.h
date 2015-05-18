@@ -12,5 +12,8 @@
 @interface FacebookImagesViewController : UIViewController
 
 - (id)initWithAlbumID:(NSString *)newAlbumID;
+@property (nonatomic, strong) NSMutableArray *profilePicturesURL;
+@property (nonatomic, strong) NSMutableArray *imagesArray;
+
 
 @end

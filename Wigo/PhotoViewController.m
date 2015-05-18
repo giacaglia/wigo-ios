@@ -23,7 +23,6 @@
     self = [super init];
     if (self) {
         _image = image;
-        self.view.backgroundColor = [UIColor clearColor];
     }
     return self;
 }
@@ -31,6 +30,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.backgroundColor = UIColor.clearColor;
+
     
     _photoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, [[UIScreen mainScreen] bounds].size.height - [[UIScreen mainScreen] bounds].size.width - 184, [[UIScreen mainScreen] bounds].size.width - 70, [[UIScreen mainScreen] bounds].size.width - 70)];
     _photoImageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -113,11 +114,10 @@
 
 
 - (void)makeCoverPressed {
-    [[WGProfile currentUser] makeImageAtIndexCoverImage:[[WGProfile currentUser].imagesURL indexOfObject:[_image objectForKey:@"url"]]];
+    [WGProfile.currentUser makeImageAtIndexCoverImage:[WGProfile.currentUser.imagesURL indexOfObject:[_image objectForKey:@"url"]]];
     
-    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser save:^(BOOL success, NSError *error) {
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
@@ -127,7 +127,7 @@
 }
 
 - (void)deletePressed {
-    if ([WGProfile currentUser].images.count < 4) {
+    if (WGProfile.currentUser.images.count < 4) {
         [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bummer"
                                                             message:@"You need a minimum of 3 photos"
@@ -137,10 +137,9 @@
         [alertView show];
 
     } else {
-        [[WGProfile currentUser] removeImageAtIndex:[[WGProfile currentUser].imagesURL indexOfObject:[_image objectForKey:@"url"]]];
-        [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+        [WGProfile.currentUser removeImageAtIndex:[[WGProfile currentUser].imagesURL indexOfObject:[_image objectForKey:@"url"]]];
+        [WGProfile.currentUser save:^(BOOL success, NSError *error) {
             if (error) {
-                [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
                 [[WGError sharedInstance] logError:error forAction:WGActionSave];
                 return;
             }

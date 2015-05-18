@@ -10,5 +10,12 @@
 
 
 @interface FacebookAlbumTableViewController : UITableViewController
+@end
 
+#define kAlbumTableCellName @"albumTableCellName"
+
+@interface AlbumTableCell : UITableViewCell
++ (CGFloat) height;
+@property (nonatomic, strong) UILabel *albumNameLabel;
+@property (nonatomic, strong) UIImageView *coverImageView;
 @end

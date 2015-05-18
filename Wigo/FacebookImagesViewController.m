@@ -15,13 +15,11 @@
 
 @interface FacebookImagesViewController ()<GKImageCropControllerDelegate>
 @property NSString *profilePicturesAlbumId;
-@property NSMutableArray *profilePicturesURL;
 @property UIScrollView *scrollView;
 @property int startingYPosition;
 @end
 
 NSDictionary *chosenPhoto;
-NSMutableArray *imagesArray;
 //NSString *albumID;
 
 @implementation FacebookImagesViewController
@@ -31,21 +29,13 @@ NSMutableArray *imagesArray;
     self = [super init];
     if (self) {
         _profilePicturesAlbumId = newAlbumID;
-        self.view.backgroundColor = [UIColor whiteColor];
-    }
-    return self;
-}
-
-- (id)init {
-    self = [super init];
-    if (self) {
-        self.view.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.view.backgroundColor = UIColor.whiteColor;
     [self initializeBackBarButton];
     [self initializeScrollView];
 }
@@ -59,7 +49,7 @@ NSMutableArray *imagesArray;
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
     [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
-    [barBt setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+    [barBt setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
     barBt.titleLabel.font = [FontProperties getSubtitleFont];
     [barBt addTarget:self action: @selector(goBack) forControlEvents:UIControlEventTouchUpInside];
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
@@ -73,60 +63,54 @@ NSMutableArray *imagesArray;
 
 
 - (void)loadImages {
-    [FBSession openActiveSessionWithReadPermissions:@[@"user_photos"]
-                                       allowLoginUI:YES
-                                  completionHandler:^(FBSession *session,
-                                                      FBSessionState state,
-                                                      NSError *error) {
-                                      if (error) {
-                                          if (![self gaveUserPermission:[error userInfo]]) [self requestReadPermissions];
-                                          else [self showErrorNotAccess];
-                                      }
-                                      else if (session.isOpen) {
-                                          [self fetchProfilePicturesAlbumFacebook];
-                                      }
-                                  }];
+    if ([FBSDKAccessToken currentAccessToken]) {
+        [self fetchProfilePicturesAlbumFacebook];
+        return;
+    }
+    
+    FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
+    [loginManager logInWithReadPermissions:@[@"user_photos"] handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        if (error) {
+          if (![self gaveUserPermission:[error userInfo]]) [self requestReadPermissions];
+          else [self showErrorNotAccess];
+          return;
+        }
+    }];
 }
 
 - (void) fetchProfilePicturesAlbumFacebook {
-    [FBRequestConnection startWithGraphPath:@"/me/albums"
-                                 parameters:nil
-                                 HTTPMethod:@"GET"
-                          completionHandler:^(
-                                              FBRequestConnection *connection,
-                                              id result,
-                                              NSError *error
-                                              ) {
-                              if (error) {
-                                  if (![self gaveUserPermission:[error userInfo]]) [self requestReadPermissions];
-                                  else [self showErrorNotAccess];
-                              }
-                              FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
-                              for (FBGraphObject *album in resultObject) {
-                                  if ([[album objectForKey:@"name"] isEqualToString:@"Profile Pictures"]) {
-//                                      _profilePicturesAlbumId = (NSString *)[album objectForKey:@"id"];
-                                      [self getProfilePictures];
-                                      break;
-                                  }
-                              }
-                          }];
+    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/albums" parameters:nil]
+     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+        if (error) {
+            if (![self gaveUserPermission:[error userInfo]]) [self requestReadPermissions];
+            else [self showErrorNotAccess];
+            return;
+        }
+        FBGraphObject *resultObject = (FBGraphObject *)[result objectForKey:@"data"];
+        for (FBGraphObject *album in resultObject) {
+            if ([[album objectForKey:@"name"] isEqualToString:@"Profile Pictures"]) {
+                [self getProfilePictures];
+                break;
+            }
+        }
+    }];
     
 }
 
 - (void)requestReadPermissions {
-    [FBSession.activeSession requestNewReadPermissions:@[@"user_photos"]
-                                     completionHandler:^(FBSession *session, NSError *error) {
-                                        if (!error) {
-                                            if ([FBSession.activeSession.permissions
-                                                 indexOfObject:@"user_photos"] == NSNotFound){
-                                                [self showErrorNotAccess];
-                                            } else {
-                                                [self loadImages];
-                                            }
-                                            
-                                        } else {
-                                            [self showErrorNotAccess];
-                                        }
+    FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
+    [loginManager logInWithReadPermissions:@[@"user_photos"] handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+        if (!error) {
+            if ([FBSession.activeSession.permissions
+                 indexOfObject:@"user_photos"] == NSNotFound){
+                [self showErrorNotAccess];
+            } else {
+                [self loadImages];
+            }
+            
+        } else {
+            [self showErrorNotAccess];
+        }
     }];
 }
 
@@ -153,38 +137,33 @@ NSMutableArray *imagesArray;
 
 - (void) getProfilePictures {
     [WGSpinnerView addDancingGToCenterView:self.view];
-    _profilePicturesURL = [NSMutableArray new];
-    imagesArray = [NSMutableArray new];
-    [FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"/%@/photos", _profilePicturesAlbumId]
-                                 parameters:nil
-                                 HTTPMethod:@"GET"
-                          completionHandler:^(
-                                              FBRequestConnection *connection,
-                                              id result,
-                                              NSError *error
-                                              ) {
-                              [WGSpinnerView removeDancingGFromCenterView:self.view];
-                              if (!error) {
-                                  FBGraphObject *resultObject = [result objectForKey:@"data"];
-                                  for (FBGraphObject *photoRepresentation in resultObject) {
-                                      FBGraphObject *images = [photoRepresentation objectForKey:@"images"];
-                                      FBGraphObject *newPhoto = [FacebookHelper getFirstFacebookPhotoGreaterThanX:600 inPhotoArray:images];
-                                      FBGraphObject *smallPhoto = [FacebookHelper getFirstFacebookPhotoGreaterThanX:200 inPhotoArray:images];
-                                      if (newPhoto) {
-                                          NSDictionary *newImage =
-                                          @{@"url": [newPhoto objectForKey:@"source"],
-                                            @"small": [smallPhoto objectForKey:@"source"],
-                                            @"id": [photoRepresentation objectForKey:@"id"],
-                                            @"type": @"facebook"
-                                            };
-                                          [_profilePicturesURL addObject:[newPhoto objectForKey:@"source"]];
-                                          [imagesArray addObject:newImage];
-                                          _startingYPosition = 0;
-                                      }
-                                     
-                                  }
-                                  [self addImagesFromURLArray];
-                              }
+    self.profilePicturesURL = [NSMutableArray new];
+    self.imagesArray = [NSMutableArray new];
+    NSString *graphPath = [NSString stringWithFormat:@"/%@/photos", _profilePicturesAlbumId];
+    [[[FBSDKGraphRequest alloc] initWithGraphPath:graphPath
+                                       parameters:nil]
+     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+        [WGSpinnerView removeDancingGFromCenterView:self.view];
+        if (!error) {
+            FBGraphObject *resultObject = result[@"data"];
+            for (FBGraphObject *photoRepresentation in resultObject) {
+                FBGraphObject *images = [photoRepresentation objectForKey:@"images"];
+                FBGraphObject *newPhoto = [FacebookHelper getFirstFacebookPhotoGreaterThanX:600 inPhotoArray:images];
+                FBGraphObject *smallPhoto = [FacebookHelper getFirstFacebookPhotoGreaterThanX:200 inPhotoArray:images];
+                if (newPhoto) {
+                    NSDictionary *newImage =
+                        @{@"url": [newPhoto objectForKey:@"source"],
+                          @"small": [smallPhoto objectForKey:@"source"],
+                          @"id": [photoRepresentation objectForKey:@"id"],
+                          @"type": @"facebook"
+                          };
+                    [self.profilePicturesURL addObject:[newPhoto objectForKey:@"source"]];
+                    [self.imagesArray addObject:newImage];
+                    _startingYPosition = 0;
+                }
+            }
+            [self addImagesFromURLArray];
+        }
     }];
 }
 
@@ -206,8 +185,8 @@ NSMutableArray *imagesArray;
     int sizeOfEachImage = self.view.frame.size.width - totalDistanceOfAllImages; // 10 pts on the extreme left and extreme right
     sizeOfEachImage /= NImages;
     int positionX = 0;
-    for (int i = 0; i < [_profilePicturesURL count]; i++) {
-        NSString *pictureURL = [_profilePicturesURL objectAtIndex:i];
+    for (int i = 0; i < self.profilePicturesURL.count; i++) {
+        NSString *pictureURL = [self.profilePicturesURL objectAtIndex:i];
 
         UIImageView *imgView = [[UIImageView alloc] init];
         imgView.contentMode = UIViewContentModeScaleAspectFill;
@@ -237,7 +216,7 @@ NSMutableArray *imagesArray;
 
 - (void)choseImageView:(UITapGestureRecognizer*)sender {
     UIImageView *imageViewSender = (UIImageView *)sender.view;
-    NSDictionary *newImage = [imagesArray objectAtIndex:imageViewSender.tag];
+    NSDictionary *newImage = [self.imagesArray objectAtIndex:imageViewSender.tag];
     chosenPhoto = newImage;
     GKImageCropViewController *cropViewController = [[GKImageCropViewController alloc] init];
     cropViewController.sourceImage = imageViewSender.image;
@@ -264,10 +243,9 @@ NSMutableArray *imagesArray;
                                                 @"height": @((int)roundf(croppedArea.size.height))}
                                                 }];
     
-    [[WGProfile currentUser] addImageDictionary:imageDictionary];
-    [[WGProfile currentUser] save:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser addImageDictionary:imageDictionary];
+    [WGProfile.currentUser save:^(BOOL success, NSError *error) {
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }

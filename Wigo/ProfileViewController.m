@@ -99,8 +99,6 @@ BOOL blockShown;
     [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleLightContent];
     self.tabBarController.navigationItem.titleView.hidden = NO;
     self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
-    [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor] forBarMetrics:UIBarMetricsDefault];
-
     
     [self.pageControl removeFromSuperview];
     self.pageControl = nil;
@@ -319,11 +317,8 @@ BOOL blockShown;
     self.navigationController.navigationBar.backgroundColor = UIColor.clearColor;
 }
 
-- (void) editPressed {
-    EditProfileViewController *editProfileViewController = [[EditProfileViewController alloc] init];
-    editProfileViewController.view.backgroundColor = RGB(235, 235, 235);
-    
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: editProfileViewController];
+- (void) editPressed {    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController: [EditProfileViewController new]];
     [self presentViewController: navController animated: YES completion: nil];
 }
 

@@ -133,11 +133,6 @@ UIViewController *webViewController;
         [imageView setImageWithURL:[NSURL URLWithString:imageURL] imageArea:[imageAreaArray objectAtIndex:i]];
         [imageButton addSubview:imageView];
         [imageButton addTarget:self action:@selector(selectedEditImage:) forControlEvents:UIControlEventTouchUpInside];
-        // IF its the cover photo
-        if (i == 0) {
-            imageButton.layer.borderWidth = 1;
-            imageButton.layer.borderColor = [FontProperties getLightOrangeColor].CGColor;
-        }
         [photosArray addObject:imageButton];
     }
     
@@ -165,7 +160,7 @@ UIViewController *webViewController;
         [self.navigationController pushViewController:[FacebookAlbumTableViewController new] animated:YES];
     } else if (buttonSender.tag < [[[WGProfile currentUser] images] count]) {
         [self.view endEditing:YES];
-        PhotoViewController *photoViewController = [[PhotoViewController alloc] initWithImage:[[WGProfile currentUser].images objectAtIndex:buttonSender.tag]];
+        PhotoViewController *photoViewController = [[PhotoViewController alloc] initWithImage:[WGProfile.currentUser.images objectAtIndex:buttonSender.tag]];
         photoViewController.indexOfImage = (int)buttonSender.tag;
         [[RWBlurPopover instance] presentViewController:photoViewController withOrigin:0 andHeight:[[UIScreen mainScreen] bounds].size.height fromViewController:self.navigationController];
     }
