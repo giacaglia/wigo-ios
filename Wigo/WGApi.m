@@ -208,29 +208,35 @@ withParameters:(id)parameters
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.responseSerializer = [AFJSONResponseSerializer serializer];
     
-    dispatch_async(postQueue, ^(void) {
-        [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            NSError *dataError;
-            NSDictionary *response;
-            @try {
-                WGParser *parser = [[WGParser alloc] init];
-                response = [parser replaceReferences:responseObject];
-            }
-            @catch (NSException *exception) {
-                NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-                
-                dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
-            }
-            @finally {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    handler(response, dataError);
-                });
-            }
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSError *dataError;
+        NSDictionary *response;
+        @try {
+            WGParser *parser = [[WGParser alloc] init];
+            response = [parser replaceReferences:responseObject];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGApi" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
             dispatch_async(dispatch_get_main_queue(), ^{
-                handler(operation.responseObject, error);
+                handler(response, dataError);
             });
-        }];
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            handler(operation.responseObject, error);
+        });
+    }];
+    
+    if (!postQueue) {
+        postQueue = dispatch_queue_create("com.whoisgoingout.wigo.postqueue", DISPATCH_QUEUE_CONCURRENT);
+    }
+    
+    dispatch_barrier_async(postQueue, ^(void) {
+        [operation start];
     });
 }
 
