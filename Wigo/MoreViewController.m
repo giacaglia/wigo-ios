@@ -146,10 +146,15 @@ float heighBkgButtonsView;
     blockLabel.font = [FontProperties mediumFont:24.0f];
     [self.view addSubview:blockLabel];
     
+    int yPosition = 7;
+    blockButton.frame = CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68);
     [blockButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
     blockButton.tag = 10;
     [blockButton removeTarget:self action:@selector(blockButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [blockButton addTarget:self action:@selector(submitBlockPressed) forControlEvents:UIControlEventTouchUpInside];
+    
+    yPosition += 68 + 7;
+    cancelButton.frame = CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68);
    
     [self addCheckBoxWithTag:1 atYPosition:220];
     [self addLabelWithText:[NSString stringWithFormat:@"%@ is just annoying to me", self.user.firstName]

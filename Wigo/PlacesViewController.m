@@ -598,26 +598,37 @@ BOOL firstTimeLoading;
             TwoLineEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kTwoLineEventCellName forIndexPath:indexPath];
             if (event == nil) return cell;
             cell.event = event;
+            cell.placesDelegate = self;
             cell.eventPeopleScrollView.groupID = self.groupNumberID;
+            cell.eventPeopleScrollView.rowOfEvent = (int)indexPath.row;
             cell.eventPeopleScrollView.placesDelegate = self;
+            cell.privacyLockButton.tag = indexPath.row;
+            [cell.privacyLockButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
+            cell.highlightsCollectionView.placesDelegate = self;
+            cell.highlightsCollectionView.isPeeking = [self isPeeking];
             if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
                 cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
             }
-            cell.highlightsCollectionView.placesDelegate = self;
-            cell.highlightsCollectionView.isPeeking = [self isPeeking];
             return cell;
         }
         else {
             OneLineEventCell *cell = [tableView dequeueReusableCellWithIdentifier:kOneLineEventCellName forIndexPath:indexPath];
             if (event == nil) return cell;
             cell.event = event;
+            cell.placesDelegate = self;
             cell.eventPeopleScrollView.groupID = self.groupNumberID;
+            cell.eventPeopleScrollView.rowOfEvent = (int)indexPath.row;
             cell.eventPeopleScrollView.placesDelegate = self;
             if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
                 cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
             }
+            cell.privacyLockButton.tag = indexPath.row;
+            [cell.privacyLockButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
             cell.highlightsCollectionView.placesDelegate = self;
             cell.highlightsCollectionView.isPeeking = [self isPeeking];
+            if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
+                cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
+            }
             return cell;
         }
       
@@ -1009,7 +1020,6 @@ BOOL firstTimeLoading;
     [WGProfile.currentUser goingToEvent:event withHandler:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionSave retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             postHandler(success, error);
             return;
@@ -1044,7 +1054,7 @@ BOOL firstTimeLoading;
         });
        
     }];
-    
+    NSLog(@"indeX: %ld", (long)buttonSender.tag);
     [self.placesTableView beginUpdates];
     [self.placesTableView moveRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0] toIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
     [self.placesTableView endUpdates];

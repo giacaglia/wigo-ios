@@ -31,9 +31,9 @@
 
 - (void)addInviteButton {
     self.hiddenInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
-//    UIImageView *inviteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
-//    inviteImageView.image = [UIImage imageNamed:@"inviteButton"];
-//    [self.hiddenInviteButton addSubview:inviteImageView];
+    UIImageView *inviteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
+    inviteImageView.image = [UIImage imageNamed:@"inviteButton"];
+    [self.hiddenInviteButton addSubview:inviteImageView];
     
     self.hiddenInviteButton.hidden = YES;
     self.hiddenInviteButton.transform = CGAffineTransformMakeScale(0.2f, 0.2f);
@@ -93,12 +93,12 @@
     __weak typeof(self) weakSelf = self;
     [self.placesDelegate startAnimatingAtTop:sender
                       finishAnimationHandler:^(UICollectionViewCell *cell) {
-        weakSelf.hiddenInviteButton.hidden = NO;
         ScrollViewCell *scrollCell = (ScrollViewCell *)cell;
         [UIView animateWithDuration:1 animations:^{
             scrollCell.blueOverlayView.alpha = 1.0f;
             scrollCell.goHereLabel.alpha = 1.0f;
         } completion:^(BOOL finished) {
+            weakSelf.hiddenInviteButton.hidden = NO;
             [UIView animateWithDuration:1 animations:^{
                 weakSelf.hiddenInviteButton.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
                 scrollCell.blueOverlayView.alpha = 0.0f;
@@ -127,7 +127,6 @@
         self.animationState = BOTH_OF_THEM_ARE_DONE;
     }
     if (scrollCell != nil) self.scrollCell = scrollCell;
-    
     
     if (self.animationState == BOTH_OF_THEM_ARE_DONE) {
         CGAffineTransform t = CGAffineTransformMakeScale(0.2f, 0.2f);
