@@ -129,11 +129,19 @@ float heighBkgButtonsView;
 }
 
 - (void)addOptions {
-    self.bgView.backgroundColor = RGBAlpha(0, 0, 0, 0.8f);
+    [UIView animateWithDuration:0.15f animations:^{
+        self.bgView.backgroundColor = RGBAlpha(0, 0, 0, 0.8f);
 
-    UILabel *blockLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 20, self.view.frame.size.width - 30, 60)];
-    blockLabel.text = [NSString stringWithFormat:@"Why do you want to\nblock %@", self.user.firstName];
+    }];
+    heighBkgButtonsView = 2*68 + 2*6 + 7;
+    grayView.frame = CGRectMake(0, self.view.frame.size.height - heighBkgButtonsView, self.view.frame.size.width, heighBkgButtonsView);
+
+
+    UILabel *blockLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 40, self.view.frame.size.width - 30, 60)];
+    blockLabel.text = [NSString stringWithFormat:@"Why do you want to\nblock %@?", self.user.firstName];
     blockLabel.textColor = UIColor.whiteColor;
+    blockLabel.numberOfLines = 0;
+    blockLabel.lineBreakMode = NSLineBreakByWordWrapping;
     blockLabel.textAlignment = NSTextAlignmentCenter;
     blockLabel.font = [FontProperties mediumFont:24.0f];
     [self.view addSubview:blockLabel];
