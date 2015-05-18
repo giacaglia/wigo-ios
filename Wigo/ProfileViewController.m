@@ -11,7 +11,6 @@
 #import "ChatViewController.h"
 #import "FXBlurView.h"
 #import "RWBlurPopover.h"
-#import "FollowRequestsViewController.h"
 #import "EventPeopleScrollView.h"
 #import "AppDelegate.h"
 

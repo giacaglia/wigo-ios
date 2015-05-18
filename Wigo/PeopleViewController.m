@@ -354,45 +354,6 @@ viewForHeaderInSection:(NSInteger)section
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self.searchBar endEditing:YES];
-//    CGRect frame = self.navigationController.navigationBar.frame;
-//    frame = CGRectMake(frame.origin.x, frame.origin.y + 50, frame.size.width, frame.size.height);
-//    CGFloat size = frame.size.height - 20;
-//    CGFloat framePercentageHidden = ((20 - frame.origin.y) / (frame.size.height - 1));
-//    CGFloat scrollOffset = scrollView.contentOffset.y;
-//    CGFloat scrollDiff = scrollOffset - self.previousScrollViewYOffset;
-//    CGFloat scrollHeight = scrollView.frame.size.height;
-//    CGFloat scrollContentSizeHeight = scrollView.contentSize.height + scrollView.contentInset.bottom;
-//    
-//    if (scrollOffset <= -scrollView.contentInset.top) {
-//        frame.origin.y = 20;
-//    } else if ((scrollOffset + scrollHeight) >= scrollContentSizeHeight) {
-//        frame.origin.y = -size;
-//    } else {
-//        // HACK to prevent the app to go up and down.
-//        if (frame.origin.y == 20 && scrollOffset == - 60) {
-//            frame.origin.y = 20;
-//        }
-//        else {
-//            frame.origin.y = MIN(20, MAX(-size, frame.origin.y - scrollDiff));
-//        }
-//    }
-//    
-//    self.navigationController.navigationBar.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
-//    
-//    if (self.navigationController.navigationBar.frame.origin.y +
-//        self.navigationController.navigationBar.frame.size.height <= 20 ||
-//        self.navigationController.navigationBar.frame.origin.y >= 0) {
-//        self.blueBannerView.hidden = NO;
-//    }
-//    else {
-//        super.blueBannerView.hidden = YES;
-//    }
-//    
-//    [super updateBarButtonItems:(1 - framePercentageHidden)];
-//    self.previousScrollViewYOffset = scrollOffset;
-//    if (scrollView.contentOffset.x != 0) {
-//        scrollView.contentOffset = CGPointMake(0, scrollView.contentOffset.y);
-//    }
 }
 
 - (void) followedPersonPressed:(id)sender {
@@ -604,7 +565,7 @@ viewForHeaderInSection:(NSInteger)section
 }
 
 - (void)setup {
-    self.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [TablePersonCell height]);
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TablePersonCell height]);
     self.contentView.frame = self.frame;
     self.contentView.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;

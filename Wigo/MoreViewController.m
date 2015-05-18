@@ -57,10 +57,7 @@ UIButton *cancelButton;
 
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    self.parentViewController.navigationController.navigationBar.alpha = 0.0f;
-    self.navigationItem.titleView.tintColor = [FontProperties getOrangeColor];
-    self.navigationController.navigationBar.backgroundColor = RGB(235, 235, 235);
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: [FontProperties getOrangeColor], NSFontAttributeName:[FontProperties getTitleFont]};
+    self.parentViewController.navigationController.navigationBar.hidden = YES;
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -71,11 +68,7 @@ UIButton *cancelButton;
 
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    self.parentViewController.navigationController.navigationBar.alpha = 1.0f;
-    [self.parentViewController.navigationController.navigationBar setBackgroundImage:[UIImage new]
-                                                  forBarMetrics:UIBarMetricsDefault];
-    self.parentViewController.navigationController.navigationBar.shadowImage = [UIImage new];
-    self.parentViewController.navigationController.navigationBar.barTintColor = UIColor.clearColor;
+    self.parentViewController.navigationController.navigationBar.hidden = NO;
 }
 
 -(void) goBack {

@@ -315,8 +315,6 @@
 		E957CD6D1A938B8400D0FF7C /* openLock.gif in Resources */ = {isa = PBXBuildFile; fileRef = E957CD6C1A938B8400D0FF7C /* openLock.gif */; };
 		E957CD6E1A938B8400D0FF7C /* openLock.gif in Resources */ = {isa = PBXBuildFile; fileRef = E957CD6C1A938B8400D0FF7C /* openLock.gif */; };
 		E9681C7B195084B700182E0E /* UIButtonUngoOut.m in Sources */ = {isa = PBXBuildFile; fileRef = E9681C7A195084B700182E0E /* UIButtonUngoOut.m */; };
-		E96EF676197DC94100F88A6D /* FollowRequestsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */; };
-		E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */; };
 		E96F07BD19BA654600E858D7 /* GKCropBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07B219BA654600E858D7 /* GKCropBorderView.m */; };
 		E96F07BE19BA654600E858D7 /* GKCropBorderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07B219BA654600E858D7 /* GKCropBorderView.m */; };
 		E96F07BF19BA654600E858D7 /* GKImageCropOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = E96F07B419BA654600E858D7 /* GKImageCropOverlayView.m */; };
@@ -806,8 +804,6 @@
 		E957CD6C1A938B8400D0FF7C /* openLock.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = openLock.gif; sourceTree = "<group>"; };
 		E9681C79195084B700182E0E /* UIButtonUngoOut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButtonUngoOut.h; sourceTree = "<group>"; };
 		E9681C7A195084B700182E0E /* UIButtonUngoOut.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIButtonUngoOut.m; sourceTree = "<group>"; };
-		E96EF674197DC94100F88A6D /* FollowRequestsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowRequestsViewController.h; sourceTree = "<group>"; };
-		E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowRequestsViewController.m; sourceTree = "<group>"; };
 		E96F07B119BA654600E858D7 /* GKCropBorderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKCropBorderView.h; sourceTree = "<group>"; };
 		E96F07B219BA654600E858D7 /* GKCropBorderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GKCropBorderView.m; sourceTree = "<group>"; };
 		E96F07B319BA654600E858D7 /* GKImageCropOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GKImageCropOverlayView.h; sourceTree = "<group>"; };
@@ -1715,15 +1711,6 @@
 			name = GKImagePicker;
 			sourceTree = "<group>";
 		};
-		E96EF678197DC94A00F88A6D /* Follow Request */ = {
-			isa = PBXGroup;
-			children = (
-				E96EF674197DC94100F88A6D /* FollowRequestsViewController.h */,
-				E96EF675197DC94100F88A6D /* FollowRequestsViewController.m */,
-			);
-			name = "Follow Request";
-			sourceTree = "<group>";
-		};
 		E9747D471AEA8FE100E0FE18 /* Tab Bar */ = {
 			isa = PBXGroup;
 			children = (
@@ -1742,7 +1729,6 @@
 				E93030C31986A07F00FFC4F8 /* ContactUsViewController.m */,
 				E99EC2871986B69C00CBFA59 /* MoreViewController.h */,
 				E99EC2881986B69C00CBFA59 /* MoreViewController.m */,
-				E96EF678197DC94A00F88A6D /* Follow Request */,
 			);
 			name = "Popup Helpers";
 			sourceTree = "<group>";
@@ -2455,7 +2441,6 @@
 				E9CD53851993C29800206B75 /* FLAnimatedImage.m in Sources */,
 				45D9FAB71A781AFD00D08577 /* JSQMessagesCollectionViewFlowLayoutInvalidationContext.m in Sources */,
 				45D9FBBD1A80043000D08577 /* UIImage+ImageEffects.m in Sources */,
-				E96EF677197DC94100F88A6D /* FollowRequestsViewController.m in Sources */,
 				45D9FAE71A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.m in Sources */,
 				45D9FAAF1A781AFD00D08577 /* JSQMessagesMediaViewBubbleImageMasker.m in Sources */,
 				C12A110F19787BE700D53B1C /* UIButtonUngoOut.m in Sources */,
@@ -2586,7 +2571,6 @@
 				45D9FABA1A781AFD00D08577 /* JSQLocationMediaItem.m in Sources */,
 				45D9FAAC1A781AFD00D08577 /* JSQMessagesBubbleImageFactory.m in Sources */,
 				E96F07BF19BA654600E858D7 /* GKImageCropOverlayView.m in Sources */,
-				E96EF676197DC94100F88A6D /* FollowRequestsViewController.m in Sources */,
 				E9EA951819E9F9C6003C79F0 /* CSStickyHeaderFlowLayout.m in Sources */,
 				E9096D6D1ADD79CE00386AC2 /* WGSwitchView.m in Sources */,
 				E9E6A568199917BE003B590C /* OnboardFollowViewController.m in Sources */,
