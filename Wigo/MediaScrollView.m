@@ -390,7 +390,7 @@
     self.filenameString = [NSString stringWithFormat:@"%@.jpg", [myNumber stringValue]];
 }
 
-- (void)mediaPickerController:(UIImagePickerController *)controller
+- (void)mediaPickerController:(WGCameraViewController *)controller
        startUploadingWithInfo:(NSDictionary *)info {
     self.filenameString = [self.filenameString substringWithRange:NSMakeRange(0, self.filenameString.length - 4)];
     
@@ -480,47 +480,10 @@
 }
 
 - (NSData *)getImageDataFromImage:(UIImage *)image
-                    andController:(UIImagePickerController *)controller
+                    andController:(WGCameraViewController *)controller
                        isTemplate:(BOOL)isTemplate{
     
     return UIImageJPEGRepresentation(image, WGProfile.currentUser.imageQuality);
-//    CGFloat imageWidth = image.size.height * 1.0; // because the image is rotated
-//    CGFloat imageHeight = image.size.width * 1.0; // because the image is rotated
-//    
-//    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
-//    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-//    
-//    CGFloat ratio = imageWidth/screenHeight; // approximately 4.0
-//    CGFloat cropWidth = screenHeight * ratio;
-//    CGFloat cropHeight = screenWidth * ratio;
-//    
-//    CGFloat jpegQuality = WGProfile.currentUser.imageQuality;
-//    CGFloat imageMultiple = WGProfile.currentUser.imageMultiple;
-//    
-//    CGFloat translation = (imageHeight - cropHeight) / 2.0;
-//    
-//    UIImage *flippedImage;
-//    if (!isTemplate) {
-//        UIImage *croppedImage = [image croppedImage:CGRectMake(0, translation, cropWidth, cropHeight)];
-//        UIImage *scaledImage = [croppedImage resizedImage:CGSizeMake(screenHeight*imageMultiple, screenWidth*imageMultiple) interpolationQuality:kCGInterpolationHigh];
-//        flippedImage = scaledImage;
-//        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
-//            flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
-//                                               scale:scaledImage.scale
-//                                         orientation:UIImageOrientationLeftMirrored];
-//        }
-//    }
-//    else {
-////        UIImage *scaledImage = [image resizedImage:CGSizeMake(screenWidth*imageMultiple, screenHeight*imageMultiple) interpolationQuality:kCGInterpolationHigh];
-//        flippedImage = image;
-////        if (controller.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
-////            flippedImage = [UIImage imageWithCGImage:[scaledImage CGImage]
-////                                               scale:scaledImage.scale
-////                                         orientation:UIImageOrientationLeftMirrored];
-////        }
-//    }
-//    
-//    return UIImageJPEGRepresentation(flippedImage, jpegQuality);
 
 }
 
@@ -2081,7 +2044,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
         self.previewImageView.hidden = NO;
         self.previewImageView.userInteractionEnabled = YES;
         self.previewImageView.image = newImage;
-        [self.mediaScrollDelegate mediaPickerController:self.controller
+        [self.mediaScrollDelegate mediaPickerController:self.cameraController
                                  startUploadingWithInfo:self.info];
     }
 }
@@ -2096,7 +2059,7 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
                            if(thumbnailImage) {
                                self.info[kThumbnailImageKey] = thumbnailImage;
                            
-                           [self.mediaScrollDelegate mediaPickerController:self.controller
+                           [self.mediaScrollDelegate mediaPickerController:self.cameraController
                                                     startUploadingWithInfo:self.info];
                            }
                            else {
