@@ -913,7 +913,7 @@ BOOL firstTimeLoading;
         if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
             NSNumber *eventId = userInfo[@"events"];
             
-            [self scrollToEventId:eventId updateEventsOnFail:YES completion:NULL];
+            [self scrollToEventId:eventId updateEventsOnFail:YES completion:^(BOOL success, NSError *error) {}];
         }
         else {
             [self scrollToTop];
