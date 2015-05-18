@@ -49,16 +49,15 @@
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc] init];
     [barItem setCustomView:barBt];
     self.navigationItem.leftBarButtonItem = barItem;
-
 }
 
-- (void) viewDidAppear:(BOOL)animated {
+-(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [WGAnalytics tagView:@"new_chat"];
+    [self.tableView reloadData];
 }
 
-
-- (void) goBack {
+-(void) goBack {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -259,7 +258,6 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void) setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [MessageCell height]);
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
     self.contentView.frame = self.frame;
     self.contentView.backgroundColor = UIColor.whiteColor;
     
