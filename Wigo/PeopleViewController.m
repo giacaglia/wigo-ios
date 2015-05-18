@@ -69,6 +69,7 @@ NSIndexPath *userIndex;
         [WGAnalytics tagView:@"friends"];
     }
     self.title = self.user.firstName;
+    [self initializeTitleView];
     [self initializeRightBarButton];
     didProfileSegue = NO;
     userIndex = [NSIndexPath indexPathForRow:-1 inSection:1];
@@ -78,6 +79,7 @@ NSIndexPath *userIndex;
     [super viewDidAppear:animated];
     self.navigationItem.titleView.tintColor = UIColor.whiteColor;
     self.title = self.user.firstName;
+    [self initializeTitleView];
     [self initializeRightBarButton];
 
 }
@@ -96,6 +98,17 @@ NSIndexPath *userIndex;
     [super viewDidDisappear:animated];
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
+}
+
+-(void) initializeTitleView {
+    if ([self.currentTab isEqual:@2]) {
+        UILabel *discoverLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+        discoverLabel.text = @"Discover";
+        discoverLabel.font = [FontProperties mediumFont:18.0f];
+        discoverLabel.textAlignment = NSTextAlignmentCenter;
+        discoverLabel.textColor = UIColor.whiteColor;
+        self.tabBarController.navigationItem.titleView = discoverLabel;
+    }
 }
 
 - (void)initializeBackBarButton {
