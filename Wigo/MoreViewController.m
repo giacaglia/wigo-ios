@@ -10,48 +10,67 @@
 #import "Globals.h"
 
 
-UIButton *unfollowButton;
+UIButton *unfriendButton;
 UIButton *blockButton;
 UIButton *cancelButton;
+UIView *grayView;
+float heighBkgButtonsView;
 
 @implementation MoreViewController
 
 -(void) viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = UIColor.clearColor;
+    
+    self.bgView = [[UIView alloc] initWithFrame:self.view.frame];
+    self.bgView.backgroundColor = RGBAlpha(74, 74, 74, 0.6f);
+    self.bgView.alpha = 0.0f;
+    [self.view addSubview:self.bgView];
+    [self.view sendSubviewToBack:self.bgView];
+    
+    if (self.user.state == FRIEND_USER_STATE)
+        heighBkgButtonsView = 3*68 +2*6 + 7;
+    else
+        heighBkgButtonsView = 2*68 + 2*6 + 7;
+    grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, heighBkgButtonsView)];
+    grayView.backgroundColor = RGB(247, 247, 247);
+    [self.view addSubview:grayView];
 
+    
+    int yPosition = 7;
     if (self.user.state == FRIEND_USER_STATE) {
-        unfollowButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60 - 2*54, self.view.frame.size.width - 70, 42)];
-        unfollowButton.backgroundColor = RGB(246, 143, 30);
-        [unfollowButton setTitle:@"UNFRIEND" forState:UIControlStateNormal];
-        [unfollowButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        unfollowButton.titleLabel.font = [FontProperties getTitleFont];
-        unfollowButton.layer.borderWidth = 1;
-        unfollowButton.layer.borderColor = [UIColor clearColor].CGColor;
-        [unfollowButton addTarget:self action:@selector(unfollowPressed) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:unfollowButton];
+        unfriendButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68)];
+        unfriendButton.backgroundColor = UIColor.whiteColor;
+        [unfriendButton setTitle:@"UNFRIEND" forState:UIControlStateNormal];
+        [unfriendButton setTitleColor:RGB(236, 61, 83) forState:UIControlStateNormal];
+        unfriendButton.titleLabel.font = [FontProperties getTitleFont];
+        unfriendButton.layer.borderColor = RGB(177, 177, 177).CGColor;
+        unfriendButton.layer.borderWidth = 0.5f;
+        [unfriendButton addTarget:self action:@selector(unfriendPressed) forControlEvents:UIControlEventTouchUpInside];
+        [grayView addSubview:unfriendButton];
+        yPosition += 68 + 1;
     }
     
-    blockButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60 - 54, self.view.frame.size.width - 70, 42)];
-    blockButton.backgroundColor = [UIColor redColor];
+    blockButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68)];
+    blockButton.backgroundColor = UIColor.whiteColor;
     [blockButton addTarget:self action:@selector(blockButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    [blockButton setTitle:@"BLOCK/REPORT" forState:UIControlStateNormal];
-    [blockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [blockButton setTitle:@"BLOCK or REPORT" forState:UIControlStateNormal];
+    [blockButton setTitleColor:RGB(236, 61, 83) forState:UIControlStateNormal];
     blockButton.titleLabel.font = [FontProperties getTitleFont];
-    blockButton.layer.borderWidth = 0.5;
-    blockButton.layer.borderColor = UIColor.clearColor.CGColor;
-    [self.view addSubview:blockButton];
+    blockButton.layer.borderColor = RGB(177, 177, 177).CGColor;
+    blockButton.layer.borderWidth = 0.5f;
+    [grayView addSubview:blockButton];
+    yPosition += 68 + 7;
 
-    cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60, self.view.frame.size.width - 70, 42)];
-    cancelButton.backgroundColor = UIColor.clearColor;
+    cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68)];
+    cancelButton.backgroundColor = UIColor.whiteColor;
     [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
-    [cancelButton setTitleColor:RGB(214, 45, 58) forState:UIControlStateNormal];
+    [cancelButton setTitleColor:RGB(74, 74, 74) forState:UIControlStateNormal];
     cancelButton.titleLabel.font = [FontProperties getTitleFont];
-    cancelButton.layer.borderColor = RGB(214, 45, 58).CGColor;
-    cancelButton.layer.borderWidth = 0.5;
-    [self.view addSubview:cancelButton];
+    cancelButton.layer.borderColor = RGB(177, 177, 177).CGColor;
+    cancelButton.layer.borderWidth = 0.5f;
+    [grayView addSubview:cancelButton];
 }
 
 
@@ -62,8 +81,10 @@ UIButton *cancelButton;
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self.view addSubview:self.bgView];
-    [self.view sendSubviewToBack:self.bgView];
+    [UIView animateWithDuration:0.2f animations:^{
+        self.bgView.alpha = 1.0f;
+        grayView.frame = CGRectMake(0, self.view.frame.size.height - heighBkgButtonsView, self.view.frame.size.width, heighBkgButtonsView);
+    }];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -73,13 +94,13 @@ UIButton *cancelButton;
 
 -(void) goBack {
     [UIView animateWithDuration:0.15 animations:^{
-        self.view.alpha = 0.0f;
-    } completion:^(BOOL finished) {
+        self.bgView.alpha = 0.0f;
+        grayView.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, heighBkgButtonsView);    } completion:^(BOOL finished) {
         [self.profileDelegate removeMoreVc];
     }];
 }
 
--(void) unfollowPressed {
+-(void) unfriendPressed {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"unfollowPressed" object:nil userInfo:nil];
     [self goBack];
 }
@@ -94,9 +115,9 @@ UIButton *cancelButton;
 
 - (void)blockButtonPressed {
     [UIView animateWithDuration:1 animations:^(void) {
-        if (unfollowButton) unfollowButton.alpha = 1.0f;
+        if (unfriendButton) unfriendButton.alpha = 1.0f;
     } completion:^(BOOL finished){
-        if (unfollowButton) unfollowButton.alpha = 0.0f;
+        if (unfriendButton) unfriendButton.alpha = 0.0f;
         [self addOptions];
         UIButton *firstBox = (UIButton *)[self.view viewWithTag:1];
         [self checkedBox:firstBox];
@@ -108,40 +129,27 @@ UIButton *cancelButton;
 }
 
 - (void)addOptions {
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = self.view.bounds;
-    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor blackColor] CGColor], (id)[[UIColor clearColor] CGColor], nil];
-    gradient.opacity = 0.5f;
-    [self.view.layer insertSublayer:gradient atIndex:0];
-    
-    CAGradientLayer *newGradient = [CAGradientLayer layer];
-    newGradient.frame = self.view.bounds;
-    newGradient.colors = [NSArray arrayWithObjects:(id)[[UIColor clearColor] CGColor], (id)[[UIColor blackColor] CGColor], nil];
-    newGradient.opacity = 0.5f;
-    [self.view.layer insertSublayer:newGradient atIndex:0];
-    
-    UILabel *blockLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 20, self.view.frame.size.width - 30, 60)];
-    blockLabel.text = [NSString stringWithFormat:@"Block %@", self.user.fullName];
-    blockLabel.textColor = [UIColor whiteColor];
+    [UIView animateWithDuration:0.15f animations:^{
+        self.bgView.backgroundColor = RGBAlpha(0, 0, 0, 0.8f);
+
+    }];
+    heighBkgButtonsView = 2*68 + 2*6 + 7;
+    grayView.frame = CGRectMake(0, self.view.frame.size.height - heighBkgButtonsView, self.view.frame.size.width, heighBkgButtonsView);
+
+
+    UILabel *blockLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 40, self.view.frame.size.width - 30, 60)];
+    blockLabel.text = [NSString stringWithFormat:@"Why do you want to\nblock %@?", self.user.firstName];
+    blockLabel.textColor = UIColor.whiteColor;
+    blockLabel.numberOfLines = 0;
+    blockLabel.lineBreakMode = NSLineBreakByWordWrapping;
     blockLabel.textAlignment = NSTextAlignmentCenter;
     blockLabel.font = [FontProperties mediumFont:24.0f];
-    blockLabel.layer.shadowColor = [UIColor blackColor].CGColor;
-    blockLabel.layer.shadowOffset = CGSizeMake(0.0, 0.0);
     [self.view addSubview:blockLabel];
     
-    UILabel *whyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 80, self.view.frame.size.width - 30, 40)];
-    whyLabel.text = @"Why?";
-    whyLabel.textColor = [UIColor whiteColor];
-    whyLabel.textAlignment = NSTextAlignmentCenter;
-    whyLabel.font = [FontProperties mediumFont:20.0f];
-    [self.view addSubview:whyLabel];
-    
     [blockButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
-    blockButton.backgroundColor = [FontProperties getOrangeColor];
     blockButton.tag = 10;
     [blockButton removeTarget:self action:@selector(blockButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [blockButton addTarget:self action:@selector(submitBlockPressed) forControlEvents:UIControlEventTouchUpInside];
-    [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
    
     [self addCheckBoxWithTag:1 atYPosition:220];
     [self addLabelWithText:[NSString stringWithFormat:@"%@ is just annoying to me", self.user.firstName]
@@ -150,7 +158,7 @@ UIButton *cancelButton;
     
  
     [self addCheckBoxWithTag:5 atYPosition:290];
-    [self addLabelWithText:[NSString stringWithFormat:@"%@ is abusive and should be banned for all users", self.user.firstName] andTag:5
+    [self addLabelWithText:[NSString stringWithFormat:@"%@ is abusive and should be banned from Wigo", self.user.firstName] andTag:5
                atYPosition:290 - 15];
 }
 
@@ -159,7 +167,7 @@ UIButton *cancelButton;
     checkBox.layer.cornerRadius = 5;
     checkBox.layer.borderWidth = 2;
     checkBox.layer.cornerRadius = 20;
-    checkBox.layer.borderColor = [UIColor whiteColor].CGColor;
+    checkBox.layer.borderColor = UIColor.whiteColor.CGColor;
     checkBox.tag = tag;
     [checkBox addTarget:self
                  action:@selector(checkedBox:)
@@ -173,7 +181,7 @@ UIButton *cancelButton;
     [labelButton addTarget:self action:@selector(pressedCheckBox:) forControlEvents:UIControlEventTouchUpInside];
     UILabel *labelText = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 15 - 70, 70)];
     labelText.text = text;
-    labelText.textColor = [UIColor whiteColor];
+    labelText.textColor = UIColor.whiteColor;
     labelText.font = [FontProperties getSmallFont];
     labelText.textAlignment = NSTextAlignmentLeft;
     labelText.tag = tag + 1;
@@ -197,20 +205,16 @@ UIButton *cancelButton;
         int index = 2*i - 1;
         if (index != tag) {
             UIButton *button = (UIButton *)[self.view viewWithTag:index];
-            button.layer.borderColor = [UIColor whiteColor].CGColor;
+            button.layer.borderColor = UIColor.whiteColor.CGColor;
             [[button subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
             UILabel *labelText =  (UILabel*)[self.view viewWithTag:(index + 1)];
-            labelText.textColor = [UIColor whiteColor];
+            labelText.textColor = UIColor.whiteColor;
         }
     }
-    buttonSender.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    buttonSender.layer.borderColor = UIColor.whiteColor.CGColor;
     UIImageView *checkMarkImageView = [[UIImageView alloc] initWithFrame:CGRectMake(buttonSender.frame.size.width/2 - 10, buttonSender.frame.size.width/2 - 10, 20, 20)];
     checkMarkImageView.image = [UIImage imageNamed:@"checkmark"];
     [buttonSender addSubview:checkMarkImageView];
-    
-    UILabel *textLabel = (UILabel *)[self.view viewWithTag:(tag + 1)];
-    textLabel.textColor = [FontProperties getOrangeColor];
-
 }
 
 @end
