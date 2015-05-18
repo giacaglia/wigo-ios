@@ -129,8 +129,10 @@ float heighBkgButtonsView;
 }
 
 - (void)addOptions {
+    self.bgView.backgroundColor = RGBAlpha(0, 0, 0, 0.8f);
+
     UILabel *blockLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 20, self.view.frame.size.width - 30, 60)];
-    blockLabel.text = [NSString stringWithFormat:@"Why do you want to\nblock %@", self.user.fullName];
+    blockLabel.text = [NSString stringWithFormat:@"Why do you want to\nblock %@", self.user.firstName];
     blockLabel.textColor = UIColor.whiteColor;
     blockLabel.textAlignment = NSTextAlignmentCenter;
     blockLabel.font = [FontProperties mediumFont:24.0f];
