@@ -31,9 +31,15 @@
 
 - (void)addInviteButton {
     self.hiddenInviteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
-    UIImageView *inviteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
-    inviteImageView.image = [UIImage imageNamed:@"inviteButton"];
-    [self.hiddenInviteButton addSubview:inviteImageView];
+    self.hiddenInviteButton.layer.cornerRadius = self.widthOfEachCell/2;
+    self.hiddenInviteButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
+    self.hiddenInviteButton.layer.borderWidth = 1.0f;
+    UILabel *imgViewLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.widthOfEachCell, self.widthOfEachCell)];
+    imgViewLabel.text = @"INVITE";
+    imgViewLabel.font = [FontProperties mediumFont:12.0f];
+    imgViewLabel.textColor = [FontProperties getBlueColor];
+    imgViewLabel.textAlignment = NSTextAlignmentCenter;
+    [self.hiddenInviteButton addSubview:imgViewLabel];
     
     self.hiddenInviteButton.hidden = YES;
     self.hiddenInviteButton.transform = CGAffineTransformMakeScale(0.2f, 0.2f);

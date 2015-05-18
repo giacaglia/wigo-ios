@@ -1054,7 +1054,6 @@ BOOL firstTimeLoading;
         });
        
     }];
-    NSLog(@"indeX: %ld", (long)buttonSender.tag);
     [self.placesTableView beginUpdates];
     [self.placesTableView moveRowAtIndexPath:[NSIndexPath indexPathForItem:buttonSender.tag inSection:0] toIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
     [self.placesTableView endUpdates];
