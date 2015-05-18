@@ -2155,7 +2155,6 @@
 						DevelopmentTeam = BJ73CT9B84;
 					};
 					E921D6111923967D00361247 = {
-						DevelopmentTeam = BJ73CT9B84;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
 								enabled = 0;
