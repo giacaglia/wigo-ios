@@ -130,27 +130,16 @@ float heighBkgButtonsView;
 
 - (void)addOptions {
     UILabel *blockLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 20, self.view.frame.size.width - 30, 60)];
-    blockLabel.text = [NSString stringWithFormat:@"Block %@", self.user.fullName];
-    blockLabel.textColor = [UIColor whiteColor];
+    blockLabel.text = [NSString stringWithFormat:@"Why do you want to\nblock %@", self.user.fullName];
+    blockLabel.textColor = UIColor.whiteColor;
     blockLabel.textAlignment = NSTextAlignmentCenter;
     blockLabel.font = [FontProperties mediumFont:24.0f];
-    blockLabel.layer.shadowColor = [UIColor blackColor].CGColor;
-    blockLabel.layer.shadowOffset = CGSizeMake(0.0, 0.0);
     [self.view addSubview:blockLabel];
     
-    UILabel *whyLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 80, self.view.frame.size.width - 30, 40)];
-    whyLabel.text = @"Why?";
-    whyLabel.textColor = [UIColor whiteColor];
-    whyLabel.textAlignment = NSTextAlignmentCenter;
-    whyLabel.font = [FontProperties mediumFont:20.0f];
-    [self.view addSubview:whyLabel];
-    
     [blockButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
-    blockButton.backgroundColor = [FontProperties getOrangeColor];
     blockButton.tag = 10;
     [blockButton removeTarget:self action:@selector(blockButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [blockButton addTarget:self action:@selector(submitBlockPressed) forControlEvents:UIControlEventTouchUpInside];
-    [cancelButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
    
     [self addCheckBoxWithTag:1 atYPosition:220];
     [self addLabelWithText:[NSString stringWithFormat:@"%@ is just annoying to me", self.user.firstName]
@@ -159,7 +148,7 @@ float heighBkgButtonsView;
     
  
     [self addCheckBoxWithTag:5 atYPosition:290];
-    [self addLabelWithText:[NSString stringWithFormat:@"%@ is abusive and should be banned for all users", self.user.firstName] andTag:5
+    [self addLabelWithText:[NSString stringWithFormat:@"%@ is abusive and should be banned from Wigo", self.user.firstName] andTag:5
                atYPosition:290 - 15];
 }
 
@@ -168,7 +157,7 @@ float heighBkgButtonsView;
     checkBox.layer.cornerRadius = 5;
     checkBox.layer.borderWidth = 2;
     checkBox.layer.cornerRadius = 20;
-    checkBox.layer.borderColor = [UIColor whiteColor].CGColor;
+    checkBox.layer.borderColor = UIColor.whiteColor.CGColor;
     checkBox.tag = tag;
     [checkBox addTarget:self
                  action:@selector(checkedBox:)
@@ -182,7 +171,7 @@ float heighBkgButtonsView;
     [labelButton addTarget:self action:@selector(pressedCheckBox:) forControlEvents:UIControlEventTouchUpInside];
     UILabel *labelText = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width - 15 - 70, 70)];
     labelText.text = text;
-    labelText.textColor = [UIColor whiteColor];
+    labelText.textColor = UIColor.whiteColor;
     labelText.font = [FontProperties getSmallFont];
     labelText.textAlignment = NSTextAlignmentLeft;
     labelText.tag = tag + 1;
@@ -206,20 +195,16 @@ float heighBkgButtonsView;
         int index = 2*i - 1;
         if (index != tag) {
             UIButton *button = (UIButton *)[self.view viewWithTag:index];
-            button.layer.borderColor = [UIColor whiteColor].CGColor;
+            button.layer.borderColor = UIColor.whiteColor.CGColor;
             [[button subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
             UILabel *labelText =  (UILabel*)[self.view viewWithTag:(index + 1)];
-            labelText.textColor = [UIColor whiteColor];
+            labelText.textColor = UIColor.whiteColor;
         }
     }
-    buttonSender.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+    buttonSender.layer.borderColor = UIColor.whiteColor.CGColor;
     UIImageView *checkMarkImageView = [[UIImageView alloc] initWithFrame:CGRectMake(buttonSender.frame.size.width/2 - 10, buttonSender.frame.size.width/2 - 10, 20, 20)];
     checkMarkImageView.image = [UIImage imageNamed:@"checkmark"];
     [buttonSender addSubview:checkMarkImageView];
-    
-    UILabel *textLabel = (UILabel *)[self.view viewWithTag:(tag + 1)];
-    textLabel.textColor = [FontProperties getOrangeColor];
-
 }
 
 @end
