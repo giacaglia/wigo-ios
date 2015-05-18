@@ -570,6 +570,7 @@ BOOL blockShown;
     _chatButton.hidden = YES;
     _followButton.hidden = YES;
     _followButton.hidden = YES;
+    _followButton.enabled = YES;
     _followButton.layer.cornerRadius = 0.0f;
     [_followButton setImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [_followButton setTitle:nil forState:UIControlStateNormal];
@@ -595,6 +596,7 @@ BOOL blockShown;
     else if (self.userState == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
         _rightBarBt.hidden = NO;
         _followButton.hidden = NO;
+        _followButton.enabled = NO;
         [_followButton setImage:nil forState:UIControlStateNormal];
         [_followButton setTitle:@"Pending" forState:UIControlStateNormal];
         [_followButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];

@@ -85,7 +85,6 @@
     [self.navigationController pushViewController:[MessageViewController new] animated:YES];
 }
 
-
 - (void)initializeNewChatButton {
     self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(40, self.view.frame.size.height/2 - 20, self.view.frame.size.width - 2*40, 40)];
     [self.chatButton addTarget:self action:@selector(writeMessage) forControlEvents:UIControlEventTouchUpInside];

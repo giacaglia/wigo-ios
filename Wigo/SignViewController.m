@@ -86,9 +86,11 @@
     if (![FBSDKAccessToken currentAccessToken]) return;
     [WGSpinnerView addDancingGToCenterView:self.view];
     self.accessToken = [FBSDKAccessToken currentAccessToken].tokenString;
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/" parameters:nil]
      startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
          [WGSpinnerView removeDancingGFromCenterView:self.view];
+         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
          if (!error) {
              WGProfile.currentUser.email = result[@"email"];
              self.fbID = result[@"id"];
@@ -109,11 +111,13 @@
     if (!profilePictures) return;
     WGProfile.currentUser.images = profilePictures;
     self.fetchingProfilePictures = NO;
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     [WGSpinnerView addDancingGToCenterView:self.view];
     self.properties = WGProfile.currentUser.properties;
     __weak typeof(self) weakSelf = self;
     [WGProfile.currentUser signup:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
@@ -238,14 +242,18 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     WGProfile.currentUser.facebookId = self.fbID;
     WGProfile.currentUser.facebookAccessToken = self.accessToken;
     [WGSpinnerView addDancingGToCenterView:self.view];
+    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     __weak typeof(self) weakSelf = self;
     [WGProfile.currentUser login:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
+        [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         if (error) {
             if ([error.localizedDescription isEqual:@"Request failed: not found (404)"]) {
+                [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
                 [WGSpinnerView addDancingGToCenterView:strongSelf.view];
                 [FacebookHelper fetchProfilePicturesWithHandler:^(NSArray *imagesArray, BOOL success) {
+                    [[UIApplication sharedApplication] endIgnoringInteractionEvents];
                     [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
                     strongSelf.fetchingProfilePictures = NO;
                     [strongSelf signUpWithImages:imagesArray];

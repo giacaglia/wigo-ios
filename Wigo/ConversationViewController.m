@@ -22,7 +22,6 @@
 JSQMessagesBubbleImageFactory *bubbleFactory;
 JSQMessagesBubbleImage *orangeBubble;
 JSQMessagesBubbleImage *grayBubble;
-ProfileViewController *profileViewController;
 
 @implementation ConversationViewController
 
@@ -247,9 +246,10 @@ ProfileViewController *profileViewController;
 
 - (void)showUser {
     ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    self.user.isFriend = @YES;
     profileViewController.user = self.user;
     
-    self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
+    self.navigationController.navigationBar.barTintColor = UIColor.clearColor;
     self.navigationController.navigationBar.translucent = YES;
     
     [self.navigationController pushViewController:profileViewController animated:YES];
