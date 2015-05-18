@@ -268,18 +268,13 @@ ProfileViewController *profileViewController;
     message.created = date;
     message.toUser = self.user;
     message.user = WGProfile.currentUser;
-    __weak typeof(self) weakSelf = self;
     [message sendMessage:^(WGMessage *newMessage, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
-            [strongSelf.messages removeObject:message];
             [[WGError sharedInstance] logError:error forAction:WGActionPost];
             return;
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             WGProfile.currentUser.lastMessageRead = newMessage.created;
-            [strongSelf.collectionView reloadData];
-            [strongSelf scrollToBottomAnimated:YES];
         });
     }];
     
