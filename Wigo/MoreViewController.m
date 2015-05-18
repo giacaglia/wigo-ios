@@ -10,7 +10,7 @@
 #import "Globals.h"
 
 
-UIButton *unfollowButton;
+UIButton *unfriendButton;
 UIButton *blockButton;
 UIButton *cancelButton;
 
@@ -19,38 +19,46 @@ UIButton *cancelButton;
 -(void) viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = UIColor.clearColor;
+    
+    float heighBkgButtonsView;
+    if (self.user.state == FRIEND_USER_STATE)
+        heighBkgButtonsView = 3*68 +2*6 + 7;
+    else
+        heighBkgButtonsView = 2*68 + 2*6 + 7;
+    UIView *bkgButtonsView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - heighBkgButtonsView, self.view.frame.size.width, heighBkgButtonsView)];
+    bkgButtonsView.backgroundColor = RGB(247, 247, 247);
+    [self.view addSubview:bkgButtonsView];
 
     if (self.user.state == FRIEND_USER_STATE) {
-        unfollowButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60 - 2*54, self.view.frame.size.width - 70, 42)];
-        unfollowButton.backgroundColor = RGB(246, 143, 30);
-        [unfollowButton setTitle:@"UNFRIEND" forState:UIControlStateNormal];
-        [unfollowButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        unfollowButton.titleLabel.font = [FontProperties getTitleFont];
-        unfollowButton.layer.borderWidth = 1;
-        unfollowButton.layer.borderColor = [UIColor clearColor].CGColor;
-        [unfollowButton addTarget:self action:@selector(unfollowPressed) forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:unfollowButton];
+        unfriendButton = [[UIButton alloc] initWithFrame:CGRectMake(6, self.view.frame.size.height - 3*68 - 6 - 7 - 1, self.view.frame.size.width - 12, 68)];
+        unfriendButton.backgroundColor = UIColor.whiteColor;
+        [unfriendButton setTitle:@"UNFRIEND" forState:UIControlStateNormal];
+        [unfriendButton setTitleColor:RGB(236, 61, 83) forState:UIControlStateNormal];
+        unfriendButton.titleLabel.font = [FontProperties getTitleFont];
+        unfriendButton.layer.borderColor = RGB(177, 177, 177).CGColor;
+        unfriendButton.layer.borderWidth = 1.0f;
+        [unfriendButton addTarget:self action:@selector(unfriendPressed) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:unfriendButton];
     }
     
-    blockButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60 - 54, self.view.frame.size.width - 70, 42)];
-    blockButton.backgroundColor = [UIColor redColor];
+    blockButton = [[UIButton alloc] initWithFrame:CGRectMake(6, self.view.frame.size.height - 2*68 - 6 - 7, self.view.frame.size.width - 12, 68)];
+    blockButton.backgroundColor = UIColor.whiteColor;
     [blockButton addTarget:self action:@selector(blockButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    [blockButton setTitle:@"BLOCK/REPORT" forState:UIControlStateNormal];
-    [blockButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [blockButton setTitle:@"BLOCK or REPORT" forState:UIControlStateNormal];
+    [blockButton setTitleColor:RGB(236, 61, 83) forState:UIControlStateNormal];
     blockButton.titleLabel.font = [FontProperties getTitleFont];
-    blockButton.layer.borderWidth = 0.5;
-    blockButton.layer.borderColor = UIColor.clearColor.CGColor;
+    blockButton.layer.borderColor = RGB(177, 177, 177).CGColor;
+    blockButton.layer.borderWidth = 1.0f;
     [self.view addSubview:blockButton];
 
-    cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, self.view.frame.size.height - 60, self.view.frame.size.width - 70, 42)];
-    cancelButton.backgroundColor = UIColor.clearColor;
+    cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(6, self.view.frame.size.height - 68 - 6, self.view.frame.size.width - 12, 68)];
+    cancelButton.backgroundColor = UIColor.whiteColor;
     [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
-    [cancelButton setTitleColor:RGB(214, 45, 58) forState:UIControlStateNormal];
+    [cancelButton setTitleColor:RGB(74, 74, 74) forState:UIControlStateNormal];
     cancelButton.titleLabel.font = [FontProperties getTitleFont];
-    cancelButton.layer.borderColor = RGB(214, 45, 58).CGColor;
-    cancelButton.layer.borderWidth = 0.5;
+    cancelButton.layer.borderColor = RGB(177, 177, 177).CGColor;
+    cancelButton.layer.borderWidth = 1.0f;
     [self.view addSubview:cancelButton];
 }
 
@@ -79,7 +87,7 @@ UIButton *cancelButton;
     }];
 }
 
--(void) unfollowPressed {
+-(void) unfriendPressed {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"unfollowPressed" object:nil userInfo:nil];
     [self goBack];
 }
@@ -94,9 +102,9 @@ UIButton *cancelButton;
 
 - (void)blockButtonPressed {
     [UIView animateWithDuration:1 animations:^(void) {
-        if (unfollowButton) unfollowButton.alpha = 1.0f;
+        if (unfriendButton) unfriendButton.alpha = 1.0f;
     } completion:^(BOOL finished){
-        if (unfollowButton) unfollowButton.alpha = 0.0f;
+        if (unfriendButton) unfriendButton.alpha = 0.0f;
         [self addOptions];
         UIButton *firstBox = (UIButton *)[self.view viewWithTag:1];
         [self checkedBox:firstBox];
@@ -108,18 +116,6 @@ UIButton *cancelButton;
 }
 
 - (void)addOptions {
-    CAGradientLayer *gradient = [CAGradientLayer layer];
-    gradient.frame = self.view.bounds;
-    gradient.colors = [NSArray arrayWithObjects:(id)[[UIColor blackColor] CGColor], (id)[[UIColor clearColor] CGColor], nil];
-    gradient.opacity = 0.5f;
-    [self.view.layer insertSublayer:gradient atIndex:0];
-    
-    CAGradientLayer *newGradient = [CAGradientLayer layer];
-    newGradient.frame = self.view.bounds;
-    newGradient.colors = [NSArray arrayWithObjects:(id)[[UIColor clearColor] CGColor], (id)[[UIColor blackColor] CGColor], nil];
-    newGradient.opacity = 0.5f;
-    [self.view.layer insertSublayer:newGradient atIndex:0];
-    
     UILabel *blockLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 20, self.view.frame.size.width - 30, 60)];
     blockLabel.text = [NSString stringWithFormat:@"Block %@", self.user.fullName];
     blockLabel.textColor = [UIColor whiteColor];

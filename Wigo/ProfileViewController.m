@@ -290,15 +290,16 @@ BOOL blockShown;
 }
 
 -(void) morePressed {
-    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    visualEffectView.frame = self.view.bounds;
-//    self.navigationController.navigationBar.alpha = 0.0f;
+//    UIVisualEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+//    UIVisualEffectView *visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+//    visualEffectView.frame = self.view.bounds;
+    UIView *blackOverlayView = [[UIView alloc] initWithFrame:self.view.frame];
+    blackOverlayView.backgroundColor = RGBAlpha(74, 74, 74, 0.6f);
     self.moreVc = [MoreViewController new];
     self.moreVc.user = self.user;
     self.moreVc.profileDelegate = self;
     self.moreVc.view.alpha = 0.0f;
-    self.moreVc.bgView = visualEffectView;
+    self.moreVc.bgView = blackOverlayView;
     [self addChildViewController:self.moreVc];
     [self.view addSubview:self.moreVc.view];
     [UIView animateWithDuration:0.3 animations:^{
