@@ -453,6 +453,13 @@ static CGContextRef CreateCGBitmapContextForSize(CGSize size)
               NSData *jpegData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
               UIImage *ret = [[UIImage alloc] initWithData:jpegData];
               
+              if(self.isUsingFrontFacingCamera) {
+                  
+                  ret = [UIImage imageWithCGImage:[ret CGImage]
+                                              scale:ret.scale
+                                        orientation:UIImageOrientationLeftMirrored];
+              }
+              
               CFDictionaryRef attachmentsCF = CMCopyDictionaryOfAttachments(kCFAllocatorDefault,
                                                                           imageDataSampleBuffer,
                                                                           kCMAttachmentMode_ShouldPropagate);

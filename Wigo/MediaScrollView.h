@@ -34,7 +34,7 @@
 
 - (void)updateEventMessage:(WGEventMessage *)eventMessage forCell:(UICollectionViewCell *)cell;
 - (void)dismissView;
-- (void)mediaPickerController:(UIImagePickerController *)controller
+- (void)mediaPickerController:(WGCameraViewController *)controller
        startUploadingWithInfo:(NSDictionary *)info;
 - (void)mediaPickerController:(UIImagePickerController *)controller
        didFinishMediaWithInfo:(NSDictionary *)info;
