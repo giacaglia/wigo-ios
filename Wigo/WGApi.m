@@ -202,6 +202,10 @@ withParameters:(id)parameters
         NSString *contentLength = [NSString stringWithFormat:@"%lu", (unsigned long) jsonData.length];
         [request addValue:contentLength forHTTPHeaderField:kContentLengthKey];
     }
+    
+    BOOL shouldPassKey = [url rangeOfString:@"key="].location != NSNotFound;
+    [WGApi addWigoHeaders:request passKey:shouldPassKey];
+
    
     [request setHTTPMethod:kDELETE];
 

@@ -80,6 +80,7 @@ UIButton *cancelButton;
 }
 
 -(void) unfollowPressed {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"unfollowPressed" object:nil userInfo:nil];
     [self goBack];
 }
 
