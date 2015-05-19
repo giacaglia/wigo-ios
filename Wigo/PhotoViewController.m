@@ -8,7 +8,6 @@
 
 #import "PhotoViewController.h"
 #import "Globals.h"
-#import "RWBlurPopover.h"
 #import "GKImageCropViewController.h"
 
 @interface PhotoViewController ()<GKImageCropControllerDelegate>
@@ -32,48 +31,81 @@
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.clearColor;
 
-    
-    _photoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, [[UIScreen mainScreen] bounds].size.height - [[UIScreen mainScreen] bounds].size.width - 184, [[UIScreen mainScreen] bounds].size.width - 70, [[UIScreen mainScreen] bounds].size.width - 70)];
+    self.bgView = [[UIView alloc] initWithFrame:self.view.frame];
+    self.bgView.backgroundColor = RGBAlpha(255, 255, 255, 0.9f);
+    self.bgView.alpha = 0.0f;
+    [self.view addSubview:self.bgView];
+   
+    int yPosition = [UIScreen mainScreen].bounds.size.height - 4*68 - 3*7 - 2*1;
+
+    _photoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, 0, [UIScreen mainScreen].bounds.size.width - 70, [UIScreen mainScreen].bounds.size.width - 70)];
+    _photoImageView.center = CGPointMake(_photoImageView.center.x, yPosition/2);
     _photoImageView.contentMode = UIViewContentModeScaleAspectFill;
+    _photoImageView.layer.borderColor = UIColor.clearColor.CGColor;
+    _photoImageView.layer.borderWidth = 1.0f;
+    _photoImageView.layer.cornerRadius = 7.0f;
     _photoImageView.clipsToBounds = YES;
     [_photoImageView setImageWithURL:[_image objectForKey:@"url"] imageArea:[_image objectForKey:@"crop"]];
-    [self.view addSubview:_photoImageView];
+    [self.bgView addSubview:_photoImageView];
     
-    UIButton *makeCoverButton = [[UIButton alloc] initWithFrame:CGRectMake(35, _photoImageView.frame.origin.y + _photoImageView.frame.size.height + 24, [[UIScreen mainScreen] bounds].size.width - 70, 42)];
-    makeCoverButton.backgroundColor = RGB(246, 143, 30);
-    [makeCoverButton addTarget:self action:@selector(makeCoverPressed) forControlEvents:UIControlEventTouchUpInside];
-    [makeCoverButton setTitle:@"MAKE COVER" forState:UIControlStateNormal];
-    [makeCoverButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    makeCoverButton.titleLabel.font = [FontProperties getTitleFont];
-    [self.view addSubview:makeCoverButton];
+    self.grayView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - yPosition)];
+    self.grayView.backgroundColor = RGB(247, 247, 247);
+    [self.view addSubview:self.grayView];
     
-    UIButton *cropPhotoButton = [[UIButton alloc] initWithFrame:CGRectMake(35, _photoImageView.frame.origin.y + _photoImageView.frame.size.height + 78, [[UIScreen mainScreen] bounds].size.width - 70, 42)];
-    cropPhotoButton.backgroundColor = [FontProperties getBlueColor];
-    [cropPhotoButton addTarget:self action:@selector(cropPhotoPressed) forControlEvents:UIControlEventTouchUpInside];
-    [cropPhotoButton setTitle:@"CROP PHOTO" forState:UIControlStateNormal];
-    [cropPhotoButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    cropPhotoButton.titleLabel.font = [FontProperties getTitleFont];
-    [self.view addSubview:cropPhotoButton];
+    yPosition = 7;
     
-    UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(35, _photoImageView.frame.origin.y + _photoImageView.frame.size.height + 132, [[UIScreen mainScreen] bounds].size.width - 70, 42)];
-    deleteButton.backgroundColor = RGB(214, 45, 58);
+    UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, [UIScreen mainScreen].bounds.size.width - 12, 68)];
+    deleteButton.backgroundColor = UIColor.whiteColor;
     [deleteButton addTarget:self action:@selector(deletePressed) forControlEvents:UIControlEventTouchUpInside];
-    [deleteButton setTitle:@"DELETE" forState:UIControlStateNormal];
-    [deleteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [deleteButton setTitle:@"Delete" forState:UIControlStateNormal];
+    [deleteButton setTitleColor:RGB(236, 61, 83) forState:UIControlStateNormal];
+    deleteButton.layer.borderColor = RGB(177, 177, 177).CGColor;
+    deleteButton.layer.borderWidth = 0.5f;
     deleteButton.titleLabel.font = [FontProperties getTitleFont];
-    [self.view addSubview:deleteButton];
+    [self.grayView addSubview:deleteButton];
+
+    yPosition += 68;
     
-    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(35, _photoImageView.frame.origin.y + _photoImageView.frame.size.height + 186, [[UIScreen mainScreen] bounds].size.width - 70, 42)];
+    UIButton *cropPhotoButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, [UIScreen mainScreen].bounds.size.width - 12, 68)];
+    cropPhotoButton.backgroundColor = UIColor.whiteColor;
+    [cropPhotoButton addTarget:self action:@selector(cropPhotoPressed) forControlEvents:UIControlEventTouchUpInside];
+    [cropPhotoButton setTitle:@"Crop Photo" forState:UIControlStateNormal];
+    [cropPhotoButton setTitleColor:RGB(118, 118, 118) forState:UIControlStateNormal];
+    cropPhotoButton.titleLabel.font = [FontProperties getTitleFont];
+    cropPhotoButton.layer.borderColor = RGB(177, 177, 177).CGColor;
+    cropPhotoButton.layer.borderWidth = 0.5f;
+    [self.grayView addSubview:cropPhotoButton];
+
+    yPosition += 68;
+    
+    UIButton *makeCoverButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, [UIScreen mainScreen].bounds.size.width - 12, 68)];
+    makeCoverButton.backgroundColor = UIColor.whiteColor;
+    [makeCoverButton addTarget:self action:@selector(makeCoverPressed) forControlEvents:UIControlEventTouchUpInside];
+    [makeCoverButton setTitle:@"Make Cover" forState:UIControlStateNormal];
+    [makeCoverButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
+    makeCoverButton.titleLabel.font = [FontProperties getTitleFont];
+    makeCoverButton.layer.borderColor = RGB(177, 177, 177).CGColor;
+    makeCoverButton.layer.borderWidth = 0.5f;
+    [self.grayView addSubview:makeCoverButton];
+
+    yPosition += 68 + 7;
+    
+    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, [UIScreen mainScreen].bounds.size.width - 12, 68)];
     cancelButton.backgroundColor = [UIColor whiteColor];
     [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
-    [cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
-    [cancelButton setTitleColor:RGB(214, 45, 58) forState:UIControlStateNormal];
+    [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+    [cancelButton setTitleColor:RGB(74, 74, 74) forState:UIControlStateNormal];
     cancelButton.titleLabel.font = [FontProperties getTitleFont];
-    cancelButton.layer.borderColor = RGB(214, 45, 58).CGColor;
+    cancelButton.layer.borderColor = RGB(177, 177, 177).CGColor;
     cancelButton.layer.borderWidth = 0.5;
-    [self.view addSubview:cancelButton];
-}
+    [self.grayView addSubview:cancelButton];
 
+    [UIView animateWithDuration:0.15f animations:^{
+        int yPosition = [UIScreen mainScreen].bounds.size.height - 4*68 - 3*7 - 2*1;
+        self.grayView.frame = CGRectMake(0, yPosition, self.view.frame.size.width, self.view.frame.size.height - yPosition);
+        self.bgView.alpha = 1.0f;
+    }];
+}
 
 - (void)cropPhotoPressed {
     UIImageView *tempImageView = [UIImageView new];
@@ -121,14 +153,19 @@
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
-        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
     }];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
+    [self willMoveToParentViewController:nil];
+    [self.view removeFromSuperview];
+    [self removeFromParentViewController];
+
 }
 
 - (void)deletePressed {
     if (WGProfile.currentUser.images.count < 4) {
-        [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+        [self willMoveToParentViewController:nil];
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bummer"
                                                             message:@"You need a minimum of 3 photos"
                                                            delegate:nil
@@ -143,14 +180,19 @@
                 [[WGError sharedInstance] logError:error forAction:WGActionSave];
                 return;
             }
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
-            [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
         }];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
+        [self willMoveToParentViewController:nil];
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+
     }
 }
 
 -(void)cancelPressed {
-    [[RWBlurPopover instance] dismissViewControllerAnimated:YES completion:nil];
+    [self willMoveToParentViewController:nil];
+    [self.view removeFromSuperview];
+    [self removeFromParentViewController];
 }
 
 @end
