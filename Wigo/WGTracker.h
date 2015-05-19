@@ -10,9 +10,9 @@
 #import "Globals.h"
 
 #ifdef DEBUG
-static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo2/dev/track?key=0i9u4r98jfg";
+static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo2/dev/track?key=7efgskg0043kfo";
 #else
-static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo2/production/track?key=0i9u4r98jfg";
+static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo2/production/track?key=7efgskg0043kfo";
 #endif
 
 

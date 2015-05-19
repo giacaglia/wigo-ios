@@ -1667,13 +1667,13 @@ BOOL firstTimeLoading;
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 16.5, self.frame.size.width - 40, 20)];
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 36.5 + 3, self.frame.size.width - 40, 17)];
-    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 56.5 + 16.5, 85, 0.5)];
     self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 36.5, 100, 11)];
+    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 56.5 + 16.5, 85, 0.5)];
     self.privacyLockButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 30, 53)];
   
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] init];
     self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 60 + 4, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 73 + 16.5 + 4, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
     
     self.highlightsCollectionView = [[HighlightsCollectionView alloc]
                                      initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height +   15, self.frame.size.width, [HighlightCell height])
@@ -1717,7 +1717,7 @@ BOOL firstTimeLoading;
     
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] init];
     self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 20 + 72 + 4, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 82 + 16.5 + 4, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
     
     self.highlightsCollectionView = [[HighlightsCollectionView alloc]
                                      initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height +   15, self.frame.size.width, [HighlightCell height])
