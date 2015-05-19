@@ -340,6 +340,11 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     [self.scrollView addSubview:label];
     
     float widthOfImage = 0.575*[UIScreen mainScreen].bounds.size.width;
+    float heightOfImage = 1.9*widthOfImage;
+    if (heightOfImage >= self.pageControl.frame.origin.y - label.frame.origin.y - label.frame.size.height) {
+        heightOfImage = self.pageControl.frame.origin.y - label.frame.origin.y - label.frame.size.height - 30;
+        widthOfImage = heightOfImage/1.9;
+    }
     UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - widthOfImage/2 + index*self.view.frame.size.width, 95, widthOfImage, 1.9*widthOfImage)];
     imgView.center = CGPointMake(imgView.center.x, (label.center.y + self.pageControl.center.y)/2);
     imgView.image = [UIImage imageNamed:imageName];
