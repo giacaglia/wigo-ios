@@ -60,8 +60,23 @@ NSDate *firstLoggedTime;
     [Parse setApplicationId:parseApplicationId
                   clientKey:parseClientKey];
     
-    self.notificationDictionary = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
     
+    self.notificationDictionary = [NSMutableDictionary dictionaryWithDictionary:launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]];
+    
+    if(self.notificationDictionary) {
+        if(self.notificationDictionary[@"aps"][@"alert"][@"body"] &&
+           self.notificationDictionary[@"navigate"]) {
+            NSString *message = self.notificationDictionary[@"aps"][@"alert"][@"body"];
+            
+            NSString *navigate = self.notificationDictionary[@"navigate"];
+            if([navigate hasPrefix:@"/users"] &&
+               [message rangeOfString:@"wants to be friends"].location != NSNotFound) {
+                self.notificationDictionary[@"navigate"] = @"/discover";
+            }
+        }
+    }
+    
+
     // Override point for customization after application launch.
 
     [self addNotificationHandlers];

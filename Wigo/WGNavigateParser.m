@@ -101,6 +101,9 @@
     else if([objectName isEqualToString:@"users"]) {
         return kWGTabProfile;
     }
+    else if([objectName isEqualToString:@"discover"]) {
+        return kWGTabDiscover;
+    }
     return nil;
 }
 
