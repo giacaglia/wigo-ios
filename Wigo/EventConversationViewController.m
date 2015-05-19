@@ -76,7 +76,7 @@
     [super viewWillDisappear:animated];
     
     self.index = [NSNumber numberWithInteger:[self getCurrentPageForScrollView:self.mediaScrollView]];
-    [self.mediaScrollView startedScrollingFromPage:[self.index intValue]];
+    [self.mediaScrollView stopCurrentVideo];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -218,7 +218,7 @@
                     int votes = [eventMessage.upVotes intValue];
                     strongSelf.voteInfoButton.hidden = NO;
                     if(votes > 0) {
-                        strongSelf.numberOfVotesLabel.text = [NSString stringWithFormat:@"%d likes", votes];
+                        strongSelf.numberOfVotesLabel.text = [EventConversationViewController stringForLikes:votes];
                     }
                     else {
                         strongSelf.numberOfVotesLabel.text = @"";
@@ -433,7 +433,7 @@
             int votes = [eventMessage.upVotes intValue];
             self.voteInfoButton.hidden = NO;
             if(votes > 0) {
-                self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%d likes", votes];
+                self.numberOfVotesLabel.text = [EventConversationViewController stringForLikes:votes];
             }
             else {
                 self.numberOfVotesLabel.text = @"";
@@ -554,15 +554,17 @@
     self.downArrowImageView.frame = CGRectMake(0, 0, 36.0, 12.0);
     
     
-    self.voteInfoButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80.0, 28.0)];
-                           
+    self.voteInfoButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80.0, 50.0)];
+    
     [self.voteInfoButton addTarget:self
                             action:@selector(showVotesPressed) forControlEvents:UIControlEventTouchUpInside];
-    self.voteInfoButton.center = CGPointMake(self.view.frame.size.width/2.0, 18.0);
-    
+    self.voteInfoButton.center = CGPointMake(self.view.frame.size.width/2.0, 0.0);
+    CGRect frame = self.voteInfoButton.frame;
+    frame.origin.y = 4.0;
+    self.voteInfoButton.frame = frame;
     
     self.numberOfVotesLabel.center = CGPointMake(self.voteInfoButton.frame.size.width/2.0,0.0);
-    CGRect frame = self.numberOfVotesLabel.frame;
+    frame = self.numberOfVotesLabel.frame;
     frame.origin.y = 4.0;
     self.numberOfVotesLabel.frame = frame;
     
@@ -629,7 +631,7 @@
         NSNumber *myNumber = [f numberFromString:self.numberOfVotesLabel.text];
         myNumber = [NSNumber numberWithInt:(myNumber.intValue + 1)];
         self.voteInfoButton.hidden = NO;
-        self.numberOfVotesLabel.text = myNumber.stringValue;
+        self.numberOfVotesLabel.text = [EventConversationViewController stringForLikes:[myNumber intValue]];
     }
     
 }
@@ -703,7 +705,18 @@
 
 - (void)showVotesPressed {
     
-    WGEventLikesViewController *likesControler = [[WGEventLikesViewController alloc] init];
+    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
+    
+    if (page >= self.eventMessages.count || page < 0) {
+        return;
+    }
+    
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+    if (!eventMessage.id) {
+        return;
+    }
+    
+    WGEventLikesViewController *likesController = [[WGEventLikesViewController alloc] init];
     
     
      UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
@@ -713,11 +726,14 @@
                                                   saturationDeltaFactor:1.3
                                                               maskImage:nil];
     
-    likesControler.backgroundImage = imageOfUnderlyingView;
-    [likesControler.dismissButton addTarget:self
+    likesController.backgroundImage = imageOfUnderlyingView;
+    likesController.numberOfVotesLabel.text = self.numberOfVotesLabel.text;
+    [likesController.dismissButton addTarget:self
                                      action:@selector(dismissLikesView) forControlEvents:UIControlEventTouchUpInside];
     
-    [self presentViewController:likesControler
+    [likesController getLikesForEvent:self.event eventMessage:eventMessage];
+    
+    [self presentViewController:likesController
                        animated:YES
                      completion:nil];
     
@@ -729,6 +745,19 @@
                              completion:^{
                                  
                              }];
+}
+
+
++ (NSString *)stringForLikes:(NSInteger)likes {
+    if(likes == 1) {
+        return @"1 like";
+    }
+    else if(likes > 1) {
+        return [NSString stringWithFormat:@"%ld likes", (long)likes];
+    }
+    else {
+        return @"";
+    }
 }
 
 #pragma mark -  EventConversation Delegate methods

@@ -77,7 +77,7 @@
 -(void) scrolledToPage:(int)page;
 -(void) scrollStoppedAtPage:(int)page;
 -(void) startedScrollingFromPage:(int)fromPage;
-
+-(void) stopCurrentVideo;
 
 - (void)callbackFromUploadWithInfo:(NSDictionary *)callbackInfo
                        andFilename:(NSString *)filename;
