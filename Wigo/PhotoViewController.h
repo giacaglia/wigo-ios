@@ -12,5 +12,7 @@
 
 - (id)initWithImage:(NSDictionary *)image;
 @property (nonatomic, assign) int indexOfImage;
+@property (nonatomic, strong) UIView *bgView;
+@property (nonatomic, strong) UIView *grayView;
 
 @end

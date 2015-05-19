@@ -19,6 +19,7 @@
     NSMutableArray *_blurredImages;
 }
 
+@property (nonatomic, strong) UIView *lineDividerView;
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIView *nameView;
 @property (nonatomic, strong) UIView *headerButtonView;
@@ -387,9 +388,9 @@ BOOL blockShown;
     // Center images
     [self centerIcons];
     
-    UIView *lineDividerView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width*0.75 - 1, 5, 0.5, 60)];
-    lineDividerView.backgroundColor = RGB(205, 205, 205);
-    [_headerButtonView addSubview:lineDividerView];
+    _lineDividerView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width*0.75 - 1, 5, 0.5, 60)];
+    _lineDividerView.backgroundColor = RGB(205, 205, 205);
+    [_headerButtonView addSubview:_lineDividerView];
     
     _rightProfileButton = [[UIButton alloc] init];
     [_rightProfileButton addTarget:self action:@selector(friendsPressed) forControlEvents:UIControlEventTouchUpInside];
@@ -411,7 +412,7 @@ BOOL blockShown;
     [_headerButtonView addSubview:_rightProfileButton];
     
     _followButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 75, 10, 65, 50)];
-    _followButton.center = CGPointMake((lineDividerView.frame.size.width + lineDividerView.frame.origin.x + _headerButtonView.frame.size.width)/2, _followButton.center.y);
+    _followButton.center = CGPointMake((_lineDividerView.frame.size.width + _lineDividerView.frame.origin.x + _headerButtonView.frame.size.width)/2, _followButton.center.y);
     [_followButton setImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [_followButton addTarget:self action:@selector(followPressed) forControlEvents:UIControlEventTouchUpInside];
     [_headerButtonView addSubview: _followButton];
@@ -462,7 +463,7 @@ BOOL blockShown;
         _locationImgView.transform = transl;
        
         
-        CGAffineTransform newTrans  = CGAffineTransformMakeTranslation(10.0f, 5.0f);
+        CGAffineTransform newTrans  = CGAffineTransformMakeTranslation(10.0f, 0);
 
         _locationLabel.transform = newTrans;
         _locationLabel.center = _schoolLabel.center;
@@ -571,6 +572,7 @@ BOOL blockShown;
     _rightBarBt.hidden = YES;
     _rightProfileButton.hidden = YES;
     _chatButton.hidden = YES;
+    _lineDividerView.hidden = NO;
     _followButton.hidden = YES;
     _followButton.hidden = YES;
     _followButton.enabled = YES;
@@ -595,6 +597,7 @@ BOOL blockShown;
              self.userState == BLOCKED_USER_STATE) {
         _rightBarBt.hidden = NO;
         _followButton.hidden = NO;
+        _lineDividerView.hidden = YES;
     }
     else if (self.userState == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
         _rightBarBt.hidden = NO;
@@ -608,6 +611,7 @@ BOOL blockShown;
         _followButton.layer.borderColor = UIColor.clearColor.CGColor;
         _followButton.layer.cornerRadius = 10.0f;
         _followButton.layer.borderWidth = 2.0f;
+        _lineDividerView.hidden = YES;
     }
     
     if (self.userState == CURRENT_USER_STATE) {

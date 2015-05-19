@@ -36,7 +36,6 @@ float heighBkgButtonsView;
     grayView.backgroundColor = RGB(247, 247, 247);
     [self.view addSubview:grayView];
 
-    
     int yPosition = 7;
     if (self.user.state == FRIEND_USER_STATE) {
         unfriendButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68)];
@@ -135,7 +134,6 @@ float heighBkgButtonsView;
     }];
     heighBkgButtonsView = 2*68 + 2*6 + 7;
     grayView.frame = CGRectMake(0, self.view.frame.size.height - heighBkgButtonsView, self.view.frame.size.width, heighBkgButtonsView);
-
 
     UILabel *blockLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 40, self.view.frame.size.width - 30, 60)];
     blockLabel.text = [NSString stringWithFormat:@"Why do you want to\nblock %@?", self.user.firstName];
