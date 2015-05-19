@@ -136,6 +136,8 @@
 		9C9D66F41AEAE94300180958 /* UIImage+Rotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F31AEAE94300180958 /* UIImage+Rotation.m */; };
 		9CA322301B0BB54200382610 /* WGEventLikesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CA3222F1B0BB54200382610 /* WGEventLikesViewController.m */; };
 		9CA322311B0BB54600382610 /* WGEventLikesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CA3222F1B0BB54200382610 /* WGEventLikesViewController.m */; };
+		9CA322341B0BEBA500382610 /* WGEventLikesTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CA322331B0BEBA500382610 /* WGEventLikesTableCell.m */; };
+		9CA322351B0BEBA500382610 /* WGEventLikesTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CA322331B0BEBA500382610 /* WGEventLikesTableCell.m */; };
 		C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
 		C12A110A19787BE700D53B1C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D6251923967D00361247 /* AppDelegate.m */; };
 		C12A110B19787BE700D53B1C /* SDWebImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A31961EADE00A01F50 /* SDWebImageManager.m */; };
@@ -701,6 +703,8 @@
 		9C9D66F31AEAE94300180958 /* UIImage+Rotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Rotation.m"; sourceTree = "<group>"; };
 		9CA3222E1B0BB54200382610 /* WGEventLikesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGEventLikesViewController.h; sourceTree = "<group>"; };
 		9CA3222F1B0BB54200382610 /* WGEventLikesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGEventLikesViewController.m; sourceTree = "<group>"; };
+		9CA322321B0BEBA500382610 /* WGEventLikesTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGEventLikesTableCell.h; sourceTree = "<group>"; };
+		9CA322331B0BEBA500382610 /* WGEventLikesTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGEventLikesTableCell.m; sourceTree = "<group>"; };
 		C12A11E119787BE700D53B1C /* Wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12A11E219787BE800D53B1C /* wigoBlade.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = wigoBlade.plist; sourceTree = "<group>"; };
 		C14AB1B51A8017670011C4E5 /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
@@ -1986,6 +1990,8 @@
 				885E0DA51B0B849700EF499F /* PhotoSettingsViewController.m */,
 				9CA3222E1B0BB54200382610 /* WGEventLikesViewController.h */,
 				9CA3222F1B0BB54200382610 /* WGEventLikesViewController.m */,
+				9CA322321B0BEBA500382610 /* WGEventLikesTableCell.h */,
+				9CA322331B0BEBA500382610 /* WGEventLikesTableCell.m */,
 			);
 			name = EventStory;
 			sourceTree = "<group>";
@@ -2415,6 +2421,7 @@
 				E9096D621ADD5F1100386AC2 /* UIView+FSExtension.m in Sources */,
 				C1F5B3D21A654AC800CAFD95 /* WGCollection.m in Sources */,
 				C1F5B3D31A654AC800CAFD95 /* WGCollectionArray.m in Sources */,
+				9CA322351B0BEBA500382610 /* WGEventLikesTableCell.m in Sources */,
 				C1F5B3D41A654AC800CAFD95 /* (null) in Sources */,
 				C1F5B3D51A654AC800CAFD95 /* (null) in Sources */,
 				45D9FACB1A781AFD00D08577 /* JSQMessagesCollectionView.m in Sources */,
@@ -2752,6 +2759,7 @@
 				454409641A58D19300BB3036 /* WGProfile.m in Sources */,
 				454409611A54A08A00BB3036 /* WGParser.m in Sources */,
 				C14AB1BB1A8017670011C4E5 /* UIImage+Alpha.m in Sources */,
+				9CA322341B0BEBA500382610 /* WGEventLikesTableCell.m in Sources */,
 				45D9FAC41A781AFD00D08577 /* JSQPhotoMediaItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

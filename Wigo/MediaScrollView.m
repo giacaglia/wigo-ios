@@ -224,6 +224,11 @@
     [self.eventMessages replaceObjectAtIndex:[indexPath row] withObject:eventMessage];
 }
 
+- (void)stopCurrentVideo {
+    [self.currentVideoCell.moviePlayer pause];
+    self.currentVideoCell.moviePlayer.shouldAutoplay = NO;
+}
+
 - (void)closeViewWithHandler:(BoolResultBlock)handler {
     [self.currentVideoCell.moviePlayer stop];
     self.currentVideoCell.moviePlayer.shouldAutoplay = NO;

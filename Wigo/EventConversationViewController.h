@@ -25,6 +25,8 @@
 @property (nonatomic, assign) BOOL isFetchingMessages;
 @property (nonatomic, assign) BOOL isOldEvent;
 
++ (NSString *)stringForLikes:(NSInteger)likes;
+
 #pragma mark - Delegate objects
 @property (nonatomic, strong) id<StoryDelegate> storyDelegate;
 

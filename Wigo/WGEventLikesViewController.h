@@ -8,9 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WGEventLikesViewController : UIViewController
+@class WGEvent;
+@class WGEventMessage;
+
+@interface WGEventLikesViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
 
 @property (nonatomic) UIImage *backgroundImage;
 @property (nonatomic) UIButton *dismissButton;
+
+@property (nonatomic) UITableView *tableView;
+@property (nonatomic) UILabel *numberOfVotesLabel;
+
+- (void)getLikesForEvent:(WGEvent *)event eventMessage:(WGEventMessage *)eventMessage;
 
 @end
