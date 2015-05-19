@@ -1047,8 +1047,8 @@
 
     } else {
         dispatch_barrier_async(dispatch_get_main_queue(), ^{
+            self.timeLabel.alpha = 0.0f;
             [UIView animateWithDuration: 0.5    animations:^{
-                self.timeLabel.alpha = 0.0f;
                 [self resetToInactive];
             }];
         });
