@@ -19,6 +19,8 @@
 
 @property (nonatomic, assign) BOOL pushed;
 @property (nonatomic, assign) BOOL alertShown;
+@property (nonatomic, assign) BOOL isFetching;
+@property (nonatomic, assign) BOOL isSigningUp;
 
 
 //Facebook properties

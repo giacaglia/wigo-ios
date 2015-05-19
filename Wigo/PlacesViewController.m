@@ -99,6 +99,10 @@ BOOL firstTimeLoading;
     if (!WGProfile.currentUser.key && !self.presentingLockedView) {
         [self showFlashScreen];
         [self.signViewController reloadedUserInfo:NO andError:nil];
+        LocationPrimer.defaultButton.enabled = YES;
+    }
+    else {
+        LocationPrimer.defaultButton.enabled = NO;
     }
     
     [self.view endEditing:YES];

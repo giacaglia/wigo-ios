@@ -116,8 +116,11 @@
     [WGSpinnerView addDancingGToCenterView:self.view];
     self.properties = WGProfile.currentUser.properties;
     __weak typeof(self) weakSelf = self;
+    if (self.isSigningUp) return;
+    self.isSigningUp = YES;
     [WGProfile.currentUser signup:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.isSigningUp = NO;
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         if (error) {
@@ -244,9 +247,12 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     WGProfile.currentUser.facebookAccessToken = self.accessToken;
     [WGSpinnerView addDancingGToCenterView:self.view];
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    if (self.isFetching) return;
+    self.isFetching = YES;
     __weak typeof(self) weakSelf = self;
     [WGProfile.currentUser login:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.isFetching = NO;
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         if (error) {
@@ -280,7 +286,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     
     if (self.pushed) return;
     self.pushed = YES;
-    
     if ([WGProfile.currentUser.status isEqual:kStatusWaiting]) {
         [self.navigationController pushViewController:[WaitListViewController new] animated:YES];
     }
