@@ -17,6 +17,9 @@
 #import "EventMessagesConstants.h"
 #import "ProfileViewController.h"
 #import "PhotoSettingsViewController.h"
+#import "WGEventLikesViewController.h"
+#import "UIImage+ImageEffects.h"
+#import "UIView+ViewToImage.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 #define newSizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/4
@@ -67,6 +70,17 @@
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self.mediaScrollView scrollStoppedAtPage:self.index.intValue];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    self.index = [NSNumber numberWithInteger:[self getCurrentPageForScrollView:self.mediaScrollView]];
+    [self.mediaScrollView startedScrollingFromPage:[self.index intValue]];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
 }
 
 #pragma mark UICollectionViewDataSource
@@ -166,8 +180,8 @@
             self.buttonTridot.transform = CGAffineTransformMakeTranslation(0, -self.buttonTridot.frame.size.height);
             self.upVoteButton.alpha = 0;
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, -self.numberOfVotesLabel.frame.size.height);
-            self.numberOfVotesLabel.alpha = 0;
-            self.numberOfVotesLabel.transform = CGAffineTransformMakeTranslation(0, -self.numberOfVotesLabel.frame.size.height);
+            self.voteInfoButton.alpha = 0;
+            self.voteInfoButton.transform = CGAffineTransformMakeTranslation(0, -self.voteInfoButton.frame.size.height);
             self.backgroundBottom.alpha = 0;
         } completion:^(BOOL finished) {
             self.facesHidden = YES;
@@ -182,8 +196,8 @@
             self.buttonTridot.transform = CGAffineTransformMakeTranslation(0, 0);
             self.upVoteButton.alpha = 1;
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, 0);
-            self.numberOfVotesLabel.alpha = 1;
-            self.numberOfVotesLabel.transform = CGAffineTransformMakeTranslation(0, 0);
+            self.voteInfoButton.alpha = 1;
+            self.voteInfoButton.transform = CGAffineTransformMakeTranslation(0, 0);
             self.backgroundBottom.alpha = 1;
         } completion:^(BOOL finished) {
             self.facesHidden = NO;
@@ -200,17 +214,23 @@
             if (page < strongSelf.eventMessages.count) {
                 WGEventMessage *eventMessage = (WGEventMessage *)[strongSelf.eventMessages objectAtIndex:page];
                 if (eventMessage.upVotes) {
-                    if (eventMessage.upVotes.intValue == 0) {
-                        strongSelf.numberOfVotesLabel.hidden = YES;
+                    
+                    int votes = [eventMessage.upVotes intValue];
+                    strongSelf.voteInfoButton.hidden = NO;
+                    if(votes > 0) {
+                        strongSelf.numberOfVotesLabel.text = [NSString stringWithFormat:@"%d likes", votes];
                     }
                     else {
-                        strongSelf.numberOfVotesLabel.hidden = NO;
+                        strongSelf.numberOfVotesLabel.text = @"";
+                        strongSelf.voteInfoButton.hidden = YES;
                     }
-                    strongSelf.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
+                    
                 }
                 else {
-                    strongSelf.numberOfVotesLabel.hidden = YES;
+                    self.numberOfVotesLabel.text = @"";
+                    self.voteInfoButton.hidden = YES;
                 }
+                
                 if (!eventMessage.vote) strongSelf.upvoteImageView.image =  [UIImage imageNamed:@"heart"];
                 if (eventMessage.vote.intValue == 1) {
                     strongSelf.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
@@ -409,17 +429,23 @@
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
 //        self.buttonTrash.hidden = ![eventMessage.user isEqual:WGProfile.currentUser];
         if (eventMessage.upVotes) {
-            if (eventMessage.upVotes.intValue == 0) {
-                self.numberOfVotesLabel.hidden = YES;
+            
+            int votes = [eventMessage.upVotes intValue];
+            self.voteInfoButton.hidden = NO;
+            if(votes > 0) {
+                self.numberOfVotesLabel.text = [NSString stringWithFormat:@"%d likes", votes];
             }
             else {
-                self.numberOfVotesLabel.hidden = NO;
+                self.numberOfVotesLabel.text = @"";
+                self.voteInfoButton.hidden = YES;
             }
-            self.numberOfVotesLabel.text = eventMessage.upVotes.stringValue;
+            
         }
         else {
-            self.numberOfVotesLabel.hidden = YES;
+            self.numberOfVotesLabel.text = @"";
+            self.voteInfoButton.hidden = YES;
         }
+        
         if (!eventMessage.vote) self.upvoteImageView.image =  [UIImage imageNamed:@"heart"];
         if (eventMessage.vote.intValue == 1) {
             self.upvoteImageView.image = [UIImage imageNamed:@"upvoteFilled"];
@@ -496,18 +522,15 @@
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
    
-    self.buttonTridot = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width -  58 - 20 - 58, 0, 58, 65)];
+    self.buttonTridot = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 58, 65)];
+    self.buttonTridot.center = CGPointMake(self.view.frame.size.width*0.75,
+                                           self.buttonTridot.frame.size.height/2.0);
+    
     self.trashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.buttonTridot.frame.size.width/2 - 15, 20, 31, 8)];
     self.trashImageView.image = [UIImage imageNamed:@"tridot"];
     [self.buttonTridot addSubview:self.trashImageView];
     [self.buttonTridot addTarget:self action:@selector(trashPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonTridot];
-    
-    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 58 - 20, 8, 36, 28)];
-    self.numberOfVotesLabel.textColor = UIColor.whiteColor;
-    self.numberOfVotesLabel.textAlignment = NSTextAlignmentRight;
-    self.numberOfVotesLabel.font = [FontProperties openSansSemibold:20.0f];
-    [self.view addSubview:self.numberOfVotesLabel];
     
     self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 , 0, 56, 52)];
     [self.view addSubview:self.upVoteButton];
@@ -521,6 +544,39 @@
         self.mediaScrollView.minPage = self.index.intValue;
         self.mediaScrollView.maxPage = self.index.intValue;
     }
+    
+    
+    self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,
+                                                                        0, 72.0, 20.0)];
+    self.numberOfVotesLabel.textColor = UIColor.whiteColor;
+    self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
+    self.numberOfVotesLabel.font = [FontProperties openSansSemibold:16.0f];
+    
+    self.downArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"downArrow"]];
+    self.downArrowImageView.frame = CGRectMake(0, 0, 36.0, 12.0);
+    
+    
+    self.voteInfoButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 80.0, 28.0)];
+                           
+    [self.voteInfoButton addTarget:self
+                            action:@selector(showVotesPressed) forControlEvents:UIControlEventTouchUpInside];
+    self.voteInfoButton.center = CGPointMake(self.view.frame.size.width/2.0, 18.0);
+    
+    
+    self.numberOfVotesLabel.center = CGPointMake(self.voteInfoButton.frame.size.width/2.0,0.0);
+    CGRect frame = self.numberOfVotesLabel.frame;
+    frame.origin.y = 4.0;
+    self.numberOfVotesLabel.frame = frame;
+    
+    self.downArrowImageView.center = CGPointMake(self.voteInfoButton.frame.size.width/2.0,0.0);
+    frame = self.downArrowImageView.frame;
+    frame.origin.y = CGRectGetMaxY(self.numberOfVotesLabel.frame);
+    self.downArrowImageView.frame = frame;
+    
+    [self.voteInfoButton addSubview:self.numberOfVotesLabel];
+    [self.voteInfoButton addSubview:self.downArrowImageView];
+    
+    [self.view addSubview:self.voteInfoButton];
 }
 
 - (void)upvotePressed {
@@ -574,7 +630,7 @@
         f.numberStyle = NSNumberFormatterDecimalStyle;
         NSNumber *myNumber = [f numberFromString:self.numberOfVotesLabel.text];
         myNumber = [NSNumber numberWithInt:(myNumber.intValue + 1)];
-        self.numberOfVotesLabel.hidden = NO;
+        self.voteInfoButton.hidden = NO;
         self.numberOfVotesLabel.text = myNumber.stringValue;
     }
     
@@ -645,6 +701,36 @@
         }
     }];
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)showVotesPressed {
+    
+    WGEventLikesViewController *likesControler = [[WGEventLikesViewController alloc] init];
+    
+    
+     UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
+    
+     imageOfUnderlyingView = [imageOfUnderlyingView applyBlurWithRadius:10
+                                                              tintColor:RGBAlpha(0, 0, 0, 0.6f)
+                                                  saturationDeltaFactor:1.3
+                                                              maskImage:nil];
+    
+    likesControler.backgroundImage = imageOfUnderlyingView;
+    [likesControler.dismissButton addTarget:self
+                                     action:@selector(dismissLikesView) forControlEvents:UIControlEventTouchUpInside];
+    
+    [self presentViewController:likesControler
+                       animated:YES
+                     completion:nil];
+    
+    
+}
+
+- (void)dismissLikesView {
+    [self dismissViewControllerAnimated:YES
+                             completion:^{
+                                 
+                             }];
 }
 
 #pragma mark -  EventConversation Delegate methods
