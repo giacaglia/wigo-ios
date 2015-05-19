@@ -755,6 +755,51 @@ BOOL firstTimeLoading;
             return [NSIndexPath indexPathForRow:i inSection:section];
         }
     }
+    
+    // check past day highlights
+    
+    for(int dayIndex = 0; dayIndex < self.pastDays.count; dayIndex++) {
+        
+        NSString *day = self.pastDays[dayIndex];
+        
+        NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
+        for(int i = 0; i < eventObjectArray.count; i++) {
+            WGEvent *event = [eventObjectArray objectAtIndex:i];
+            if([event.id integerValue] == [eventId integerValue]) {
+                return [NSIndexPath indexPathForRow:i inSection:dayIndex+2];
+            }
+        }
+    }
+    
+    return nil;
+}
+
+//
+
+- (WGEvent *)getEventOnPageForEventId:(NSString *)eventId {
+    
+    for(int i = 0; i < self.events.count; i++) {
+        WGEvent *event  = self.events.objects[i];
+        if([event.id integerValue] == [eventId integerValue]) {
+            return event;
+        }
+    }
+    
+    // check past day highlights
+    
+    for(int dayIndex = 0; dayIndex < self.pastDays.count; dayIndex++) {
+        
+        NSString *day = self.pastDays[dayIndex];
+        
+        NSArray *eventObjectArray = (NSArray *)[self.dayToEventObjArray objectForKey:day];
+        for(int i = 0; i < eventObjectArray.count; i++) {
+            WGEvent *event = [eventObjectArray objectAtIndex:i];
+            if([event.id integerValue] == [eventId integerValue]) {
+                return event;
+            }
+        }
+    }
+    
     return nil;
 }
 
@@ -1013,13 +1058,7 @@ BOOL firstTimeLoading;
                                             
                                             // locate event, conversation index for message
                                             
-                                            WGEvent *event = nil;
-                                            for(int i = 0; i < self.events.count; i++) {
-                                                WGEvent *e  = self.events.objects[i];
-                                                if([e.id integerValue] == [eventId integerValue]) {
-                                                    event = e;
-                                                }
-                                            }
+                                            WGEvent *event = [self getEventOnPageForEventId:eventId];
                                             
                                             if(event) {
                                                 
