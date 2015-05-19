@@ -113,7 +113,6 @@
 @property (nonatomic, strong) UILabel *eventNameLabel;
 @property (nonatomic, strong) UILabel *numberOfPeopleGoingLabel;
 @property (nonatomic, strong) EventPeopleScrollView *eventPeopleScrollView;
-@property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @property (nonatomic, strong) UIView *whiteView;
 @property (nonatomic, strong) UIView *lineView;

@@ -1798,11 +1798,6 @@ BOOL firstTimeLoading;
     self.eventNameLabel.font = [FontProperties semiboldFont:18.0f];
     [self.whiteView addSubview:self.eventNameLabel];
 
-    self.dateLabel.textAlignment = NSTextAlignmentLeft;
-    self.dateLabel.textColor = RGB(165, 165, 165);
-    self.dateLabel.font = [FontProperties mediumFont:10.0f];
-    [self.contentView addSubview:self.dateLabel];
-
     self.numberOfPeopleGoingLabel.textColor = RGB(119, 119, 119);
     self.numberOfPeopleGoingLabel.textAlignment = NSTextAlignmentLeft;
     self.numberOfPeopleGoingLabel.font = [FontProperties lightFont:15.0f];
@@ -1837,9 +1832,8 @@ BOOL firstTimeLoading;
     _event = event;
     self.eventNameLabel.text = event.name;
     self.highlightsCollectionView.event = _event;
-    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ went", _event.numAttending];
+    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ went (%@)", _event.numAttending, [event.created timeAgo]];
     self.eventPeopleScrollView.event = _event;
-    self.dateLabel.text = [event.created timeAgo];
  
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([event isEvent2Lines]) {
@@ -1852,9 +1846,6 @@ BOOL firstTimeLoading;
             self.numberOfPeopleGoingLabel.frame = CGRectMake(15, 36.5 + 3, self.frame.size.width - 40, 17);
             self.lineView.frame = CGRectMake(15, 56.5 + 16.5, 85, 0.5);
         }
-        CGSize size = [self.numberOfPeopleGoingLabel.text sizeWithAttributes:
-                       @{NSFontAttributeName:[FontProperties lightFont:15.0f]}];
-        self.dateLabel.frame = CGRectMake(15 + size.width + 5, self.numberOfPeopleGoingLabel.frame.origin.y + (17 - 11)/2, self.dateLabel.frame.size.width, self.dateLabel.frame.size.height);
     });
 }
 
@@ -1887,7 +1878,6 @@ BOOL firstTimeLoading;
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 16.5, self.frame.size.width - 40, 20)];
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 36.5 + 3, self.frame.size.width - 40, 17)];
-    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 36.5, 100, 11)];    
     
     self.lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 60, 85, 0.5)];
     self.lineView.backgroundColor = RGB(215, 215, 215);
@@ -1930,7 +1920,6 @@ BOOL firstTimeLoading;
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, self.frame.size.width - 40, 50)];
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 53, self.frame.size.width, 20)];
-    self.dateLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 52, 20, 11)];
     
     self.lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 72 + 10, 85, 0.5)];
     self.lineView.backgroundColor = RGB(215, 215, 215);
