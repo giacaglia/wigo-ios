@@ -87,7 +87,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
     [self.placesDelegate showConversationForEvent:self.event
                                 withEventMessages:self.event.messages
-                                          atIndex:indexPath.item];
+                                          atIndex:(int)indexPath.item];
 
 }
 

@@ -401,6 +401,7 @@
 }
 
 - (void)hideOrShowFacesForPage:(int)page {
+    if (page + 1 == self.eventMessages.count) [self fetchNextMessages];
     if (page < self.eventMessages.count) {
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
 //        self.buttonTrash.hidden = ![eventMessage.user isEqual:WGProfile.currentUser];

@@ -861,6 +861,9 @@ BOOL firstTimeLoading;
 - (WGCollection *)eventMessagesWithCamera:(WGCollection *)eventMessages {
     WGCollection *newEventMessages =  [[WGCollection alloc] initWithType:[WGEventMessage class]];
     [newEventMessages addObjectsFromCollection:eventMessages];
+    newEventMessages.nextPage = eventMessages.nextPage;
+    newEventMessages.previousPage = eventMessages.previousPage;
+    newEventMessages.total = eventMessages.total;
     WGEventMessage *eventMessage = [WGEventMessage serialize:@{
                                                                @"user" : WGProfile.currentUser,
                                                                @"created" : [NSDate nowStringUTC],

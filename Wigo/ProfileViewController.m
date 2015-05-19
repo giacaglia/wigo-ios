@@ -474,22 +474,22 @@ BOOL blockShown;
     }
     if (numberOfProperties == 2) {
         if (!_locationLabel.text) {
-            _schoolLabel.center = CGPointMake(_schoolLabel.center.x, _schoolLabel.center.y - 20);
-            _workLabel.center =  CGPointMake(_schoolLabel.center.x, _schoolLabel.center.y + 20);
-            _schoolImgView.center = CGPointMake(_schoolImgView.center.x, _schoolImgView.center.y - 20);
-            _workImgView.center = CGPointMake(_schoolImgView.center.x, _schoolImgView.center.y + 20);
+            _workLabel.center =  CGPointMake(_schoolLabel.center.x, _schoolLabel.center.y - 10);
+            _workImgView.center = CGPointMake(_schoolImgView.center.x, _schoolImgView.center.y - 10);
+            _schoolLabel.center = CGPointMake(_schoolLabel.center.x, _schoolLabel.center.y + 10);
+            _schoolImgView.center = CGPointMake(_schoolImgView.center.x, _schoolImgView.center.y + 10);
         }
         else if (!_schoolLabel.text) {
-            _locationLabel.center = CGPointMake(_schoolLabel.center.x, _schoolLabel.center.y - 20);
-            _locationImgView.center = CGPointMake(_schoolImgView.center.x, _schoolImgView.center.y - 20);
-            _workLabel.center =  CGPointMake(_schoolLabel.center.x, _schoolLabel.center.y + 20);
-            _workImgView.center = CGPointMake(_schoolImgView.center.x, _schoolImgView.center.y + 20);
+            _locationLabel.center = CGPointMake(_schoolLabel.center.x, _schoolLabel.center.y - 10);
+            _locationImgView.center = CGPointMake(_schoolImgView.center.x, _schoolImgView.center.y - 10);
+            _workLabel.center =  CGPointMake(_schoolLabel.center.x, _schoolLabel.center.y + 10);
+            _workImgView.center = CGPointMake(_schoolImgView.center.x, _schoolImgView.center.y + 10);
         }
         else {
-            _locationLabel.center = CGPointMake(_schoolLabel.center.x, _schoolLabel.center.y - 20);
-            _locationImgView.center = CGPointMake(_schoolImgView.center.x, _schoolImgView.center.y - 20);
-            _workLabel.center =  CGPointMake(_schoolLabel.center.x, _schoolLabel.center.y + 20);
-            _workImgView.center = CGPointMake(_schoolImgView.center.x, _schoolImgView.center.y + 20);
+            _locationLabel.center = CGPointMake(_schoolLabel.center.x, _schoolLabel.center.y - 10);
+            _locationImgView.center = CGPointMake(_schoolImgView.center.x, _schoolImgView.center.y - 10);
+            _schoolLabel.center =  CGPointMake(_schoolLabel.center.x, _schoolLabel.center.y + 10);
+            _schoolImgView.center = CGPointMake(_schoolImgView.center.x, _schoolImgView.center.y + 10);
         }
         
     }
