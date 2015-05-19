@@ -21,5 +21,6 @@ typedef void (^IsThereResult)(NSNumber *numberOfNewMessages, NSNumber *numberOfN
 
 - (void) navigate:(NSString *)navigateString;
 - (void) switchToTab:(NSString *)tab withOptions:(NSDictionary *)options;
+- (void) handleNavigationForUserInfo:(NSDictionary *)userInfo;
 
 @end

@@ -60,8 +60,7 @@ NSDate *firstLoggedTime;
     [Parse setApplicationId:parseApplicationId
                   clientKey:parseClientKey];
     
-    
-    self.notificationDictionary = [[NSMutableDictionary alloc] init];
+    self.notificationDictionary = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
     
     // Override point for customization after application launch.
 
@@ -235,11 +234,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {}];
     
     if (application.applicationState == UIApplicationStateInactive) {
-        [self dismissEverythingWithUserInfo:userInfo];
-    
+        
         if ([[userInfo allKeys] containsObject:@"navigate"]) {
-            NSString *navigateString = [userInfo objectForKey:@"navigate"];
-            [self navigate:navigateString];
+            [self handleNavigationForUserInfo:userInfo];
         }
     }
     
@@ -261,6 +258,13 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
         }
     } else { // If it's was at the background or inactive
     }
+}
+
+- (void) handleNavigationForUserInfo:(NSDictionary *)userInfo {
+    
+    [self dismissEverythingWithUserInfo:userInfo];
+    NSString *navigateString = [userInfo objectForKey:@"navigate"];
+    [self navigate:navigateString];
 }
 
 - (BOOL)doesUserInfo:(NSDictionary *)userInfo hasString:(NSString *)checkString {
