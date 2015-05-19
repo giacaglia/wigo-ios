@@ -13,6 +13,12 @@
 #import "UIButtonAligned.h"
 #import "GroupConversationViewController.h"
 
+
+@interface ChatViewController ()
+@property (nonatomic,strong) NSString *chatIdToOpen;
+@end
+
+
 @implementation ChatViewController
 
 - (void)viewDidLoad
@@ -113,6 +119,13 @@
 
 - (void)updateViewWithOptions:(NSDictionary *)options {
     
+    NSDictionary *userInfo = options[@"objects"];
+    if(userInfo) {
+        NSString *chatId = userInfo[@"messages"];
+        if(chatId) {
+            self.chatIdToOpen = chatId;
+        }
+    }
 }
 
 #pragma mark - RefreshTableView 
@@ -151,8 +164,28 @@
         }
         [strongSelf.tableViewOfPeople reloadData];
         [strongSelf.tableViewOfPeople didFinishPullToRefresh];
+        
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(self.chatIdToOpen) {
+                NSString *userId = self.chatIdToOpen;
+                self.chatIdToOpen = nil;
+                    
+                WGUser *chatUser = nil;
+                for(int i = 0; i < self.messages.count; i++) {
+                    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:i];
+                    WGUser *user = message.otherUser;
+                    if([user.id integerValue] == [userId integerValue]) {
+                        chatUser = user;
+                    }
+                }
+                
+                if(chatUser) {
+                    [self.navigationController pushViewController:[[ConversationViewController alloc] initWithUser:chatUser] animated:NO];
+                }
+            }
+        });
     }];
-    
 }
 
 - (void)fetchNextPage {
