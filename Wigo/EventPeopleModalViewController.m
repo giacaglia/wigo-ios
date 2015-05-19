@@ -50,7 +50,7 @@ int imageWidth;
      [self.attendeesPhotosScrollView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:kPeopleModalViewFooter];
     [self.view addSubview:self.attendeesPhotosScrollView];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.attendeesPhotosScrollView.frame.origin.y/2 - 23, self.view.frame.size.width - 30, 25)];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.attendeesPhotosScrollView.frame.origin.y/2 - 23, self.view.frame.size.width - 30, 28)];
     CGSize size = [self.event.name sizeWithAttributes:
                    @{NSFontAttributeName:[FontProperties semiboldFont:22.0f]}];
     if (size.width > self.view.frame.size.width - 30) {
