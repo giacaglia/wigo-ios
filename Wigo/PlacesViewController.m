@@ -1055,48 +1055,37 @@ BOOL firstTimeLoading;
                                                                  withEventMessages:event.messages
                                                                            atIndex:(int)conversationIndex];
                                                 }
-                                                else if(!didUpdate) {
+                                                else {
                                                     
-                                                    // if we haven't already updated since recieving the notificaiton,
-                                                    // try to reload messages and try again before giving up
+                                                    // fetch the message directly and show it
                                                     
-                                                    [self fetchEventsFirstPageWithHandler:^(BOOL success, NSError *error) {
-                                                        
-                                                        if(success) {
-                                                            NSInteger conversationIndex = NSNotFound;
-                                                            NSInteger idx = 0;
-                                                            
-                                                            for(int i = 0; i < event.messages.count; i++) {
-                                                                WGEventMessage *message = event.messages.objects[i];
-                                                                
-                                                                if([message.id integerValue] == [messageId integerValue]) {
-                                                                    conversationIndex = idx;
-                                                                }
-                                                                idx++;
-                                                            }
-                                                            
-                                                            if(conversationIndex != NSNotFound) {
-                                                                
-                                                                // message index needs to be adjusted depending on whether the
-                                                                // camera cell is being shown
-                                                                
-                                                                // (logic taken from (showConversationForEvent:withEventMessages:atIndex:)
-                                                                
-                                                                if ([self isPeeking] ||
-                                                                    (!WGProfile.currentUser.crossEventPhotosEnabled && ![[event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) ||
-                                                                    event.isExpired.boolValue) {
-                                                                    // do nothing
-                                                                }
-                                                                else {
-                                                                    conversationIndex++;
-                                                                }
-                                                                
-                                                                [self showConversationForEvent:event
-                                                                             withEventMessages:event.messages
-                                                                                       atIndex:(int)conversationIndex];
-                                                            }
-                                                        }
-                                                    }];
+                                                    [WGApi get:[NSString stringWithFormat:@"events/%@/messages/%@",
+                                                                eventId, messageId]
+                                                   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+                                                       
+                                                       
+                                                       NSError *dataError;
+                                                       WGCollection *objects = nil;
+                                                       @try {
+                                                           objects = [WGCollection serializeResponse:jsonResponse andClass:[WGEventMessage class]];
+                                                       }
+                                                       @catch (NSException *exception) {
+                                                           NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+                                                           
+                                                           dataError = [NSError errorWithDomain: @"WGEventMessage" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+                                                       }
+                                                       
+                                                       if(objects && objects.count > 0) {
+                                                           
+                                                           WGEventMessage *message = (WGEventMessage *)[objects objectAtIndex:0];
+                                                           if([message isKindOfClass:[WGEventMessage class]]) {
+                                                               [self showHighlightForEvent:event andEventMessage:message];
+                                                           }
+                                                       }
+                                                       
+
+                                                   }];
+                                                    
                                                 }
                                             }
                                         }
