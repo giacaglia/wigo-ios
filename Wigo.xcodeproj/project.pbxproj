@@ -134,6 +134,8 @@
 		9C531A671AF16BDF0004F264 /* WGCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F01AE98E4200180958 /* WGCameraViewController.m */; };
 		9C9D66F11AE98E4200180958 /* WGCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F01AE98E4200180958 /* WGCameraViewController.m */; };
 		9C9D66F41AEAE94300180958 /* UIImage+Rotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F31AEAE94300180958 /* UIImage+Rotation.m */; };
+		9CA322301B0BB54200382610 /* WGEventLikesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CA3222F1B0BB54200382610 /* WGEventLikesViewController.m */; };
+		9CA322311B0BB54600382610 /* WGEventLikesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CA3222F1B0BB54200382610 /* WGEventLikesViewController.m */; };
 		C12A110919787BE700D53B1C /* UIImageViewShake.m in Sources */ = {isa = PBXBuildFile; fileRef = E9CD47131948E27500AEA17D /* UIImageViewShake.m */; };
 		C12A110A19787BE700D53B1C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E921D6251923967D00361247 /* AppDelegate.m */; };
 		C12A110B19787BE700D53B1C /* SDWebImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E900C2A31961EADE00A01F50 /* SDWebImageManager.m */; };
@@ -697,6 +699,8 @@
 		9C9D66F01AE98E4200180958 /* WGCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGCameraViewController.m; sourceTree = "<group>"; };
 		9C9D66F21AEAE94300180958 /* UIImage+Rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Rotation.h"; sourceTree = "<group>"; };
 		9C9D66F31AEAE94300180958 /* UIImage+Rotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Rotation.m"; sourceTree = "<group>"; };
+		9CA3222E1B0BB54200382610 /* WGEventLikesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGEventLikesViewController.h; sourceTree = "<group>"; };
+		9CA3222F1B0BB54200382610 /* WGEventLikesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGEventLikesViewController.m; sourceTree = "<group>"; };
 		C12A11E119787BE700D53B1C /* Wigo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wigo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12A11E219787BE800D53B1C /* wigoBlade.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = wigoBlade.plist; sourceTree = "<group>"; };
 		C14AB1B51A8017670011C4E5 /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
@@ -1980,6 +1984,8 @@
 				E9D4F1671AD31EAA00478C78 /* GroupConversationViewController.m */,
 				885E0DA41B0B849700EF499F /* PhotoSettingsViewController.h */,
 				885E0DA51B0B849700EF499F /* PhotoSettingsViewController.m */,
+				9CA3222E1B0BB54200382610 /* WGEventLikesViewController.h */,
+				9CA3222F1B0BB54200382610 /* WGEventLikesViewController.m */,
 			);
 			name = EventStory;
 			sourceTree = "<group>";
@@ -2404,6 +2410,7 @@
 				885E0DA71B0B849700EF499F /* PhotoSettingsViewController.m in Sources */,
 				C1F5B3CF1A654AC800CAFD95 /* WGMessage.m in Sources */,
 				C1F5B3D01A654AC800CAFD95 /* WGEventMessage.m in Sources */,
+				9CA322311B0BB54600382610 /* WGEventLikesViewController.m in Sources */,
 				C1F5B3D11A654AC800CAFD95 /* WGNotification.m in Sources */,
 				E9096D621ADD5F1100386AC2 /* UIView+FSExtension.m in Sources */,
 				C1F5B3D21A654AC800CAFD95 /* WGCollection.m in Sources */,
@@ -2596,6 +2603,7 @@
 				E921D6221923967D00361247 /* main.m in Sources */,
 				E9A765931AC2005A00F7C016 /* WGI.m in Sources */,
 				E9096D5F1ADD5F1100386AC2 /* NSDate+FSExtension.m in Sources */,
+				9CA322301B0BB54200382610 /* WGEventLikesViewController.m in Sources */,
 				45D9FBBC1A80043000D08577 /* UIImage+ImageEffects.m in Sources */,
 				E9902988196B347C00192FF2 /* FacebookAlbumTableViewController.m in Sources */,
 				E9C3056F19F8341600F9564D /* KeychainItemWrapper.m in Sources */,
