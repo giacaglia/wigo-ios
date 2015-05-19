@@ -877,6 +877,7 @@ static WGUser *currentUser = nil;
 -(void) refetchUserWithGroup:(NSNumber *)groupID andHandler:(BoolResultBlock)handler {
     __weak typeof(self) weakSelf = self;
     if (!groupID) {
+        if (!self.id) return;
         [WGApi get:[NSString stringWithFormat:@"users/%@", self.id] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             if (error) {
@@ -927,6 +928,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) getNumMutualFriends:(WGNumResultBlock)handler {
+    if (!self.id || !WGProfile.currentUser.id) return;
     __weak typeof(self) weakSelf = self;
     if ([WGProfile.currentUser.id isEqual:self.id]) return;
     [WGApi get:[NSString stringWithFormat:@"users/%@/friends/common/%@/count/", WGProfile.currentUser.id, self.id]
@@ -939,10 +941,11 @@ static WGUser *currentUser = nil;
        NSNumber *numberOfFriends = [jsonResponse objectForKey:@"count"];
        strongSelf.numMutualFriends = numberOfFriends;
        handler(numberOfFriends, error);
-}];
+   }];
 }
 
 -(void) getMeta:(BoolResultBlock)handler {
+    if (!self.id) return;
     [WGApi get:[NSString stringWithFormat:@"users/%@/meta/", self.id]
    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
        if (error) {
@@ -963,6 +966,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) getMutualFriends:(WGCollectionResultBlock)handler {
+    if (!self.id || !WGProfile.currentUser.id) return;
     [WGApi get:[NSString stringWithFormat:@"users/%@/friends/common/%@", WGProfile.currentUser.id, self.id]
    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
        if (error) {
