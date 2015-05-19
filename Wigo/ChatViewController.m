@@ -175,7 +175,7 @@
                 for(int i = 0; i < self.messages.count; i++) {
                     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:i];
                     WGUser *user = message.otherUser;
-                    if([user.id intValue] == [userId intValue]) {
+                    if([user.id integerValue] == [userId integerValue]) {
                         chatUser = user;
                     }
                 }
