@@ -522,11 +522,9 @@
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
    
-    self.buttonTridot = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 58, 65)];
-    self.buttonTridot.center = CGPointMake(self.view.frame.size.width*0.75,
-                                           self.buttonTridot.frame.size.height/2.0);
+    self.buttonTridot = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 - 58 - 15, 0, 58, 65)];
     
-    self.trashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.buttonTridot.frame.size.width/2 - 15, 20, 31, 8)];
+    self.trashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.buttonTridot.frame.size.width - 31, 15 + 10, 31, 8)];
     self.trashImageView.image = [UIImage imageNamed:@"tridot"];
     [self.buttonTridot addSubview:self.trashImageView];
     [self.buttonTridot addTarget:self action:@selector(trashPressed) forControlEvents:UIControlEventTouchUpInside];
