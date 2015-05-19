@@ -28,6 +28,7 @@
 #import "LocationPrimer.h"
 #import "ReferalView.h"
 #import "WaitListViewController.h"
+#import "AppDelegate.h"
 
 #define kEventCellName @"EventCell"
 #define kOneLineEventCellName @"OneLineEventCell"
@@ -37,9 +38,14 @@
 #define kOldEventCellName @"OldEventCell"
 
 
+
+typedef void (^BoolResultUpdateBlock)(BOOL success, BOOL didUpdate, NSError *error);
+                                
+                                
 @interface PlacesViewController ()
 // Events By Days
 @property (nonatomic, strong) NSMutableArray *pastDays;
+
 @end
 BOOL firstTimeLoading;
 
@@ -107,6 +113,21 @@ BOOL firstTimeLoading;
     [self updateNavigationBar];
     [self fetchUserInfo];
     [self startPrimer];
+}
+
+- (void)checkForNotificationInfo {
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    
+    // determine if the app launched from a notification, and requires navigation handling
+    if(appDelegate.notificationDictionary) {
+        
+        NSDictionary *userInfo = appDelegate.notificationDictionary;
+        appDelegate.notificationDictionary = nil;
+        
+        if (userInfo[@"navigate"]) {
+            [appDelegate handleNavigationForUserInfo:userInfo];
+        }
+    }
 }
 
 - (void)startPrimer {
@@ -224,7 +245,38 @@ BOOL firstTimeLoading;
     self.isLocal = NO;
 }
 
+
+// set isLocal, but only update the view if the property has changed,
+// with a completion handler
+
+- (void)updateIsLocalIfNecessary:(BOOL)isLocal completion:(BoolResultUpdateBlock)handler {
+    if(isLocal && !self.isLocal) {
+        
+        [self setIsLocal:isLocal completion:^(BOOL success, NSError *error) {
+            if(handler) {
+                handler(success, success, error);
+            }
+        }];
+    }
+    else if(!isLocal && self.isLocal) {
+        [self setIsLocal:isLocal completion:^(BOOL success, NSError *error) {
+            if(handler) {
+                handler(success, success, error);
+            }
+        }];
+    }
+    else {
+        if(handler) {
+            handler(YES,NO,nil);
+        }
+    }
+}
+
 - (void)setIsLocal:(BOOL)isLocal {
+    [self setIsLocal:isLocal completion:^(BOOL success, NSError *error){}];
+}
+
+- (void)setIsLocal:(BOOL)isLocal completion:(BoolResultBlock)handler {
     WGProfile.isLocal = isLocal;
     _isLocal = isLocal;
     if (isLocal) {
@@ -244,7 +296,7 @@ BOOL firstTimeLoading;
     self.events = nil;
     [self.placesTableView reloadData];
     [WGSpinnerView addDancingGToCenterView:self.view];
-    [self fetchEventsFirstPage];
+    [self fetchEventsFirstPageWithHandler:handler];
 }
 
 -(void) initializeFlashScreen {
@@ -916,95 +968,145 @@ BOOL firstTimeLoading;
 
 - (void)updateViewWithOptions:(NSDictionary *)options {
     
+    // we will need to update the list of events if the notification is for an
+    // event or message we don't currently have, or requires switching from 'local' to 'friends',
+    // but want to avoid it if possible and don't want to more than once.
+    
     NSString *destinationPage = options[kNameOfObjectKey];
     NSDictionary *userInfo = options[@"objects"];
     
-    if(userInfo[@"users"] && [userInfo[@"users"] isEqualToString:@"me"]) {
-        [self friendsPressed];
-    }
-    else {
-        [self localPressed];
-    }
     
-    if([destinationPage isEqualToString:@"events"]) {
-        
-        if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
-            NSString *eventId = userInfo[@"events"];
-            
-            [self scrollToEventId:eventId updateEventsOnFail:YES completion:^(BOOL success, NSError *error) {}];
-        }
-        else {
-            [self scrollToTop];
-        }
-    }
-    else if([destinationPage isEqualToString:@"messages"]) {
-        
-        // scroll to appropriate event on events page
-        
-        if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
-            NSString *eventId = userInfo[@"events"];
-            
-            [self scrollToEventId:eventId updateEventsOnFail:YES completion:^(BOOL success, NSError *error) {
-                
-                if(success) {
-                    
-                    // show message in event details view
-                    
-                    NSString *messageId = userInfo[@"messages"];
-                    
-                    // locate event, conversation index for message
-                    
-                    WGEvent *event = nil;
-                    for(int i = 0; i < self.events.count; i++) {
-                        WGEvent *e  = self.events.objects[i];
-                        if([e.id integerValue] == [eventId integerValue]) {
-                            event = e;
-                        }
-                    }
-                    
-                    if(event) {
-                        
-                        NSInteger conversationIndex = NSNotFound;
-                        NSInteger idx = 0;
-                        
-                        for(int i = 0; i < event.messages.count; i++) {
-                            WGEventMessage *message = event.messages.objects[i];
+    BOOL showFriendsView = (userInfo[@"users"] && [userInfo[@"users"] isEqualToString:@"me"]);
+    
+    [self updateIsLocalIfNecessary:!showFriendsView
+                        completion:^(BOOL success, BOOL didUpdate, NSError *error) {
                             
-                            if([message.id integerValue] == [messageId integerValue]) {
-                                conversationIndex = idx;
+                            
+                            if([destinationPage isEqualToString:@"events"]) {
+                                
+                                if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
+                                    NSString *eventId = userInfo[@"events"];
+                                    
+                                    [self scrollToEventId:eventId updateEventsOnFail:(!didUpdate) completion:^(BOOL success, NSError *error) {}];
+                                }
+                                else {
+                                    [self scrollToTop];
+                                }
                             }
-                            idx++;
-                        }
-                        
-                        if(conversationIndex != NSNotFound) {
-                            
-                            // message index needs to be adjusted depending on whether the
-                            // camera cell is being shown
-                            
-                            // (logic taken from (showConversationForEvent:withEventMessages:atIndex:)
-                            
-                            if ([self isPeeking] ||
-                                (!WGProfile.currentUser.crossEventPhotosEnabled && ![[event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) ||
-                                event.isExpired.boolValue) {
-                                // do nothing
+                            else if([destinationPage isEqualToString:@"messages"]) {
+                                
+                                // scroll to appropriate event on events page
+                                
+                                if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
+                                    NSString *eventId = userInfo[@"events"];
+                                    
+                                    [self scrollToEventId:eventId updateEventsOnFail:YES completion:^(BOOL success, NSError *error) {
+                                        
+                                        if(success) {
+                                            
+                                            // show message in event details view
+                                            
+                                            NSString *messageId = userInfo[@"messages"];
+                                            
+                                            // locate event, conversation index for message
+                                            
+                                            WGEvent *event = nil;
+                                            for(int i = 0; i < self.events.count; i++) {
+                                                WGEvent *e  = self.events.objects[i];
+                                                if([e.id integerValue] == [eventId integerValue]) {
+                                                    event = e;
+                                                }
+                                            }
+                                            
+                                            if(event) {
+                                                
+                                                NSInteger conversationIndex = NSNotFound;
+                                                NSInteger idx = 0;
+                                                
+                                                for(int i = 0; i < event.messages.count; i++) {
+                                                    WGEventMessage *message = event.messages.objects[i];
+                                                    
+                                                    if([message.id integerValue] == [messageId integerValue]) {
+                                                        conversationIndex = idx;
+                                                    }
+                                                    idx++;
+                                                }
+                                                
+                                                if(conversationIndex != NSNotFound) {
+                                                    
+                                                    // message index needs to be adjusted depending on whether the
+                                                    // camera cell is being shown
+                                                    
+                                                    // (logic taken from (showConversationForEvent:withEventMessages:atIndex:)
+                                                    
+                                                    if ([self isPeeking] ||
+                                                        (!WGProfile.currentUser.crossEventPhotosEnabled && ![[event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) ||
+                                                        event.isExpired.boolValue) {
+                                                        // do nothing
+                                                    }
+                                                    else {
+                                                        conversationIndex++;
+                                                    }
+                                                    
+                                                    [self showConversationForEvent:event
+                                                                 withEventMessages:event.messages
+                                                                           atIndex:(int)conversationIndex];
+                                                }
+                                                else if(!didUpdate) {
+                                                    
+                                                    // if we haven't already updated since recieving the notificaiton,
+                                                    // try to reload messages and try again before giving up
+                                                    
+                                                    [self fetchEventsFirstPageWithHandler:^(BOOL success, NSError *error) {
+                                                        
+                                                        if(success) {
+                                                            NSInteger conversationIndex = NSNotFound;
+                                                            NSInteger idx = 0;
+                                                            
+                                                            for(int i = 0; i < event.messages.count; i++) {
+                                                                WGEventMessage *message = event.messages.objects[i];
+                                                                
+                                                                if([message.id integerValue] == [messageId integerValue]) {
+                                                                    conversationIndex = idx;
+                                                                }
+                                                                idx++;
+                                                            }
+                                                            
+                                                            if(conversationIndex != NSNotFound) {
+                                                                
+                                                                // message index needs to be adjusted depending on whether the
+                                                                // camera cell is being shown
+                                                                
+                                                                // (logic taken from (showConversationForEvent:withEventMessages:atIndex:)
+                                                                
+                                                                if ([self isPeeking] ||
+                                                                    (!WGProfile.currentUser.crossEventPhotosEnabled && ![[event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) ||
+                                                                    event.isExpired.boolValue) {
+                                                                    // do nothing
+                                                                }
+                                                                else {
+                                                                    conversationIndex++;
+                                                                }
+                                                                
+                                                                [self showConversationForEvent:event
+                                                                             withEventMessages:event.messages
+                                                                                       atIndex:(int)conversationIndex];
+                                                            }
+                                                        }
+                                                    }];
+                                                }
+                                            }
+                                        }
+                                    }];
+                                    
+                                }
+                                else {
+                                    [self scrollToTop];
+                                }
                             }
-                            else {
-                                conversationIndex++;
-                            }
-                            
-                            [self showConversationForEvent:event
-                                         withEventMessages:event.messages
-                                                   atIndex:(int)conversationIndex];
-                        }
-                    }
-                }
-            }];
-            
-        }
-        else {
-            [self scrollToTop];
-        }
-    }
+                        }];
+    
+    
 }
 
 #pragma mark - EventPeopleScrollView Delegate
@@ -1294,6 +1396,14 @@ BOOL firstTimeLoading;
 
             [strongSelf.placesTableView reloadData];
             [strongSelf removeDancingG];
+            
+            dispatch_async(dispatch_get_main_queue(),
+                           ^{
+                               // check whether the app was opened with a notification
+                               // one time after updating the view completes
+                               
+                               [self checkForNotificationInfo];
+                           });
             handler(YES, error);
         }];
     }
