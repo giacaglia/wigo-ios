@@ -1503,8 +1503,8 @@
     [self.overlayView addSubview:self.switchButton];
     
     self.dismissButton = [[UIButton alloc] initWithFrame:CGRectMake(0, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
-    UIImageView *dismissImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.dismissButton.frame.size.height - 36 - 10, 36, 36)];
-    dismissImageView.image = [UIImage imageNamed:@"cancelCamera"];
+    UIImageView *dismissImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.dismissButton.frame.size.height - 27 - 10, 27, 27)];
+    dismissImageView.image = [UIImage imageNamed:@"closeModalView"];
     [self.dismissButton addSubview:dismissImageView];
     [self.dismissButton addTarget:self action:@selector(dismissPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.overlayView addSubview:self.dismissButton];
