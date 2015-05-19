@@ -116,6 +116,7 @@
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) HighlightsCollectionView *highlightsCollectionView;
 @property (nonatomic, strong) UIView *whiteView;
+@property (nonatomic, strong) UIView *lineView;
 @end
 
 @interface OldTwoLinesEventCell : HighlightOldEventCell
