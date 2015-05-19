@@ -99,7 +99,7 @@
         return kWGTabHome;
     }
     else if([objectName isEqualToString:@"users"]) {
-        return kWGTabDiscover;
+        return kWGTabProfile;
     }
     return nil;
 }

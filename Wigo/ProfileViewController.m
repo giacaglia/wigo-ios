@@ -13,6 +13,7 @@
 #import "RWBlurPopover.h"
 #import "EventPeopleScrollView.h"
 #import "AppDelegate.h"
+#import "WGNavigateParser.h"
 
 @interface ProfileViewController()<ImageScrollViewDelegate> {
     UIImageView *_gradientImageView;
@@ -712,7 +713,7 @@ BOOL blockShown;
 
 - (NSInteger) notificationCount {
     if (self.userState == CURRENT_USER_STATE) {
-        return self.notifications.count + 1;
+        return self.notifications.count;
     }
     return [self shouldShowInviteCell] ? 1 : 0;
 }
@@ -859,27 +860,23 @@ BOOL blockShown;
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.section == kNotificationsSection && self.user.isCurrentUser) {
+        
         WGNotification *notification = (WGNotification *)[self.notifications objectAtIndex:indexPath.row];
         WGUser *user = notification.fromUser;
         
         if ([notification.type isEqualToString:@"follow"] ||
             [notification.type isEqualToString:@"follow.accepted"] ||
-            [notification.type isEqualToString:@"facebook.follow"]) {
+            [notification.type isEqualToString:@"facebook.follow"] ||
+            [notification.type isEqualToString:@"friend.joined"] ||
+            [notification.type isEqualToString:@"friend.request"] ||
+            [notification.type isEqualToString:@"friend.accept"]) {
+            
             [self presentUser:user];
         }
-        else if([notification.type isEqualToString:@"tap"]) {
-            
-            [(AppDelegate *)[UIApplication sharedApplication].delegate
-             navigate:@"/events"];
-            
-        }
-        else if([notification.type isEqualToString:@"invite"]) {
-            
-            [(AppDelegate *)[UIApplication sharedApplication].delegate
-             navigate:notification.parameters[@"navigate"]];
-            
-        }
-        else if([notification.type isEqualToString:@"eventmessage.vote"]) {
+        else if([notification.type isEqualToString:@"tap"] ||
+                [notification.type isEqualToString:@"invite"] ||
+                [notification.type isEqualToString:@"eventmessage.vote"] ||
+                [notification.type isEqualToString:@"eventmessage.post"]) {
             
             [(AppDelegate *)[UIApplication sharedApplication].delegate
              navigate:notification.parameters[@"navigate"]];
@@ -940,6 +937,30 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark WGViewController methods
 
 - (void)updateViewWithOptions:(NSDictionary *)options {
+    
+    // NSString *destinationPage = options[kNameOfObjectKey];
+    
+    NSDictionary *userInfo = options[@"objects"];
+    
+    if(userInfo[@"users"]) {
+        
+        NSString *userId = userInfo[@"users"];
+        
+        WGUser *user = nil;
+        for(int i = 0; i < self.notifications.count; i++) {
+            WGNotification *notification = (WGNotification *)[self.notifications objectAtIndex:i];
+            if([notification.fromUser.id intValue] == [userId intValue]) {
+                user = notification.fromUser;
+            }
+        }
+        
+        if(user) {
+            [self  presentUser:user];
+        }
+        else {
+            
+        }
+    }
     
 }
 
