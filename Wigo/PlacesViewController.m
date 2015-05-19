@@ -377,7 +377,7 @@ BOOL firstTimeLoading;
     [self.navigationController pushViewController: profileViewController animated: YES];
 }
 
-- (void)scrollToEventId:(NSNumber *)eventId updateEventsOnFail:(BOOL)updateOnFail completion:(BoolResultBlock)completion {
+- (void)scrollToEventId:(NSString *)eventId updateEventsOnFail:(BOOL)updateOnFail completion:(BoolResultBlock)completion {
     
     NSIndexPath *indexPath = [self getIndexPathForEventId:eventId];
     if(indexPath) {
@@ -693,7 +693,7 @@ BOOL firstTimeLoading;
 // return index path for event specified by ID,
 // or nil if it is not found
 
-- (NSIndexPath *)getIndexPathForEventId:(NSNumber *)eventId {
+- (NSIndexPath *)getIndexPathForEventId:(NSString *)eventId {
     
     NSInteger section = 0;
     
@@ -919,10 +919,17 @@ BOOL firstTimeLoading;
     NSString *destinationPage = options[kNameOfObjectKey];
     NSDictionary *userInfo = options[@"objects"];
     
+    if(userInfo[@"users"] && [userInfo[@"users"] isEqualToString:@"me"]) {
+        [self friendsPressed];
+    }
+    else {
+        [self localPressed];
+    }
+    
     if([destinationPage isEqualToString:@"events"]) {
         
         if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
-            NSNumber *eventId = userInfo[@"events"];
+            NSString *eventId = userInfo[@"events"];
             
             [self scrollToEventId:eventId updateEventsOnFail:YES completion:^(BOOL success, NSError *error) {}];
         }
@@ -935,7 +942,7 @@ BOOL firstTimeLoading;
         // scroll to appropriate event on events page
         
         if(userInfo[@"events"] && ![userInfo[@"events"] isEqual:[NSNull null]]) {
-            NSNumber *eventId = userInfo[@"events"];
+            NSString *eventId = userInfo[@"events"];
             
             [self scrollToEventId:eventId updateEventsOnFail:YES completion:^(BOOL success, NSError *error) {
                 
@@ -943,7 +950,7 @@ BOOL firstTimeLoading;
                     
                     // show message in event details view
                     
-                    NSNumber *messageId = userInfo[@"messages"];
+                    NSString *messageId = userInfo[@"messages"];
                     
                     // locate event, conversation index for message
                     
