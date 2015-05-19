@@ -75,10 +75,32 @@
     return objectName;
 }
 
++ (NSString *)rootObjectFromString:(NSString *)navigateString {
+    
+    // remove leading or trailing slash
+    
+    if([navigateString hasPrefix:@"/"]) {
+        navigateString = [navigateString substringFromIndex:1];
+    }
+    
+    if([navigateString hasSuffix:@"/"]) {
+        navigateString = [navigateString substringToIndex:navigateString.length-1];
+    }
+    
+    NSArray *parsedString = [navigateString componentsSeparatedByString:@"/"];
+    
+    NSString *objectName = nil;
+    if(parsedString.count > 0) {
+        objectName = parsedString[0];
+    }    return objectName;
+}
+
 + (NSDictionary *)userInfoFromString:(NSString *)navigateString {
     NSDictionary *objectsDict = [WGNavigateParser dictionaryFromString:navigateString];
     NSString *nameOfObject = [WGNavigateParser nameOfObjectToPresentFromString:navigateString];
-    NSDictionary *userInfo = @{kObjectsKey : objectsDict, kNameOfObjectKey: nameOfObject};
+    NSString *rootObject = [WGNavigateParser rootObjectFromString:navigateString];
+    
+    NSDictionary *userInfo = @{kObjectsKey : objectsDict, kNameOfObjectKey: nameOfObject, kRootObjetKey :rootObject};
     return userInfo;
 }
 
@@ -92,8 +114,11 @@
 
 // return the name of the root tab for a given object to display
 
-+ (NSString *)applicationTabForObject:(NSString *)objectName {
++ (NSString *)applicationTabForObject:(NSString *)objectName root:(NSString *)root {
     
+    if(root && [root isEqualToString:@"messages"]) {
+        return kWGTabChat;
+    }
     if([objectName isEqualToString:@"messages"] ||
        [objectName isEqualToString:@"events"]) {
         return kWGTabHome;

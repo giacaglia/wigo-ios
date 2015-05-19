@@ -11,6 +11,7 @@
 #define kArrayNamesOfObjects @[@"group", @"user", @"event", @"message", @"eventmessage", @"notification"]
 #define kObjectsKey @"objects"
 #define kNameOfObjectKey @"nameOfObject"
+#define kRootObjetKey @"rootObject"
 
 @interface WGNavigateParser : NSObject
 
@@ -18,7 +19,10 @@
 + (NSString *)nameOfObjectToPresentFromString:(NSString *)navigateString;
 + (NSDictionary *)userInfoFromString:(NSString *)navigateString;
 + (NSDictionary *)objectsFromUserInfo:(NSDictionary *)userInfo;
+
 + (NSString *)nameOfObjectFromUserInfo:(NSDictionary *)userInfo;
-+ (NSString *)applicationTabForObject:(NSString *)objectName;
++ (NSString *)rootObjectFromString:(NSString *)navigateString;
+
++ (NSString *)applicationTabForObject:(NSString *)objectName root:(NSString *)root;
 
 @end

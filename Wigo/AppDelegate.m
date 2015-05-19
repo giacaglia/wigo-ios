@@ -115,7 +115,8 @@ NSDate *firstLoggedTime;
     navigationDict = [WGNavigateParser userInfoFromString:navigateString];
     
     NSString *presentedView = navigationDict[kNameOfObjectKey];
-    NSString *tab = [WGNavigateParser applicationTabForObject:presentedView];
+    NSString *rootString = navigationDict[kRootObjetKey];
+    NSString *tab = [WGNavigateParser applicationTabForObject:presentedView root:rootString];
     
     if(tab) {
         [self switchToTab:tab withOptions:navigationDict];
