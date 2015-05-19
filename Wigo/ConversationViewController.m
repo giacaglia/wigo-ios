@@ -68,6 +68,8 @@ JSQMessagesBubbleImage *grayBubble;
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor] forBarMetrics:UIBarMetricsDefault];
+
 
     [WGAnalytics tagEvent:@"Conversation View"];
     [WGAnalytics tagView:@"conversation" withTargetUser:nil];
