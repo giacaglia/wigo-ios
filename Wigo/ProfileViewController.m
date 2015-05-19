@@ -734,7 +734,7 @@ BOOL blockShown;
         return [self notificationCount];
     }
     if (section == kMutualFriendsSection) {
-        if (self.user.state == NOT_FRIEND_STATE) {
+        if (self.user.state == NOT_FRIEND_STATE || self.user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
             return 1;
         }
         return 0;

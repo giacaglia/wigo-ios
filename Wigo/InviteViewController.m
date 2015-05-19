@@ -548,7 +548,7 @@ heightForHeaderInSection:(NSInteger)section
     self.tapAllLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.tapAllLabel.textColor = UIColor.blackColor;
     self.tapAllLabel.font = [FontProperties lightFont:18.0f];
-    self.tapAllLabel.text = @"Tap All";
+    self.tapAllLabel.text = @"Invite All Friends";
     [self.aroundTapButton addSubview:self.tapAllLabel];
     
     self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 15 - 15 - 25, [TapAllCell height] / 2 - 15, 30, 30)];
