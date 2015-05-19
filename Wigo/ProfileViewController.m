@@ -115,7 +115,6 @@ BOOL blockShown;
     self.tabBarController.navigationItem.titleView = nil;
     [self.imageScrollView.scrollView setContentSize:CGSizeMake((self.view.frame.size.width + 10) * [self.user.imagesURL count] - 10, [UIScreen mainScreen].bounds.size.width)];
 
-
     self.tableView.contentOffset = CGPointMake(0, 0);
     [self reloadViewForUserState];
     if (self.user.state == BLOCKED_USER_STATE) [self presentBlockPopView:self.user];
@@ -710,7 +709,8 @@ BOOL blockShown;
         self.userState == NOT_LOADED_STATE ||
         self.userState == NOT_FRIEND_STATE ||
         self.userState == BLOCKED_USER_STATE ||
-        self.userState == OTHER_SCHOOL_USER_STATE) {
+        self.userState == OTHER_SCHOOL_USER_STATE ||
+        self.userState == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
         return NO;
     }
     

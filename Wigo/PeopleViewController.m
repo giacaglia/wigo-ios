@@ -486,6 +486,7 @@ viewForHeaderInSection:(NSInteger)section
         __strong typeof(self) strongSelf = weakSelf;
         if (error) return;
         strongSelf.fetching = NO;
+        [strongSelf cleanupUsers];
         [strongSelf.tableViewOfPeople reloadData];
     }];
 }
