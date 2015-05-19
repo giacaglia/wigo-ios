@@ -575,7 +575,6 @@ BOOL blockShown;
     _chatButton.hidden = YES;
     _lineDividerView.hidden = NO;
     _followButton.hidden = YES;
-    _followButton.hidden = YES;
     _followButton.enabled = YES;
     _followButton.layer.cornerRadius = 0.0f;
     [_followButton setImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
@@ -735,7 +734,8 @@ BOOL blockShown;
         return [self notificationCount];
     }
     if (section == kMutualFriendsSection) {
-        if (self.user.state == NOT_FRIEND_STATE || self.user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
+        if (self.user.state == NOT_FRIEND_STATE ||
+            self.user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
             return 1;
         }
         return 0;
