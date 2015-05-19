@@ -10,4 +10,7 @@
 
 @interface WGEventLikesViewController : UIViewController
 
+@property (nonatomic) UIImage *backgroundImage;
+@property (nonatomic) UIButton *dismissButton;
+
 @end
