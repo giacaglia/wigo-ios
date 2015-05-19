@@ -450,7 +450,7 @@ BOOL blockShown;
     }
     if (numberOfProperties == 1) {
         CGAffineTransform scaleTrans  = CGAffineTransformMakeScale(2.0f, 2.0f);
-        CGAffineTransform leftToRightTrans  = CGAffineTransformMakeTranslation(5.0f, 5.0f);
+        CGAffineTransform leftToRightTrans  = CGAffineTransformMakeTranslation(5.0f, 2.0f);
         CGAffineTransform transl = CGAffineTransformConcat(scaleTrans, leftToRightTrans);
         _workLabel.textColor = RGB(170, 170, 170);
         _workLabel.font = [FontProperties mediumFont:18.0f];
@@ -463,7 +463,7 @@ BOOL blockShown;
         _locationImgView.transform = transl;
        
         
-        CGAffineTransform newTrans  = CGAffineTransformMakeTranslation(10.0f, 0);
+        CGAffineTransform newTrans  = CGAffineTransformMakeTranslation(10.0f, 2.0f);
 
         _locationLabel.transform = newTrans;
         _locationLabel.center = _schoolLabel.center;
