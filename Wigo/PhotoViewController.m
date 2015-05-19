@@ -155,17 +155,12 @@
         }
     }];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
-    [self willMoveToParentViewController:nil];
-    [self.view removeFromSuperview];
-    [self removeFromParentViewController];
-
+    [self dismmisView];
 }
 
 - (void)deletePressed {
     if (WGProfile.currentUser.images.count < 4) {
-        [self willMoveToParentViewController:nil];
-        [self.view removeFromSuperview];
-        [self removeFromParentViewController];
+        [self dismmisView];
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bummer"
                                                             message:@"You need a minimum of 3 photos"
                                                            delegate:nil
@@ -182,17 +177,26 @@
             }
         }];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"updatePhotos" object:nil];
-        [self willMoveToParentViewController:nil];
-        [self.view removeFromSuperview];
-        [self removeFromParentViewController];
-
+        [self dismmisView];
     }
 }
 
 -(void)cancelPressed {
-    [self willMoveToParentViewController:nil];
-    [self.view removeFromSuperview];
-    [self removeFromParentViewController];
+    [self dismmisView];
 }
 
+
+-(void) dismmisView {
+    [UIView animateWithDuration:0.15f animations:^{
+        self.bgView.alpha = 0.0f;
+    }];
+    
+    [UIView animateWithDuration:0.15f animations:^{
+        self.grayView.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, self.grayView.frame.size.height);
+    } completion:^(BOOL finished) {
+        [self willMoveToParentViewController:nil];
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+    }];
+}
 @end
