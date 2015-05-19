@@ -604,13 +604,13 @@ viewForHeaderInSection:(NSInteger)section
     self.profileButton.center = CGPointMake(self.profileButton.center.x, self.center.y);
     [self.contentView addSubview:self.profileButton];
     
-    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 15, 150, 20)];
+    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 10, 150, 20)];
     self.nameLabel.font = [FontProperties mediumFont:15.0f];
     self.nameLabel.textAlignment = NSTextAlignmentLeft;
     self.nameLabel.userInteractionEnabled = NO;
     [self.profileButton addSubview:self.nameLabel];
     
-    self.mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 38, 150, 20)];
+    self.mutualFriendsLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 30, 150, 20)];
     self.mutualFriendsLabel.font = [FontProperties lightFont:13.0f];
     self.mutualFriendsLabel.textColor = RGB(181, 181, 181);
     [self.profileButton addSubview:self.mutualFriendsLabel];
@@ -627,7 +627,7 @@ viewForHeaderInSection:(NSInteger)section
     _user = user;
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text =  user.fullName;
-    if (user.numMutualFriends) {
+    if (user.numMutualFriends.floatValue >= 1) {
         self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", user.numMutualFriends];
     }
     

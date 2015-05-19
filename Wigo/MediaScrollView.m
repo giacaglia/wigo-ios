@@ -131,7 +131,7 @@
         if (authStatus == AVAuthorizationStatusDenied) {
             PromptCell *myCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"PromptCell" forIndexPath: indexPath];
             [myCell.imageView setCoverImageForUser:WGProfile.currentUser completed:nil];
-             myCell.titleTextLabel.frame = CGRectMake(15, 160, self.frame.size.width - 30, 60);
+            myCell.titleTextLabel.frame = CGRectMake(15, 160, self.frame.size.width - 30, 60);
             myCell.titleTextLabel.text = @"Please Give WiGo an access to camera to add to the story:";
             myCell.avoidAction.hidden = YES;
             myCell.cameraAccessView.hidden = NO;

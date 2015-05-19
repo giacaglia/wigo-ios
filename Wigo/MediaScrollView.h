@@ -111,7 +111,6 @@
 @property (nonatomic, assign) BOOL isPeeking;
 @property (nonatomic, strong) UIActivityIndicatorView *spinner;
 
-- (void)updateUI;
 - (void)focusOnContent;
 - (void)doubleTapToLike;
 
