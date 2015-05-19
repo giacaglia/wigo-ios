@@ -136,7 +136,7 @@ float heighBkgButtonsView;
     heighBkgButtonsView = 2*68 + 2*6 + 7;
     grayView.frame = CGRectMake(0, self.view.frame.size.height - heighBkgButtonsView, self.view.frame.size.width, heighBkgButtonsView);
 
-    UILabel *blockLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 40, self.view.frame.size.width - 30, 60)];
+    UILabel *blockLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 60, self.view.frame.size.width - 30, 60)];
     blockLabel.text = [NSString stringWithFormat:@"Why do you want to\nblock %@?", self.user.firstName];
     blockLabel.textColor = UIColor.whiteColor;
     blockLabel.numberOfLines = 0;
@@ -147,7 +147,7 @@ float heighBkgButtonsView;
     
     int yPosition = 7;
     blockButton.frame = CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68);
-    [blockButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
+    [blockButton setTitle:@"Submit" forState:UIControlStateNormal];
     blockButton.tag = 10;
     [blockButton removeTarget:self action:@selector(blockButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [blockButton addTarget:self action:@selector(submitBlockPressed) forControlEvents:UIControlEventTouchUpInside];

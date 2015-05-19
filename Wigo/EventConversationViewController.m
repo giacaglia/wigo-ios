@@ -548,7 +548,7 @@
                                                                         0, 72.0, 20.0)];
     self.numberOfVotesLabel.textColor = UIColor.whiteColor;
     self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberOfVotesLabel.font = [FontProperties openSansSemibold:16.0f];
+    self.numberOfVotesLabel.font = [FontProperties boldFont:18.0f];
     
     self.downArrowImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"downArrow"]];
     self.downArrowImageView.frame = CGRectMake(0, 0, 36.0, 12.0);
@@ -568,7 +568,7 @@
     
     self.downArrowImageView.center = CGPointMake(self.voteInfoButton.frame.size.width/2.0,0.0);
     frame = self.downArrowImageView.frame;
-    frame.origin.y = CGRectGetMaxY(self.numberOfVotesLabel.frame);
+    frame.origin.y = CGRectGetMaxY(self.numberOfVotesLabel.frame)+ 5;
     self.downArrowImageView.frame = frame;
     
     [self.voteInfoButton addSubview:self.numberOfVotesLabel];

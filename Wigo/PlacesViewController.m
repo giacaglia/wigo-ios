@@ -1623,7 +1623,7 @@ BOOL firstTimeLoading;
         if ([event isEvent2Lines]) {
             self.eventNameLabel.frame = CGRectMake(15, 5, self.frame.size.width - 40, 50);
             self.numberOfPeopleGoingLabel.frame = CGRectMake(15, 55, self.frame.size.width - 40, 17);
-            self.lineView.frame = CGRectMake(15, 72 + 10, 85, 0.5);
+            self.lineView.frame = CGRectMake(15, 72 + 16.5, 85, 0.5);
         }
         else {
             self.eventNameLabel.frame= CGRectMake(15, 16.5, self.frame.size.width - 40, 20);
@@ -1713,11 +1713,11 @@ BOOL firstTimeLoading;
     self.eventNameLabel.frame = CGRectMake(15, 5, self.frame.size.width - 40, 50);
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 55, self.frame.size.width - 40, 17)];
     self.verifiedView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 52, 20, 11)];
-    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 72 + 10, 85, 0.5)];
+    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(15, 72 + 16.5, 85, 0.5)];
     
     self.eventPeopleScrollView = [[EventPeopleScrollView alloc] init];
     self.eventPeopleScrollView.widthOfEachCell = 0.9*(float)[[UIScreen mainScreen] bounds].size.width/(float)5.5;
-    self.eventPeopleScrollView.frame = CGRectMake(0, 82 + 16.5 + 4, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
+    self.eventPeopleScrollView.frame = CGRectMake(0, 89 + 16.5 + 4, self.frame.size.width, self.eventPeopleScrollView.widthOfEachCell + 20);
     
     self.highlightsCollectionView = [[HighlightsCollectionView alloc]
                                      initWithFrame:CGRectMake(0, self.eventPeopleScrollView.frame.origin.y + self.eventPeopleScrollView.frame.size.height +   15, self.frame.size.width, [HighlightCell height])

@@ -80,7 +80,6 @@
     return [UIFont fontWithName:@"Whitney-Semibold" size:fontSize];
 }
 
-
 + (UIFont *)getTitleFont {
     return [FontProperties scMediumFont:18.0f];
 }
