@@ -32,6 +32,7 @@ NSMutableArray *coverAlbumArray;
     coverAlbumArray = [NSMutableArray new];
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     [self.tableView registerClass:[AlbumTableCell class] forCellReuseIdentifier:kAlbumTableCellName];
+    self.title = @"Choose Album";
     [self initializeBackBarButton];
     [self getFacebookAlbums];
 }

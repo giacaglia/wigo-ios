@@ -52,17 +52,22 @@ int imageWidth;
     
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.attendeesPhotosScrollView.frame.origin.y/2 - 23, self.view.frame.size.width - 30, 20)];
     CGSize size = [self.event.name sizeWithAttributes:
-                   @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
+                   @{NSFontAttributeName:[FontProperties semiboldFont:22.0f]}];
     if (size.width > self.view.frame.size.width - 30) {
         titleLabel.frame = CGRectMake(15, 45, self.view.frame.size.width - 30, 42);
     }
     
     titleLabel.text = self.event.name;
-    titleLabel.textColor = [FontProperties getBlueColor];
+    if (self.event.isExpired.boolValue) {
+        titleLabel.textColor = RGB(121, 121, 121);
+    }
+    else {
+        titleLabel.textColor = [FontProperties getBlueColor];
+    }
     titleLabel.textAlignment = NSTextAlignmentCenter;
     titleLabel.numberOfLines = 0;
     titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    titleLabel.font = [FontProperties semiboldFont:18.0f];
+    titleLabel.font = [FontProperties semiboldFont:22.0f];
     [self.view addSubview:titleLabel];
     
     UILabel *numberOfPeopleGoing = [[UILabel alloc] initWithFrame:CGRectMake(15, titleLabel.frame.origin.y + titleLabel.frame.size.height + 6, self.view.frame.size.width - 30, 20)];
@@ -349,7 +354,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
     self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 50, imageWidth/2, 70)];
     [self.chatButton addTarget:self action:@selector(chatPressed:) forControlEvents:UIControlEventTouchUpInside];
     self.chatButton.backgroundColor = UIColor.whiteColor;
-    UIImageView *blueChatImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.chatButton.frame.size.width/2 - 18, 5, 36, 36)];
+    UIImageView *blueChatImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.chatButton.frame.size.width/2 - 16, 10, 32, 32)];
     blueChatImageView.image = [UIImage imageNamed:@"blueCardChat"];
     [self.chatButton addSubview:blueChatImageView];
     UILabel *chatLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35 + 10, self.chatButton.frame.size.width, 20)];

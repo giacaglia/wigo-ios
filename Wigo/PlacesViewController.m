@@ -183,7 +183,7 @@ BOOL firstTimeLoading;
     self.bostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 70, 30)];
     self.bostonLabel.text = @"Local";
     self.bostonLabel.textColor = UIColor.whiteColor;
-    self.bostonLabel.font = [FontProperties mediumFont:12.0f];
+    self.bostonLabel.font = [FontProperties mediumFont:15.0f];
     self.bostonLabel.textAlignment = NSTextAlignmentCenter;
     UITapGestureRecognizer *tapGest = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(localPressed)];
     tapGest.numberOfTapsRequired = 1;
@@ -199,7 +199,7 @@ BOOL firstTimeLoading;
     self.friendsButton = [[UIButton alloc] initWithFrame:CGRectMake(70, 0, 70, 30)];
     [self.friendsButton addTarget:self action:@selector(friendsPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.friendsButton setTitle:@"Friends" forState:UIControlStateNormal];
-    self.friendsButton.titleLabel.font = [FontProperties mediumFont:12.0f];
+    self.friendsButton.titleLabel.font = [FontProperties mediumFont:15.0f];
     [self.toggleView addSubview:self.friendsButton];
     self.tabBarController.navigationItem.titleView = self.toggleView;
     self.isLocal = self.isLocal;
@@ -1721,7 +1721,7 @@ BOOL firstTimeLoading;
 
 -(void) chooseImage:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
-    int tag = buttonSender.tag;
+    int tag = (int)buttonSender.tag;
     WGEventMessage *eventMessage = (WGEventMessage *)[self.event.messages objectAtIndex:tag];
     [self.placesDelegate showHighlightForEvent:self.event
                                andEventMessage:eventMessage];

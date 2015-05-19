@@ -116,7 +116,7 @@ static NSDate *biggestDate;
 {
     UITabBarItem *item = [tabBar.items objectAtIndex:index];
     item.image = [[UIImage imageNamed:imageName] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    item.imageInsets = UIEdgeInsetsMake(-3, 0, 3, 0);
+    item.imageInsets = UIEdgeInsetsMake(-2, 0, 2, 0);
     item.selectedImage = [UIImage imageNamed:blueImage];
     item.titlePositionAdjustment = UIOffsetMake(0.0, -6.0);
 }

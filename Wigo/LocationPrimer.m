@@ -30,7 +30,7 @@ static UIButton *mainButton;
         titleLabel.textAlignment = NSTextAlignmentCenter;
         titleLabel.textColor = UIColor.whiteColor;
         titleLabel.numberOfLines = 0;
-        titleLabel.font = [FontProperties lightFont:22.0f];
+        titleLabel.font = [FontProperties lightFont:25.0f];
         [window addSubview:titleLabel];
     }
     return titleLabel;

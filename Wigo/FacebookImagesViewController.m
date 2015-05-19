@@ -36,6 +36,7 @@ NSDictionary *chosenPhoto;
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.whiteColor;
+    self.title = @"Select Photo";
     [self initializeBackBarButton];
     [self initializeScrollView];
 }
