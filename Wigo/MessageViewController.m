@@ -82,9 +82,11 @@
     if (self.isFetchingEveryone) return;
     self.isFetchingEveryone = YES;
     __weak typeof(self) weakSelf = self;
+    [WGSpinnerView addDancingGToCenterView:self.view];
     [WGProfile.currentUser getFriends:^(WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             __strong typeof(self) strongSelf = weakSelf;
+            [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
             strongSelf.isFetchingEveryone = NO;
             if (error) {
                 [[WGError sharedInstance] logError:error forAction:WGActionLoad];
@@ -269,7 +271,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width/2;
     [self.contentView addSubview:self.profileImageView];
     
-    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 15, 150, 20)];
+    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, [MessageCell height]/2 - 10, 150, 20)];
     self.nameLabel.font = [FontProperties getSubtitleFont];
     [self.contentView addSubview:self.nameLabel];
 }

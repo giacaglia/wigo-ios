@@ -58,8 +58,10 @@ NSMutableArray *coverAlbumArray;
         [self requestReadPermissions];
         return;
     }
+    [WGSpinnerView addDancingGToCenterView:self.view];
     [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/albums" parameters:nil]
      startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+         [WGSpinnerView removeDancingGFromCenterView:self.view];
          if (error) {
              [self requestReadPermissions];
              [[WGError sharedInstance] logError:error forAction:WGActionFacebook];
@@ -121,10 +123,12 @@ NSMutableArray *coverAlbumArray;
         [coverAlbumArray addObject:@""];
     }
     for (int i = 0; i < [coverIDArray count]; i++) {
+        [WGSpinnerView addDancingGToCenterView:self.view];
         NSString *graphPath = [NSString stringWithFormat:@"/%@", [coverIDArray objectAtIndex:i]];
         [[[FBSDKGraphRequest alloc] initWithGraphPath:graphPath
                                            parameters:nil]
          startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+                                [WGSpinnerView removeDancingGFromCenterView:self.view];
                                 if (!error) {
                                     NSString *resultObject = [result objectForKey:@"source"];
                                     for (int j = 0; j < [coverIDArray count]; j++) {
@@ -209,6 +213,10 @@ NSMutableArray *coverAlbumArray;
     self.albumNameLabel.textColor = UIColor.blackColor;
     self.albumNameLabel.textAlignment = NSTextAlignmentLeft;
     [self.contentView addSubview:self.albumNameLabel];
+    
+    UIImageView *arrowMsgImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, [AlbumTableCell height]/2 - 9.5, 11, 19)];
+    arrowMsgImageView.image = [UIImage imageNamed:@"arrowMessage"];
+    [self.contentView addSubview:arrowMsgImageView];
 }
 
 @end
