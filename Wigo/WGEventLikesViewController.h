@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WGEventLikesViewController : UIViewControllerr
+@interface WGEventLikesViewController : UIViewController
 
 @end
