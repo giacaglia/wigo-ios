@@ -157,7 +157,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
           atEvent:(WGEvent *)event
       withHandler:(BoolResultBlock)handler;
 -(void) tapUser:(WGUser *)user withHandler:(BoolResultBlock)handler;
--(void) tapAllUsersWithHandler:(BoolResultBlock)handler;
+-(void) tapAllUsersToEvent:(WGEvent *)event  withHandler:(BoolResultBlock)handler;
 -(void) tapUsers:(WGCollection *)users withHandler:(BoolResultBlock)handler;
 -(void) untap:(WGUser *)user withHandler:(BoolResultBlock)handler;
 -(void) sendInvites:(NSArray *)numbers withHandler:(BoolResultBlock)handler;

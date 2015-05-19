@@ -207,7 +207,8 @@
     TapAllCell *tapAllCell = (TapAllCell *)[self.invitePeopleTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kSectionTapAllCell]];
     tapAllCell.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
     __weak typeof(self) weakSelf = self;
-    [WGProfile.currentUser tapAllUsersWithHandler:^(BOOL success, NSError *error) {
+    [WGProfile.currentUser tapAllUsersToEvent:event
+                                  withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;

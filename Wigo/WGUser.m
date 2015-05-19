@@ -1384,8 +1384,9 @@ withParameters:@{ @"invited_id" : user.id }
     }];
 }
 
-- (void)tapAllUsersWithHandler:(BoolResultBlock)handler {
-    [WGApi post:@"taps" withParameters:@{ @"following" : @YES } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+-(void) tapAllUsersToEvent:(WGEvent *)event  withHandler:(BoolResultBlock)handler  {
+    if (!event.id) return;
+    [WGApi post:[NSString stringWithFormat:@"events/%@/invites/", event.id] withParameters:@{ @"friends" : @YES } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
     }];
 }
