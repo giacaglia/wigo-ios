@@ -959,6 +959,30 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
         }
         else {
             
+            [WGApi get:[NSString stringWithFormat:@"users/%@", userId]
+           withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+               
+               
+               NSError *dataError;
+               WGCollection *objects = nil;
+               @try {
+                   objects = [WGCollection serializeResponse:jsonResponse andClass:[WGUser class]];
+               }
+               @catch (NSException *exception) {
+                   NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+                   
+                   dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+               }
+               
+               if(objects && objects.count > 0) {
+                   WGUser *foundUser = (WGUser *)[objects objectAtIndex:0];
+                   if([foundUser isKindOfClass:[WGUser class]]) {
+                       [self presentUser:foundUser];
+                   }
+               }
+               
+            }];
+            
         }
     }
     
