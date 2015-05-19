@@ -835,6 +835,7 @@ static WGUser *currentUser = nil;
     }
     if (self.isFriend.boolValue) {
         self.isFriend = @NO;
+        WGProfile.numFriends = [NSNumber numberWithInt:(WGProfile.numFriends.intValue - 1)];
         [WGProfile.currentUser unfollow:self withHandler:^(BOOL success, NSError *error) {
             if (error) [[WGError sharedInstance] logError:error forAction:WGActionDelete];
         }];
