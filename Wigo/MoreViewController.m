@@ -40,7 +40,7 @@ float heighBkgButtonsView;
     if (self.user.state == FRIEND_USER_STATE) {
         unfriendButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68)];
         unfriendButton.backgroundColor = UIColor.whiteColor;
-        [unfriendButton setTitle:@"UNFRIEND" forState:UIControlStateNormal];
+        [unfriendButton setTitle:@"Unfriend" forState:UIControlStateNormal];
         [unfriendButton setTitleColor:RGB(236, 61, 83) forState:UIControlStateNormal];
         unfriendButton.titleLabel.font = [FontProperties getTitleFont];
         unfriendButton.layer.borderColor = RGB(177, 177, 177).CGColor;
@@ -53,18 +53,19 @@ float heighBkgButtonsView;
     blockButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68)];
     blockButton.backgroundColor = UIColor.whiteColor;
     [blockButton addTarget:self action:@selector(blockButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-    [blockButton setTitle:@"BLOCK or REPORT" forState:UIControlStateNormal];
+    [blockButton setTitle:@"Block or Report" forState:UIControlStateNormal];
     [blockButton setTitleColor:RGB(236, 61, 83) forState:UIControlStateNormal];
     blockButton.titleLabel.font = [FontProperties getTitleFont];
     blockButton.layer.borderColor = RGB(177, 177, 177).CGColor;
     blockButton.layer.borderWidth = 0.5f;
     [grayView addSubview:blockButton];
+    
     yPosition += 68 + 7;
 
     cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, self.view.frame.size.width - 12, 68)];
     cancelButton.backgroundColor = UIColor.whiteColor;
     [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
-    [cancelButton setTitle:@"CANCEL" forState:UIControlStateNormal];
+    [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
     [cancelButton setTitleColor:RGB(74, 74, 74) forState:UIControlStateNormal];
     cancelButton.titleLabel.font = [FontProperties getTitleFont];
     cancelButton.layer.borderColor = RGB(177, 177, 177).CGColor;

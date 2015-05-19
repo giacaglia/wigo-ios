@@ -16,6 +16,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "EventMessagesConstants.h"
 #import "ProfileViewController.h"
+#import "PhotoSettingsViewController.h"
 
 #define sizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/3
 #define newSizeOfEachFaceCell ([[UIScreen mainScreen] bounds].size.width - 20)/4
@@ -42,6 +43,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self loadScrollView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deletePhoto) name:@"deletePhoto" object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -157,8 +159,8 @@
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0, self.facesCollectionView.frame.size.height);
             self.buttonCancel.alpha = 0;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, -self.buttonCancel.frame.size.height);
-            self.buttonTrash.alpha = 0;
-            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, -self.buttonTrash.frame.size.height);
+            self.buttonTridot.alpha = 0;
+            self.buttonTridot.transform = CGAffineTransformMakeTranslation(0, -self.buttonTridot.frame.size.height);
             self.upVoteButton.alpha = 0;
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, -self.numberOfVotesLabel.frame.size.height);
             self.numberOfVotesLabel.alpha = 0;
@@ -173,8 +175,8 @@
             self.facesCollectionView.transform = CGAffineTransformMakeTranslation(0,0);
             self.buttonCancel.alpha = 1;
             self.buttonCancel.transform = CGAffineTransformMakeTranslation(0, 0);
-            self.buttonTrash.alpha = 1;
-            self.buttonTrash.transform = CGAffineTransformMakeTranslation(0, 0);
+            self.buttonTridot.alpha = 1;
+            self.buttonTridot.transform = CGAffineTransformMakeTranslation(0, 0);
             self.upVoteButton.alpha = 1;
             self.upVoteButton.transform = CGAffineTransformMakeTranslation(0, 0);
             self.numberOfVotesLabel.alpha = 1;
@@ -401,12 +403,6 @@
 - (void)hideOrShowFacesForPage:(int)page {
     if (page < self.eventMessages.count) {
         WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-        if (eventMessage.user.isCurrentUser) {
-            self.trashImageView.image = [UIImage imageNamed:@"trashIcon"];
-        }
-        else {
-            self.trashImageView.image = [UIImage imageNamed:@"flagImage"];
-        }
 //        self.buttonTrash.hidden = ![eventMessage.user isEqual:WGProfile.currentUser];
         if (eventMessage.upVotes) {
             if (eventMessage.upVotes.intValue == 0) {
@@ -496,22 +492,18 @@
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.buttonCancel];
    
-    self.buttonTrash = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 29, 0, 58, 65)];
-    self.trashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.buttonTrash.frame.size.width/2 - 8, 8, 14.5, 16)];
-    self.trashImageView.image = [UIImage imageNamed:@"trashIcon"];
-    [self.buttonTrash addSubview:self.trashImageView];
-    [self.buttonTrash addTarget:self action:@selector(trashPressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.buttonTrash];
+    self.buttonTridot = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width -  58 - 20 - 58, 0, 58, 65)];
+    self.trashImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.buttonTridot.frame.size.width/2 - 15, 20, 31, 8)];
+    self.trashImageView.image = [UIImage imageNamed:@"tridot"];
+    [self.buttonTridot addSubview:self.trashImageView];
+    [self.buttonTridot addTarget:self action:@selector(trashPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.buttonTridot];
     
     self.numberOfVotesLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 58 - 20, 8, 36, 28)];
     self.numberOfVotesLabel.textColor = UIColor.whiteColor;
     self.numberOfVotesLabel.textAlignment = NSTextAlignmentRight;
     self.numberOfVotesLabel.font = [FontProperties openSansSemibold:20.0f];
     [self.view addSubview:self.numberOfVotesLabel];
-    
-//    self.downArrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 15, 28 + 8, 30, 15)];
-//    self.downArrowImageView.image = [UIImage imageNamed:@"downArrow"];
-//    [self.view addSubview:self.downArrowImageView];
     
     self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 , 0, 56, 52)];
     [self.view addSubview:self.upVoteButton];
@@ -579,13 +571,24 @@
     
 }
 
-- (void)trashPressed {
+-(void) trashPressed {
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     if (page >= self.eventMessages.count || page < 0) return;
     [WGAnalytics tagAction:@"delete" atView:@"event_conversation"];
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-    if (!eventMessage.user.isCurrentUser) return;
     if (!eventMessage.id) return;
+    PhotoSettingsViewController *photoSettingsVc = [PhotoSettingsViewController new];
+    photoSettingsVc.eventMsg = eventMessage;
+    [self addChildViewController:photoSettingsVc];
+    [self.view addSubview:photoSettingsVc.view];
+}
+
+-(void) deletePhoto {
+    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
+    if (page >= self.eventMessages.count || page < 0) return;
+    [WGAnalytics tagAction:@"delete" atView:@"event_conversation"];
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
+    if (!eventMessage.id || !eventMessage.user.isCurrentUser) return;
     [self.event removeMessage:eventMessage withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionDelete];
@@ -594,7 +597,7 @@
     }];
     [self.eventMessages removeObject:eventMessage];
     [self.mediaScrollView.eventMessages removeObject:eventMessage];
-    
+
     if (self.eventMessages.count == 0) {
         if (self.event.isExpired.boolValue) {
             [self.mediaScrollView closeViewWithHandler:^(BOOL success, NSError *error) {
@@ -612,9 +615,8 @@
         [self.mediaScrollView reloadData];
     }
     [self hideOrShowFacesForPage:(int) MIN(page, self.eventMessages.count - 1)];
-    
-    
 }
+
 
 - (void)cancelPressed:(id)sender {
     [WGAnalytics tagAction:@"close_highlights" atView:@"event_conversation"];

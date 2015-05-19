@@ -129,6 +129,8 @@
 		45DF86B41A5C5DEB00DB85AE /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 45DF86AB1A5C5DEB00DB85AE /* AFURLSessionManager.m */; };
 		45F74FF21A5DA86500A5170F /* WGGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF11A5DA86500A5170F /* WGGroup.m */; };
 		45F74FF51A5E3F9100A5170F /* WGFollow.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF41A5E3F9100A5170F /* WGFollow.m */; };
+		885E0DA61B0B849700EF499F /* PhotoSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 885E0DA51B0B849700EF499F /* PhotoSettingsViewController.m */; };
+		885E0DA71B0B849700EF499F /* PhotoSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 885E0DA51B0B849700EF499F /* PhotoSettingsViewController.m */; };
 		9C531A671AF16BDF0004F264 /* WGCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F01AE98E4200180958 /* WGCameraViewController.m */; };
 		9C9D66F11AE98E4200180958 /* WGCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F01AE98E4200180958 /* WGCameraViewController.m */; };
 		9C9D66F41AEAE94300180958 /* UIImage+Rotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F31AEAE94300180958 /* UIImage+Rotation.m */; };
@@ -689,6 +691,8 @@
 		45F74FF11A5DA86500A5170F /* WGGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGGroup.m; sourceTree = "<group>"; };
 		45F74FF31A5E3F9100A5170F /* WGFollow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGFollow.h; sourceTree = "<group>"; };
 		45F74FF41A5E3F9100A5170F /* WGFollow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGFollow.m; sourceTree = "<group>"; };
+		885E0DA41B0B849700EF499F /* PhotoSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoSettingsViewController.h; sourceTree = "<group>"; };
+		885E0DA51B0B849700EF499F /* PhotoSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoSettingsViewController.m; sourceTree = "<group>"; };
 		9C9D66EF1AE98E4200180958 /* WGCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGCameraViewController.h; sourceTree = "<group>"; };
 		9C9D66F01AE98E4200180958 /* WGCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGCameraViewController.m; sourceTree = "<group>"; };
 		9C9D66F21AEAE94300180958 /* UIImage+Rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Rotation.h"; sourceTree = "<group>"; };
@@ -1974,6 +1978,8 @@
 				9C9D66F01AE98E4200180958 /* WGCameraViewController.m */,
 				E9D4F1661AD31EAA00478C78 /* GroupConversationViewController.h */,
 				E9D4F1671AD31EAA00478C78 /* GroupConversationViewController.m */,
+				885E0DA41B0B849700EF499F /* PhotoSettingsViewController.h */,
+				885E0DA51B0B849700EF499F /* PhotoSettingsViewController.m */,
 			);
 			name = EventStory;
 			sourceTree = "<group>";
@@ -2395,6 +2401,7 @@
 				C1F5B3CC1A654AC800CAFD95 /* WGEvent.m in Sources */,
 				C1F5B3CD1A654AC800CAFD95 /* WGFollow.m in Sources */,
 				C1F5B3CE1A654AC800CAFD95 /* WGEventAttendee.m in Sources */,
+				885E0DA71B0B849700EF499F /* PhotoSettingsViewController.m in Sources */,
 				C1F5B3CF1A654AC800CAFD95 /* WGMessage.m in Sources */,
 				C1F5B3D01A654AC800CAFD95 /* WGEventMessage.m in Sources */,
 				C1F5B3D11A654AC800CAFD95 /* WGNotification.m in Sources */,
@@ -2559,6 +2566,7 @@
 				E921D6261923967D00361247 /* AppDelegate.m in Sources */,
 				4563F5271A3F460F00F8C9C4 /* WGUser.m in Sources */,
 				E96F07C119BA654600E858D7 /* GKImageCropView.m in Sources */,
+				885E0DA61B0B849700EF499F /* PhotoSettingsViewController.m in Sources */,
 				E900C2BC1961EADE00A01F50 /* SDWebImageManager.m in Sources */,
 				E9A8B6E41AD81C0900C6901D /* BaseViewController.m in Sources */,
 				45D9FAB01A781AFD00D08577 /* JSQMessagesTimestampFormatter.m in Sources */,
