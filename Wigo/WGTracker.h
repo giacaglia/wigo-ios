@@ -10,10 +10,11 @@
 #import "Globals.h"
 
 #ifdef DEBUG
-static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/dev/track?key=0i9u4r98jfg";
+static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo2/dev/track?key=0i9u4r98jfg";
 #else
-static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/dev/track?key=0i9u4r98jfg";
+static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo2/production/track?key=0i9u4r98jfg";
 #endif
+
 
 // Object keys
 #define kObjectID @"id"
@@ -35,6 +36,7 @@ static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/
 
 // Client metadata keys
 #define kClientKey @"client"
+#define kVendorIDKey @"vendor_id"
 #define kRemoteAddress @"remote_addr"
 #define kUserAgent @"user_agent"
 #define kOS @"os"
@@ -61,31 +63,84 @@ static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo/
 #define kUpVotesKey @"up_votes"
 
 #define kTypeKey @"type"
+#define kViewType @"view"
+#define kSubViewType @"sub_view"
+#define kActionType @"action"
+#define kViewActionType @"view_action"
 #define kCategoryKey @"category"
-#define kViewID @"view_id"
-#define kViewName @"view_name"
-#define kSubviewID @"sub_view_id"
-#define kSubviewName @"sub_view_name"
+#define kViewIDKey @"view_id"
+#define kViewNameKey @"view_name"
+#define kSubviewIDKey @"sub_view_id"
+#define kSubviewNameKey @"sub_view_name"
 #define kPreviousViewID @"previous_view_id"
 #define kPreviousViewName @"previous_view_name"
 
 @interface WGTracker : NSObject
 
 @property (nonatomic, strong) NSDate *startTime;
-@property (nonatomic, strong) NSMutableDictionary *mutDict;
 @property (nonatomic, assign) float dispatchInterval; // Time in seconds
 @property (nonatomic, strong) NSMutableArray *batchedInfo;
--(void)setValue:(id)value forKey:(NSString *)key;
--(void)remove:(NSString *)key;
--(void)setGroup:(WGGroup *)group;
--(void)setTargetGroup:(WGGroup *)group;
--(void)setUser:(WGUser *)user;
--(void)setTargetUser:(WGUser *)user;
--(void)postViewWithName:(NSString *)viewName;
--(void)postAction:(NSString *)actionName;
+@property (nonatomic, strong) NSString *defaultSessionID;
+
+
+
+-(void)postSubviewWithName:(NSString *)subviewName
+                withViewID:(NSString *)subviewID
+            atViewWithName:(NSString *)viewName
+                 andViewID:(NSString *)viewID
+                  andGroup:(WGGroup *)group
+            andTargetGroup:(WGGroup *)targetGroup
+                   andUser:(WGUser *)user
+             andTargetUser:(WGUser *)targetUser;
+
+-(void)postViewWithName:(NSString *)viewName
+              andViewID:(NSString *)viewID
+               andGroup:(WGGroup *)group
+         andTargetGroup:(WGGroup *)targetGroup
+                andUser:(WGUser *)user
+          andTargetUser:(WGUser *)targetUser;
+
+
 - (void)postAction:(NSString *)actionName
-            atView:(NSString *)viewName;
+         atSubview:(NSString *)subviewName
+      andSubviewID:(NSString *)subviewID
+            atView:(NSString *)viewName
+         andViewID:(NSString *)viewID
+          andGroup:(WGGroup *)group
+    andTargetGroup:(WGGroup *)targetGroup
+           andUser:(WGUser *)user
+     andTargetUser:(WGUser *)targetUser
+           atEvent:(WGEvent *)event
+    atEventMessage:(WGEventMessage *)eventMessage;
+
+- (void)postAction:(NSString *)actionName
+            atView:(NSString *)viewName
+         andViewID:(NSString *)viewID
+          andGroup:(WGGroup *)group
+    andTargetGroup:(WGGroup *)targetGroup
+           andUser:(WGUser *)user
+     andTargetUser:(WGUser *)targetUser;
+
+- (void)postViewAction:(NSString *)actionName
+             atSubview:(NSString *)subviewName
+          andSubviewID:(NSString *)subviewID
+                atView:(NSString *)viewName
+             andViewID:(NSString *)viewID
+              andGroup:(WGGroup *)group
+        andTargetGroup:(WGGroup *)targetGroup
+               andUser:(WGUser *)user
+         andTargetUser:(WGUser *)targetUser
+               atEvent:(WGEvent *)event
+        atEventMessage:(WGEventMessage *)eventMessage;
+
+- (void)postViewAction:(NSString *)actionName
+                atView:(NSString *)viewName
+             andViewID:(NSString *)viewID
+              andGroup:(WGGroup *)group
+        andTargetGroup:(WGGroup *)targetGroup
+               andUser:(WGUser *)user
+         andTargetUser:(WGUser *)targetUser;
+
 
 +(NSString *)getTimeNow;
-
 @end

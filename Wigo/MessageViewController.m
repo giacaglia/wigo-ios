@@ -53,7 +53,8 @@
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagView:@"new_chat"];
+    [WGAnalytics tagEvent:@"New Chat View"];
+    [WGAnalytics tagView:@"new_chat" withTargetUser:nil];
     [self.tableView reloadData];
 }
 

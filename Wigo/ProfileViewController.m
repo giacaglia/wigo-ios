@@ -151,6 +151,14 @@ BOOL blockShown;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    NSString *isCurrentUser = ([self.user isEqual:[WGProfile currentUser]]) ? @"Yes" : @"No";
+    NSString *isPeeking = (self.userState == OTHER_SCHOOL_USER_STATE) ? @"Yes" : @"No";
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:isCurrentUser, @"Self", isPeeking, @"isPeeking", nil];
+    [WGAnalytics tagEvent:@"Profile View" withDetails:options];
+    [WGAnalytics tagView:@"profile"
+          withTargetUser:self.user];
+
     self.navigationController.navigationBar.backgroundColor = UIColor.clearColor;
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
     self.tabBarController.navigationItem.titleView = nil;
@@ -928,9 +936,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)inviteTapped {
-    [WGAnalytics tagAction:@"tap"
-                    atView:@"profile"
-            withTargetUser:self.user];
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile", @"Tap Source", nil];
+    [WGAnalytics tagEvent:@"Tap User" withDetails:options];
+    [WGAnalytics tagAction:@"tap" atView:@"profile"
+             andTargetUser:self.user atEvent:nil andEventMessage:nil];
     
     self.user.isTapped = @YES;
     [WGProfile.currentUser tapUser:self.user withHandler:^(BOOL success, NSError *error) {

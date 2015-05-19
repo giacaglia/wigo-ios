@@ -43,7 +43,8 @@ NSDictionary *chosenPhoto;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagView:@"facebook_images"];
+    [WGAnalytics tagEvent:@"Facebook Images View"];
+    [WGAnalytics tagView:@"facebook_images" withTargetUser:nil];
 }
 
 - (void)initializeBackBarButton {

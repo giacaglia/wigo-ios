@@ -69,7 +69,8 @@ JSQMessagesBubbleImage *grayBubble;
     [super viewDidAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
 
-    [WGAnalytics tagView:@"conversation"];
+    [WGAnalytics tagEvent:@"Conversation View"];
+    [WGAnalytics tagView:@"conversation" withTargetUser:nil];
     [self initializeNotificationObservers];
 }
 
@@ -261,6 +262,11 @@ JSQMessagesBubbleImage *grayBubble;
     message.created = date;
     message.toUser = self.user;
     message.user = WGProfile.currentUser;
+    [WGAnalytics tagAction:@"message_sent"
+                    atView:@"conversation"
+             andTargetUser:self.user
+                   atEvent:nil
+           andEventMessage: nil];
     [message sendMessage:^(WGMessage *newMessage, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionPost];

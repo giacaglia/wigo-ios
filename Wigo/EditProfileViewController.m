@@ -48,7 +48,8 @@ UIViewController *webViewController;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagView:@"edit_profile"];
+    [WGAnalytics tagEvent:@"Edit Profile View"];
+    [WGAnalytics tagView:@"edit_profile" withTargetUser:nil];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 }
 

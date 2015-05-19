@@ -262,10 +262,6 @@
 }
 
 -(void)scrolledToPage:(int)page {
-    
-    NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
-    [WGAnalytics tagEvent:@"Event Conversation Scrolled Highlight" withDetails: @{@"isPeeking": isPeekingString}];
-    
     if (page < self.minPage) self.minPage = page;
     if (page > self.maxPage && page < self.eventMessages.count) self.maxPage = page;
     if (!self.pageViews) {
@@ -571,6 +567,11 @@
     if ([[options objectForKey:kMediaMimeTypeKey] isEqual:kImageEventType]) {
         WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
         __weak typeof(self) weakSelf = self;
+        [WGAnalytics tagAction:@"photo_add"
+                        atView:@"people_cards" // what view is this?
+                 andTargetUser:nil
+                       atEvent:nil             // how do we get the current event
+               andEventMessage: nil];
         [newEventMessage addPhoto:fileData withName:filename andHandler:^(WGEventMessage *object, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             strongSelf.error = error;
@@ -591,6 +592,11 @@
         }];
     } //If it's video
     else if ([[options objectForKey:kMediaMimeTypeKey] isEqual:kVideoEventType]) {
+        [WGAnalytics tagAction:@"video_add"
+                        atView:@"people_cards" // what view is this?
+                 andTargetUser:nil
+                       atEvent:nil             // how do we get the current event
+               andEventMessage: nil];
         NSData *thumbnailData = [options objectForKey:kThumbnailDataKey];
         NSString *thumnailFileName = [options objectForKey:@"thumbnail"];
         NSMutableDictionary *mutableOptions = [NSMutableDictionary dictionaryWithDictionary:options];

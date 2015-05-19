@@ -585,6 +585,7 @@
     if (page >= self.eventMessages.count || page < 0) return;
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
     if (!eventMessage.id) return;
+<<<<<<< Updated upstream
     PhotoSettingsViewController *photoSettingsVc = [PhotoSettingsViewController new];
     photoSettingsVc.eventMsg = eventMessage;
     [self addChildViewController:photoSettingsVc];
@@ -594,10 +595,12 @@
 -(void) deletePhoto {
     NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
     if (page >= self.eventMessages.count || page < 0) return;
+    [WGAnalytics tagAction:@"delete" atView:@"event_conversation"];
     WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
     if (!eventMessage.id || !eventMessage.user.isCurrentUser) return;
-    [WGAnalytics tagEvent: @"Delete Highlight Tapped"];
+=======
     
+    [WGAnalytics tagEvent: @"Delete Highlight Tapped"];
     NSString *trash_action = @"photo_delete";
     if ([eventMessage objectForKey:kMediaMimeTypeKey] && [[eventMessage objectForKey:kMediaMimeTypeKey] isEqualToString:kVideoEventType]) {
         trash_action = @"video_delete";
@@ -605,6 +608,7 @@
     
     [WGAnalytics tagAction:trash_action atView:@"event_conversation"
              andTargetUser:nil atEvent:self.event andEventMessage:eventMessage];
+>>>>>>> Stashed changes
     [self.event removeMessage:eventMessage withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionDelete];

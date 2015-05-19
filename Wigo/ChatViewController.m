@@ -44,7 +44,8 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagView:@"chat_list"];
+    [WGAnalytics tagEvent:@"Chat View"];
+    [WGAnalytics tagView:@"chat_list" withTargetUser:nil];
     [self initializeTitleView];
     [self initializeRightBarButtonItem];
 }

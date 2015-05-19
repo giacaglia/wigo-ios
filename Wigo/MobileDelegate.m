@@ -49,7 +49,6 @@
     ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, &error);
     ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error) {
         if (granted && addressBookRef) {
-            [WGAnalytics tagAction:@"accepted_mobile_contacts" atView:@"mobile_contacts"];
             
             CFArrayRef all = ABAddressBookCopyArrayOfAllPeople(addressBookRef);
             CFIndex n = ABAddressBookGetPersonCount(addressBookRef);
@@ -83,7 +82,6 @@
             mobileArray([NSArray arrayWithArray:mutableMobileArray]);
         } else {
             
-            [WGAnalytics tagAction:@"declined_access_mobile" atView:@"mobile_contacts"];
             mobileArray([NSArray new]);
         }
     });

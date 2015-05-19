@@ -63,10 +63,12 @@ NSIndexPath *userIndex;
         [self loadTableView];
     }
     if ([self.currentTab isEqualToNumber:@2]) {
-        [WGAnalytics tagView:@"school_people"];
+        [WGAnalytics tagEvent:@"People Suggestions View"];
+        [WGAnalytics tagView:@"school_people" withTargetUser:self.user];
     }
     else if ([self.currentTab isEqualToNumber:@3]) {
-        [WGAnalytics tagView:@"friends"];
+        [WGAnalytics tagEvent:@"People Friends' View"];
+        [WGAnalytics tagView:@"friends" withTargetUser:self.user];
     }
     self.title = self.user.firstName;
     [self initializeTitleView];

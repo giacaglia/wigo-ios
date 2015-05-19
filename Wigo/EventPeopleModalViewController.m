@@ -114,6 +114,9 @@ int imageWidth;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [WGAnalytics tagSubview:@"people_cards"
+                     atView:@"where"
+             withTargetUser:nil];
     self.placesDelegate.createButton.hidden = YES;
     self.tabBarController.tabBar.hidden = YES;
     [self.navigationController setNavigationBarHidden:YES];
@@ -211,6 +214,11 @@ int imageWidth;
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.attendeesPhotosScrollView setContentOffset:CGPointMake((imageWidth + 10) * page, 0.0f) animated:animated];
     });
+    WGUser *user = (WGUser *)[self.event.attendees objectAtIndex:page];
+    [WGAnalytics tagViewAction:@"scroll"
+                     atSubview:@"people_cards"
+                        atView:@"where"
+                withTargetUser:user];
 }
 
 #pragma mark - UICollectionView Data Source
@@ -485,7 +493,13 @@ referenceSizeForFooterInSection:(NSInteger)section {
 #pragma mark - InviteView Delegate
 
 - (void)inviteTapped {
-    [WGAnalytics tagAction:@"tap" atView:@"event_people_modal"];
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Profile Card", @"Tap Source", nil];
+    [WGAnalytics tagEvent:@"Tap User" withDetails:options];
+    // self.user??
+    [WGAnalytics tagAction:@"event_invite"
+                 atSubview:@"people_cards"
+                    atView:@"where"
+            withTargetUser:self.user];
     
     self.user.isTapped = @YES;
     [WGProfile.currentUser tapUser:self.user withHandler:^(BOOL success, NSError *error) {

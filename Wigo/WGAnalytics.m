@@ -9,6 +9,8 @@
 #import "WGAnalytics.h"
 #import "WGI.h"
 
+static NSString *oldViewID;
+static NSString *oldSubviewID;
 @implementation WGAnalytics
 
 +(void) tagEvent:(NSString *)name {
@@ -26,77 +28,127 @@
 }
 
 
-+ (void)tagView:(NSString *)viewName
- withTargetUser:(WGUser *)targetUser {
-    if (!WGProfile.currentUser.isFetched) return;
-
-    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
-    [WGI.defaultTracker setUser:WGProfile.currentUser];
-    [WGI.defaultTracker setTargetUser:targetUser];
-    [WGI.defaultTracker postViewWithName:viewName];
++ (void)tagViewWithNoUser:(NSString *)viewName {
+    NSString *viewID = [[NSUUID UUID] UUIDString];
+    oldViewID = viewID;
+    [WGI.defaultTracker postViewWithName:viewName
+                               andViewID:viewID
+                                andGroup:nil
+                          andTargetGroup:nil
+                                 andUser:nil
+                           andTargetUser:nil];
 }
 
-
-+ (void)tagView:(NSString *)viewName
-withTargetGroup:(WGGroup *)targetGroup
++ (void)tagSubview:(NSString *)subviewName
+            atView:(NSString *)viewName
+    withTargetUser:(WGUser *)targetUser
 {
     if (!WGProfile.currentUser.isFetched) return;
-    
-    WGTracker *wgTracker = [WGI defaultTracker];
-    [wgTracker setGroup:WGProfile.currentUser.group];
-    [wgTracker setUser:WGProfile.currentUser];
-    [wgTracker setTargetGroup:targetGroup];
-    [wgTracker postViewWithName:viewName];
+    NSString *subviewID = [[NSUUID UUID] UUIDString];
+    oldSubviewID = subviewID;
+    [WGI.defaultTracker postSubviewWithName:subviewName
+                                 withViewID:subviewID
+                             atViewWithName:viewName
+                                  andViewID:oldViewID
+                                   andGroup:WGProfile.currentUser.group
+                             andTargetGroup:nil
+                                    andUser:WGProfile.currentUser
+                              andTargetUser:targetUser];
 }
 
-+ (void)tagView:(NSString *)viewName {
++ (void)tagView:(NSString *)viewName
+ withTargetUser:(WGUser *)targetUser
+{
     if (!WGProfile.currentUser.isFetched) return;
-    
-    WGTracker *wgTracker = [WGI defaultTracker];
-    [wgTracker setGroup:WGProfile.currentUser.group];
-    [wgTracker setUser:WGProfile.currentUser];
-    [wgTracker postViewWithName:viewName];
+    NSString *viewID = [[NSUUID UUID] UUIDString];
+    oldViewID = viewID;
+    [WGI.defaultTracker postViewWithName:viewName
+                               andViewID:viewID
+                                andGroup:WGProfile.currentUser.group
+                          andTargetGroup:nil
+                                 andUser:WGProfile.currentUser
+                           andTargetUser:targetUser];
+}
+
+
++ (void)tagAction:(NSString *)actionName
+        atSubview:(NSString *)subviewName
+           atView:(NSString *)viewName
+   withTargetUser:(WGUser *)targetUser {
+    if (!WGProfile.currentUser.isFetched) return;
+    [WGI.defaultTracker postAction:actionName
+                         atSubview:subviewName
+                      andSubviewID:oldSubviewID
+                            atView:viewName
+                         andViewID:oldViewID
+                          andGroup:WGProfile.currentUser.group
+                    andTargetGroup:nil
+                           andUser:WGProfile.currentUser
+                     andTargetUser:targetUser
+                           atEvent:nil
+                    atEventMessage:nil];
 }
 
 + (void)tagAction:(NSString *)actionName
            atView:(NSString *)viewName
-   withTargetUser:(WGUser *)targetUser {
+    andTargetUser:(WGUser *)targetUser
+          atEvent:(WGEvent *)event
+  andEventMessage:(WGEventMessage *)eventMessage {
     if (!WGProfile.currentUser.isFetched) return;
-    
-    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
-    [WGI.defaultTracker setUser:WGProfile.currentUser];
-    [WGI.defaultTracker setTargetUser:targetUser];
+    NSString *viewID = [[NSUUID UUID] UUIDString];
+    oldViewID = viewID;
     [WGI.defaultTracker postAction:actionName
-                            atView:viewName];
+                         atSubview:nil
+                      andSubviewID:nil
+                            atView:viewName
+                         andViewID:viewID
+                          andGroup:WGProfile.currentUser.group
+                    andTargetGroup:nil
+                           andUser:WGProfile.currentUser
+                     andTargetUser:targetUser
+                           atEvent:event
+                    atEventMessage:eventMessage];
 }
 
-+ (void)tagAction:(NSString *)actionName
-           atView:(NSString *)viewName {
++ (void)tagViewAction:(NSString *)actionName
+               atView:(NSString *)viewName
+        andTargetUser:(WGUser *)targetUser
+              atEvent:(WGEvent *)event
+      andEventMessage:(WGEventMessage *)eventMessage {
     if (!WGProfile.currentUser.isFetched) return;
-    
-    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
-    [WGI.defaultTracker setUser:WGProfile.currentUser];
-    [WGI.defaultTracker postAction:actionName
-                            atView:viewName];
+    NSString *viewID = [[NSUUID UUID] UUIDString];
+    oldViewID = viewID;
+    [WGI.defaultTracker postViewAction:actionName
+                             atSubview:nil
+                          andSubviewID:nil
+                                atView:viewName
+                             andViewID:viewID
+                              andGroup:WGProfile.currentUser.group
+                        andTargetGroup:nil
+                               andUser:WGProfile.currentUser
+                         andTargetUser:targetUser
+                               atEvent:event
+                        atEventMessage:eventMessage];
 }
 
-+ (void)tagAction:(NSString *)actionName
-   withTargetUser:(WGUser *)targetUser {
++ (void)tagViewAction:(NSString *)actionName
+            atSubview:(NSString *)subviewName
+               atView:(NSString *)viewName
+       withTargetUser:(WGUser *)targetUser {
     if (!WGProfile.currentUser.isFetched) return;
-    
-    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
-    [WGI.defaultTracker setUser:WGProfile.currentUser];
-    [WGI.defaultTracker setTargetUser:targetUser];
-    [WGI.defaultTracker postAction:actionName];
+    [WGI.defaultTracker postViewAction:actionName
+                             atSubview:subviewName
+                          andSubviewID:oldSubviewID
+                                atView:viewName
+                             andViewID:oldViewID
+                              andGroup:WGProfile.currentUser.group
+                        andTargetGroup:nil
+                               andUser:WGProfile.currentUser
+                         andTargetUser:targetUser
+                               atEvent:nil
+                        atEventMessage:nil];
 }
 
-+ (void)tagAction:(NSString *)actionName {
-    if (!WGProfile.currentUser.isFetched) return;
-    
-    [WGI.defaultTracker setGroup:WGProfile.currentUser.group];
-    [WGI.defaultTracker setUser:WGProfile.currentUser];
-    [WGI.defaultTracker postAction:actionName];
-}
 
 +(void) tagEvent:(NSString *)name withDetails:(NSDictionary *)details {
     if ([[WGProfile currentUser].googleAnalyticsEnabled boolValue] == NO) {

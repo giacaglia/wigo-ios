@@ -49,7 +49,6 @@ NSDictionary *letterToPeopleContactList;
     [super viewDidAppear:animated];
     isFiltered = NO;
     if (contactsTableView) [contactsTableView reloadData];
-    [WGAnalytics tagView:@"mobile_contacts"];
 }
 
 - (void)initializeTitle {

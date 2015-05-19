@@ -85,12 +85,9 @@ BOOL firstTimeLoading;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    if ([self isPeeking] && self.groupNumberID && self.groupName) {
-        [WGAnalytics tagView:@"where" withTargetGroup:[[WGGroup alloc] initWithJSON:@{@"name": self.groupName, @"id": self.groupNumberID}]];
-    }
-    else {
-        [WGAnalytics tagView:@"where"];
-    }
+    [WGAnalytics tagView:@"where" withTargetUser:nil];
+    NSString *isPeekingString = [self isPeeking] ? @"Yes" : @"No";
+    [WGAnalytics tagEvent:@"Where View" withDetails: @{ @"isPeeking": isPeekingString }];
     
     [self updateNavigationBar];
     [self.placesTableView reloadData];
@@ -386,8 +383,10 @@ BOOL firstTimeLoading;
 
 - (void) goHerePressed:(id)sender withHandler:(BoolResultBlock)handler {
     WGProfile.tapAll = NO;
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Places", @"Go Here Source", nil];
+    [WGAnalytics tagEvent:@"Go Here" withDetails:options];
+    [WGAnalytics tagAction:@"event_attend" atView:@"where" andTargetUser:nil atEvent:nil andEventMessage:nil];
 
-    [WGAnalytics tagAction:@"go_here" atView:@"where"];
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
     
@@ -416,7 +415,9 @@ BOOL firstTimeLoading;
 
 
 - (void) goingSomewhereElsePressed {
-    [WGAnalytics tagAction:@"create_event" atView:@"where"];
+    [WGAnalytics tagEvent:@"Go Somewhere Else Tapped"];
+    [WGAnalytics tagAction:@"event_create" atView:@"where"
+             andTargetUser:nil atEvent:nil andEventMessage:nil];
     [self.navigationController pushViewController:[WhereAreYouViewController new] animated:YES];
 }
 
@@ -1150,7 +1151,6 @@ BOOL firstTimeLoading;
     
     // First start doing the network request
     WGProfile.tapAll = NO;
-    [WGAnalytics tagAction:@"go_here" atView:@"where"];
     [self.view endEditing:YES];
     UIButton *buttonSender = (UIButton *)sender;
     

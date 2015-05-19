@@ -11,31 +11,49 @@
 #import "GAIDictionaryBuilder.h"
 #import "GAIFields.h"
 #import "WGProfile.h"
+#import "WGEventMessage.h"
 
 @interface WGAnalytics : NSObject
 
+// tagging subview
++ (void)tagSubview:(NSString *)subviewName
+            atView:(NSString *)viewName
+    withTargetUser:(WGUser *)targetUser;
 
-// Tagging views
++ (void)tagViewWithNoUser:(NSString *)viewName;
+
+// Tagging view
 + (void)tagView:(NSString *)viewName
  withTargetUser:(WGUser *)targetUser;
-+(void)tagView:(NSString *)viewName
-withTargetGroup:(WGGroup *)targetGroup;
-+(void) tagView:(NSString *)viewName;
 
-
-// Tagging actions
+// tagging actions
 + (void)tagAction:(NSString *)actionName
+        atSubview:(NSString *)subviewName
            atView:(NSString *)viewName
    withTargetUser:(WGUser *)targetUser;
+
+// Tagging action
 + (void)tagAction:(NSString *)actionName
-           atView:(NSString *)viewName;
-+(void)tagAction:(NSString *)actionName
-   withTargetUser:(WGUser *)targetUser;
-+(void) tagAction:(NSString *)actionName;
+           atView:(NSString *)viewName
+    andTargetUser:(WGUser *)targetUser
+          atEvent:(WGEvent *)event
+  andEventMessage:(WGEventMessage *)eventMessage;
+
++ (void)tagViewAction:(NSString *)actionName
+               atView:(NSString *)viewName
+        andTargetUser:(WGUser *)targetUser
+              atEvent:(WGEvent *)event
+      andEventMessage:(WGEventMessage *)eventMessage;
+
++ (void)tagViewAction:(NSString *)actionName
+            atSubview:(NSString *)subviewName
+               atView:(NSString *)viewName
+       withTargetUser:(WGUser *)targetUser;
 
 +(void) tagEvent:(NSString *)name;
 +(void) tagEvent:(NSString *)name withDetails:(NSDictionary *)details;
 +(void) tagScreen:(NSString *)name;
 +(void) setUser:(WGUser *)user;
+
 
 @end

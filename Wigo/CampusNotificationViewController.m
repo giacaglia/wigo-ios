@@ -65,7 +65,8 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    [WGAnalytics tagView:@"campus_notification"];
+    [WGAnalytics tagEvent:@"Campus Notification View"];
+    [WGAnalytics tagView:@"campus_notification" withTargetUser:nil];
 }
 
 - (void) initializeLeftBarButton {

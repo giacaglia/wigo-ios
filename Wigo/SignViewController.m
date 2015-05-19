@@ -42,12 +42,13 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [WGAnalytics tagView:@"sign"];
     self.alertShown = NO;
     self.fetchingProfilePictures = NO;
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     [self getFacebookTokensAndLoginORSignUp];
+    [WGAnalytics tagEvent:@"Sign View"];
+    [WGAnalytics tagViewWithNoUser:@"sign"];
 }
 
 - (void) changeAlertToNotShown {

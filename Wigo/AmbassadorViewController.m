@@ -86,7 +86,8 @@ typedef enum { DAY, WEEK, MONTH, ALLTIME } Period;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
-    [WGAnalytics tagView:@"ambassador"];
+    [WGAnalytics tagEvent:@"Ambassador View"];
+    [WGAnalytics tagView:@"ambassador" withTargetUser:nil];
     [self loadStats];
 }
 

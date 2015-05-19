@@ -30,11 +30,11 @@ static WGTracker *tracker;
         [sessionID isKindOfClass:[NSNull class]]) {
         [WGI changeSessionID];
     }
-    [[WGI defaultTracker] setValue:sessionID forKey:kSessionKey];
+    WGI.defaultTracker.defaultSessionID = sessionID;
 }
 
 
-#pragma mark - Helper Functions 
+#pragma mark - Helper Functions
 
 
 + (void)openedTheApp {

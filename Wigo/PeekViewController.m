@@ -21,8 +21,10 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     
-    [WGAnalytics tagView:@"peek"];
+    [WGAnalytics tagEvent: @"Peek View"];
+    [WGAnalytics tagView:@"peek" withTargetUser:nil];
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.schoolSections = [NSArray new];

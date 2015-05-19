@@ -41,7 +41,8 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [WGAnalytics tagView:@"invite"];
+    [WGAnalytics tagView:@"invite" withTargetUser:nil];
+    [WGAnalytics tagEvent:@"Invite View"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -280,7 +281,9 @@ heightForHeaderInSection:(NSInteger)section
                                   
                               }];
         user.isTapped = @YES;
-        [WGAnalytics tagAction:@"tap" atView:@"invite"];
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];
+        [WGAnalytics tagEvent:@"Tap User" withDetails:options];
+        [WGAnalytics tagAction:@"event_invite" atView:@"invite" andTargetUser:user atEvent:nil andEventMessage:nil];
     }
     
     [self.presentedUsers replaceObjectAtIndex:tag withObject:user];
