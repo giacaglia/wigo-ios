@@ -38,7 +38,7 @@
         NSString *name = [parsedString objectAtIndex:i];
         
         if(parsedString.count >= (i+2)) {
-            NSNumber *numberID = [f numberFromString:[parsedString objectAtIndex:(i + 1)]];
+            NSString *numberID = [parsedString objectAtIndex:(i + 1)];
             [navigateDictionary setObject:numberID forKey:name];
         }
         else {
