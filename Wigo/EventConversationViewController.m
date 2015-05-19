@@ -515,8 +515,8 @@
     self.facesCollectionView.clipsToBounds = NO;
     self.facesCollectionView.pagingEnabled = NO;
     
-    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, 8, 86, 66)];
-    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(8, 0, 27, 27)];
+    self.buttonCancel = [[UIButton alloc] initWithFrame:CGRectMake(0, 15, 86, 66)];
+    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(15, 0, 27, 27)];
     cancelImageView.image = [UIImage imageNamed:@"closeModalView"];
     [self.buttonCancel addSubview:cancelImageView];
     [self.buttonCancel addTarget:self action:@selector(cancelPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -534,7 +534,7 @@
     
     self.upVoteButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 56 , 0, 56, 52)];
     [self.view addSubview:self.upVoteButton];
-    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(16, 8, 30, 28)];
+    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(11, 15, 30, 28)];
     self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
     [self.upVoteButton addSubview:self.upvoteImageView];
     [self.upVoteButton addTarget:self action:@selector(upvotePressed) forControlEvents:UIControlEventTouchUpInside];
