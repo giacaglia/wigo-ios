@@ -119,6 +119,9 @@
     if(root && [root isEqualToString:@"messages"]) {
         return kWGTabChat;
     }
+    else if(root && [root isEqualToString:@"find"]) {
+        return kWGTabDiscover;
+    }
     if([objectName isEqualToString:@"messages"] ||
        [objectName isEqualToString:@"events"]) {
         return kWGTabHome;
