@@ -1216,6 +1216,33 @@ static WGUser *currentUser = nil;
 
 }
 
++(void) getLikesForEvent:(WGEvent *)event
+         andEventMessage:(WGObject *)message
+             withHandler:(WGCollectionResultBlock)handler {
+    if (!event.id || !message.id) {
+        return;
+    }
+    NSString *graphAPI = [NSString stringWithFormat:@"events/%@/messages/%@/votes",event.id, message.id];
+    [WGApi get:graphAPI withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (error) {
+            handler(nil, error);
+            return;
+        }
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
+        }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            handler(objects, dataError);
+        }
+    }];
+}
+
 +(void) getSuggestions:(WGCollectionResultBlock)handler {
     [WGApi get:@"users/suggestions/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
