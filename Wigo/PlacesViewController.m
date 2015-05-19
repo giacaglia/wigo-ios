@@ -1901,9 +1901,9 @@ BOOL firstTimeLoading;
 - (void)setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [OldOneLineEventCell height]);
     
-    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
+    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 15)];
     
-    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [OldOneLineEventCell height] - 20 - 7, self.frame.size.width + 10, 12)];
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [OldOneLineEventCell height] - 15 - 7, self.frame.size.width + 10, 12)];
     shadowImageView.image = [UIImage imageNamed:@"shadow"];
     [self.contentView addSubview:shadowImageView];
     
@@ -1941,13 +1941,11 @@ BOOL firstTimeLoading;
 - (void)setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [OldTwoLinesEventCell height]);
     
-    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 20)];
+    self.whiteView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height - 15)];
     
-    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [OldTwoLinesEventCell height] - 20 - 7, self.frame.size.width + 10, 12)];
+    UIImageView *shadowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(-5, [OldTwoLinesEventCell height] - 15 - 7, self.frame.size.width + 10, 12)];
     shadowImageView.image = [UIImage imageNamed:@"shadow"];
     [self.contentView addSubview:shadowImageView];
-    
-    
     
     self.eventNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 3, self.frame.size.width - 40, 50)];
     self.numberOfPeopleGoingLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 53, self.frame.size.width, 20)];
