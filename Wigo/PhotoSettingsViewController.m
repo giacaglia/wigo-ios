@@ -87,16 +87,33 @@
 
 
 -(void) cancelPressed {
-    [self willMoveToParentViewController:nil];
-    [self.view removeFromSuperview];
-    [self removeFromParentViewController];
+    [UIView animateWithDuration:0.5f animations:^{
+        self.bgView.alpha = 0.0f;
+    }];
+    
+    [UIView animateWithDuration:0.15f animations:^{
+        self.grayView.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, self.grayView.frame.size.height);
+    } completion:^(BOOL finished) {
+        [self willMoveToParentViewController:nil];
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+    }];
+   
 }
 
 -(void) deletePressed {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"deletePhoto" object:nil];
-    [self willMoveToParentViewController:nil];
-    [self.view removeFromSuperview];
-    [self removeFromParentViewController];
+    [UIView animateWithDuration:0.5f animations:^{
+        self.bgView.alpha = 0.0f;
+    }];
+    
+    [UIView animateWithDuration:0.15f animations:^{
+        self.grayView.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, self.grayView.frame.size.height);
+    } completion:^(BOOL finished) {
+        [self willMoveToParentViewController:nil];
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+    }];
 }
 
 -(void) didReceiveMemoryWarning {
