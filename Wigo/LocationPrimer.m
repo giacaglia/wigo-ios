@@ -125,7 +125,8 @@ static UIButton *mainButton;
         return;
     }
     if ([CLLocationManager locationServicesEnabled] &&
-        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse  ){
+        ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse  ||
+        [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways)){
         [LocationPrimer removePrimer];
         return;
     }
