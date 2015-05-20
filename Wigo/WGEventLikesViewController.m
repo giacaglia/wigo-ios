@@ -19,7 +19,6 @@
 @interface WGEventLikesViewController ()
 
 @property (nonatomic) UIImageView *backgroundImageView;
-@property (nonatomic) UIImageView *upvoteImageView;
 
 @property (nonatomic) UIImageView *upArrowImageView;
 
@@ -75,18 +74,8 @@ static NSString * kWGEventLikesCellIdentifier = @"WGEventLikesCellIdentifier";
     
     self.tableView.frame = rect;
     
-    
-    
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.headerView];
-    
-    self.upvoteImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width-45,
-                                                                         15,
-                                                                         30,
-                                                                         28)];
-    self.upvoteImageView.image = [UIImage imageNamed:@"heart"];
-    [self.headerView addSubview:self.upvoteImageView];
-    
     
     
     self.numberOfVotesLabel.textColor = UIColor.whiteColor;
