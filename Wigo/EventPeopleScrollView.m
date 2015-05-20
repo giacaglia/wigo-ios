@@ -207,12 +207,14 @@
                 scrollCell.alpha = 1.0f;
                 [scrollCell.imageButton addTarget:self action:@selector(invitePressed) forControlEvents:UIControlEventTouchUpInside];
             }
-            scrollCell.imgViewLabel.hidden = NO;
             scrollCell.imgView.layer.borderColor = [FontProperties getBlueColor].CGColor;
             scrollCell.imgView.layer.borderWidth = 1.0f;
             scrollCell.imgView.layer.cornerRadius = scrollCell.imgView.frame.size.width/2.0f;
-            scrollCell.blueOverlayView.hidden = YES;
-            scrollCell.goHereLabel.hidden = YES;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [scrollCell.imgViewLabel setHidden:NO];
+                [scrollCell.blueOverlayView setHidden:YES];
+                [scrollCell.goHereLabel setHidden:YES];
+            });
             scrollCell.profileNameLabel.text = nil;
         }
         else {
@@ -222,9 +224,11 @@
             scrollCell.imageButton.tag = self.rowOfEvent;
             [scrollCell.imageButton addTarget:self action:@selector(goHerePressed:) forControlEvents:UIControlEventTouchUpInside];
             [scrollCell.imgView setImageWithURL:WGProfile.currentUser.smallCoverImageURL];
-            scrollCell.blueOverlayView.hidden = NO;
-            scrollCell.goHereLabel.hidden = NO;
-            scrollCell.profileNameLabel.alpha = 0.0f;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [scrollCell.blueOverlayView setHidden:NO];
+                [scrollCell.goHereLabel setHidden:NO];
+                scrollCell.profileNameLabel.alpha = 0.0f;
+            });
         }
     }
     else {
@@ -232,8 +236,11 @@
         [scrollCell.imageButton removeTarget:nil
                                       action:NULL
                             forControlEvents:UIControlEventAllEvents];
-        scrollCell.blueOverlayView.hidden = YES;
-        scrollCell.goHereLabel.hidden = YES;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [scrollCell.blueOverlayView setHidden:YES];
+            [scrollCell.goHereLabel setHidden:YES];
+            scrollCell.profileNameLabel.alpha = 0.0f;
+        });
         [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         scrollCell.profileNameLabel.alpha = 1.0f;
         WGUser *attendee = (WGUser *)[self.event.attendees objectAtIndex:indexPath.item];
