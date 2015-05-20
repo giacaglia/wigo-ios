@@ -118,6 +118,7 @@ static BOOL isLocal = YES;
 }
 
 -(NSString *) key {
+    return @"00269TaRFhj7aZhZTUq6zPSSXw";
     if ([self objectForKey:kKeyKey]) {
         return [self objectForKey:kKeyKey];
     }
