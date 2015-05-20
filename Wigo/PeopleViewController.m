@@ -431,14 +431,14 @@ viewForHeaderInSection:(NSInteger)section
 - (void)rejectPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:buttonSender.tag];
-    user.isFriend = nil;
+    user.isFriend = @NO;
     user.friendRequest = kFriendRequestReceived;
     [WGProfile.currentUser rejectFriendRequestForUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
-        user.isFriend = nil;
+        user.isFriend = @NO;
         user.friendRequest = kFriendRequestReceived;
     }];
     [self.friendRequestUsers replaceObjectAtIndex:buttonSender.tag withObject:user];
