@@ -237,9 +237,9 @@ NSIndexPath *userIndex;
     
     NSDictionary *userInfo = options[@"objects"];
     
-    if(userInfo[@"users"]) {
+    if(userInfo[@"user"]) {
         
-        NSString *userId = userInfo[@"users"];
+        NSString *userId = userInfo[@"user"];
         
         [WGApi get:[NSString stringWithFormat:@"users/%@", userId]
            withHandler:^(NSDictionary *jsonResponse, NSError *error) {
