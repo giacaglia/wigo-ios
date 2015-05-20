@@ -65,6 +65,7 @@
 }
 
 - (void)fetchMetaWithHandler:(BoolResultBlock)handler {
+    if (!WGProfile.currentUser.key) return;
     [WGApi get:@"users/me/meta/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) return;
         if ([jsonResponse objectForKey:@"last_notification"]) {

@@ -155,6 +155,9 @@ static UIButton *mainButton;
     if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
         [locationManager requestWhenInUseAuthorization];
     }
+    else {
+        [locationManager startUpdatingLocation];
+    }
 }
 
 - (void)locationManager:(CLLocationManager *)manager

@@ -45,6 +45,7 @@ dispatch_queue_t postQueue;
 
 static NSString *baseURLString = @"https://api2.wigo.us/api/%@";
 static CLLocationManager *locationManager;
+#import "LocationPrimer.h"
 
 @implementation WGApi
 
@@ -341,7 +342,7 @@ withParameters:(id)parameters
     [serializer setValue:kWigoApiVersion forHTTPHeaderField:kWigoApiVersionKey];
     [serializer setValue:kDeviceType forHTTPHeaderField:kWigoDeviceKey];
     [serializer setValue:kContentType forHTTPHeaderField:kContentTypeKey];
-    [serializer setValue:WGApi.getGeoVal forHTTPHeaderField:kGeoLocationKey];
+    if ([LocationPrimer shouldFetchEvents]) [serializer setValue:WGApi.getGeoVal forHTTPHeaderField:kGeoLocationKey];
     if (!shouldPassKey) {
         [serializer setValue:kWigoApiKey forHTTPHeaderField:kWigoApiKeyKey];
         [serializer setValue:WGProfile.currentUser.key forHTTPHeaderField:kWigoUserKey];
