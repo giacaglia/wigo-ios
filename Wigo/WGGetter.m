@@ -72,8 +72,8 @@
             NSDate *lastNotification = [WGGetter getDateFromString:notificationString];
             [TabBarAuxiliar checkIndex:kIndexOfProfile forDate:lastNotification];
         }
-        if ([jsonResponse objectForKey:@"last_message"]) {
-            NSString *messageString = [jsonResponse objectForKey:@"last_message"];
+        if ([jsonResponse objectForKey:@"last_message_received"]) {
+            NSString *messageString = [jsonResponse objectForKey:@"last_message_received"];
             NSDate *lastMessage = [WGGetter getDateFromString:messageString];
             [TabBarAuxiliar checkIndex:kIndexOfChats forDate:lastMessage];
         }

@@ -33,8 +33,8 @@
 #define kModifiedKey @"modified"
 #define kLastNameKey @"last_name"
 #define kIsGoingOutKey @"is_goingout"
-#define kLastMessageReadKey @"last_message_read"
-#define kLastNotificationReadKey @"last_notification_read"
+#define kLastMessageReadKey @"last_message_received"
+#define kLastNotificationReadKey @"last_notificationwi"
 #define kLastUserReadKey @"last_user_read"
 
 #define kImagesKey @"images"
@@ -67,7 +67,7 @@
 #define kUsernameKey @"username" //: "jelman"
 #define kIsAttendingKey @"is_attending"
 #define kPeriodWentOutKey @"period_went_out"
-#define kNumMutualFriends @"num_mutual_friends"
+#define kNumMutualFriends @"num_friends_in_common"
 #define kStatusKey @"status"
 #define kWaitListPosKey @"wait_list_position"
 
@@ -183,7 +183,8 @@ static WGUser *currentUser = nil;
 }
 
 -(NSString *) lastName {
-    return [self objectForKey:kLastNameKey];
+    if ([self objectForKey:kLastNameKey]) return [self objectForKey:kLastNameKey];
+    return @"";
 }
 
 -(void) setFirstName:(NSString *)firstName {
@@ -191,7 +192,8 @@ static WGUser *currentUser = nil;
 }
 
 -(NSString *) firstName {
-    return [self objectForKey:kFirstNameKey];
+    if ([self objectForKey:kFirstNameKey]) return [self objectForKey:kFirstNameKey];
+    return @"";
 }
 
 -(NSString *) fullName {

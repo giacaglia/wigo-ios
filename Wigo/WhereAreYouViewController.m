@@ -56,7 +56,7 @@
     [self.view addSubview:self.whereAreYouGoingTextField];
     [self.whereAreYouGoingTextField becomeFirstResponder];
     
-    self.eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 64 + 90, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)];
+    self.eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 64 + 90, [UIScreen mainScreen].bounds.size.width, self.view.frame.size.height - 64 - 90)];
     [self.view addSubview:self.eventDetails];
     
     self.privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 10, 240, 40)];
@@ -77,7 +77,7 @@
     [self.eventDetails addSubview:self.invitePeopleLabel];
     
     if ([UIScreen mainScreen].bounds.size.height == 480) {
-        self.eventDetails.frame = CGRectMake(0, 67, [UIScreen mainScreen].bounds.size.width, 30);
+        self.eventDetails.frame = CGRectMake(0, 64 + 75, [UIScreen mainScreen].bounds.size.width, 30);
     }
     
 //    self.wgSwitchView = [[WGSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 90, 240, 40)];

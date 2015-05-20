@@ -36,7 +36,9 @@
     self.bgView.alpha = 0.0f;
     [self.view addSubview:self.bgView];
    
-    int yPosition = [UIScreen mainScreen].bounds.size.height - 4*68 - 3*7 - 2*1;
+    int sizeOfbuttons = MIN([UIScreen mainScreen].bounds.size.width*0.15, 68);
+
+    int yPosition = [UIScreen mainScreen].bounds.size.height - 4*sizeOfbuttons - 3*7 - 2*1;
 
     _photoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(35, 0, [UIScreen mainScreen].bounds.size.width - 70, [UIScreen mainScreen].bounds.size.width - 70)];
     _photoImageView.center = CGPointMake(_photoImageView.center.x, yPosition/2);
@@ -54,7 +56,7 @@
     
     yPosition = 7;
     
-    UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, [UIScreen mainScreen].bounds.size.width - 12, 68)];
+    UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, [UIScreen mainScreen].bounds.size.width - 12, sizeOfbuttons)];
     deleteButton.backgroundColor = UIColor.whiteColor;
     [deleteButton addTarget:self action:@selector(deletePressed) forControlEvents:UIControlEventTouchUpInside];
     [deleteButton setTitle:@"Delete" forState:UIControlStateNormal];
@@ -64,9 +66,9 @@
     deleteButton.titleLabel.font = [FontProperties getTitleFont];
     [self.grayView addSubview:deleteButton];
 
-    yPosition += 68;
+    yPosition += sizeOfbuttons;
     
-    UIButton *cropPhotoButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, [UIScreen mainScreen].bounds.size.width - 12, 68)];
+    UIButton *cropPhotoButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, [UIScreen mainScreen].bounds.size.width - 12, sizeOfbuttons)];
     cropPhotoButton.backgroundColor = UIColor.whiteColor;
     [cropPhotoButton addTarget:self action:@selector(cropPhotoPressed) forControlEvents:UIControlEventTouchUpInside];
     [cropPhotoButton setTitle:@"Crop Photo" forState:UIControlStateNormal];
@@ -76,9 +78,9 @@
     cropPhotoButton.layer.borderWidth = 0.5f;
     [self.grayView addSubview:cropPhotoButton];
 
-    yPosition += 68;
+    yPosition += sizeOfbuttons;
     
-    UIButton *makeCoverButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, [UIScreen mainScreen].bounds.size.width - 12, 68)];
+    UIButton *makeCoverButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, [UIScreen mainScreen].bounds.size.width - 12, sizeOfbuttons)];
     makeCoverButton.backgroundColor = UIColor.whiteColor;
     [makeCoverButton addTarget:self action:@selector(makeCoverPressed) forControlEvents:UIControlEventTouchUpInside];
     [makeCoverButton setTitle:@"Make Cover" forState:UIControlStateNormal];
@@ -88,9 +90,9 @@
     makeCoverButton.layer.borderWidth = 0.5f;
     [self.grayView addSubview:makeCoverButton];
 
-    yPosition += 68 + 7;
+    yPosition += sizeOfbuttons + 7;
     
-    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, [UIScreen mainScreen].bounds.size.width - 12, 68)];
+    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(6, yPosition, [UIScreen mainScreen].bounds.size.width - 12, sizeOfbuttons)];
     cancelButton.backgroundColor = [UIColor whiteColor];
     [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
     [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
@@ -101,7 +103,7 @@
     [self.grayView addSubview:cancelButton];
 
     [UIView animateWithDuration:0.15f animations:^{
-        int yPosition = [UIScreen mainScreen].bounds.size.height - 4*68 - 3*7 - 2*1;
+        int yPosition = [UIScreen mainScreen].bounds.size.height - 4*sizeOfbuttons - 3*7 - 2*1;
         self.grayView.frame = CGRectMake(0, yPosition, self.view.frame.size.width, self.view.frame.size.height - yPosition);
         self.bgView.alpha = 1.0f;
     }];
