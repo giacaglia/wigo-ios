@@ -1379,7 +1379,7 @@ static WGUser *currentUser = nil;
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
     [WGApi post:@"users/me/blocks/"
- withParameters:@{ @"block_id" :  user.id }
+ withParameters:@{ @"block_id" :  user.id, @"type": type}
      andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             user.isBlocked = @YES;
