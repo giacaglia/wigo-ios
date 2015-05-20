@@ -1488,7 +1488,7 @@ withParameters:@{ @"invited_id" : user.id }
     if (!user.id) {
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi delete:@"users/me/friends/" withArguments:@{ @"friend_id" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi delete:@"users/me/friends/" withParameters:@{ @"friend_id" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
         }
         handler(error == nil, error);
