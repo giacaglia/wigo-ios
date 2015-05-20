@@ -186,6 +186,7 @@ NSDate *firstLoggedTime;
         currentInstallation.badge = 0;
         [currentInstallation saveEventually];
     }
+    [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {}];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"startPrimer" object:nil];
     [FBSDKAppEvents activateApp];
 }
