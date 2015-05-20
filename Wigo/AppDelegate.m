@@ -269,7 +269,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     
     [self dismissEverythingWithUserInfo:userInfo];
     NSString *navigateString = [userInfo objectForKey:@"navigate"];
-    [self navigate:navigateString];
+    if (navigateString) [self navigate:navigateString];
 }
 
 - (BOOL)doesUserInfo:(NSDictionary *)userInfo hasString:(NSString *)checkString {
