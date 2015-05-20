@@ -33,7 +33,7 @@
 #define kModifiedKey @"modified"
 #define kLastNameKey @"last_name"
 #define kIsGoingOutKey @"is_goingout"
-#define kLastMessageReadKey @"last_message_read"
+#define kLastMessageReadKey @"last_message_received"
 #define kLastNotificationReadKey @"last_notification_read"
 #define kLastUserReadKey @"last_user_read"
 
