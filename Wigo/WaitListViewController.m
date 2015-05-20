@@ -78,7 +78,7 @@
     [self.view addSubview:skipLabel];
     
     UILabel *shareAppNow = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 70 - 69, self.view.frame.size.width, 69)];
-    shareAppNow.text = @"If you share this app now to 5 of your\nfriends we will reward you with\nimmediate access!";
+    shareAppNow.text = @"If you share Wigo now to at least 8 of your\nfriends we will reward you with\nimmediate access!";
     shareAppNow.numberOfLines = 0;
     shareAppNow.textAlignment = NSTextAlignmentCenter;
     shareAppNow.font = [FontProperties lightFont:16.0f];
