@@ -1449,14 +1449,14 @@ withParameters:@{ @"invited_id" : user.id }
 }
 
 -(void) unfollow:(WGUser *)user withHandler:(BoolResultBlock)handler {
-    user.isFriend = nil;
-    user.friendRequest = nil;
+    user.isFriend = @NO;
+    user.friendRequest = @"";
     [WGApi delete:[NSString stringWithFormat:@"users/me/friends/"]
     withParameters:@{ @"friend_id": user.id}
        andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            user.isFriend = nil;
-            user.friendRequest = nil;
+            user.isFriend = @NO;
+            user.friendRequest = @"";
         }
         handler(error == nil, error);
     }];
