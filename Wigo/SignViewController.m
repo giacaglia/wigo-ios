@@ -272,6 +272,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
             }
             return;
         }
+        [NetworkFetcher.defaultGetter fetchFriendsIds];
         [TabBarAuxiliar clearOutAllNotifications];
         [strongSelf presentPushNotification];
     }];
