@@ -65,9 +65,10 @@ static UIButton *mainButton;
     UIView *window = [UIApplication sharedApplication].delegate.window;
     
     LocationPrimer.defaultBlackOverlay.frame = window.frame;
-
+    LocationPrimer.defaultBlackOverlay.hidden = NO;
     LocationPrimer.defaultTitleLabel.text = kPleaseEnableLocation;
     [window bringSubviewToFront:LocationPrimer.defaultTitleLabel];
+    LocationPrimer.defaultTitleLabel.hidden = NO;
     
     LocationPrimer.defaultButton.layer.borderColor = UIColor.clearColor.CGColor;
     LocationPrimer.defaultButton.backgroundColor = [FontProperties getBlueColor];
@@ -75,12 +76,7 @@ static UIButton *mainButton;
     [LocationPrimer.defaultButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
     [LocationPrimer.defaultButton addTarget:[LocationPrimer class] action:@selector(enableLocationPressed:) forControlEvents:UIControlEventTouchUpInside];
     [window bringSubviewToFront:LocationPrimer.defaultButton];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [LocationPrimer.defaultBlackOverlay setHidden:NO];
-        [LocationPrimer.defaultTitleLabel setHidden:NO];
-        [LocationPrimer.defaultButton setHidden:NO];
-    });
+    LocationPrimer.defaultButton.hidden = NO;
 
 }
 
@@ -88,8 +84,10 @@ static UIButton *mainButton;
     UIView *window = [UIApplication sharedApplication].delegate.window;
     
     LocationPrimer.defaultBlackOverlay.frame = window.frame;
+    LocationPrimer.defaultBlackOverlay.hidden = NO;
     
     LocationPrimer.defaultTitleLabel.text = @"To use Wigo, please go to \nSettings > Privacy > Location Services, and switch Wigo to ON.";
+    LocationPrimer.defaultTitleLabel.hidden = NO;
     
     LocationPrimer.defaultButton.layer.borderColor = UIColor.whiteColor.CGColor;
     LocationPrimer.defaultButton.backgroundColor = UIColor.clearColor;
@@ -98,23 +96,15 @@ static UIButton *mainButton;
     [LocationPrimer.defaultButton addTarget:[LocationPrimer class] action:@selector(phoneSettingsPressed) forControlEvents:UIControlEventTouchUpInside];
     [window bringSubviewToFront:LocationPrimer.defaultButton];
     LocationPrimer.defaultButton.alpha = 1.0f;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [LocationPrimer.defaultBlackOverlay setHidden:NO];
-        [LocationPrimer.defaultTitleLabel setHidden:NO];
-        [LocationPrimer.defaultButton setHidden:NO];
-    });
+    LocationPrimer.defaultButton.hidden = NO;
 }
 
 +(void) removePrimer {
     if (!LocationPrimer.defaultBlackOverlay.isHidden) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [LocationPrimer.defaultBlackOverlay setHidden:YES];
-            [LocationPrimer.defaultButton setHidden:YES];
-            [LocationPrimer.defaultTitleLabel setHidden:YES];
-        });
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
-
+        LocationPrimer.defaultBlackOverlay.hidden = YES;
+        LocationPrimer.defaultButton.hidden = YES;
+        LocationPrimer.defaultTitleLabel.hidden = YES;
     }
 }
 
