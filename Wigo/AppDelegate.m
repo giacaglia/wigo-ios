@@ -241,6 +241,8 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
             [self handleNavigationForUserInfo:userInfo];
         }
     }
+    [UIApplication sharedApplication].applicationIconBadgeNumber = [[[userInfo objectForKey:@"aps"] objectForKey: @"badgecount"] intValue];
+
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     if (application.applicationState == UIApplicationStateActive) {
