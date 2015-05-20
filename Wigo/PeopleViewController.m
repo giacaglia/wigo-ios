@@ -493,6 +493,7 @@ viewForHeaderInSection:(NSInteger)section
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         strongSelf.fetching = NO;
         if (error) return;
+        NetworkFetcher.defaultGetter.suggestions = collection;
         strongSelf.users = collection;
         [strongSelf cleanupUsers];
         dispatch_async(dispatch_get_main_queue(), ^(void) {
