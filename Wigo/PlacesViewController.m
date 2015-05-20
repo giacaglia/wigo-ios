@@ -1634,10 +1634,10 @@ BOOL firstTimeLoading;
             self.numberOfPeopleGoingLabel.frame = CGRectMake(15, 36.5  + 3, self.frame.size.width - 40, 17);
             self.lineView.frame = CGRectMake(15, 56.5 + 16.5, 85, 0.5);
         }
+        [self.privacyLockImageView setHidden:!_event.isPrivate];
+        [self.privacyLockButton setEnabled:_event.isPrivate];
     });
     
-    self.privacyLockImageView.hidden = !_event.isPrivate;
-    self.privacyLockButton.enabled = _event.isPrivate;
     self.eventPeopleScrollView.event = _event;
 }
 

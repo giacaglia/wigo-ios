@@ -235,11 +235,7 @@ ProfileViewController *profileViewController;
     [self fetchMessages:NO];
 }
 
-- (void) goBack {
-
-    self.navigationController.navigationBar.barTintColor = [UIColor clearColor];
-    self.navigationController.navigationBar.translucent = YES;
-    
+- (void) goBack {    
     [self.navigationController popViewControllerAnimated:YES];
 }
 

@@ -60,7 +60,6 @@ JSQMessagesBubbleImage *grayBubble;
     [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor]
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
-    self.navigationController.navigationBar.translucent = NO;
     
     [self fetchFirstPageMessages];
 }
@@ -240,8 +239,6 @@ JSQMessagesBubbleImage *grayBubble;
 }
 
 - (void) goBack {
-    self.navigationController.navigationBar.barTintColor = UIColor.clearColor;
-    self.navigationController.navigationBar.translucent = YES;
     self.navigationController.navigationBarHidden = self.hideNavBar;
 
     [self.navigationController popViewControllerAnimated:YES];
@@ -251,10 +248,7 @@ JSQMessagesBubbleImage *grayBubble;
     ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     self.user.isFriend = @YES;
     profileViewController.user = self.user;
-    
-    self.navigationController.navigationBar.barTintColor = UIColor.clearColor;
-    self.navigationController.navigationBar.translucent = YES;
-    
+        
     [self.navigationController pushViewController:profileViewController animated:YES];
 }
 
