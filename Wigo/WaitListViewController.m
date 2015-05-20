@@ -123,6 +123,7 @@
  didCompleteWithResults:(NSDictionary *)result {
     WGProfile.currentUser.status = @"active";
     [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
+    [TabBarAuxiliar clearOutAllNotifications];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

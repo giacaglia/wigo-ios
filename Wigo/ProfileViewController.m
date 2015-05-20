@@ -1108,7 +1108,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (!WGProfile.currentUser.lastNotificationRead ||
         [self.lastNotificationRead compare:WGProfile.currentUser.lastNotificationRead] == NSOrderedDescending ||
         !WGProfile.currentUser.lastNotificationRead) {
-        WGProfile.currentUser.lastNotificationRead = self.lastNotificationRead;
+        if (!self.lastNotificationRead) WGProfile.currentUser.lastNotificationRead = [NSDate date];
+        else WGProfile.currentUser.lastNotificationRead = self.lastNotificationRead;
     }
     [TabBarAuxiliar checkIndex:kIndexOfProfile forDate:self.lastNotificationRead];
 }
