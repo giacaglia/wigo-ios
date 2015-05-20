@@ -626,12 +626,8 @@
                 [[WGError sharedInstance] logError:error forAction:WGActionPost];
             }
         }];
-        NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
-        f.numberStyle = NSNumberFormatterDecimalStyle;
-        NSNumber *myNumber = [f numberFromString:self.numberOfVotesLabel.text];
-        myNumber = [NSNumber numberWithInt:(myNumber.intValue + 1)];
-        self.voteInfoButton.hidden = NO;
-        self.numberOfVotesLabel.text = [EventConversationViewController stringForLikes:[myNumber intValue]];
+        
+        self.numberOfVotesLabel.text = [EventConversationViewController stringForLikes:[eventMessage.upVotes intValue]];
     }
     
 }
