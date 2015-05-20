@@ -10,7 +10,7 @@
 #import "Globals.h"
 #import <CoreLocation/CoreLocation.h>
 
-#define kPleaseEnableLocation @"Please allow location\nservices so we can show you\nsweet stuff nearby";
+#define kPleaseEnableLocation @"Please allow location\nservices so we can show you sweet stuff nearby";
 
 
 static CLLocationManager *locationManager;
@@ -89,14 +89,20 @@ static UIButton *mainButton;
     LocationPrimer.defaultTitleLabel.text = @"To use Wigo, please go to \nSettings > Privacy > Location Services, and switch Wigo to ON.";
     LocationPrimer.defaultTitleLabel.hidden = NO;
     
-    LocationPrimer.defaultButton.layer.borderColor = UIColor.whiteColor.CGColor;
-    LocationPrimer.defaultButton.backgroundColor = UIColor.clearColor;
-    [LocationPrimer.defaultButton setTitle:@"Settings" forState:UIControlStateNormal];
-    [LocationPrimer.defaultButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
-    [LocationPrimer.defaultButton addTarget:[LocationPrimer class] action:@selector(phoneSettingsPressed) forControlEvents:UIControlEventTouchUpInside];
-    [window bringSubviewToFront:LocationPrimer.defaultButton];
-    LocationPrimer.defaultButton.alpha = 1.0f;
-    LocationPrimer.defaultButton.hidden = NO;
+    if  ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+        LocationPrimer.defaultButton.layer.borderColor = UIColor.whiteColor.CGColor;
+        LocationPrimer.defaultButton.backgroundColor = UIColor.clearColor;
+        [LocationPrimer.defaultButton setTitle:@"Settings" forState:UIControlStateNormal];
+        [LocationPrimer.defaultButton removeTarget:nil action:NULL forControlEvents:UIControlEventAllEvents];
+        [LocationPrimer.defaultButton addTarget:[LocationPrimer class] action:@selector(phoneSettingsPressed) forControlEvents:UIControlEventTouchUpInside];
+        [window bringSubviewToFront:LocationPrimer.defaultButton];
+        LocationPrimer.defaultButton.alpha = 1.0f;
+        LocationPrimer.defaultButton.hidden = NO;
+    }
+    else {
+        LocationPrimer.defaultButton.hidden = YES;
+    }
+ 
 }
 
 +(void) removePrimer {
@@ -109,7 +115,9 @@ static UIButton *mainButton;
 }
 
 +(void) phoneSettingsPressed {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    if  ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+    }
 }
 
 +(void) startPrimer {

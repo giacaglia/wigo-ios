@@ -398,7 +398,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     
     [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:kPushNotificationKey];
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
         UIUserNotificationCategory *category = [self registerActions];
         NSSet *categories = [NSSet setWithObjects:category, nil];
@@ -408,10 +407,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
          (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
     }
-#else
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-#endif
+
     [self.blurredView removeFromSuperview];
     [self navigate];
 }
