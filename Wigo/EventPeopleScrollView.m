@@ -239,7 +239,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [scrollCell.blueOverlayView setHidden:YES];
             [scrollCell.goHereLabel setHidden:YES];
-            scrollCell.profileNameLabel.alpha = 0.0f;
+            scrollCell.profileNameLabel.alpha = 1.0f;
         });
         [scrollCell.imageButton addTarget:self action:@selector(chooseUser:) forControlEvents:UIControlEventTouchUpInside];
         scrollCell.profileNameLabel.alpha = 1.0f;

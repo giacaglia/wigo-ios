@@ -241,7 +241,6 @@ UIViewController *webViewController;
     int initialPositionIcon;
     if ([UIScreen mainScreen].bounds.size.height == 480) initialPositionIcon = line2View.frame.origin.y + 10;
     else initialPositionIcon = [UIScreen mainScreen].bounds.size.height;
-
     
     UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, initialPositionIcon, 50, 50)];
     iconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
