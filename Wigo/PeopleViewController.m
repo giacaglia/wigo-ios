@@ -320,6 +320,8 @@ NSIndexPath *userIndex;
             WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:indexPath.item];
             if (!user) return cell;
             cell.user = user;
+            cell.acceptButton.tag = (int)indexPath.row;
+            cell.rejectButton.tag = (int)indexPath.row;
             [cell.acceptButton addTarget:self
                                               action:@selector(acceptPressed:)
                                     forControlEvents:UIControlEventTouchUpInside];
