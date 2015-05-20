@@ -97,6 +97,10 @@ NSDate *firstLoggedTime;
 
 - (void)navigate:(NSString *)navigateString {
     
+    if(!navigateString || [navigateString isEqual:[NSNull null]] || ![navigateString isKindOfClass:[NSString class]]) {
+        return;
+    }
+    
     NSDictionary *navigationDict = [WGNavigateParser dictionaryFromString:navigateString];
     navigationDict = [WGNavigateParser userInfoFromString:navigateString];
     
@@ -269,7 +273,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     
     [self dismissEverythingWithUserInfo:userInfo];
     NSString *navigateString = [userInfo objectForKey:@"navigate"];
-    if (navigateString) [self navigate:navigateString];
+    [self navigate:navigateString];
 }
 
 - (BOOL)doesUserInfo:(NSDictionary *)userInfo hasString:(NSString *)checkString {
