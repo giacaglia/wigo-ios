@@ -627,6 +627,9 @@
             }
         }];
         
+        if(eventMessage.upVotes.intValue > 0) {
+            self.voteInfoButton.hidden = NO;
+        }
         self.numberOfVotesLabel.text = [EventConversationViewController stringForLikes:[eventMessage.upVotes intValue]];
     }
     
