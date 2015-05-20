@@ -426,7 +426,7 @@ static BOOL isLocal = YES;
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     [parameters setObject:self.facebookId forKey:kFacebookIdKey];
     [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
-    [parameters setObject:self.email forKey:kEmailKey];
+    if (self.email) [parameters setObject:self.email forKey:kEmailKey];
     
     if (self.firstName) {
         [parameters setObject:self.firstName forKey:kFirstNameKey];

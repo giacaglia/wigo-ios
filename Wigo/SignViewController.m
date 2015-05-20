@@ -93,7 +93,7 @@
          [WGSpinnerView removeDancingGFromCenterView:self.view];
          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
          if (!error) {
-             WGProfile.currentUser.email = result[@"email"];
+             if (result[@"email"]) WGProfile.currentUser.email = result[@"email"];
              self.fbID = result[@"id"];
              self.profilePic = [NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?width=640&height=640", self.fbID];
              WGProfile.currentUser.facebookId = self.fbID;
