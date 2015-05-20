@@ -703,11 +703,11 @@ viewForHeaderInSection:(NSInteger)section
     if (user.state == BLOCKED_USER_STATE) {
         [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
         [self.followPersonButton setTitle:@"Blocked" forState:UIControlStateNormal];
-        [self.followPersonButton setTitleColor:[FontProperties getOrangeColor] forState:UIControlStateNormal];
+        [self.followPersonButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
         self.followPersonButton.titleLabel.font =  [FontProperties scMediumFont:12.0f];
         self.followPersonButton.titleLabel.textAlignment = NSTextAlignmentCenter;
         self.followPersonButton.layer.borderWidth = 1;
-        self.followPersonButton.layer.borderColor = [FontProperties getOrangeColor].CGColor;
+        self.followPersonButton.layer.borderColor = [FontProperties getBlueColor].CGColor;
         self.followPersonButton.layer.cornerRadius = 8;
         return;
     }
