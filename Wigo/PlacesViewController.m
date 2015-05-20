@@ -1620,7 +1620,7 @@ BOOL firstTimeLoading;
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.verifiedView.hidden = !event.isVerified;
+        [self.verifiedView setHidden:!event.isVerified];
         CGSize size = [self.numberOfPeopleGoingLabel.text sizeWithAttributes:
                        @{NSFontAttributeName:[FontProperties lightFont:15.0f]}];
         self.verifiedView.frame = CGRectMake(15 + size.width + 5, self.numberOfPeopleGoingLabel.frame.origin.y + (17 - 11)/2, self.verifiedView.frame.size.width, self.verifiedView.frame.size.height);
