@@ -1560,6 +1560,7 @@
     
     self.postButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 110, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     [self.postButton addTarget:self action:@selector(postPressed) forControlEvents:UIControlEventTouchUpInside];
+    
     UILabel *postLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 100, self.postButton.frame.size.height - 50, 100, 50)];
     postLabel.text = @"Post >";
     postLabel.textColor = UIColor.whiteColor;

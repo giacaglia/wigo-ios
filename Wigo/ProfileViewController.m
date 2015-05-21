@@ -592,14 +592,14 @@ BOOL blockShown;
 
 - (void)acceptPressed {
     self.user.isFriend = @YES;
-    [WGProfile.currentUser acceptFriendRequestFromUser:self.user withHandler:nil];
+    [WGProfile.currentUser acceptFriendRequestFromUser:self.user withHandler:^(BOOL success, NSError *error) {}];
     [self reloadViewForUserState];
 }
 
 - (void)rejectPressed {
     self.user.isFriend = @NO;
     self.user.friendRequest = kFriendRequestReceived;
-    [WGProfile.currentUser rejectFriendRequestForUser:self.user withHandler:nil];
+    [WGProfile.currentUser rejectFriendRequestForUser:self.user withHandler:^(BOOL success, NSError *error) {}];
     [self reloadViewForUserState];
 }
 

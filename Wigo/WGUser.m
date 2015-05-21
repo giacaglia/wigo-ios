@@ -1482,8 +1482,6 @@ withParameters:@{ @"invited_id" : user.id }
      andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             WGProfile.numFriends = @([WGProfile.numFriends intValue] + 1);
-            handler(YES, nil);
-            return;
         }
         handler(error == nil, error);
     }];
@@ -1494,10 +1492,6 @@ withParameters:@{ @"invited_id" : user.id }
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
     [WGApi delete:@"users/me/friends/" withParameters:@{ @"friend_id" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (!error) {
-            handler(YES, nil);
-            return;
-        }
         handler(error == nil, error);
     }];
 }
@@ -1506,8 +1500,6 @@ withParameters:@{ @"invited_id" : user.id }
     [WGApi post:@"goingouts/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             self.isGoingOut = @YES;
-            handler(YES, nil);
-            return;
         }
         handler(error == nil, error);
     }];
