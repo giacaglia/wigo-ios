@@ -110,10 +110,14 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 4;
+    if (self.isSearching) return 1;
+    else return 4;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (self.isSearching) {
+        return self.presentedUsers.count;
+    }
     if (section == kSectionTapAllCell) {
         return 1;
     }
@@ -132,6 +136,30 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.isSearching) {
+        TapCell *cell = (TapCell*)[tableView dequeueReusableCellWithIdentifier:kTapCellName forIndexPath:indexPath];
+        cell.fullNameLabel.text = nil;
+        cell.profileImageView.image = nil;
+        cell.goingOutLabel.text = nil;
+        cell.tapImageView.image = nil;
+        
+        if (self.presentedUsers.count == 0) return cell;
+        int tag = (int)indexPath.row;
+        if (tag >= self.presentedUsers.count) return cell;
+        
+        WGUser *user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
+        if (tag == self.presentedUsers.count - 5 || tag == self.presentedUsers.count - 1) {
+            [self getNextPage];
+        }
+        if (!user) return cell;
+        cell.user = user;
+        [cell.aroundTapButton removeTarget:nil
+                                    action:NULL
+                          forControlEvents:UIControlEventAllEvents];
+        cell.aroundTapButton.tag = tag;
+        [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
+        return cell;
+    }
     if (indexPath.section == kSectionTapAllCell) {
         TapAllCell *tapAllCell = (TapAllCell *)[tableView dequeueReusableCellWithIdentifier:kTapAllName forIndexPath:indexPath];
         [tapAllCell.aroundTapButton addTarget:self action:@selector(tapAllPressed) forControlEvents:UIControlEventTouchUpInside];
