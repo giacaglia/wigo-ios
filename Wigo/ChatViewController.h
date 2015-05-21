@@ -18,7 +18,7 @@
 @property (nonatomic, strong) WGCollection *messages;
 @property (nonatomic, assign) BOOL isFetching;
 @property (nonatomic, strong) NSDate *lastMessageRead;
-@property (nonatomic, strong) UIImageView *emptyView;
+@property (nonatomic, strong) UIView *emptyView;
 @end
 
 

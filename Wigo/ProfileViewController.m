@@ -678,7 +678,6 @@ BOOL blockShown;
         _acceptButton.hidden = NO;
         _rejectButton.hidden = NO;
     }
-    
     if (self.userState == CURRENT_USER_STATE) {
         [_rightBarBt setTitle:@" Edit" forState:UIControlStateNormal];
         [_rightBarBt removeTarget:nil

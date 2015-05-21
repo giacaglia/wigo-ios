@@ -303,7 +303,9 @@ NSIndexPath *userIndex;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kSectionFollowPeople && [self.currentTab isEqual:@2]) {
-        return self.friendRequestUsers.count;
+        int hasNext = 0;
+        if (self.friendRequestUsers.nextPage != nil) hasNext = 1;
+        return self.friendRequestUsers.count + hasNext;
     }
     else return (int)self.users.count;
 }
@@ -362,10 +364,7 @@ NSIndexPath *userIndex;
     if ([self.currentTab isEqual:@2]
         && indexPath.section == kSectionFollowPeople &&
         indexPath.row == self.friendRequestUsers.count) {
-        self.friendRequestUsers.hasNextPage = @0;
-        for (int i = 0; i < 2; i++) {
-            [self.friendRequestUsers addObject:WGProfile.currentUser];
-        }
+        [self.friendRequestUsers addNextPage:nil];
         [self.tableViewOfPeople reloadData];
     }
     return;
