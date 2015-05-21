@@ -1477,7 +1477,9 @@ withParameters:@{ @"invited_id" : user.id }
     if (!user.id) {
         return handler(NO, [NSError errorWithDomain:@"WGUser" code:100 userInfo:@{ NSLocalizedDescriptionKey : @"missing key" }]);
     }
-    [WGApi post:@"users/me/friends/" withParameters:@{ @"friend_id" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+    [WGApi post:@"users/me/friends/"
+ withParameters:@{ @"friend_id" : user.id }
+     andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
             WGProfile.numFriends = @([WGProfile.numFriends intValue] + 1);
             handler(YES, nil);

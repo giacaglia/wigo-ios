@@ -1550,15 +1550,9 @@
     
     self.cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(10, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     [self.cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
-    UILabel *cancelLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.cancelButton.frame.size.height - 50, 100, 50)];
-    cancelLabel.text = @"< Cancel";
-    cancelLabel.textColor = UIColor.whiteColor;
-    cancelLabel.textAlignment = NSTextAlignmentLeft;
-    cancelLabel.layer.shadowColor = UIColor.blackColor.CGColor;
-    cancelLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
-    cancelLabel.layer.shadowOpacity = 0.5;
-    cancelLabel.layer.shadowRadius = 0.5;
-    [self.cancelButton addSubview:cancelLabel];
+    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.dismissButton.frame.size.height - 27 - 10, 27, 27)];
+    cancelImageView.image = [UIImage imageNamed:@"closeModalView"];
+    [self.cancelButton addSubview:cancelImageView];
     self.cancelButton.titleLabel.textAlignment = NSTextAlignmentLeft;
     self.cancelButton.hidden = YES;
     self.cancelButton.enabled = NO;

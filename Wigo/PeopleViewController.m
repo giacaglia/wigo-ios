@@ -668,7 +668,9 @@ viewForHeaderInSection:(NSInteger)section
         else self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", user.numMutualFriends];
     }
     else {
-        self.mutualFriendsLabel.text = @"No mutual friends";
+        self.mutualFriendsLabel.hidden = YES;
+        self.nameLabel.frame = CGRectMake(70, 20, 150, 20);
+
     }
     
 }
