@@ -36,6 +36,9 @@
 @property (nonatomic, strong) WGCollection *mutualFriends;
 @property (nonatomic, strong) MoreViewController *moreVc;
 @property (nonatomic, assign) BOOL hideNavBar;
+
+@property (nonatomic) BOOL showStatusBarOnDismiss;
+
 -(void)removeMoreVc;
 @end
 

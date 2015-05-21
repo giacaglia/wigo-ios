@@ -761,15 +761,10 @@
     WGUser *user = eventMessage.user;
     
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    profileViewController.showStatusBarOnDismiss = NO;
     
     UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:profileViewController];
     
-//    profileViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-//                                                              initWithTitle:@"Close"
-//                                                              style:UIBarButtonItemStyleDone
-//                                                              target:self
-//                                                              action:@selector(dismissProfileView)];
-//    
     profileViewController.user = user;
     if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
     
@@ -779,6 +774,7 @@
 }
 
 - (void)dismissProfileView {
+    
     [self dismissViewControllerAnimated:YES
                              completion:^{
                                  

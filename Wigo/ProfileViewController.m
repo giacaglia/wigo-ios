@@ -46,10 +46,19 @@ BOOL blockShown;
 
 @implementation ProfileViewController
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if(self) {
+        self.showStatusBarOnDismiss = YES;
+    }
+    return self;
+}
+
 - (id)initWithUser:(WGUser *)user {
     self = [super init];
     if (self) {
         self.user = user;
+        self.showStatusBarOnDismiss = YES;
     }
     return self;
 }
@@ -96,8 +105,12 @@ BOOL blockShown;
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-    [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleLightContent];
+    
+    if(self.showStatusBarOnDismiss) {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+        [[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleLightContent];
+    }
+    
     self.tabBarController.navigationItem.titleView.hidden = NO;
     self.navigationController.navigationBar.barTintColor = [FontProperties getBlueColor];
     
