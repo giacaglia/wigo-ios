@@ -18,5 +18,6 @@
 @property (nonatomic, strong) UIView *viewForEmptyConversation;
 @property (nonatomic, assign) BOOL isFetching;
 @property (nonatomic, assign) BOOL hideNavBar;
+@property (nonatomic, strong) UIView *blueBannerView;
 
 @end

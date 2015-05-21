@@ -37,6 +37,8 @@
 //UI
 @property (nonatomic, strong) UIButtonAligned *rightBarBt;
 @property (nonatomic, strong) UIButton *followButton;
+@property (nonatomic, strong) UIButton *acceptButton;
+@property (nonatomic, strong) UIButton *rejectButton;
 
 @property UILabel *nameOfPersonLabel;
 @property UIImageView *privateLogoImageView;
@@ -148,7 +150,8 @@ BOOL blockShown;
             [strongSelf.tableView reloadData];
         }];
 
-        if (self.user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE ||
+        if (self.user.state == SENT_REQUEST_USER_STATE ||
+            self.user.state == RECEIVED_REQUEST_USER_STATE ||
             self.user.state == NOT_FRIEND_STATE) {
             [self.user getMutualFriends:^(WGCollection *collection, NSError *error) {
                 __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -438,6 +441,20 @@ BOOL blockShown;
     [_headerButtonView addSubview: _followButton];
     [_headerButtonView bringSubviewToFront: _followButton];
     
+    _acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 74 - 15, 35 - 18.5, 37, 37)];
+    UIImageView *acceptImgView = [[UIImageView alloc] initWithFrame:CGRectMake(8.5, 8.5, 20, 20)];
+    acceptImgView.image = [UIImage imageNamed:@"acceptButton"];
+    [_acceptButton addSubview:acceptImgView];
+    [_acceptButton addTarget:self action:@selector(acceptPressed) forControlEvents:UIControlEventTouchUpInside];
+    [_headerButtonView addSubview:self.acceptButton];
+    
+    _rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 37 - 10, 35 - 18.5, 37, 37)];
+    UIImageView *rejectImgView = [[UIImageView alloc] initWithFrame:CGRectMake(8.5, 8.5, 20, 20)];
+    rejectImgView.image = [UIImage imageNamed:@"rejectButton"];
+    [_rejectButton addSubview:rejectImgView];
+    [_rejectButton addTarget:self action:@selector(rejectPressed) forControlEvents:UIControlEventTouchUpInside];
+    [_headerButtonView addSubview:_rejectButton];
+    
     if (!self.user.isCurrentUser) return;
     _headerButtonView.frame = CGRectMake(_headerButtonView.frame.origin.x, _headerButtonView.frame.origin.y, _headerButtonView.frame.size.width, _headerButtonView.frame.size.height + 30);
     UIView *notificationsHeaderView = [[UIView alloc] initWithFrame:CGRectMake(0, 70, self.view.frame.size.width, 30)];
@@ -573,6 +590,19 @@ BOOL blockShown;
     [self reloadViewForUserState];
 }
 
+- (void)acceptPressed {
+    self.user.isFriend = @YES;
+    [WGProfile.currentUser acceptFriendRequestFromUser:self.user withHandler:nil];
+    [self reloadViewForUserState];
+}
+
+- (void)rejectPressed {
+    self.user.isFriend = @NO;
+    self.user.friendRequest = kFriendRequestReceived;
+    [WGProfile.currentUser rejectFriendRequestForUser:self.user withHandler:nil];
+    [self reloadViewForUserState];
+}
+
 - (void)unfollowPressed {
     [self.user followUser];
     self.userState = self.user.state;
@@ -603,6 +633,8 @@ BOOL blockShown;
     _lineDividerView.hidden = NO;
     _followButton.hidden = YES;
     _followButton.enabled = YES;
+//    _acceptButton.hidden = YES;
+//    _rejectButton.hidden = YES;
     _followButton.layer.cornerRadius = 0.0f;
     [_followButton setImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [_followButton setTitle:nil forState:UIControlStateNormal];
@@ -626,9 +658,10 @@ BOOL blockShown;
         _followButton.hidden = NO;
         _lineDividerView.hidden = YES;
     }
-    else if (self.userState == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
+    else if (self.user.state == SENT_REQUEST_USER_STATE) {
         _rightBarBt.hidden = NO;
         _followButton.hidden = NO;
+        _lineDividerView.hidden = YES;
         _followButton.enabled = NO;
         [_followButton setImage:nil forState:UIControlStateNormal];
         [_followButton setTitle:@"Pending" forState:UIControlStateNormal];
@@ -639,6 +672,11 @@ BOOL blockShown;
         _followButton.layer.cornerRadius = 10.0f;
         _followButton.layer.borderWidth = 2.0f;
         _lineDividerView.hidden = YES;
+    }
+    else if (self.user.state == RECEIVED_REQUEST_USER_STATE) {
+        _lineDividerView.hidden = YES;
+        _acceptButton.hidden = NO;
+        _rejectButton.hidden = NO;
     }
     
     if (self.userState == CURRENT_USER_STATE) {
@@ -730,7 +768,8 @@ BOOL blockShown;
         self.userState == NOT_FRIEND_STATE ||
         self.userState == BLOCKED_USER_STATE ||
         self.userState == OTHER_SCHOOL_USER_STATE ||
-        self.userState == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
+        self.user.state == SENT_REQUEST_USER_STATE ||
+        self.user.state == RECEIVED_REQUEST_USER_STATE) {
         return NO;
     }
     
@@ -763,7 +802,8 @@ BOOL blockShown;
     }
     if (section == kMutualFriendsSection) {
         if (self.user.state == NOT_FRIEND_STATE ||
-            self.user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
+            self.user.state == SENT_REQUEST_USER_STATE ||
+            self.user.state == RECEIVED_REQUEST_USER_STATE) {
             return 1;
         }
         return 0;
@@ -910,8 +950,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
              navigate:notification.parameters[@"navigate"]];
             
         }
-        else if (user.state != SENT_OR_RECEIVED_REQUEST_USER_STATE &&
-                   user.state != NOT_FRIEND_STATE) {
+        else if (user.state != SENT_REQUEST_USER_STATE &&
+                 user.state != RECEIVED_REQUEST_USER_STATE &&
+                 user.state != NOT_FRIEND_STATE) {
             if (![user.eventAttending.id isEqual:notification.eventID]) return;
             if (user.eventAttending) [self presentEvent:user.eventAttending];
             else [self presentUser:user];

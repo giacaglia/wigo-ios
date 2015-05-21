@@ -814,17 +814,11 @@ static WGUser *currentUser = nil;
 
 
 -(State) state {
-    if (self.isCurrentUser) {
-        return CURRENT_USER_STATE;
-    }
+    if (self.isCurrentUser) return CURRENT_USER_STATE;
     if (self.isBlocked.boolValue) return BLOCKED_USER_STATE;
     if (self.isFriend.boolValue) return FRIEND_USER_STATE;
-    
-    if ([self.friendRequest isEqual:kFriendRequestSent] ||
-        [self.friendRequest isEqual:kFriendRequestReceived]) {
-        return SENT_OR_RECEIVED_REQUEST_USER_STATE;
-    }
-   
+    if ([self.friendRequest isEqual:kFriendRequestSent]) return SENT_REQUEST_USER_STATE;
+    if ([self.friendRequest isEqual:kFriendRequestReceived]) return RECEIVED_REQUEST_USER_STATE;
     return NOT_FRIEND_STATE;
 }
 
@@ -1485,7 +1479,7 @@ withParameters:@{ @"invited_id" : user.id }
     }
     [WGApi post:@"users/me/friends/" withParameters:@{ @"friend_id" : user.id } andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (!error) {
-            self.numFriends = @([self.numFriends intValue] + 1);
+            WGProfile.numFriends = @([WGProfile.numFriends intValue] + 1);
         }
         handler(error == nil, error);
     }];

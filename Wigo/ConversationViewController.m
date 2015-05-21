@@ -55,31 +55,34 @@ JSQMessagesBubbleImage *grayBubble;
     self.automaticallyScrollsToMostRecentMessage = YES;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+-(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.title = self.user.fullName;
     [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor]
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
-    
+    self.blueBannerView.hidden = NO;
     [self fetchFirstPageMessages];
 }
 
-- (void) viewDidAppear:(BOOL)animated {
+-(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor] forBarMetrics:UIBarMetricsDefault];
-
 
     [WGAnalytics tagEvent:@"Conversation View"];
     [WGAnalytics tagView:@"conversation" withTargetUser:nil];
     [self initializeNotificationObservers];
 }
 
+-(void) viewWillDisappear:(BOOL)animated {
+    self.blueBannerView.hidden = YES;
+}
+
 -(void) initializeBlueView {
-    UIView *blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
-    blueBannerView.backgroundColor = [FontProperties getBlueColor];
-    [self.navigationController.view addSubview:blueBannerView];
+    self.blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
+    self.blueBannerView.backgroundColor = [FontProperties getBlueColor];
+    [self.navigationController.view addSubview:self.blueBannerView];
 }
 
 -(void) textChanged:(id)sender {

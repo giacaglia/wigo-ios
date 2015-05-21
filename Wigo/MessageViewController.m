@@ -33,8 +33,17 @@
 
     // Title setup
     [self initializeNavigationItem];
+//    [self initializeEmptyView];
     [self initializeTableListOfFriends];
     [self fetchFirstPageEveryone];
+
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [WGAnalytics tagEvent:@"New Chat View"];
+    [WGAnalytics tagView:@"new_chat" withTargetUser:nil];
+    [self.tableView reloadData];
 }
 
 -(void) initializeNavigationItem {
@@ -51,12 +60,11 @@
     self.navigationItem.leftBarButtonItem = barItem;
 }
 
--(void) viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [WGAnalytics tagEvent:@"New Chat View"];
-    [WGAnalytics tagView:@"new_chat" withTargetUser:nil];
-    [self.tableView reloadData];
-}
+//-(void) initializeEmptyView {
+//    self.emptyView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0.85*self.view.frame.size.width, 0.9*self.view.frame.size.width)];
+//    self.emptyView.image = [UIImage imageNamed:@"emptyStateView"];
+//    [self.view addSubview:self.emptyView];
+//}
 
 -(void) goBack {
     [self.navigationController popViewControllerAnimated:YES];
@@ -74,6 +82,7 @@
     _searchBar.delegate = self;
     self.tableView.tableHeaderView = _searchBar;
     self.tableView.contentOffset = CGPointMake(0, 50);
+    self.tableView.hidden = YES;
     [self.view addSubview:self.tableView];
 }
 

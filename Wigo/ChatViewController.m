@@ -30,6 +30,7 @@
     self.messages = NetworkFetcher.defaultGetter.messages;
     [self initializeTableOfChats];
     [self initializeNewChatButton];
+//    [self initializeNewChatView];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -88,11 +89,11 @@
     self.tabBarController.navigationItem.rightBarButtonItem = profileBarButton;
 }
 
-- (void) writeMessage {
+-(void) writeMessage {
     [self.navigationController pushViewController:[MessageViewController new] animated:YES];
 }
 
-- (void)initializeNewChatButton {
+-(void)initializeNewChatButton {
     self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(40, self.view.frame.size.height/2 - 20, self.view.frame.size.width - 2*40, 40)];
     [self.chatButton addTarget:self action:@selector(writeMessage) forControlEvents:UIControlEventTouchUpInside];
     self.chatButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
@@ -100,6 +101,12 @@
     [self.chatButton setTitleColor:UIColor.grayColor forState:UIControlStateNormal];
     self.chatButton.hidden = YES;
     [self.view addSubview:self.chatButton];
+}
+
+-(void) initializeNewChatView {
+    self.emptyView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 0.29*self.view.frame.size.width - 40, 70, 0.29*self.view.frame.size.width, 0.48*self.view.frame.size.width)];
+    self.emptyView.image = [UIImage imageNamed:@"chatEmptyView"];
+    [self.view addSubview:self.emptyView];
 }
 
 - (void)initializeTableOfChats {

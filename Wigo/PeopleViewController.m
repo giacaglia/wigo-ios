@@ -665,12 +665,8 @@ viewForHeaderInSection:(NSInteger)section
     self.nameLabel.text =  user.fullName;
     self.nameLabel.frame = CGRectMake(70, 10, 150, 20);
     if (user.numMutualFriends.floatValue >= 1) {
-        if (user.numMutualFriends.intValue) {
-            self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friend", user.numMutualFriends];
-        }
-        else {
-            self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", user.numMutualFriends];
-        }
+        if (user.numMutualFriends.intValue == 1) self.mutualFriendsLabel.text = @"1 mutual friend";
+        else self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", user.numMutualFriends];
     }
     else {
         self.mutualFriendsLabel.text = @"No mutual friends";
@@ -723,7 +719,8 @@ viewForHeaderInSection:(NSInteger)section
         [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
         return;
     }
-    if (user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
+    if (user.state == SENT_REQUEST_USER_STATE ||
+        user.state == RECEIVED_REQUEST_USER_STATE) {
         [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
         [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
         [self.followPersonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
@@ -809,7 +806,7 @@ viewForHeaderInSection:(NSInteger)section
     self.rejectButton.hidden = YES;
     self.followPersonButton.hidden = YES;
 
-    if (!user.isFriend) {
+    if (user.state == RECEIVED_REQUEST_USER_STATE) {
         self.acceptButton.hidden = NO;
         self.rejectButton.hidden = NO;
         return;

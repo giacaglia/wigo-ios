@@ -38,7 +38,8 @@ typedef enum State {
     FRIEND_USER_STATE,
     BLOCKED_USER_STATE,
     OTHER_SCHOOL_USER_STATE,
-    SENT_OR_RECEIVED_REQUEST_USER_STATE
+    SENT_REQUEST_USER_STATE,
+    RECEIVED_REQUEST_USER_STATE
 } State;
 
 @interface WGUser : WGObject <JSQMessageAvatarImageDataSource>

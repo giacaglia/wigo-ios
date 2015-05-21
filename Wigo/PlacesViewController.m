@@ -77,7 +77,6 @@ BOOL firstTimeLoading;
     [TabBarAuxiliar startTabBarItems];
     [self addCenterButton];
     if (WGProfile.currentUser.key) {
-        [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {}];
         [NetworkFetcher.defaultGetter fetchSuggestions];
         [NetworkFetcher.defaultGetter fetchFriendsIds];
     }

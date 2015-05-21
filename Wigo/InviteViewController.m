@@ -662,7 +662,8 @@ heightForHeaderInSection:(NSInteger)section
         [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
         return;
     }
-    if (user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
+    if (user.state == SENT_REQUEST_USER_STATE ||
+        user.state == RECEIVED_REQUEST_USER_STATE) {
         [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
         [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
         [self.followPersonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];

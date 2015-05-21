@@ -489,7 +489,8 @@ referenceSizeForFooterInSection:(NSInteger)section {
         self.addFriendButton.hidden = NO;
         self.mutualFriendsLabel.hidden = NO;
     }
-    else if (self.user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
+    else if (self.user.state == SENT_REQUEST_USER_STATE ||
+             self.user.state == RECEIVED_REQUEST_USER_STATE) {
         self.pendingLabel.hidden = NO;
         self.mutualFriendsLabel.hidden = NO;
     }
