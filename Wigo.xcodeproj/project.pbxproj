@@ -203,8 +203,6 @@
 		C14AB1BF1A8017670011C4E5 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = C14AB1BA1A8017670011C4E5 /* UIImage+RoundedCorner.m */; };
 		C14AB1C01A8017670011C4E5 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = C14AB1BA1A8017670011C4E5 /* UIImage+RoundedCorner.m */; };
 		C16D86A819747FF6003EB336 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C16D86AA19747FF6003EB336 /* Localizable.strings */; };
-		C18AC292198451150056957B /* autorevision.sh in Resources */ = {isa = PBXBuildFile; fileRef = C18AC290198451150056957B /* autorevision.sh */; };
-		C18AC293198451150056957B /* process_info_plist.sh in Resources */ = {isa = PBXBuildFile; fileRef = C18AC291198451150056957B /* process_info_plist.sh */; };
 		C1F5B3C21A6549E000CAFD95 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA819F19F2200AD74C2 /* AVFoundation.framework */; };
 		C1F5B3C31A6549E000CAFD95 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */; };
 		C1F5B3C41A654A4200CAFD95 /* WGApi.m in Sources */ = {isa = PBXBuildFile; fileRef = 4563F51D1A3F387700F8C9C4 /* WGApi.m */; };
@@ -395,7 +393,6 @@
 		E9ACDC6A19AB7559004B0349 /* NSObject-CancelableScheduledBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = E9ACDC6819AB7559004B0349 /* NSObject-CancelableScheduledBlock.m */; };
 		E9AEAE531A0190DB00BD77AF /* EventPeopleScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AEAE521A0190DB00BD77AF /* EventPeopleScrollView.m */; };
 		E9AEAE541A0190DB00BD77AF /* EventPeopleScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9AEAE521A0190DB00BD77AF /* EventPeopleScrollView.m */; };
-		E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE4999198C402500F9AF74 /* girlVoice.caf */; };
 		E9BE499B198C402500F9AF74 /* girlVoice.caf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE4999198C402500F9AF74 /* girlVoice.caf */; };
 		E9BE8C49192A48F1008BB84C /* FontProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = E9BE8C48192A48F1008BB84C /* FontProperties.m */; };
 		E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9BE8C5C192AA29C008BB84C /* Whitney-Light.ttf */; };
@@ -2269,8 +2266,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9C1AD5E1A939BDF009BCFDC /* closeLock.gif in Resources */,
-				E9BE499A198C402500F9AF74 /* girlVoice.caf in Resources */,
-				C18AC293198451150056957B /* process_info_plist.sh in Resources */,
 				45D9FA941A781AFD00D08577 /* JSQMessagesAssets.bundle in Resources */,
 				E9CDC4451AA4EF6200CD0336 /* Montserrat-Bold.ttf in Resources */,
 				E9CDC4661AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf in Resources */,
@@ -2294,7 +2289,6 @@
 				E9BE8C95192AA29C008BB84C /* Whitney-Medium.ttf in Resources */,
 				45D9FADE1A781AFD00D08577 /* JSQMessagesLoadEarlierHeaderView.xib in Resources */,
 				E9BE8C91192AA29C008BB84C /* Whitney-Light.ttf in Resources */,
-				C18AC292198451150056957B /* autorevision.sh in Resources */,
 				E9CDC4541AA4EF9900CD0336 /* OpenSans-Bold.ttf in Resources */,
 				E921D6201923967D00361247 /* InfoPlist.strings in Resources */,
 				E9D7D5341926539C00E1ED10 /* Main.storyboard in Resources */,
@@ -3242,8 +3236,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: WiGo, Inc. (BJ73CT9B84)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: WiGo, Inc. (BJ73CT9B84)";
 				FACEBOOK_APPID = 661589153895742;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -3272,7 +3266,7 @@
 				PARSE_CLIENTKEY = kUtCUpmYhSZ0IszbjF2uV9Zr5KtIl2PvoMuiohcb;
 				PARSE_CLIENTKEY_ENTERPRISE = glPV1mFR74xXw7HDilxbIaGwk6p0xKWL0CrZUpx6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "10fafba8-0a0f-4ea6-a9d6-7b75370bb24a";
 				SWIFT_OBJC_BRIDGING_HEADER = "Wigo/wigo-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
