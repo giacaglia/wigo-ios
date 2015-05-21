@@ -963,6 +963,9 @@ static WGUser *currentUser = nil;
            else if ([key isEqual:kFriendRequestKey]) {
                self.friendRequest = [jsonResponse objectForKey:kFriendRequestKey];
            }
+           else if ([key isEqual:kIsFriendKey]) {
+               self.isFriend =  [jsonResponse objectForKey:kIsFriendKey];
+           }
            else {
                [self setObject:[jsonResponse objectForKey:key] forKey:key];
            }
