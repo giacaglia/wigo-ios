@@ -1550,7 +1550,7 @@
     
     self.cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(10, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     [self.cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
-    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, self.dismissButton.frame.size.height - 27 - 10, 27, 27)];
+    UIImageView *cancelImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.cancelButton.frame.size.height - 27 - 10, 27, 27)];
     cancelImageView.image = [UIImage imageNamed:@"closeModalView"];
     [self.cancelButton addSubview:cancelImageView];
     self.cancelButton.titleLabel.textAlignment = NSTextAlignmentLeft;
@@ -1560,16 +1560,9 @@
     
     self.postButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 110, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     [self.postButton addTarget:self action:@selector(postPressed) forControlEvents:UIControlEventTouchUpInside];
-    
-    UILabel *postLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 100, self.postButton.frame.size.height - 50, 100, 50)];
-    postLabel.text = @"Post >";
-    postLabel.textColor = UIColor.whiteColor;
-    postLabel.textAlignment = NSTextAlignmentRight;
-    postLabel.layer.shadowColor = UIColor.blackColor.CGColor;
-    postLabel.layer.shadowOffset = CGSizeMake(0.0f, 0.5f);
-    postLabel.layer.shadowOpacity = 0.5;
-    postLabel.layer.shadowRadius = 0.5;
-    [self.postButton addSubview:postLabel];
+    UIImageView *postImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.postButton.frame.size.height - 25 - 10, 36.37, 25)];
+    postImageView.image = [UIImage imageNamed:@"postImage"];
+    [self.cancelButton addSubview:postImageView];
     self.postButton.hidden = YES;
     self.postButton.enabled = NO;
     self.postButton.titleLabel.textAlignment = NSTextAlignmentRight;
