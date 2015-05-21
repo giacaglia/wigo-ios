@@ -88,7 +88,6 @@
 + (BOOL)isDancingGInCenterView:(UIView *)view {
     for (UIView *subview in [view subviews]) {
         if ([subview isKindOfClass:[WGImageView class]]) {
-            [(WGImageView *) subview removeFromSuperview];
             return YES;
         }
     }
