@@ -152,7 +152,10 @@
     if (collectionView == self.facesCollectionView) {
         self.currentDraggingView = self.facesCollectionView;
         if (indexPath == self.currentActiveCell) {
-            return;
+            
+            [self showCurrentFaceProfile];
+            
+            
         }
         NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
         [WGAnalytics tagEvent:@"Event Conversation Face Tapped" withDetails: @{@"isPeeking": isPeekingString}];
@@ -746,6 +749,41 @@
                              }];
 }
 
+
+- (void)showCurrentFaceProfile {
+    
+    NSInteger eventMessageIndex = self.currentActiveCell.row;
+    if(eventMessageIndex >= self.eventMessages.count) {
+        return;
+    }
+    
+    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:eventMessageIndex];
+    WGUser *user = eventMessage.user;
+    
+    ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
+    
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:profileViewController];
+    
+//    profileViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+//                                                              initWithTitle:@"Close"
+//                                                              style:UIBarButtonItemStyleDone
+//                                                              target:self
+//                                                              action:@selector(dismissProfileView)];
+//    
+    profileViewController.user = user;
+    if ([self isPeeking]) profileViewController.userState = OTHER_SCHOOL_USER_STATE;
+    
+    [self presentViewController:navController animated:YES completion:^{
+        
+    }];
+}
+
+- (void)dismissProfileView {
+    [self dismissViewControllerAnimated:YES
+                             completion:^{
+                                 
+                             }];
+}
 
 + (NSString *)stringForLikes:(NSInteger)likes {
     if(likes == 1) {
