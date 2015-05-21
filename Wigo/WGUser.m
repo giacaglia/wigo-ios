@@ -732,6 +732,7 @@ static WGUser *currentUser = nil;
     }
 }
 
+
 -(void) setIsGoingOut:(NSNumber *)isGoingOut {
     [self setObject:isGoingOut forKey:kIsGoingOutKey];
 }

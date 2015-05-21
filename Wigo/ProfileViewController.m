@@ -1169,8 +1169,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void)setUsers:(WGCollection *)users {
     _users = users;
-    if (users.total == 0) return;
-    self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", users.total];
+    if (users.total.intValue == 0) self.mutualFriendsLabel.text = @"No mutual friends";
+    else if (users.total.intValue == 1) self.mutualFriendsLabel.text = @"1 mutual friend";
+    else self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", users.total];
     [self.mutualFriendsCollection reloadData];
 }
 

@@ -436,13 +436,17 @@ referenceSizeForFooterInSection:(NSInteger)section {
         });
         
     }];
-    if (!user.isFriend || !user.isFriend.boolValue) {
+    if ((!user.isFriend || !user.isFriend.boolValue) && !user.isCurrentUser) {
+        [user getMeta:^(BOOL success, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (error) return;
+            [strongSelf reloadView];
+        }];
         [user getNumMutualFriends:^(NSNumber *numMutualFriends, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 __strong typeof(weakSelf) strongSelf = weakSelf;
-                if (numMutualFriends.intValue == 1) {
-                    strongSelf.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friend", numMutualFriends];
-                }
+                if (numMutualFriends.intValue == 0) strongSelf.mutualFriendsLabel.text = @"No mutual friends";
+                else if (numMutualFriends.intValue == 1) strongSelf.mutualFriendsLabel.text = @"1 mutual friend";
                 else {
                     strongSelf.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", numMutualFriends];
                 }
@@ -487,6 +491,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
     }
     else if (self.user.state == SENT_OR_RECEIVED_REQUEST_USER_STATE) {
         self.pendingLabel.hidden = NO;
+        self.mutualFriendsLabel.hidden = NO;
     }
 }
 

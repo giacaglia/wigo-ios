@@ -94,7 +94,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property UIImageView *avatarView;
 
 // meta properties
-- (void)setFriendsIds:(NSArray*)friendsIds;
+-(void) setFriendsIds:(NSArray*)friendsIds;
 @property NSNumber* isFriend;
 @property NSString* friendRequest;
 - (void)setMetaObject:(id)object forKey:(NSString *)key;
