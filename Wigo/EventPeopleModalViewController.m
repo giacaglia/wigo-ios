@@ -437,7 +437,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
         
     }];
     if ((!user.isFriend || !user.isFriend.boolValue) && !user.isCurrentUser) {
-        [user getMeta:^(BOOL success, NSError *error) {
+        [_user getMeta:^(BOOL success, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             if (error) return;
             [strongSelf reloadView];

@@ -956,9 +956,12 @@ static WGUser *currentUser = nil;
            return;
        }
        for (NSString *key in jsonResponse) {
-           if ([key isEqual:@"is_tapped"]) {
+           if ([key isEqual:kIsTappedKey]) {
                BOOL isTapped = [[jsonResponse objectForKey:key] boolValue];
                [self setIsTapped:[NSNumber numberWithBool:isTapped]];
+           }
+           else if ([key isEqual:kFriendRequestKey]) {
+               self.friendRequest = [jsonResponse objectForKey:kFriendRequestKey];
            }
            else {
                [self setObject:[jsonResponse objectForKey:key] forKey:key];
