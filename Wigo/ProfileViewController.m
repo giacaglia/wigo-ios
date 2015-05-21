@@ -120,6 +120,7 @@ BOOL blockShown;
     self.pageControl = nil;
     [_gradientImageView removeFromSuperview];
     _gradientImageView = nil;
+    if (self.cardsDelegate) [self.cardsDelegate reloadCards];
     if (self.user.isCurrentUser) [self updateLastNotificationsRead];
 }
 

@@ -134,6 +134,10 @@ int imageWidth;
     [super didReceiveMemoryWarning];
 }
 
+- (void)reloadCards {
+    [self.attendeesPhotosScrollView reloadData];
+}
+
 - (void)dismissView {
     [self.navigationController setNavigationBarHidden:NO];
     [self willMoveToParentViewController:nil];

@@ -15,6 +15,7 @@
 #import "WGMessage.h"
 typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
 
+
 @protocol ProfileDelegate <NSObject>
 -(void)removeMoreVc;
 @end
@@ -102,6 +103,7 @@ typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
 @protocol EventPeopleModalDelegate
 - (void)chatPressed:(id)sender;
 - (void)followPressed:(id)sender;
+- (void)reloadCards;
 @end
 
 #endif

@@ -23,6 +23,7 @@
 @property (nonatomic, strong) WGUser *user;
 @property State userState;
 
+@property (nonatomic, assign) id<EventPeopleModalDelegate>cardsDelegate;
 @property (nonatomic, assign) id<PlacesDelegate> placesDelegate;
 @property (nonatomic, assign) BOOL isFetchingNotifications;
 @property (nonatomic, strong) WGCollection *events;
