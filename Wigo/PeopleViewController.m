@@ -663,13 +663,17 @@ viewForHeaderInSection:(NSInteger)section
     _user = user;
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text =  user.fullName;
+    self.nameLabel.frame = CGRectMake(70, 10, 150, 20);
     if (user.numMutualFriends.floatValue >= 1) {
-        self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", user.numMutualFriends];
-        self.nameLabel.frame = CGRectMake(70, 10, 150, 20);
+        if (user.numMutualFriends.intValue) {
+            self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friend", user.numMutualFriends];
+        }
+        else {
+            self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", user.numMutualFriends];
+        }
     }
     else {
-        self.mutualFriendsLabel.text = nil;
-        self.nameLabel.frame = CGRectMake(70, 20, 150, 20);
+        self.mutualFriendsLabel.text = @"No mutual friends";
     }
     
 }

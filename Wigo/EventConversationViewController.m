@@ -74,7 +74,6 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 
     self.index = [NSNumber numberWithInteger:[self getCurrentPageForScrollView:self.mediaScrollView]];
     [self.mediaScrollView stopCurrentVideo];
