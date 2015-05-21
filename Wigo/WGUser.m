@@ -964,6 +964,9 @@ static WGUser *currentUser = nil;
                [self setObject:[jsonResponse objectForKey:key] forKey:key];
            }
        }
+       if (![jsonResponse.allKeys containsObject:kFriendRequestKey]) {
+           self.friendRequest = @"";
+       }
        handler(YES, nil);
    }];
 }
