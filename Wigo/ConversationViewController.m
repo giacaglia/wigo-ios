@@ -46,6 +46,7 @@ JSQMessagesBubbleImage *grayBubble;
     
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
+    [self initializeBlueView];
     
     self.showLoadEarlierMessagesHeader = NO;
     self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeZero;
@@ -73,6 +74,12 @@ JSQMessagesBubbleImage *grayBubble;
     [WGAnalytics tagEvent:@"Conversation View"];
     [WGAnalytics tagView:@"conversation" withTargetUser:nil];
     [self initializeNotificationObservers];
+}
+
+-(void) initializeBlueView {
+    UIView *blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
+    blueBannerView.backgroundColor = [FontProperties getBlueColor];
+    [self.navigationController.view addSubview:blueBannerView];
 }
 
 -(void) textChanged:(id)sender {

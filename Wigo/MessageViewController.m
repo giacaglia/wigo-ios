@@ -37,7 +37,7 @@
     [self fetchFirstPageEveryone];
 }
 
-- (void) initializeNavigationItem {
+-(void) initializeNavigationItem {
     self.title = @"New Message";
 
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 60, 44) andType:@0];
