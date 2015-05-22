@@ -410,6 +410,21 @@ referenceSizeForFooterInSection:(NSInteger)section {
     self.pendingLabel.textAlignment = NSTextAlignmentCenter;
     self.pendingLabel.font = [FontProperties mediumFont:20.0f];
     [self.backgroundWhiteView addSubview:self.pendingLabel];
+    
+    self.acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth - 74 - 15, 35 - 18.5, 37, 37)];
+    UIImageView *acceptImgView = [[UIImageView alloc] initWithFrame:CGRectMake(8.5, 8.5, 20, 20)];
+    acceptImgView.image = [UIImage imageNamed:@"acceptButton"];
+    [self.acceptButton addSubview:acceptImgView];
+    [self.acceptButton addTarget:self action:@selector(acceptPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.backgroundWhiteView addSubview:self.acceptButton];
+    
+    self.rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth - 37 - 10, 35 - 18.5, 37, 37)];
+    UIImageView *rejectImgView = [[UIImageView alloc] initWithFrame:CGRectMake(8.5, 8.5, 20, 20)];
+    rejectImgView.image = [UIImage imageNamed:@"rejectButton"];
+    [self.rejectButton addSubview:rejectImgView];
+    [self.rejectButton addTarget:self action:@selector(rejectPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.backgroundWhiteView addSubview:self.rejectButton];
+
 }
 
 - (void)followPressed:(id)sender {
@@ -426,6 +441,19 @@ referenceSizeForFooterInSection:(NSInteger)section {
 
 - (void)chatPressed:(id)sender {
     [self.eventPeopleModalDelegate chatPressed:sender];
+}
+
+- (void)acceptPressed:(id)sender {
+    self.user.isFriend = @YES;
+    [WGProfile.currentUser acceptFriendRequestFromUser:self.user withHandler:^(BOOL success, NSError *error) {}];
+    [self reloadView];
+}
+
+- (void)rejectPressed:(id)sender {
+    self.user.isFriend = @NO;
+    self.user.friendRequest = kFriendRequestReceived;
+    [WGProfile.currentUser rejectFriendRequestForUser:self.user withHandler:^(BOOL success, NSError *error) {}];
+    [self reloadView];
 }
 
 - (void)setUser:(WGUser *)user {
@@ -479,6 +507,8 @@ referenceSizeForFooterInSection:(NSInteger)section {
     self.pendingLabel.hidden = YES;
     self.dividerLineView.hidden = YES;
     self.mutualFriendsLabel.hidden = YES;
+    self.acceptButton.hidden = YES;
+    self.rejectButton.hidden = YES;
     if (self.user.isCurrentUser || self.user.state == OTHER_SCHOOL_USER_STATE) {
         // Don't show anything
     }
@@ -493,10 +523,13 @@ referenceSizeForFooterInSection:(NSInteger)section {
         self.addFriendButton.hidden = NO;
         self.mutualFriendsLabel.hidden = NO;
     }
-    else if (self.user.state == SENT_REQUEST_USER_STATE ||
-             self.user.state == RECEIVED_REQUEST_USER_STATE) {
+    else if (self.user.state == SENT_REQUEST_USER_STATE) {
         self.pendingLabel.hidden = NO;
         self.mutualFriendsLabel.hidden = NO;
+    }
+    else if (self.user.state == RECEIVED_REQUEST_USER_STATE) {
+        self.acceptButton.hidden = NO;
+        self.rejectButton.hidden = NO;
     }
 }
 

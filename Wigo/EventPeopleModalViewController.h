@@ -44,6 +44,8 @@
 @property (nonatomic, strong) UIView *dividerLineView;
 @property (nonatomic, strong) WGUser *user;
 - (void)inviteTapped;
+@property (nonatomic, strong) UIButton *acceptButton;
+@property (nonatomic, strong) UIButton *rejectButton;
 @end
 
 @interface AttendeesLayout : UICollectionViewFlowLayout
