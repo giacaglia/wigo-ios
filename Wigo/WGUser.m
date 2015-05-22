@@ -714,6 +714,10 @@ static WGUser *currentUser = nil;
 }
 
 -(NSNumber *) isFriend {
+    if ([self objectForKey:kIsFriendKey]) {
+        [self setMetaObject:[self objectForKey:kIsFriendKey] forKey:kIsFriendKey];
+        return [self objectForKey:kIsFriendKey];
+    }
     return [self metaObjectForKey:kIsFriendKey];
 }
 
@@ -722,6 +726,10 @@ static WGUser *currentUser = nil;
 }
 
 -(NSString *) friendRequest {
+    if ([self objectForKey:kFriendRequestKey]) {
+        [self setMetaObject:[self objectForKey:kFriendRequestKey] forKey:kFriendRequestKey];
+        return [self objectForKey:kFriendRequestKey];
+    }
     return [self metaObjectForKey:kFriendRequestKey];
 }
 
