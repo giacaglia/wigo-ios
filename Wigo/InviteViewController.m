@@ -314,7 +314,6 @@ heightForHeaderInSection:(NSInteger)section
         [WGAnalytics tagEvent:@"Tap User" withDetails:options];
         [WGAnalytics tagAction:@"event_invite" atView:@"invite" andTargetUser:user atEvent:nil andEventMessage:nil];
     }
-    
     [self.presentedUsers replaceObjectAtIndex:tag withObject:user];
     [self.invitePeopleTableView reloadData];
 }

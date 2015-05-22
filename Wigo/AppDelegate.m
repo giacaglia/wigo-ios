@@ -16,7 +16,6 @@
 #import "WGProfile.h"
 #import "WGEvent.h"
 #import "PlacesViewController.h"
-#import "RWBlurPopover.h"
 #import "WGI.h"
 #import "WGNavigateParser.h"
 #import "ChatViewController.h"
@@ -165,8 +164,6 @@ NSDate *firstLoggedTime;
 }
 
 - (void) dismissEverythingWithUserInfo:(NSDictionary *)userInfo {
-    if ([RWBlurPopover instance]) [[RWBlurPopover instance] dismissViewControllerAnimated:NO completion:nil];
-    
     UINavigationController *navController = (UINavigationController *)[[[[UIApplication sharedApplication] delegate] window] rootViewController];
     UIViewController *presentedController = [navController presentedViewController];
     //UIViewController *visibleController = [navController topViewController];

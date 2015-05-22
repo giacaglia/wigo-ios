@@ -221,6 +221,7 @@
 
 - (void)getMessagesForHighlights:(WGEventMessage *)highlight
                      withHandler:(WGCollectionResultBlock)handler {
+    if (!self.id || !highlight.id) return;
     [WGApi get:@"eventmessages/" withArguments:@{ @"event" : self.id, @"start": highlight.id, @"limit": @10}
     andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {

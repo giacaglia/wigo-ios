@@ -102,6 +102,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(NSInteger)collectionView:(UICollectionView *)collectionView
     numberOfItemsInSection:(NSInteger)section {
     if (section == kAddPhotoSection)  {
+        if (self.event.attendees.count == 0) return 0;
        if (self.event.isExpired.boolValue ||
            ![[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) return 0;
        return 1;
