@@ -1602,29 +1602,37 @@
 }
 
 -(void)fillPostButton {
-    UIImageView *whitePostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 15 - 12, self.postButton.frame.size.height - 25 - 8, 12, 8)];
+    UIImageView *whitePostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 17, self.postButton.frame.size.height - 10 - 25, 18, 27)];
     whitePostImageView.image = [UIImage imageNamed:@"whitePostImage"];
     [self.postButton addSubview:whitePostImageView];
     [self.postImageArray addObject:whitePostImageView];
     
-    UIImageView *bluePostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 15 - 12, self.postButton.frame.size.height - 25 - 8, 12 + 3, 8)];
+    UIImageView *bluePostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 17 - 11, self.postButton.frame.size.height - 10 - 25, 18, 27)];
     bluePostImageView.image = [UIImage imageNamed:@"bluePostImage"];
     [self.postButton addSubview:bluePostImageView];
     [self.postImageArray addObject:bluePostImageView];
     
-    UIImageView *secondWhitePostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 15 - 12, self.postButton.frame.size.height - 25 - 8 - 8, 12, 8)];
+    UIImageView *secondWhitePostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 11 - 11 - 17, self.postButton.frame.size.height - 10 - 25, 18, 27)];
     secondWhitePostImageView.image = [UIImage imageNamed:@"whitePostImage"];
     [self.postButton addSubview:secondWhitePostImageView];
     [self.postImageArray addObject:secondWhitePostImageView];
-    [NSTimer scheduledTimerWithTimeInterval:2.0
-                                     target:self
-                                   selector:@selector(changePostImages)
-                                   userInfo:nil
-                                    repeats:NO];
+//    self.index = 1;
+//    [NSTimer scheduledTimerWithTimeInterval:0.2
+//                                     target:self
+//                                   selector:@selector(changePostImages)
+//                                   userInfo:nil
+//                                    repeats:YES];
 }
 
 - (void)changePostImages {
-    
+    for (int i = 0 ; i < 3; i++) {
+        UIImageView *postImageView = [self.postImageArray objectAtIndex:i];
+        if (i == self.index) {
+           postImageView.image = [UIImage imageNamed:@"bluePostImage"];
+        }
+//        else postImageView.image = [UIImage imageNamed:@"whitePostImage"];
+    }
+    self.index = (self.index + 1)%3;
 }
 
 

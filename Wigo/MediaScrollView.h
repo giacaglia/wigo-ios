@@ -186,6 +186,7 @@
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *postButton;
 @property (nonatomic, strong) NSMutableArray *postImageArray;
+@property (nonatomic, assign) int index;
 @property (nonatomic, strong) NSMutableDictionary *info;
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) UILabel *textLabel;

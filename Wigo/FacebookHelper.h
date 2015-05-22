@@ -22,7 +22,7 @@ typedef void (^PicturesHandler)(NSArray *imagesArray, BOOL success);
 +(void) fillProfileWithUser:(id<FBGraphUser>)fbGraphUser;
 
 + (void) fetchProfilePicturesWithHandler:(PicturesHandler)handler;
-+ (void) get3ProfilePictures:(NSString *)albumID
++ (void) get5ProfilePictures:(NSString *)albumID
                  withHandler:(PicturesHandler)handler;
 
 @end

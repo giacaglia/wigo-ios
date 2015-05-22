@@ -82,7 +82,6 @@
     _searchBar.delegate = self;
     self.tableView.tableHeaderView = _searchBar;
     self.tableView.contentOffset = CGPointMake(0, 50);
-    self.tableView.hidden = YES;
     [self.view addSubview:self.tableView];
 }
 

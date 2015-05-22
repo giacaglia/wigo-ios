@@ -108,7 +108,7 @@
              if ([album[@"name"] isEqual:@"Profile Pictures"]) {
                  foundProfilePicturesAlbum = YES;
                  NSString *profilePicsAlbumID = (NSString *)album[@"id"];
-                 [FacebookHelper get3ProfilePictures:profilePicsAlbumID
+                 [FacebookHelper get5ProfilePictures:profilePicsAlbumID
                                          withHandler:^(NSArray *imagesArray, BOOL success) {
                                              handler(imagesArray, success);
                                              return;
@@ -126,7 +126,7 @@
      }];
 }
 
-+ (void) get3ProfilePictures:(NSString *)albumID
++ (void) get5ProfilePictures:(NSString *)albumID
                  withHandler:(PicturesHandler)handler {
     NSString *graphPath = [NSString stringWithFormat:@"/%@/photos", albumID];
     [[[FBSDKGraphRequest alloc] initWithGraphPath:graphPath
@@ -166,7 +166,7 @@
                   if (profilePictures.count == 1) {
                       WGProfile.currentUser.image = [profilePictures objectAtIndex:0];
                   }
-                  if (profilePictures.count >= 3) {
+                  if (profilePictures.count >= 5) {
                       handler(profilePictures, YES);
                       break;
                   }
