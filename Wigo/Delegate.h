@@ -43,7 +43,9 @@ typedef void (^CollectionViewResultBlock)(UICollectionViewCell *cell);
      finishAnimationHandler:(CollectionViewResultBlock)handler
              postingHandler:(BoolResultBlock)postHandler;
 - (void)presentConversationForUser:(WGUser *)user;
-- (void)presentUserAferModalView:(WGUser *)user forEvent:(WGEvent *)event;
+- (void)presentUserAferModalView:(WGUser *)user
+                        forEvent:(WGEvent *)event
+                    withDelegate:(UIViewController *)vc;
 - (void)scrollUp;
 - (void)showEvent:(WGEvent *)event;
 - (void)fetchEventsFirstPage;

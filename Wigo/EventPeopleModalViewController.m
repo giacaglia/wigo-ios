@@ -148,7 +148,7 @@ int imageWidth;
 - (void)presentUser:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     WGUser *attendee = (WGUser *)[self.event.attendees objectAtIndex:buttonSender.tag];
-    if (attendee) [self.placesDelegate presentUserAferModalView:attendee forEvent:self.event];
+    if (attendee) [self.placesDelegate presentUserAferModalView:attendee forEvent:self.event withDelegate:self];
 }
 
 - (void)fetchEventAttendeesAsynchronous {
