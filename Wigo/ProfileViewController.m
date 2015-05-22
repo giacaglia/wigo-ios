@@ -1307,13 +1307,12 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.descriptionLabel.center = CGPointMake(self.descriptionLabel.center.x, self.center.y);
     [self.contentView addSubview:self.descriptionLabel];
     
-    self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 0, 17, 17)];
+    self.orangeNewView = [[UIView alloc] initWithFrame:CGRectMake(4, 4, 10, 10)];
     self.orangeNewView.backgroundColor = [FontProperties getOrangeColor];
     self.orangeNewView.layer.cornerRadius = self.orangeNewView.frame.size.width/2;
     self.orangeNewView.layer.borderColor = UIColor.clearColor.CGColor;
     self.orangeNewView.layer.borderWidth = 1.0f;
     self.orangeNewView.hidden = YES;
-    self.orangeNewView.center = CGPointMake(self.orangeNewView.center.x, self.center.y);
     [self.contentView addSubview:self.orangeNewView];
     
     self.tapLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width - 25 - 27, self.frame.size.height/2 + 13 + 3, 50, 15)];
@@ -1323,6 +1322,10 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.tapLabel.textColor = RGB(240, 203, 163);
     self.tapLabel.hidden = YES;
     [self.contentView addSubview:self.tapLabel];
+    
+    self.arrowImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.size.width - 30, 65/2 - 9.5, 11, 19)];
+    self.arrowImageView.image = [UIImage imageNamed:@"arrowMessage"];
+    [self.contentView addSubview:self.arrowImageView];
     
     if ([self respondsToSelector:@selector(layoutMargins)]) {
         self.layoutMargins = UIEdgeInsetsZero;

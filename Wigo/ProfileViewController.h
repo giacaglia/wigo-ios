@@ -60,6 +60,7 @@
 @property (nonatomic, strong) UILabel *tapLabel;
 @property (nonatomic, strong) WGNotification *notification;
 @property (nonatomic, strong) UIView *orangeNewView;
+@property (nonatomic, strong) UIImageView *arrowImageView;
 @end
 
 #define kInstaCellName @"instaCellName"
