@@ -357,6 +357,10 @@ NSIndexPath *userIndex;
     [cell.followPersonButton addTarget:self action:@selector(followedPersonPressed:) forControlEvents:UIControlEventTouchUpInside];
     cell.profileButton.tag = tag;
     [cell.profileButton addTarget:self action:@selector(choosePerson:) forControlEvents:UIControlEventTouchUpInside];
+    cell.acceptButton.tag = tag;
+    [cell.acceptButton addTarget:self action:@selector(listAcceptPressed:) forControlEvents:UIControlEventTouchUpInside];
+    cell.rejectButton.tag = tag;
+    [cell.rejectButton addTarget:self action:@selector(listRejectPressed:) forControlEvents:UIControlEventTouchUpInside];
     return cell;
 }
 
@@ -420,18 +424,50 @@ viewForHeaderInSection:(NSInteger)section
     [WGProfile.currentUser acceptFriendRequestFromUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
-            user.isFriend = nil;
+            user.isFriend = @NO;
             user.friendRequest = kFriendRequestReceived;
         }
     }];
     [self.friendRequestUsers replaceObjectAtIndex:buttonSender.tag withObject:user];
     [self.tableViewOfPeople reloadData];
 }
-//
+
+- (void)listAcceptPressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    int row = (int)buttonSender.tag;
+    WGUser *user = (WGUser *)[self.users objectAtIndex:buttonSender.tag];
+    user.isFriend = @YES;
+    [WGProfile.currentUser acceptFriendRequestFromUser:user withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            user.isFriend = @NO;
+            user.friendRequest = kFriendRequestReceived;
+        }
+    }];
+    [self.users replaceObjectAtIndex:row withObject:user];
+    [self.tableViewOfPeople reloadData];
+}
 
 - (void)rejectPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:buttonSender.tag];
+    user.isFriend = @NO;
+    user.friendRequest = kFriendRequestReceived;
+    [WGProfile.currentUser rejectFriendRequestForUser:user withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            return;
+        }
+        user.isFriend = @NO;
+        user.friendRequest = kFriendRequestReceived;
+    }];
+    [self.friendRequestUsers replaceObjectAtIndex:buttonSender.tag withObject:user];
+    [self.tableViewOfPeople reloadData];
+}
+
+- (void)listRejectPressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    WGUser *user = (WGUser *)[self.users objectAtIndex:buttonSender.tag];
     user.isFriend = @NO;
     user.friendRequest = kFriendRequestReceived;
     [WGProfile.currentUser rejectFriendRequestForUser:user withHandler:^(BOOL success, NSError *error) {
@@ -638,6 +674,7 @@ viewForHeaderInSection:(NSInteger)section
     [self.profileButton addSubview:self.profileImageView];
     self.profileButton.center = CGPointMake(self.profileButton.center.x, self.center.y);
     [self.contentView addSubview:self.profileButton];
+
     
     self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 10, 150, 20)];
     self.nameLabel.font = [FontProperties mediumFont:15.0f];
@@ -694,6 +731,22 @@ viewForHeaderInSection:(NSInteger)section
     self.followPersonButton = [[UIButton alloc]initWithFrame:CGRectMake(self.contentView.frame.size.width - 15 - 52, [TablePersonCell height] / 2 - 19, 52, 38)];
     self.orangeNewView.hidden = YES;
     [self.contentView addSubview:self.followPersonButton];
+    
+    self.acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 74 - 15, 0, 37, 37)];
+    UIImageView *acceptImgView = [[UIImageView alloc] initWithFrame:CGRectMake(8.5, 8.5, 20, 20)];
+    acceptImgView.image = [UIImage imageNamed:@"acceptButton"];
+    [self.acceptButton addSubview:acceptImgView];
+    self.acceptButton.center = CGPointMake(self.acceptButton.center.x, self.contentView.center.y);
+    self.acceptButton.hidden = YES;
+    [self.contentView addSubview:self.acceptButton];
+    
+    self.rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(self.contentView.frame.size.width - 37 - 10, 0, 37, 37)];
+    UIImageView *rejectImgView = [[UIImageView alloc] initWithFrame:CGRectMake(8.5, 8.5, 20, 20)];
+    rejectImgView.image = [UIImage imageNamed:@"rejectButton"];
+    [self.rejectButton addSubview:rejectImgView];
+    self.rejectButton.hidden = YES;
+    self.rejectButton.center = CGPointMake(self.rejectButton.center.x, self.contentView.center.y);
+    [self.contentView addSubview:self.rejectButton];
 }
 
 - (void)setUser:(WGUser *)user {
@@ -701,6 +754,9 @@ viewForHeaderInSection:(NSInteger)section
     self.followPersonButton.backgroundColor = UIColor.clearColor;
     [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
     [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
+    self.acceptButton.hidden = YES;
+    self.rejectButton.hidden = YES;
+    
     if (user.isCurrentUser) {
         self.followPersonButton.hidden = YES;
         return;
@@ -722,8 +778,7 @@ viewForHeaderInSection:(NSInteger)section
         [self.followPersonButton setTitle:nil forState:UIControlStateNormal];
         return;
     }
-    if (user.state == SENT_REQUEST_USER_STATE ||
-        user.state == RECEIVED_REQUEST_USER_STATE) {
+    if (user.state == SENT_REQUEST_USER_STATE)  {
         [self.followPersonButton setBackgroundImage:nil forState:UIControlStateNormal];
         [self.followPersonButton setTitle:@"Pending" forState:UIControlStateNormal];
         [self.followPersonButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
@@ -733,6 +788,12 @@ viewForHeaderInSection:(NSInteger)section
         self.followPersonButton.layer.borderWidth = 1;
         self.followPersonButton.layer.borderColor = UIColor.clearColor.CGColor;
         self.followPersonButton.layer.cornerRadius = 8;
+        return;
+    }
+    if (user.state == RECEIVED_REQUEST_USER_STATE) {
+        self.followPersonButton.hidden = YES;
+        self.acceptButton.hidden = NO;
+        self.rejectButton.hidden = NO;
         return;
     }
 }

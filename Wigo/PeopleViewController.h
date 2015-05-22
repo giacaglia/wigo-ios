@@ -42,6 +42,8 @@
 @property (nonatomic, strong) UIActivityIndicatorView *spinnerView;
 @property (nonatomic, strong) WGUser *user;
 @property (nonatomic, strong) UIView *orangeNewView;
+@property (nonatomic, strong) UIButton *acceptButton;
+@property (nonatomic, strong) UIButton *rejectButton;
 @end
 
 

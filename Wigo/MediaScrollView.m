@@ -1560,7 +1560,7 @@
     
     self.postButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 110, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     [self.postButton addTarget:self action:@selector(postPressed) forControlEvents:UIControlEventTouchUpInside];
-    UIImageView *postImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.postButton.frame.size.height - 25 - 10, 36.37, 25)];
+    UIImageView *postImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 15 - 36.5, self.postButton.frame.size.height - 25 - 10, 36.5, 25)];
     postImageView.image = [UIImage imageNamed:@"postImage"];
     [self.postButton addSubview:postImageView];
     self.postButton.hidden = YES;
