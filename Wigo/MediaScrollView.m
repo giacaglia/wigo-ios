@@ -1560,11 +1560,9 @@
     
     self.postButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 110, [UIScreen mainScreen].bounds.size.height - 100, 100, 100)];
     [self.postButton addTarget:self action:@selector(postPressed) forControlEvents:UIControlEventTouchUpInside];
-    UIImageView *postImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 15 - 36.5, self.postButton.frame.size.height - 25 - 10, 36.5, 25)];
-    postImageView.image = [UIImage imageNamed:@"postImage"];
-    [self.postButton addSubview:postImageView];
-    self.postButton.hidden = YES;
+      self.postButton.hidden = YES;
     self.postButton.enabled = NO;
+    [self fillPostButton];
     [self.overlayView addSubview:self.postButton];
     
     self.textField = [UITextField new];
@@ -1602,6 +1600,33 @@
     self.photoController.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
     
 }
+
+-(void)fillPostButton {
+    UIImageView *whitePostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 15 - 12, self.postButton.frame.size.height - 25 - 8, 12, 8)];
+    whitePostImageView.image = [UIImage imageNamed:@"whitePostImage"];
+    [self.postButton addSubview:whitePostImageView];
+    [self.postImageArray addObject:whitePostImageView];
+    
+    UIImageView *bluePostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 15 - 12, self.postButton.frame.size.height - 25 - 8, 12 + 3, 8)];
+    bluePostImageView.image = [UIImage imageNamed:@"bluePostImage"];
+    [self.postButton addSubview:bluePostImageView];
+    [self.postImageArray addObject:bluePostImageView];
+    
+    UIImageView *secondWhitePostImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.postButton.frame.size.width - 15 - 12, self.postButton.frame.size.height - 25 - 8 - 8, 12, 8)];
+    secondWhitePostImageView.image = [UIImage imageNamed:@"whitePostImage"];
+    [self.postButton addSubview:secondWhitePostImageView];
+    [self.postImageArray addObject:secondWhitePostImageView];
+    [NSTimer scheduledTimerWithTimeInterval:2.0
+                                     target:self
+                                   selector:@selector(changePostImages)
+                                   userInfo:nil
+                                    repeats:NO];
+}
+
+- (void)changePostImages {
+    
+}
+
 
 - (void)setupCameraController:(WGCameraViewController *)cameraController {
     self.cameraController = cameraController;

@@ -185,6 +185,7 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *panRecognizer;
 @property (nonatomic, strong) UIButton *cancelButton;
 @property (nonatomic, strong) UIButton *postButton;
+@property (nonatomic, strong) NSMutableArray *postImageArray;
 @property (nonatomic, strong) NSMutableDictionary *info;
 @property (nonatomic, strong) UITextField *textField;
 @property (nonatomic, strong) UILabel *textLabel;
