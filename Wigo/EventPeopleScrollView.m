@@ -195,6 +195,7 @@
         if ([[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) {
             scrollCell.profileNameLabel.text = nil;
             scrollCell.imgView.image  = nil;
+            [scrollCell.imgView cancelCurrentImageLoad];
             [scrollCell.imageButton removeTarget:nil
                                           action:NULL
                                 forControlEvents:UIControlEventAllEvents];
