@@ -1562,10 +1562,9 @@
     [self.postButton addTarget:self action:@selector(postPressed) forControlEvents:UIControlEventTouchUpInside];
     UIImageView *postImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.postButton.frame.size.height - 25 - 10, 36.37, 25)];
     postImageView.image = [UIImage imageNamed:@"postImage"];
-    [self.cancelButton addSubview:postImageView];
+    [self.postButton addSubview:postImageView];
     self.postButton.hidden = YES;
     self.postButton.enabled = NO;
-    self.postButton.titleLabel.textAlignment = NSTextAlignmentRight;
     [self.overlayView addSubview:self.postButton];
     
     self.textField = [UITextField new];
