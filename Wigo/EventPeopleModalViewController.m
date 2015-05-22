@@ -54,7 +54,7 @@ int imageWidth;
     CGSize size = [self.event.name sizeWithAttributes:
                    @{NSFontAttributeName:[FontProperties semiboldFont:22.0f]}];
     if (size.width > self.view.frame.size.width - 30) {
-        titleLabel.frame = CGRectMake(15, 35, self.view.frame.size.width - 30, 55);
+        titleLabel.frame = CGRectMake(15, MAX(20, self.attendeesPhotosScrollView.frame.origin.y/2 - 23 - 27), self.view.frame.size.width - 30, 55);
     }
     
     titleLabel.text = self.event.name;
