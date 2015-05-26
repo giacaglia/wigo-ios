@@ -26,4 +26,5 @@
 @property (nonatomic, strong) WGCollection *notifications;
 
 - (void)fetchFriendsIds;
+- (void)fetchFriendsIdsWithHandler:(BoolResultBlock)handler;
 @end

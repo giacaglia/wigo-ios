@@ -101,7 +101,18 @@
         if (!WGProfile.currentUser || error) return;
         [WGProfile.currentUser setFriendsIds:(NSArray *)jsonResponse];
     }];
+}
 
+- (void)fetchFriendsIdsWithHandler:(BoolResultBlock)handler {
+    if (!WGProfile.currentUser.key) return;
+    [WGApi get:@"users/me/friends/ids/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+        if (!WGProfile.currentUser || error) {
+            handler(NO, error);
+            return;
+        }
+        [WGProfile.currentUser setFriendsIds:(NSArray *)jsonResponse];
+        handler(YES, nil);
+    }];
 }
 
 @end
