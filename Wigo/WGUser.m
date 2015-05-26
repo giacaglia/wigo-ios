@@ -734,6 +734,17 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setFriendsIds:(NSArray*)friendsIds {
+    //cleanup friends set to YES
+    if (WGProfile.currentUser.friendsMetaDict) {
+        NSMutableDictionary *mutFriendsMetaDict = [NSMutableDictionary dictionaryWithDictionary:WGProfile.currentUser.friendsMetaDict];
+        for (NSString *userIDString in mutFriendsMetaDict.allKeys) {
+            NSMutableDictionary *userDict = [NSMutableDictionary dictionaryWithDictionary:[mutFriendsMetaDict objectForKey:userIDString]];
+            [userDict setObject:@NO forKey:kIsFriendKey];
+            [mutFriendsMetaDict setObject:userDict forKey:userIDString];
+        }
+        WGProfile.currentUser.friendsMetaDict = mutFriendsMetaDict;
+    }
+    
     for (NSString *friendID in friendsIds) {
         WGUser *user = [[WGUser alloc] initWithJSON:@{@"id": friendID}];
         [user setIsFriend:@YES];
