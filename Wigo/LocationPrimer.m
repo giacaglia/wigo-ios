@@ -107,7 +107,7 @@ static UIButton *mainButton;
 
 +(void) removePrimer {
     if (!LocationPrimer.defaultBlackOverlay.isHidden) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"showOnboardView" object:nil];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"showOnboardView" object:nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
         LocationPrimer.defaultBlackOverlay.hidden = YES;
         LocationPrimer.defaultButton.hidden = YES;
