@@ -81,7 +81,6 @@ BOOL firstTimeLoading;
         [NetworkFetcher.defaultGetter fetchFriendsIds];
     }
     [self initializeEmptyView];
-//    [self initializeOnboardView];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -385,6 +384,11 @@ BOOL firstTimeLoading;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(startPrimer)
                                                  name:@"startPrimer"
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(initializeOnboardView)
+                                                 name:@"showOnboardView"
                                                object:nil];
 }
 
