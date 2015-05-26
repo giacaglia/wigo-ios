@@ -333,6 +333,7 @@ BOOL firstTimeLoading;
     WGProfile.isLocal = isLocal;
     _isLocal = isLocal;
     if (isLocal) {
+        self.emptyFriendsView.hidden = YES;
         self.bostonLabel.textColor = [FontProperties getBlueColor];
         self.bostonLabel.backgroundColor = UIColor.whiteColor;
         [self.friendsButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
@@ -1484,6 +1485,13 @@ BOOL firstTimeLoading;
 
             [strongSelf.placesTableView reloadData];
             [strongSelf removeDancingG];
+            if (!WGProfile.isLocal &&
+                strongSelf.allEvents.count == 0) {
+                strongSelf.emptyFriendsView.hidden = NO;
+            }
+            else {
+                strongSelf.emptyFriendsView.hidden = YES;
+            }
             
             dispatch_async(dispatch_get_main_queue(),
                            ^{
