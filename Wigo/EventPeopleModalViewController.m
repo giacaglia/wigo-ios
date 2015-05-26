@@ -411,20 +411,19 @@ referenceSizeForFooterInSection:(NSInteger)section {
     self.pendingLabel.font = [FontProperties mediumFont:20.0f];
     [self.backgroundWhiteView addSubview:self.pendingLabel];
     
-    self.acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth - 74 - 15, 35 - 18.5, 37, 37)];
-    UIImageView *acceptImgView = [[UIImageView alloc] initWithFrame:CGRectMake(8.5, 8.5, 20, 20)];
+    self.acceptButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth/2 - 37 - 35, 50 + 16.5, 37, 37)];
+    UIImageView *acceptImgView = [[UIImageView alloc] initWithFrame:CGRectMake(3.5, 3.5, 30, 30)];
     acceptImgView.image = [UIImage imageNamed:@"acceptButton"];
     [self.acceptButton addSubview:acceptImgView];
     [self.acceptButton addTarget:self action:@selector(acceptPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.backgroundWhiteView addSubview:self.acceptButton];
     
-    self.rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth - 37 - 10, 35 - 18.5, 37, 37)];
-    UIImageView *rejectImgView = [[UIImageView alloc] initWithFrame:CGRectMake(8.5, 8.5, 20, 20)];
+    self.rejectButton = [[UIButton alloc] initWithFrame:CGRectMake(imageWidth/2 + 35, 50 + 16.5, 37, 37)];
+    UIImageView *rejectImgView = [[UIImageView alloc] initWithFrame:CGRectMake(3.5, 3.5, 30, 30)];
     rejectImgView.image = [UIImage imageNamed:@"rejectButton"];
     [self.rejectButton addSubview:rejectImgView];
     [self.rejectButton addTarget:self action:@selector(rejectPressed) forControlEvents:UIControlEventTouchUpInside];
     [self.backgroundWhiteView addSubview:self.rejectButton];
-
 }
 
 - (void)followPressed:(id)sender {
@@ -443,13 +442,13 @@ referenceSizeForFooterInSection:(NSInteger)section {
     [self.eventPeopleModalDelegate chatPressed:sender];
 }
 
-- (void)acceptPressed:(id)sender {
+- (void)acceptPressed{
     self.user.isFriend = @YES;
     [WGProfile.currentUser acceptFriendRequestFromUser:self.user withHandler:^(BOOL success, NSError *error) {}];
     [self reloadView];
 }
 
-- (void)rejectPressed:(id)sender {
+- (void)rejectPressed {
     self.user.isFriend = @NO;
     self.user.friendRequest = kFriendRequestReceived;
     [WGProfile.currentUser rejectFriendRequestForUser:self.user withHandler:^(BOOL success, NSError *error) {}];

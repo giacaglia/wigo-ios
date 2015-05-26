@@ -106,13 +106,9 @@
 -(void) initializeNewChatView {
     self.emptyView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     [self.view addSubview:self.emptyView];
-//    self.emptyView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 0.29*self.view.frame.size.width - 40, 70, 0.29*self.view.frame.size.width, 0.48*self.view.frame.size.width)];
-//    self.emptyView.image = [UIImage imageNamed:@"chatEmptyView"];
-//    [self.view addSubview:self.emptyView];
-    UIImageView *emptyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 0.29*self.view.frame.size.width - 40, 6, 0.29*self.view.frame.size.width, 0.48*self.view.frame.size.width)];
-    emptyImageView.image = [UIImage imageNamed:@"chatEmptyView"];
+    UIImageView *emptyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 0.29*self.view.frame.size.width - 44, 14, 0.29*self.view.frame.size.width, 0.48*self.view.frame.size.width)];
+    emptyImageView.image = [UIImage imageNamed:@"chatLineView"];
     [self.emptyView addSubview:emptyImageView];
-    
 }
 
 - (void)initializeTableOfChats {

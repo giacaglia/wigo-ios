@@ -226,6 +226,10 @@ BOOL firstTimeLoading;
     self.isLocal = self.isLocal;
 }
 
+- (void) initializeEmptyView {
+    
+}
+
 - (void)handleLongPress:(UILongPressGestureRecognizer*)sender {
     if (sender.state == UIGestureRecognizerStateBegan) {
         self.isLocal = YES;
