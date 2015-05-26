@@ -156,8 +156,7 @@ static NSDate *biggestDate;
 
 + (void)clearIndex:(int)index {
     if (index == kIndexOfFriends) {
-        if ([TabBarAuxiliar biggestFriendsDate] == nil) return;
-        WGProfile.currentUser.lastUserRead = [TabBarAuxiliar biggestFriendsDate];
+        WGProfile.currentUser.lastUserRead = [NSDate date];
         [TabBarAuxiliar defaultFriendsOrangeView].hidden = YES;
     }
 }

@@ -121,7 +121,7 @@ BOOL blockShown;
     [_gradientImageView removeFromSuperview];
     _gradientImageView = nil;
     if (self.cardsDelegate) [self.cardsDelegate reloadCards];
-    if (self.user.isCurrentUser) [self updateLastNotificationsRead];
+    [self updateLastNotificationsRead];
 }
 
 
@@ -838,9 +838,6 @@ BOOL blockShown;
             notificationCell.orangeNewView.hidden = YES;
         }
         else {
-            if (!self.lastNotificationRead || [self.lastNotificationRead compare:notification.created] == NSOrderedAscending) {
-                self.lastNotificationRead = notification.created;
-            }
             notificationCell.orangeNewView.hidden = NO;
         }
         return notificationCell;
@@ -1158,12 +1155,8 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 - (void)updateLastNotificationsRead {
-    if (!WGProfile.currentUser.lastNotificationRead ||
-        [self.lastNotificationRead compare:WGProfile.currentUser.lastNotificationRead] == NSOrderedDescending ||
-        !WGProfile.currentUser.lastNotificationRead) {
-        if (!self.lastNotificationRead) WGProfile.currentUser.lastNotificationRead = [NSDate date];
-        else WGProfile.currentUser.lastNotificationRead = self.lastNotificationRead;
-    }
+    if (!self.user.isCurrentUser) return;
+    WGProfile.currentUser.lastNotificationRead = [NSDate date];
     [TabBarAuxiliar checkIndex:kIndexOfProfile forDate:self.lastNotificationRead];
 }
 
