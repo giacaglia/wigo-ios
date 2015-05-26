@@ -81,6 +81,7 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
+    [self.mediaScrollView stopCurrentVideo];
 }
 
 #pragma mark UICollectionViewDataSource
