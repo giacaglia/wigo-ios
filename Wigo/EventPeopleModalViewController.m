@@ -31,6 +31,7 @@ int imageWidth;
     self.fetchingEventAttendees = NO;
 
     imageWidth = [UIScreen mainScreen].bounds.size.width - kBorderWidth * 2 - 40;
+    if ([UIScreen mainScreen].bounds.size.height == 480) imageWidth = [UIScreen mainScreen].bounds.size.width - kBorderWidth * 2 - 60;
     
     self.view.backgroundColor = UIColor.clearColor;
     UIImageView* backView = [[UIImageView alloc] initWithFrame:self.view.frame];
@@ -80,13 +81,17 @@ int imageWidth;
     
     // IOS 4
     if ([UIScreen mainScreen].bounds.size.height == 480) {
-        titleLabel.frame = CGRectMake(15, 25, self.view.frame.size.width - 30, 20);
+        size = [self.event.name sizeWithAttributes:
+                @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
+        titleLabel.font = [FontProperties semiboldFont:18.0f];
+        titleLabel.frame = CGRectMake(15, 20, self.view.frame.size.width - 30, 20);
+        numberOfPeopleGoing.frame = CGRectMake(15, 45, self.view.frame.size.width - 30, 20);
         if (size.width > self.view.frame.size.width - 30) {
-            titleLabel.frame = CGRectMake(15, 20, self.view.frame.size.width - 30, 42);
+            titleLabel.frame = CGRectMake(15, 15, self.view.frame.size.width - 30, 42);
+            numberOfPeopleGoing.frame = CGRectMake(15, 45, self.view.frame.size.width - 30, 20);
 
         }
-        numberOfPeopleGoing.frame = CGRectMake(15, titleLabel.frame.origin.y + titleLabel.frame.size.height + 6, self.view.frame.size.width - 30, 20);
-        self.attendeesPhotosScrollView.center = CGPointMake(self.view.center.x, self.view.center.y + 25);
+        self.attendeesPhotosScrollView.center = CGPointMake(self.view.center.x, self.view.center.y + 20);
     }
 
     self.attendeesPhotosScrollView.contentOffset = CGPointMake((imageWidth + 10) * self.startIndex, 0);
