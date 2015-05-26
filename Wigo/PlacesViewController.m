@@ -263,14 +263,14 @@ BOOL firstTimeLoading;
     [self.emptyLocalView addSubview:localLine];
     
     UILabel *localTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, localLine.frame.origin.y - 100, self.view.frame.size.width, 30)];
-    localTitleLabel.text = @"Congrats";
+    localTitleLabel.text = @"Congrats!";
     localTitleLabel.textAlignment = NSTextAlignmentCenter;
     localTitleLabel.font = [FontProperties mediumFont:25.0f];
     localTitleLabel.textColor = [FontProperties getBlueColor];
     [self.emptyLocalView addSubview:localTitleLabel];
     
     UILabel *localSubtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, localLine.frame.origin.y - 70, self.view.frame.size.width - 30, 70)];
-    localSubtitleLabel.text = @"Looks like you there aren’t any events in your area yet.  Be the first one and create an event.";
+    localSubtitleLabel.text = @"It looks like there aren’t any events in your area yet today. Be a trendsetter and create an event.";
     localSubtitleLabel.numberOfLines = 0;
     localSubtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     localSubtitleLabel.textColor = UIColor.blackColor;
