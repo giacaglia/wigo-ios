@@ -52,6 +52,8 @@
 @property (nonatomic, strong) UIButton *createButton;
 @property (nonatomic, strong) UIView *overlayView;
 
+@property (nonatomic, strong) UIView *emptyFriendsView;
+@property (nonatomic, strong) UIImageView *onboardView;
 @end
 
 #import "EventPeopleScrollView.h"

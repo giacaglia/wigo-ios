@@ -80,6 +80,8 @@ BOOL firstTimeLoading;
         [NetworkFetcher.defaultGetter fetchSuggestions];
         [NetworkFetcher.defaultGetter fetchFriendsIds];
     }
+    [self initializeEmptyView];
+//    [self initializeOnboardView];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -226,9 +228,56 @@ BOOL firstTimeLoading;
     self.isLocal = self.isLocal;
 }
 
-- (void) initializeEmptyView {
+- (void)initializeEmptyView {
+    self.emptyFriendsView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    self.emptyFriendsView.hidden = YES;
+    [self.view addSubview:self.emptyFriendsView];
+    [self.view bringSubviewToFront:self.emptyFriendsView];
     
+    UIImageView *emptyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 0.15*self.view.frame.size.width - 100, self.view.frame.size.height - 0.54*self.view.frame.size.width - 120, 0.15*self.view.frame.size.width, 0.54*self.view.frame.size.width)];
+    emptyImageView.image = [UIImage imageNamed:@"friendsLine"];
+    [self.emptyFriendsView addSubview:emptyImageView];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, emptyImageView.frame.origin.y - 100, self.view.frame.size.width, 30)];
+    titleLabel.text = @"Oops";
+    titleLabel.textAlignment = NSTextAlignmentCenter;
+    titleLabel.font = [FontProperties mediumFont:25.0f];
+    titleLabel.textColor = [FontProperties getBlueColor];
+    [self.emptyFriendsView addSubview:titleLabel];
+    
+    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, emptyImageView.frame.origin.y - 70, self.view.frame.size.width - 30, 70)];
+    subtitleLabel.text = @"Looks like you don’t have any friends yet. Tap on the Discover tab to find your friends.";
+    subtitleLabel.numberOfLines = 0;
+    subtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    subtitleLabel.textColor = UIColor.blackColor;
+    subtitleLabel.textAlignment = NSTextAlignmentCenter;
+    subtitleLabel.font = [FontProperties lightFont:17.0f];
+    [self.emptyFriendsView addSubview:subtitleLabel];
 }
+
+- (void)initializeOnboardView {
+    UIView *window = [UIApplication sharedApplication].delegate.window;
+
+    NSNumber *showedOnboardView = WGProfile.currentUser.showedOnboardView;
+    if (!showedOnboardView) showedOnboardView = @NO;
+    self.onboardView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, window.frame.size.width, window.frame.size.height)];
+    self.onboardView.image = [UIImage imageNamed:@"onboardingView"];
+    self.onboardView.hidden = showedOnboardView.boolValue;
+    [window addSubview:self.onboardView];
+    UITapGestureRecognizer *singleFingerTap =
+    [[UITapGestureRecognizer alloc] initWithTarget:self
+                                            action:@selector(handleSingleTap)];
+    self.onboardView.userInteractionEnabled = YES;
+    [self.onboardView addGestureRecognizer:singleFingerTap];
+}
+
+- (void)handleSingleTap {
+    WGProfile.currentUser.showedOnboardView = @YES;
+    [UIView animateWithDuration:0.4f animations:^{
+        self.onboardView.alpha = 0.0f;
+    }];
+}
+
 
 - (void)handleLongPress:(UILongPressGestureRecognizer*)sender {
     if (sender.state == UIGestureRecognizerStateBegan) {
