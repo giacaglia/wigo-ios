@@ -237,20 +237,26 @@ BOOL firstTimeLoading;
     emptyImageView.image = [UIImage imageNamed:@"friendsLine"];
     [self.emptyFriendsView addSubview:emptyImageView];
     
-    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, emptyImageView.frame.origin.y - 100, self.view.frame.size.width, 30)];
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, emptyImageView.frame.origin.y - 135, self.view.frame.size.width, 35)];
+    if (isiPhone4s) titleLabel.frame = CGRectMake(0, emptyImageView.frame.origin.y - 70 - 30, self.view.frame.size.width, 30);
     titleLabel.text = @"Oops";
     titleLabel.textAlignment = NSTextAlignmentCenter;
-    titleLabel.font = [FontProperties mediumFont:25.0f];
     titleLabel.textColor = [FontProperties getBlueColor];
+    titleLabel.font = [FontProperties mediumFont:25.0f];
+    if (isiPhone5) titleLabel.font = [FontProperties mediumFont:26.0f];
+    if (isIphone6 || isIphone6Plus) titleLabel.font = [FontProperties mediumFont:30.0f];
     [self.emptyFriendsView addSubview:titleLabel];
     
-    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, emptyImageView.frame.origin.y - 70, self.view.frame.size.width - 30, 70)];
+    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, emptyImageView.frame.origin.y - 90 - 10, self.view.frame.size.width - 30, 90)];
+    if (isiPhone4s) subtitleLabel.frame = CGRectMake(15, emptyImageView.frame.origin.y - 70, self.view.frame.size.width - 30, 70);
     subtitleLabel.text = @"You have friends using Wigo, but you haven't added them yet. Tap on Discover to add them now.";
     subtitleLabel.numberOfLines = 0;
     subtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     subtitleLabel.textColor = UIColor.blackColor;
     subtitleLabel.textAlignment = NSTextAlignmentCenter;
     subtitleLabel.font = [FontProperties lightFont:17.0f];
+    if (isiPhone5) subtitleLabel.font = [FontProperties lightFont:19.0f];
+    if (isIphone6 || isIphone6Plus) subtitleLabel.font = [FontProperties lightFont:22.0f];
     [self.emptyFriendsView addSubview:subtitleLabel];
     
     self.emptyLocalView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
@@ -262,20 +268,26 @@ BOOL firstTimeLoading;
     localLine.image = [UIImage imageNamed:@"localLine"];
     [self.emptyLocalView addSubview:localLine];
     
-    UILabel *localTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, localLine.frame.origin.y - 100, self.view.frame.size.width, 30)];
+    UILabel *localTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, localLine.frame.origin.y - 125, self.view.frame.size.width, 35)];
+    if (isiPhone4s) localTitleLabel.frame = CGRectMake(0, localLine.frame.origin.y - 70 - 30, self.view.frame.size.width, 30);
     localTitleLabel.text = @"Congrats!";
     localTitleLabel.textAlignment = NSTextAlignmentCenter;
-    localTitleLabel.font = [FontProperties mediumFont:25.0f];
     localTitleLabel.textColor = [FontProperties getBlueColor];
+    localTitleLabel.font = [FontProperties mediumFont:25.0f];
+    if (isiPhone5) localTitleLabel.font = [FontProperties mediumFont:26.0f];
+    if (isIphone6 || isIphone6Plus) localTitleLabel.font = [FontProperties mediumFont:30.0f];
     [self.emptyLocalView addSubview:localTitleLabel];
     
-    UILabel *localSubtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, localLine.frame.origin.y - 70, self.view.frame.size.width - 30, 70)];
+    UILabel *localSubtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, localLine.frame.origin.y - 90, self.view.frame.size.width - 30, 90)];
+    if (isiPhone4s) localSubtitleLabel.frame = CGRectMake(15, localLine.frame.origin.y - 70, self.view.frame.size.width - 30, 70);
     localSubtitleLabel.text = @"It looks like there aren’t any events in your area yet today. Be a trendsetter and create an event.";
     localSubtitleLabel.numberOfLines = 0;
     localSubtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     localSubtitleLabel.textColor = UIColor.blackColor;
     localSubtitleLabel.textAlignment = NSTextAlignmentCenter;
     localSubtitleLabel.font = [FontProperties lightFont:17.0f];
+    if (isiPhone5) localSubtitleLabel.font = [FontProperties lightFont:19.0f];
+    if (isIphone6 || isIphone6Plus) localSubtitleLabel.font = [FontProperties lightFont:22.0f];
     [self.emptyLocalView addSubview:localSubtitleLabel];
 }
 
