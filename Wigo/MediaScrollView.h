@@ -177,6 +177,10 @@
 @property (nonatomic, strong) LLACircularProgressView *circularProgressView ;
 @property (nonatomic, strong) NSTimer *videoTimer;
 
+@property (nonatomic, strong) UIView *uploadView;
+@property (nonatomic, strong) UIActivityIndicatorView *uploadIndicator;
+@property (nonatomic, strong) UILabel *uploadLabel;
+
 @property (nonatomic, strong) UIImagePickerController *photoController;
 
 @property (nonatomic, strong) UIImageView *previewImageView;
@@ -195,6 +199,8 @@
 
 @property (nonatomic) BOOL isTakingPicture;
 @property (nonatomic,weak) AVCaptureSession *captureSession;
+
+- (void)cleanupView;
 
 - (void)cellWillAppear;
 - (void)cellDidDisappear;

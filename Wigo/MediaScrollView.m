@@ -33,6 +33,7 @@
 @property (nonatomic, strong) UIView *chatTextFieldWrapper;
 @property (nonatomic, strong) UILabel *addYourVerseLabel;
 @property (nonatomic, assign) BOOL shownCurrentImage;
+@property (nonatomic,weak) CameraCell *cameraCell;
 
 @property (nonatomic, strong) NSMutableSet *moviePlayerPool;
 
@@ -102,6 +103,10 @@
     return ret;
 }
 
+- (void)cleanupCameraCell {
+    [self.cameraCell cleanupView];
+}
+
 
 #pragma mark - UICollectionView Data Source
 
@@ -151,6 +156,7 @@
                 }
             }
             [self.pageViews setObject:cameraCell atIndexedSubscript:indexPath.row];
+            self.cameraCell = cameraCell;
             return cameraCell;
         }
     }
@@ -505,6 +511,7 @@
         [mutableDict addEntriesFromDictionary:callbackInfo];
         self.options = mutableDict;
     }
+    
     if ([self.tasksStillBeingUploaded containsObject:self.filenameString]) {
         [self.tasksStillBeingUploaded removeObject:self.filenameString];
     }
@@ -578,6 +585,7 @@
                        atEvent:nil             // how do we get the current event
                andEventMessage: nil];
         [newEventMessage addPhoto:fileData withName:filename andHandler:^(WGEventMessage *object, NSError *error) {
+            
             __strong typeof(weakSelf) strongSelf = weakSelf;
             strongSelf.error = error;
             strongSelf.object = object;
@@ -586,6 +594,7 @@
                 NSString *mediaName = [objectDict objectForKey:@"media"];
                 NSArray *components = [mediaName componentsSeparatedByString:@"/"];
                 NSString *returnedFilename = [components lastObject];
+                
                 if ([strongSelf.tasksStillBeingUploaded containsObject:returnedFilename]) {
                     [strongSelf.tasksStillBeingUploaded removeObject:returnedFilename];
                 }
@@ -593,6 +602,13 @@
                     [strongSelf.tasksStillBeingUploaded addObject:returnedFilename];
                 }
                 [strongSelf callbackFromUploadWithInfo:nil andFilename:returnedFilename];
+            }
+            else {
+                // handle error
+                
+                [self.eventConversationDelegate showErrorMessage];
+                [self cleanupCameraCell];
+                return;
             }
         }];
     } //If it's video
@@ -841,9 +857,16 @@
 
 - (void)callbackFromUploadWithInfo:(NSDictionary *)info
                        andFilename:(NSString *)filenameString {
+    
     if (![self.tasksStillBeingUploaded containsObject:filenameString]) {
+        
+        
+        // call photoview cleanup
+        
+        
         if (self.error) {
             [self.eventConversationDelegate showErrorMessage];
+            [self cleanupCameraCell];
             return;
         }
         NSMutableDictionary *objectDict = [[NSMutableDictionary alloc] initWithDictionary:self.object.deserialize];
@@ -854,6 +877,7 @@
             __strong typeof(weakSelf) strongSelf = weakSelf;
             if (strongSelf.error) {
                 [strongSelf.eventConversationDelegate showErrorMessage];
+                [self cleanupCameraCell];
                 return;
             }
             [strongSelf.eventConversationDelegate showCompletedMessage];
@@ -887,7 +911,8 @@
         else {
             [mutableDict addEntriesFromDictionary:self.object.deserialize];
         }
-
+        
+        [self cleanupCameraCell];
 
         WGEventMessage *newEventMessage = [WGEventMessage serialize:mutableDict];
 
@@ -1599,6 +1624,54 @@
     self.controller.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
     self.photoController.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
     
+    
+    self.uploadView = [[UIView alloc] init];
+    self.uploadView.backgroundColor = [UIColor blackColor];
+    [self.overlayView addSubview:self.uploadView];
+    
+    UIView *uploadSubView = [[UIView alloc] init];
+    [self.uploadView addSubview:uploadSubView];
+    
+    self.uploadIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    [self.uploadIndicator startAnimating];
+    [self.uploadIndicator sizeToFit];
+    [self.uploadIndicator stopAnimating];
+    
+    
+    self.uploadLabel = [[UILabel alloc] init];
+    self.uploadLabel.font = [FontProperties mediumFont:20.0f];
+    self.uploadLabel.textColor = [UIColor whiteColor];
+    self.uploadLabel.text = @"uploading...";
+    [self.uploadLabel sizeToFit];
+    
+    
+    uploadSubView.frame = CGRectMake(0,
+                                       0,
+                                       self.uploadIndicator.frame.size.width+
+                                             self.uploadLabel.frame.size.width+5.0,
+                                       44.0);
+    
+    CGPoint center = uploadSubView.center;
+    self.uploadIndicator.center = CGPointMake(self.uploadIndicator.center.x,
+                                              center.y);
+    
+    CGRect r = self.uploadLabel.frame;
+    r.origin.x = CGRectGetMaxX(self.uploadIndicator.frame)+5.0;
+    self.uploadLabel.frame = r;
+    self.uploadLabel.center = CGPointMake(self.uploadLabel.center.x,
+                                          center.y);
+    
+    [uploadSubView addSubview:self.uploadIndicator];
+    [uploadSubView addSubview:self.uploadLabel];
+    
+    self.uploadView.frame = CGRectMake(0,
+                                       0,
+                                       [UIScreen mainScreen].bounds.size.width,
+                                       uploadSubView.frame.size.height);
+    uploadSubView.center = self.uploadView.center;
+    
+    self.uploadView.hidden = YES;
+    
 }
 
 -(void)fillPostButton {
@@ -2126,6 +2199,33 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.info = nil;
 }
 
+- (void)showUploading {
+    
+    self.dismissButton.hidden = NO;
+    self.dismissButton.enabled = YES;
+    
+    self.flashButton.hidden = YES;
+    self.flashButton.enabled = NO;
+    self.switchButton.hidden = YES;
+    self.switchButton.enabled = NO;
+    
+    self.postButton.hidden = YES;
+    self.postButton.enabled = NO;
+    self.cancelButton.hidden = YES;
+    self.cancelButton.enabled = NO;
+    
+    [self.previewMoviePlayer pause];
+    
+    
+    self.uploadView.center = self.overlayView.center;
+    CGRect r = self.uploadView.frame;
+    r.origin.y = self.contentView.frame.size.height-self.uploadView.frame.size.height;
+    self.uploadView.frame = r;
+    
+    [self.uploadIndicator startAnimating];
+    self.uploadView.hidden = NO;
+}
+
 
 - (void)cleanupView {
     self.dismissButton.hidden = NO;
@@ -2153,6 +2253,9 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     self.textField.hidden = YES;
     self.textLabel.hidden = YES;
     self.panRecognizer.enabled = NO;
+    
+    [self.uploadIndicator stopAnimating];
+    self.uploadView.hidden = YES;
 }
 
 - (void)postPressed {
@@ -2168,7 +2271,8 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
     
     [self.mediaScrollDelegate mediaPickerController:self.controller
                              didFinishMediaWithInfo:newInfo];
-    [self cleanupView];
+    
+    [self showUploading];
 }
 
 - (void)panGestureRecognizer:(UIPanGestureRecognizer *)panRecognizer {
