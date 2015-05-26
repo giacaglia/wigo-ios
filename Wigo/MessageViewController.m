@@ -33,8 +33,8 @@
 
     // Title setup
     [self initializeNavigationItem];
-//    [self initializeEmptyView];
     [self initializeTableListOfFriends];
+    [self initializeEmptyView];
     [self fetchFirstPageEveryone];
 
 }
@@ -60,10 +60,42 @@
     self.navigationItem.leftBarButtonItem = barItem;
 }
 
-//-(void) initializeEmptyView {
-//    self.emptyView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0.85*self.view.frame.size.width, 0.9*self.view.frame.size.width)];
-//    self.emptyView.image = [UIImage imageNamed:@"emptyStateView"];
-//    [self.view addSubview:self.emptyView];
+-(void) initializeEmptyView {
+    self.emptyView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
+    self.emptyView.hidden = YES;
+    [self.view addSubview:self.emptyView];
+    [self.view bringSubviewToFront:self.emptyView];
+    
+    UILabel *localTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/2 - 80, self.view.frame.size.width, 30)];
+    localTitleLabel.text = @"Oops!";
+    localTitleLabel.textAlignment = NSTextAlignmentCenter;
+    localTitleLabel.font = [FontProperties mediumFont:25.0f];
+    localTitleLabel.textColor = [FontProperties getBlueColor];
+    [self.emptyView addSubview:localTitleLabel];
+    
+    UILabel *localSubtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, self.view.frame.size.height/2 - 50, self.view.frame.size.width - 30, 70)];
+    localSubtitleLabel.text = @"You have friends using Wigo, but you haven't added them yet :(";
+    localSubtitleLabel.numberOfLines = 0;
+    localSubtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    localSubtitleLabel.textColor = UIColor.blackColor;
+    localSubtitleLabel.textAlignment = NSTextAlignmentCenter;
+    localSubtitleLabel.font = [FontProperties lightFont:17.0f];
+    [self.emptyView addSubview:localSubtitleLabel];
+    
+//    UIButton *findFriendsButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 90, self.view.frame.size.height/2 + 20, 180, 60)];
+//    findFriendsButton.backgroundColor = [FontProperties getBlueColor];
+//    [findFriendsButton setTitle:@"Add Friends" forState:UIControlStateNormal];
+//    [findFriendsButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+//    findFriendsButton.layer.borderColor = UIColor.clearColor.CGColor;
+//    findFriendsButton.layer.borderWidth = 1.0f;
+//    findFriendsButton.layer.cornerRadius = 7.0f;
+//    [findFriendsButton addTarget:self action:@selector(navigateToFindFriends) forControlEvents:UIControlEventTouchUpInside];
+//    [self.emptyView addSubview:findFriendsButton];
+}
+
+//-(void)navigateToFindFriends {
+//    [self.navigationController popToRootViewControllerAnimated:NO];
+////    [self.tabBarController setSelectedIndex:3];
 //}
 
 -(void) goBack {
@@ -104,6 +136,12 @@
             strongSelf.allFriends = collection;
             strongSelf.content = strongSelf.allFriends;
             [strongSelf.tableView reloadData];
+            if (strongSelf.allFriends.count == 0) {
+                strongSelf.emptyView.hidden = NO;
+            }
+            else {
+                strongSelf.emptyView.hidden = YES;
+            }
         });
     }];
 

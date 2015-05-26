@@ -115,7 +115,7 @@
 // return the name of the root tab for a given object to display
 
 + (NSString *)applicationTabForObject:(NSString *)objectName root:(NSString *)root {
-    
+    NSLog(@"object name:%@ , root:%@", objectName, root);
     if(root && [root isEqualToString:@"messages"]) {
         return kWGTabChat;
     }

@@ -16,7 +16,7 @@
 @property (nonatomic, strong) WGCollection *content;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, assign) BOOL isSearching;
-@property (nonatomic, strong) UIImageView *emptyView;
+@property (nonatomic, strong) UIView *emptyView;
 @end
 
 #define kMessageCellName @"MessageCellNAme"
