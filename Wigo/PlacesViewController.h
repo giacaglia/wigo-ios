@@ -54,6 +54,7 @@
 
 @property (nonatomic, strong) UIView *emptyFriendsView;
 @property (nonatomic, strong) UIImageView *onboardView;
+@property (nonatomic, strong) UIView *emptyLocalView;
 @end
 
 #import "EventPeopleScrollView.h"

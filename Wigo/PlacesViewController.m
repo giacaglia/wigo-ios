@@ -252,6 +252,31 @@ BOOL firstTimeLoading;
     subtitleLabel.textAlignment = NSTextAlignmentCenter;
     subtitleLabel.font = [FontProperties lightFont:17.0f];
     [self.emptyFriendsView addSubview:subtitleLabel];
+    
+    self.emptyLocalView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    self.emptyLocalView.hidden = YES;
+    [self.view addSubview:self.emptyLocalView];
+    [self.view bringSubviewToFront:self.emptyLocalView];
+    
+    UIImageView *localLine = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 0.035*self.view.frame.size.width, self.view.frame.size.height - 0.6*self.view.frame.size.width - 120, 0.07*self.view.frame.size.width, 0.6*self.view.frame.size.width)];
+    localLine.image = [UIImage imageNamed:@"localLine"];
+    [self.emptyLocalView addSubview:localLine];
+    
+    UILabel *localTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, localLine.frame.origin.y - 100, self.view.frame.size.width, 30)];
+    localTitleLabel.text = @"Congrats";
+    localTitleLabel.textAlignment = NSTextAlignmentCenter;
+    localTitleLabel.font = [FontProperties mediumFont:25.0f];
+    localTitleLabel.textColor = [FontProperties getBlueColor];
+    [self.emptyLocalView addSubview:localTitleLabel];
+    
+    UILabel *localSubtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, localLine.frame.origin.y - 70, self.view.frame.size.width - 30, 70)];
+    localSubtitleLabel.text = @"Looks like you there aren’t any events in your area yet.  Be the first one and create an event.";
+    localSubtitleLabel.numberOfLines = 0;
+    localSubtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    localSubtitleLabel.textColor = UIColor.blackColor;
+    localSubtitleLabel.textAlignment = NSTextAlignmentCenter;
+    localSubtitleLabel.font = [FontProperties lightFont:17.0f];
+    [self.emptyLocalView addSubview:localSubtitleLabel];
 }
 
 - (void)initializeOnboardView {
@@ -339,6 +364,7 @@ BOOL firstTimeLoading;
         self.friendsButton.backgroundColor = [FontProperties getBlueColor];
     }
     else {
+        self.emptyLocalView.hidden = YES;
         [self.friendsButton setTitleColor:[FontProperties getBlueColor] forState:UIControlStateNormal];
         self.friendsButton.backgroundColor = UIColor.whiteColor;
         self.bostonLabel.textColor = UIColor.whiteColor;
@@ -1489,14 +1515,15 @@ BOOL firstTimeLoading;
 
             [strongSelf.placesTableView reloadData];
             [strongSelf removeDancingG];
-            if (!WGProfile.isLocal &&
-                strongSelf.allEvents.count == 0) {
-                strongSelf.emptyFriendsView.hidden = NO;
+            if (strongSelf.allEvents.count == 0) {
+                if (WGProfile.isLocal) self.emptyLocalView.hidden = NO;
+                else self.emptyFriendsView.hidden = NO;
             }
             else {
-                strongSelf.emptyFriendsView.hidden = YES;
+                self.emptyLocalView.hidden = YES;
+                self.emptyFriendsView.hidden = YES;
             }
-            
+                     
             dispatch_async(dispatch_get_main_queue(),
                            ^{
                                // check whether the app was opened with a notification
