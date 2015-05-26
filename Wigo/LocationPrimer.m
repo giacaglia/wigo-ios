@@ -10,7 +10,7 @@
 #import "Globals.h"
 #import <CoreLocation/CoreLocation.h>
 
-#define kPleaseEnableLocation @"Please allow location\nservices so we can show you sweet stuff nearby";
+#define kPleaseEnableLocation @"Please allow location\nservices so we can show you\nsweet stuff nearby";
 
 
 static CLLocationManager *locationManager;
@@ -31,6 +31,7 @@ static UIButton *mainButton;
         titleLabel.textColor = UIColor.whiteColor;
         titleLabel.numberOfLines = 0;
         titleLabel.font = [FontProperties lightFont:25.0f];
+        if (isiPhone4s) titleLabel.font = [FontProperties lightFont:20.0f];
         [window addSubview:titleLabel];
     }
     return titleLabel;

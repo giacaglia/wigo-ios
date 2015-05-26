@@ -31,7 +31,7 @@ int imageWidth;
     self.fetchingEventAttendees = NO;
 
     imageWidth = [UIScreen mainScreen].bounds.size.width - kBorderWidth * 2 - 40;
-    if ([UIScreen mainScreen].bounds.size.height == 480) imageWidth = [UIScreen mainScreen].bounds.size.width - kBorderWidth * 2 - 60;
+    if (isiPhone4s) imageWidth = [UIScreen mainScreen].bounds.size.width - kBorderWidth * 2 - 60;
     
     self.view.backgroundColor = UIColor.clearColor;
     UIImageView* backView = [[UIImageView alloc] initWithFrame:self.view.frame];
@@ -80,7 +80,7 @@ int imageWidth;
     [self.view addSubview:numberOfPeopleGoing];
     
     // IOS 4
-    if ([UIScreen mainScreen].bounds.size.height == 480) {
+    if (isiPhone4s) {
         size = [self.event.name sizeWithAttributes:
                 @{NSFontAttributeName:[FontProperties semiboldFont:18.0f]}];
         titleLabel.font = [FontProperties semiboldFont:18.0f];

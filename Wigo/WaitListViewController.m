@@ -22,14 +22,14 @@
 }
 
 -(void) initializeThanks {
-    UILabel *thankYouLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 60, self.view.frame.size.width, 60)];
+    UILabel *thankYouLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 40)];
     thankYouLabel.text = @"Thank you";
     thankYouLabel.textColor = UIColor.blackColor;
     thankYouLabel.textAlignment = NSTextAlignmentCenter;
     thankYouLabel.font = [FontProperties semiboldFont:30.0f];
     [self.view addSubview:thankYouLabel];
     
-    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 120, self.view.frame.size.width, 60)];
+    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 80, self.view.frame.size.width, 60)];
     subtitleLabel.text = @"We have added you to our\nsignup queue.";
     subtitleLabel.textColor = UIColor.blackColor;
     subtitleLabel.textAlignment = NSTextAlignmentCenter;
@@ -37,17 +37,17 @@
     subtitleLabel.numberOfLines = 2;
     [self.view addSubview:subtitleLabel];
     
-    UIImageView *leftPuzzleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 16, 128)];
+    UIImageView *leftPuzzleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0.05*[UIScreen mainScreen].bounds.size.width, 0.4*[UIScreen mainScreen].bounds.size.width)];
     leftPuzzleImgView.center = CGPointMake(leftPuzzleImgView.center.x, self.view.center.y);
     leftPuzzleImgView.image = [UIImage imageNamed:@"leftPuzzle"];
     [self.view addSubview:leftPuzzleImgView];
     
-    UIImageView *puzzleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 242, 128)];
+    UIImageView *puzzleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 0.76*[UIScreen mainScreen].bounds.size.width, 0.4*[UIScreen mainScreen].bounds.size.width)];
     puzzleImgView.center = self.view.center;
     puzzleImgView.image = [UIImage imageNamed:@"puzzle"];
     [self.view addSubview:puzzleImgView];
     
-    UIImageView *rightPuzzleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 16, 0, 16, 128)];
+    UIImageView *rightPuzzleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 16, 0, 0.05*[UIScreen mainScreen].bounds.size.width, 0.4*[UIScreen mainScreen].bounds.size.width)];
     rightPuzzleImgView.center = CGPointMake(rightPuzzleImgView.center.x, self.view.center.y);
     rightPuzzleImgView.image = [UIImage imageNamed:@"rightPuzzle"];
     [self.view addSubview:rightPuzzleImgView];
@@ -70,7 +70,7 @@
     pplAheadLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:pplAheadLabel];
     
-    UILabel *skipLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 70 - 69 - 30, self.view.frame.size.width, 30)];
+    UILabel *skipLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 70 - 69 - 25, self.view.frame.size.width, 25)];
     skipLabel.text = @"Or... Skip the line!";
     skipLabel.font = [FontProperties mediumFont:18.0f];
     skipLabel.textColor = [FontProperties getBlueColor];
@@ -78,10 +78,11 @@
     [self.view addSubview:skipLabel];
     
     UILabel *shareAppNow = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 70 - 69, self.view.frame.size.width, 69)];
-    shareAppNow.text = @"Get early access by sharing Wigo with your friends.\nThe more friends you share with, the sooner you'll get access.";
+    shareAppNow.text = @"Get early access by sharing Wigo with\nyour friends. The more friends you share\nwith, the sooner you'll get access.";
     shareAppNow.numberOfLines = 0;
     shareAppNow.textAlignment = NSTextAlignmentCenter;
     shareAppNow.font = [FontProperties lightFont:16.0f];
+    if (isiPhone4s) shareAppNow.font = [FontProperties lightFont:14.0f];
     [self.view addSubview:shareAppNow];
     
     UIButton *shareNowButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 60, self.view.frame.size.width, 60)];
@@ -105,7 +106,6 @@
             strongSelf.fetchTimer = nil;
         }
     }];
-    
 }
 
 -(void) shareNowPressed {
