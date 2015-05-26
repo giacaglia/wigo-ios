@@ -22,18 +22,20 @@
 }
 
 -(void) initializeThanks {
-    UILabel *thankYouLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, self.view.frame.size.width, 40)];
+    UILabel *thankYouLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/4 - 0.1*self.view.frame.size.width - 50, self.view.frame.size.width, 40)];
     thankYouLabel.text = @"Thank you";
     thankYouLabel.textColor = UIColor.blackColor;
     thankYouLabel.textAlignment = NSTextAlignmentCenter;
     thankYouLabel.font = [FontProperties semiboldFont:30.0f];
+    if (isIphone6Plus|| isIphone6) thankYouLabel.font = [FontProperties semiboldFont:34.0f];
     [self.view addSubview:thankYouLabel];
     
-    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 80, self.view.frame.size.width, 60)];
+    UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height/4 - 0.1*self.view.frame.size.width, self.view.frame.size.width, 60)];
     subtitleLabel.text = @"We have added you to our\nsignup queue.";
     subtitleLabel.textColor = UIColor.blackColor;
     subtitleLabel.textAlignment = NSTextAlignmentCenter;
     subtitleLabel.font = [FontProperties lightFont:20.0f];
+    if (isIphone6Plus || isIphone6) subtitleLabel.font = [FontProperties lightFont:24.0f];
     subtitleLabel.numberOfLines = 2;
     [self.view addSubview:subtitleLabel];
     
@@ -59,6 +61,7 @@
     NSString *formattedOutput = [formatter stringFromNumber:WGProfile.currentUser.waitListPos];
     numberLabel.text = formattedOutput;
     numberLabel.font = [FontProperties semiboldFont:30.0f];
+    if (isIphone6Plus || isIphone6) numberLabel.font = [FontProperties semiboldFont:34.0f];
     numberLabel.textColor = [FontProperties getBlueColor];
     numberLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:numberLabel];
@@ -67,12 +70,17 @@
     pplAheadLabel.center = CGPointMake(self.view.center.x, self.view.center.y + 20);
     pplAheadLabel.text = @"People ahead of you";
     pplAheadLabel.font = [FontProperties lightFont:16.0f];
+    if (isIphone6Plus || isIphone6) pplAheadLabel.font = [FontProperties lightFont:18.0f];
     pplAheadLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:pplAheadLabel];
     
     UILabel *skipLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 70 - 69 - 25, self.view.frame.size.width, 25)];
     skipLabel.text = @"Or... Skip the line!";
     skipLabel.font = [FontProperties mediumFont:18.0f];
+    if (isIphone6Plus || isIphone6) {
+        skipLabel.font = [FontProperties mediumFont:22.0f];
+        skipLabel.frame = CGRectMake(0,  self.view.frame.size.height - 70 - 69 - 25 - 10, self.view.frame.size.width, 25);
+    }
     skipLabel.textColor = [FontProperties getBlueColor];
     skipLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:skipLabel];
@@ -83,6 +91,7 @@
     shareAppNow.textAlignment = NSTextAlignmentCenter;
     shareAppNow.font = [FontProperties lightFont:16.0f];
     if (isiPhone4s) shareAppNow.font = [FontProperties lightFont:14.0f];
+    if (isIphone6Plus || isIphone6) shareAppNow.font = [FontProperties lightFont:18.0f];
     [self.view addSubview:shareAppNow];
     
     UIButton *shareNowButton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 60, self.view.frame.size.width, 60)];
@@ -91,6 +100,7 @@
     [shareNowButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     [shareNowButton setTitle:@"Share now" forState:UIControlStateNormal];
     shareNowButton.titleLabel.font = [FontProperties mediumFont:18.0f];
+    if (isIphone6Plus || isIphone6) shareNowButton.titleLabel.font = [FontProperties mediumFont:22.0f];
     [self.view addSubview:shareNowButton];
     
     self.fetchTimer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(reloadUser) userInfo:nil repeats:YES];
