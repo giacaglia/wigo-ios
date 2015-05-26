@@ -12,8 +12,6 @@
 
 
 @interface ChatViewController : BaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, WGViewController>
-
-@property (nonatomic, strong) UIButton *chatButton;
 @property (nonatomic, strong) UITableView *tableViewOfPeople;
 @property (nonatomic, strong) WGCollection *messages;
 @property (nonatomic, assign) BOOL isFetching;

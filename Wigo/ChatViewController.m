@@ -29,8 +29,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
     self.messages = NetworkFetcher.defaultGetter.messages;
     [self initializeTableOfChats];
-    [self initializeNewChatButton];
-//    [self initializeNewChatView];
+    [self initializeNewChatView];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -93,22 +92,22 @@
     [self.navigationController pushViewController:[MessageViewController new] animated:YES];
 }
 
--(void)initializeNewChatButton {
-    self.chatButton = [[UIButton alloc] initWithFrame:CGRectMake(40, self.view.frame.size.height/2 - 20, self.view.frame.size.width - 2*40, 40)];
-    [self.chatButton addTarget:self action:@selector(writeMessage) forControlEvents:UIControlEventTouchUpInside];
-    self.chatButton.titleLabel.font = [FontProperties scMediumFont:18.0f];
-    [self.chatButton setTitle:@"Start a New Chat" forState:UIControlStateNormal];
-    [self.chatButton setTitleColor:UIColor.grayColor forState:UIControlStateNormal];
-    self.chatButton.hidden = YES;
-    [self.view addSubview:self.chatButton];
-}
-
 -(void) initializeNewChatView {
     self.emptyView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
+    self.emptyView.hidden = YES;
     [self.view addSubview:self.emptyView];
-    UIImageView *emptyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 0.29*self.view.frame.size.width - 44, 14, 0.29*self.view.frame.size.width, 0.48*self.view.frame.size.width)];
+    [self.view bringSubviewToFront:self.emptyView];
+    
+    UIImageView *emptyImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 0.29*self.view.frame.size.width - 70, 14, 0.29*self.view.frame.size.width, 0.48*self.view.frame.size.width)];
     emptyImageView.image = [UIImage imageNamed:@"chatLineView"];
     [self.emptyView addSubview:emptyImageView];
+    
+    UILabel *startLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, emptyImageView.frame.origin.y + emptyImageView.frame.size.height + 10, self.view.frame.size.width, 40)];
+    startLabel.text = @"Start a new chat";
+    startLabel.textAlignment = NSTextAlignmentCenter;
+    startLabel.textColor = [FontProperties getBlueColor];
+    startLabel.font = [FontProperties mediumFont:25.0f];
+    [self.emptyView addSubview:startLabel];
 }
 
 - (void)initializeTableOfChats {
@@ -168,9 +167,9 @@
         }
         strongSelf.messages = collection;
         if (strongSelf.messages.count == 0) {
-            strongSelf.chatButton.hidden = NO;
+            strongSelf.emptyView.hidden = NO;
         } else {
-            strongSelf.chatButton.hidden = YES;
+            strongSelf.emptyView.hidden = YES;
         }
         [strongSelf.tableViewOfPeople reloadData];
         [strongSelf.tableViewOfPeople didFinishPullToRefresh];
