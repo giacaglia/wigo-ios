@@ -87,6 +87,10 @@ static NSDate *biggestDate;
     UITabBarController *tabBarController = [viewControllers objectAtIndex:0];
     UITabBar *tabBar = tabBarController.tabBar;
     [tabBar setFrame:CGRectMake(tabBar.frame.origin.x, tabBar.frame.origin.y + 5, tabBar.frame.size.width, tabBar.frame.size.height - 5)];
+    [tabBar setShadowImage:[UIColor.clearColor imageFromColor]];
+    [tabBar setBackgroundImage:[UIColor.clearColor imageFromColor]];
+    tabBar.layer.borderWidth = 1.0f;
+    tabBar.layer.borderColor = RGB(230, 230, 230).CGColor;
     tabBar.translucent = NO;
 
     [TabBarAuxiliar addTabBarImage:@"homeIcon"

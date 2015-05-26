@@ -3,17 +3,17 @@
     {
       "idiom" : "universal",
       "scale" : "1x",
-      "filename" : "chatIcon.png"
+      "filename" : "chatTabIcon.png"
     },
     {
       "idiom" : "universal",
       "scale" : "2x",
-      "filename" : "chatIcon@2x.png"
+      "filename" : "chatTabIcon@2x.png"
     },
     {
       "idiom" : "universal",
       "scale" : "3x",
-      "filename" : "chatIcon@3x.png"
+      "filename" : "chatTabIcon@3x.png"
     }
   ],
   "info" : {
