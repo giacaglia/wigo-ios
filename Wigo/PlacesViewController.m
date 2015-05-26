@@ -245,7 +245,7 @@ BOOL firstTimeLoading;
     [self.emptyFriendsView addSubview:titleLabel];
     
     UILabel *subtitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, emptyImageView.frame.origin.y - 70, self.view.frame.size.width - 30, 70)];
-    subtitleLabel.text = @"Looks like you don’t have any friends yet. Tap on the Discover tab to find your friends.";
+    subtitleLabel.text = @"You have friends using Wigo, but you haven't added them yet. Tap on Discover to add them now.";
     subtitleLabel.numberOfLines = 0;
     subtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     subtitleLabel.textColor = UIColor.blackColor;
@@ -1523,7 +1523,7 @@ BOOL firstTimeLoading;
                 self.emptyLocalView.hidden = YES;
                 self.emptyFriendsView.hidden = YES;
             }
-                     
+            
             dispatch_async(dispatch_get_main_queue(),
                            ^{
                                // check whether the app was opened with a notification
