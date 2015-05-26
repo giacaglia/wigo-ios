@@ -25,6 +25,9 @@
 @property (nonatomic) UIView *headerView;
 @property (nonatomic) UIView *headerBorderView;
 
+@property (nonatomic) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic) BOOL showingActivityIndicator;
+
 @property (nonatomic) WGCollection *likeUsers;
 @end
 
@@ -52,6 +55,8 @@ static NSString * kWGEventLikesCellIdentifier = @"WGEventLikesCellIdentifier";
         [self.tableView registerClass:[WGEventLikesTableCell class]
                forCellReuseIdentifier:kWGEventLikesCellIdentifier];
         
+        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        
     }
     return self;
 }
@@ -76,7 +81,6 @@ static NSString * kWGEventLikesCellIdentifier = @"WGEventLikesCellIdentifier";
     
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.headerView];
-    
     
     self.numberOfVotesLabel.textColor = UIColor.whiteColor;
     self.numberOfVotesLabel.textAlignment = NSTextAlignmentCenter;
@@ -117,17 +121,23 @@ static NSString * kWGEventLikesCellIdentifier = @"WGEventLikesCellIdentifier";
                                              1.0);
     
     [self.headerView addSubview:self.headerBorderView];
+    
+    CGPoint center = self.view.center;
+    self.activityIndicator.center = CGPointMake(center.x, self.headerView.frame.size.height+[WGEventLikesTableCell rowHeight]/2.0);
+    [self.view addSubview:self.activityIndicator];
 
 }
 
 - (void)getLikesForEvent:(WGEvent *)event eventMessage:(WGEventMessage *)eventMessage {
     
+    [self showLoadingIndicator];
     [WGUser getLikesForEvent:event
              andEventMessage:eventMessage
                  withHandler:^(WGCollection *collection, NSError *error) {
                      self.likeUsers = collection;
                      [self.tableView reloadData];
                      self.numberOfVotesLabel.text = [EventConversationViewController stringForLikes:self.likeUsers.count];
+                     [self hideLoadingIndicator];
              }];
 }
 
@@ -166,6 +176,20 @@ static NSString * kWGEventLikesCellIdentifier = @"WGEventLikesCellIdentifier";
     likesCell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return likesCell;
+}
+
+- (void)showLoadingIndicator {
+    _showingActivityIndicator = YES;
+    self.tableView.hidden = YES;
+    self.activityIndicator.hidden = NO;
+    [self.activityIndicator startAnimating];
+}
+
+- (void)hideLoadingIndicator {
+    _showingActivityIndicator = NO;
+    self.tableView.hidden = NO;
+    self.activityIndicator.hidden = YES;
+    [self.activityIndicator stopAnimating];
 }
 
 @end
