@@ -1251,7 +1251,9 @@ static WGUser *currentUser = nil;
     if (!event.id || !message.id) {
         return;
     }
-    NSString *graphAPI = [NSString stringWithFormat:@"events/%@/messages/%@/votes",event.id, message.id];
+    NSString *graphAPI;
+    if (WGProfile.isLocal) graphAPI = [NSString stringWithFormat:@"events/%@/messages/%@/votes",event.id, message.id];
+    else graphAPI = [NSString stringWithFormat:@"users/me/events/%@/messages/%@/votes",event.id, message.id];
     [WGApi get:graphAPI withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(nil, error);

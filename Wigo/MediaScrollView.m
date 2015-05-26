@@ -1621,7 +1621,7 @@
     
 
     self.index = 1;
-    [NSTimer scheduledTimerWithTimeInterval:0.1
+    [NSTimer scheduledTimerWithTimeInterval:0.3
                                      target:self
                                    selector:@selector(changePostImages)
                                    userInfo:nil
