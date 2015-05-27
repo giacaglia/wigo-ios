@@ -249,9 +249,7 @@
 -(void) getMeta:(BoolResultBlock)handler {
     __weak typeof(self) weakSelf = self;
     NSString *graphAPIURL;
-    if (WGProfile.isLocal) graphAPIURL = [NSString stringWithFormat:@"events/%@/messages/meta/", self.id];
-    else graphAPIURL = [NSString stringWithFormat:@"users/me/events/%@/messages/meta/", self.id];
-    [WGApi get:graphAPIURL
+    [WGApi get:[NSString stringWithFormat:@"events/%@/messages/meta/", self.id]
    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
        __strong typeof(weakSelf) strongSelf = weakSelf;
        if (error) {
