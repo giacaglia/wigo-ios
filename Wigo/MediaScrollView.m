@@ -1641,7 +1641,7 @@
     self.uploadLabel = [[UILabel alloc] init];
     self.uploadLabel.font = [FontProperties mediumFont:20.0f];
     self.uploadLabel.textColor = [UIColor whiteColor];
-    self.uploadLabel.text = @"uploading...";
+    self.uploadLabel.text = @"posting...";
     [self.uploadLabel sizeToFit];
     
     
@@ -2269,10 +2269,11 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info {
                                             }];
     }
     
+    [self showUploading];
     [self.mediaScrollDelegate mediaPickerController:self.controller
                              didFinishMediaWithInfo:newInfo];
     
-    [self showUploading];
+    
 }
 
 - (void)panGestureRecognizer:(UIPanGestureRecognizer *)panRecognizer {
