@@ -26,6 +26,12 @@
     return self;
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [WGAnalytics tagView:@"edit_profile_photo" withTargetUser:nil];
+    [WGAnalytics tagEvent:@"Edit Profile Photo View"];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

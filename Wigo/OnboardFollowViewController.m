@@ -41,6 +41,8 @@ UIImageView *searchIconImageView;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [WGAnalytics tagView:@"onboard_follow" withTargetUser:nil];
+    [WGAnalytics tagEvent:@"Onboard Follow View"];
 }
 
 - (void)initializeTitle {
