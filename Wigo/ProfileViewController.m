@@ -541,6 +541,10 @@ BOOL blockShown;
 #pragma mark - Action Taps
 
 - (void)blockPressed:(NSNotification *)notification {
+    [WGAnalytics tagEvent:@"Block User"];
+    [WGAnalytics tagAction:@"block" atView:@"profile"
+             andTargetUser:self.user atEvent:nil andEventMessage:nil];
+
     NSDictionary *userInfo = [notification userInfo];
     
     self.user.isBlocked = @YES;
@@ -568,6 +572,9 @@ BOOL blockShown;
 }
 
 - (void)unblockPressed {
+    [WGAnalytics tagEvent:@"Unblock User"];
+    [WGAnalytics tagAction:@"unblock" atView:@"profile"
+             andTargetUser:self.user atEvent:nil andEventMessage:nil];
     self.user.isBlocked = @NO;
     self.userState = self.user.state;
     [self reloadViewForUserState];
@@ -586,18 +593,30 @@ BOOL blockShown;
 
 
 - (void)followPressed {
+    if (!self.user.isFriend.boolValue) {
+        [WGAnalytics tagEvent:@"Friend Request Sent"];
+        [WGAnalytics tagAction:@"friend_request_sent" atView:@"profile"
+                 andTargetUser:self.user atEvent:nil andEventMessage:nil];
+   
+    }
     [self.user followUser];
     self.userState = self.user.state;
     [self reloadViewForUserState];
 }
 
 - (void)acceptPressed {
+    [WGAnalytics tagEvent:@"Friend Request Accept"];
+    [WGAnalytics tagAction:@"friend_request_accept" atView:@"profile"
+             andTargetUser:self.user atEvent:nil andEventMessage:nil];
     self.user.isFriend = @YES;
     [WGProfile.currentUser acceptFriendRequestFromUser:self.user withHandler:^(BOOL success, NSError *error) {}];
     [self reloadViewForUserState];
 }
 
 - (void)rejectPressed {
+    [WGAnalytics tagEvent:@"Friend Request Reject"];
+    [WGAnalytics tagAction:@"friend_request_reject" atView:@"profile"
+             andTargetUser:self.user atEvent:nil andEventMessage:nil];
     self.user.isFriend = @NO;
     self.user.friendRequest = kFriendRequestReceived;
     [WGProfile.currentUser rejectFriendRequestForUser:self.user withHandler:^(BOOL success, NSError *error) {}];

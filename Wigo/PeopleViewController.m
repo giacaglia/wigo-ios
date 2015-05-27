@@ -417,6 +417,9 @@ viewForHeaderInSection:(NSInteger)section
     UIButton *buttonSender = (UIButton *)sender;
     int row = (int)buttonSender.tag;
     WGUser *user = (WGUser *)[self.users objectAtIndex:buttonSender.tag];
+    [WGAnalytics tagEvent:@"Friend Request Sent"];
+    [WGAnalytics tagAction:@"friend_request_sent" atView:@"discover"
+             andTargetUser:user atEvent:nil andEventMessage:nil];
     [user followUser];
     [self.users replaceObjectAtIndex:row withObject:user];
     [self.tableViewOfPeople reloadData];
@@ -425,6 +428,9 @@ viewForHeaderInSection:(NSInteger)section
 - (void)acceptPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:buttonSender.tag];
+    [WGAnalytics tagEvent:@"Friend Request Accept"];
+    [WGAnalytics tagAction:@"friend_request_accept" atView:@"discover"
+             andTargetUser:user atEvent:nil andEventMessage:nil];
     user.isFriend = @YES;
     [WGProfile.currentUser acceptFriendRequestFromUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
@@ -456,6 +462,9 @@ viewForHeaderInSection:(NSInteger)section
 - (void)rejectPressed:(id)sender {
     UIButton *buttonSender = (UIButton *)sender;
     WGUser *user = (WGUser *)[self.friendRequestUsers objectAtIndex:buttonSender.tag];
+    [WGAnalytics tagEvent:@"Friend Request Reject"];
+    [WGAnalytics tagAction:@"friend_request_reject" atView:@"discover"
+             andTargetUser:user atEvent:nil andEventMessage:nil];
     user.isFriend = @NO;
     user.friendRequest = kFriendRequestReceived;
     [WGProfile.currentUser rejectFriendRequestForUser:user withHandler:^(BOOL success, NSError *error) {

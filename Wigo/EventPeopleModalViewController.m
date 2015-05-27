@@ -432,6 +432,12 @@ referenceSizeForFooterInSection:(NSInteger)section {
 }
 
 - (void)followPressed:(id)sender {
+    [WGAnalytics tagEvent:@"Friend Request Sent"];
+    [WGAnalytics tagAction:@"friend_request_sent"
+                 atSubview:@"people_cards"
+                    atView:@"where"
+            withTargetUser:self.user];
+    
     self.addFriendButton.hidden = YES;
     self.addFriendButton.enabled = NO;
     self.user.friendRequest = kFriendRequestSent;
@@ -448,12 +454,22 @@ referenceSizeForFooterInSection:(NSInteger)section {
 }
 
 - (void)acceptPressed{
+    [WGAnalytics tagEvent:@"Friend Request Accept"];
+    [WGAnalytics tagAction:@"friend_request_accept"
+                 atSubview:@"people_cards"
+                    atView:@"where"
+            withTargetUser:self.user];
     self.user.isFriend = @YES;
     [WGProfile.currentUser acceptFriendRequestFromUser:self.user withHandler:^(BOOL success, NSError *error) {}];
     [self reloadView];
 }
 
 - (void)rejectPressed {
+    [WGAnalytics tagEvent:@"Friend Request Reject"];
+    [WGAnalytics tagAction:@"friend_request_reject"
+                 atSubview:@"people_cards"
+                    atView:@"where"
+            withTargetUser:self.user];
     self.user.isFriend = @NO;
     self.user.friendRequest = kFriendRequestReceived;
     [WGProfile.currentUser rejectFriendRequestForUser:self.user withHandler:^(BOOL success, NSError *error) {}];
