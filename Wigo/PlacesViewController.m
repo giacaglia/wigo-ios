@@ -142,6 +142,7 @@ BOOL firstTimeLoading;
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
     self.tabBarController.navigationItem.rightBarButtonItem = nil;
     [LocationPrimer removePrimer];
+    [self hideOnboardView];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -291,20 +292,27 @@ BOOL firstTimeLoading;
     [self.emptyLocalView addSubview:localSubtitleLabel];
 }
 
-- (void)initializeOnboardView {
-    UIView *window = [UIApplication sharedApplication].delegate.window;
+- (void)showOnboardView {
+    if (!self.onboardView) {
+        UIView *window = [UIApplication sharedApplication].delegate.window;
+        
+        NSNumber *showedOnboardView = WGProfile.currentUser.showedOnboardView;
+        if (!showedOnboardView) showedOnboardView = @NO;
+        self.onboardView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, window.frame.size.width, window.frame.size.height)];
+        self.onboardView.image = [UIImage imageNamed:@"onboardingView"];
+        self.onboardView.hidden = showedOnboardView.boolValue;
+        [window addSubview:self.onboardView];
+        UITapGestureRecognizer *singleFingerTap =
+        [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                action:@selector(handleSingleTap)];
+        self.onboardView.userInteractionEnabled = YES;
+        [self.onboardView addGestureRecognizer:singleFingerTap];
+    }
+    self.onboardView.alpha = 1.0f;
+}
 
-    NSNumber *showedOnboardView = WGProfile.currentUser.showedOnboardView;
-    if (!showedOnboardView) showedOnboardView = @NO;
-    self.onboardView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, window.frame.size.width, window.frame.size.height)];
-    self.onboardView.image = [UIImage imageNamed:@"onboardingView"];
-    self.onboardView.hidden = showedOnboardView.boolValue;
-    [window addSubview:self.onboardView];
-    UITapGestureRecognizer *singleFingerTap =
-    [[UITapGestureRecognizer alloc] initWithTarget:self
-                                            action:@selector(handleSingleTap)];
-    self.onboardView.userInteractionEnabled = YES;
-    [self.onboardView addGestureRecognizer:singleFingerTap];
+- (void)hideOnboardView {
+    self.onboardView.alpha = 0.0f;
 }
 
 - (void)handleSingleTap {
@@ -425,7 +433,7 @@ BOOL firstTimeLoading;
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(initializeOnboardView)
+                                             selector:@selector(showOnboardView)
                                                  name:@"showOnboardView"
                                                object:nil];
 }

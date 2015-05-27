@@ -108,7 +108,6 @@ static UIButton *mainButton;
 
 +(void) removePrimer {
     if (!LocationPrimer.defaultBlackOverlay.isHidden) {
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"showOnboardView" object:nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
         LocationPrimer.defaultBlackOverlay.hidden = YES;
         LocationPrimer.defaultButton.hidden = YES;
@@ -137,6 +136,7 @@ static UIButton *mainButton;
     if ([CLLocationManager locationServicesEnabled] &&
         ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse  ||
         [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways)){
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"showOnboardView" object:nil];
         [LocationPrimer removePrimer];
         return;
     }
