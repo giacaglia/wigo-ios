@@ -722,6 +722,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setIsFriend:(NSNumber *)isFriend {
+    [self setObject:isFriend forKey:kIsFriendKey];
     [self setMetaObject:isFriend forKey:kIsFriendKey];
 }
 
