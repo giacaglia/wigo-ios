@@ -1589,18 +1589,12 @@ BOOL firstTimeLoading;
         
         if (!strongSelf.secondTimeFetchingUserInfo) {
             strongSelf.secondTimeFetchingUserInfo = YES;
-//            if (
-//                (error || ![WGProfile.currentUser.emailValidated boolValue] ||
-//                [WGProfile.currentUser.group.locked boolValue])
-//                
-//                &&
-//                
-//                !strongSelf.presentingLockedView )
-//            {
-//                [strongSelf showFlashScreen];
-//                [strongSelf.signViewController reloadedUserInfo:success andError:error];
-//                return;
-//            }
+            if (error)
+            {
+                [strongSelf showFlashScreen];
+                [strongSelf.signViewController reloadedUserInfo:success andError:error];
+                return;
+            }
         }
         
         // Second time fetching user info... already logged in
