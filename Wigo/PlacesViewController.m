@@ -1596,7 +1596,7 @@ BOOL firstTimeLoading;
             if ([WGProfile.currentUser.status isEqual:kStatusImported])
             {
                 [strongSelf showFlashScreen];
-                [strongSelf.signViewController reloadedUserInfo:success andError:error];
+                [strongSelf.signViewController reloadedUserInfo:NO andError:error];
                 return;
             }
         }
