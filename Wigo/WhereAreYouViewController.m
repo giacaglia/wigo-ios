@@ -23,6 +23,8 @@
     [self.privateSwitchView.openLockImageView stopAnimating];
     CGRect frame =  self.navigationController.navigationBar.frame;
     self.navigationController.navigationBar.frame =  CGRectMake(frame.origin.x, 20, frame.size.width, frame.size.height);
+    [WGAnalytics tagView:@"where_are_you" withTargetUser:nil];
+    [WGAnalytics tagEvent:@"Where Are You View"];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
