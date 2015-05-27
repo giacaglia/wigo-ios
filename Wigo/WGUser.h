@@ -16,6 +16,7 @@
 #define kPropertiesKey @"properties"
 
 #define kStatusWaiting @"waiting"
+#define kStatusImported @"imported"
 
 @class WGEvent;
 

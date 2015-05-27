@@ -96,7 +96,7 @@ BOOL firstTimeLoading;
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self initializeFlashScreen];
-    if (!WGProfile.currentUser.key && !self.presentingLockedView) {
+    if (!WGProfile.currentUser.key ) {
         [self showFlashScreen];
         [self.signViewController reloadedUserInfo:NO andError:nil];
         LocationPrimer.defaultButton.enabled = NO;
@@ -1587,23 +1587,18 @@ BOOL firstTimeLoading;
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.fetchingUserInfo = NO;
         
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
         if (!strongSelf.secondTimeFetchingUserInfo) {
             strongSelf.secondTimeFetchingUserInfo = YES;
-            if (error)
+            if ([WGProfile.currentUser.status isEqual:kStatusImported])
             {
                 [strongSelf showFlashScreen];
                 [strongSelf.signViewController reloadedUserInfo:success andError:error];
                 return;
             }
-        }
-        
-        // Second time fetching user info... already logged in
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-            return;
-        }
-        if (!strongSelf.presentingLockedView) {
-            [strongSelf showReferral];
         }
         if ([WGProfile.currentUser.status isEqual:kStatusWaiting]) {
             [self presentViewController:[WaitListViewController new] animated:NO completion:nil];

@@ -37,7 +37,6 @@
 @property (nonatomic, assign) BOOL fetchingUserInfo;
 @property (nonatomic, assign) BOOL secondTimeFetchingUserInfo;
 @property (nonatomic, strong) UITableView *placesTableView;
-@property (nonatomic, assign) BOOL presentingLockedView;
 @property (nonatomic, assign) BOOL shouldReloadEvents;
 @property (nonatomic, strong) UIButton *switchButton;
 @property (nonatomic, assign) BOOL doNotReloadOffsets;
