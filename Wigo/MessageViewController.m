@@ -10,6 +10,7 @@
 #import "Globals.h"
 #import "UIButtonAligned.h"
 #import "ConversationViewController.h"
+#import "AppDelegate.h"
 
 @interface MessageViewController ()
 @property UISearchBar *searchBar;
@@ -82,21 +83,22 @@
     localSubtitleLabel.font = [FontProperties lightFont:17.0f];
     [self.emptyView addSubview:localSubtitleLabel];
     
-//    UIButton *findFriendsButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 90, self.view.frame.size.height/2 + 20, 180, 60)];
-//    findFriendsButton.backgroundColor = [FontProperties getBlueColor];
-//    [findFriendsButton setTitle:@"Add Friends" forState:UIControlStateNormal];
-//    [findFriendsButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-//    findFriendsButton.layer.borderColor = UIColor.clearColor.CGColor;
-//    findFriendsButton.layer.borderWidth = 1.0f;
-//    findFriendsButton.layer.cornerRadius = 7.0f;
-//    [findFriendsButton addTarget:self action:@selector(navigateToFindFriends) forControlEvents:UIControlEventTouchUpInside];
-//    [self.emptyView addSubview:findFriendsButton];
+    UIButton *findFriendsButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 90, self.view.frame.size.height/2 + 20, 180, 60)];
+    findFriendsButton.backgroundColor = [FontProperties getBlueColor];
+    [findFriendsButton setTitle:@"Add Friends" forState:UIControlStateNormal];
+    [findFriendsButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+    findFriendsButton.layer.borderColor = UIColor.clearColor.CGColor;
+    findFriendsButton.layer.borderWidth = 1.0f;
+    findFriendsButton.layer.cornerRadius = 7.0f;
+    [findFriendsButton addTarget:self action:@selector(navigateToFindFriends) forControlEvents:UIControlEventTouchUpInside];
+    [self.emptyView addSubview:findFriendsButton];
 }
 
-//-(void)navigateToFindFriends {
-//    [self.navigationController popToRootViewControllerAnimated:NO];
-////    [self.tabBarController setSelectedIndex:3];
-//}
+-(void)navigateToFindFriends {
+    [self.navigationController popToRootViewControllerAnimated:YES];
+    AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate switchToTab:kWGTabDiscover withOptions:nil];
+}
 
 -(void) goBack {
     [self.navigationController popViewControllerAnimated:YES];
@@ -136,12 +138,8 @@
             strongSelf.allFriends = collection;
             strongSelf.content = strongSelf.allFriends;
             [strongSelf.tableView reloadData];
-            if (strongSelf.allFriends.count == 0) {
-                strongSelf.emptyView.hidden = NO;
-            }
-            else {
-                strongSelf.emptyView.hidden = YES;
-            }
+            if (strongSelf.allFriends.count == 0) strongSelf.emptyView.hidden = NO;
+            else strongSelf.emptyView.hidden = YES;
         });
     }];
 
