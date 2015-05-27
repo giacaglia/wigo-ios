@@ -28,6 +28,7 @@
 #define kIsFriendKey @"is_friend"
 #define kIsBlockedKey @"is_blocked"
 #define kIsBlockingKey @"is_blocking"
+#define kIsInvitedKey @"is_invited"
 #define kBioKey @"bio"
 #define kImageKey @"image"
 #define kModifiedKey @"modified"
@@ -697,6 +698,17 @@ static WGUser *currentUser = nil;
     [self setObject:isBlocked forKey:kIsBlockedKey];
 }
 
+-(void) setIsInvited:(NSNumber *)isInvited {
+    [self setObject:isInvited forKey:kIsInvitedKey];
+}
+
+-(NSNumber *) isInvited {
+    if ([self objectForKey:kIsInvitedKey]) {
+        return [self objectForKey:kIsInvitedKey];
+    }
+    else return @NO;
+}
+
 -(NSNumber *) isBlocked {
     return [self objectForKey:kIsBlockedKey];
 }
@@ -759,7 +771,6 @@ static WGUser *currentUser = nil;
 -(NSNumber *) isGoingOut {
     return [self objectForKey:kIsGoingOutKey];
 }
-
 
 -(void) setIsFriendRequestRead:(BOOL)isFriendRequestRead {
     NSMutableArray *listOfFriendRequestRead = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey:kDictionaryIsFriendRequestList]];

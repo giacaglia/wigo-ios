@@ -48,6 +48,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 
 @property NSString* key;
 @property (nonatomic, assign) Privacy privacy;
+@property NSNumber *isInvited;
 @property NSNumber* isTapped;
 @property BOOL isFriendRequestRead;
 @property NSNumber* isBlocked;

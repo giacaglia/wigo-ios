@@ -303,13 +303,13 @@ heightForHeaderInSection:(NSInteger)section
     
     WGUser *user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
 
-    if (!user.isTapped.boolValue) {
+    if (!user.isInvited.boolValue) {
         [WGProfile.currentUser inviteUser:user
                                   atEvent:event
                               withHandler:^(BOOL success, NSError *error) {
                                   
                               }];
-        user.isTapped = @YES;
+        user.isInvited = @YES;
         NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:@"Invite", @"Tap Source", nil];
         [WGAnalytics tagEvent:@"Tap User" withDetails:options];
         [WGAnalytics tagAction:@"event_invite" atView:@"invite" andTargetUser:user atEvent:nil andEventMessage:nil];
@@ -506,7 +506,7 @@ heightForHeaderInSection:(NSInteger)section
     }
     else self.goingOutLabel.text = nil;
    
-    if (user.isTapped.boolValue || WGProfile.tapAll) {
+    if (user.isInvited.boolValue || WGProfile.tapAll) {
         [self.tapImageView setImage:[UIImage imageNamed:@"tapSelectedInvite"]];
     }
     else {
