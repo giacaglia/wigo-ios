@@ -293,13 +293,16 @@ BOOL firstTimeLoading;
 }
 
 - (void)showOnboardView {
+    UIView *window = [UIApplication sharedApplication].delegate.window;
+    
+    NSNumber *showedOnboardView = WGProfile.currentUser.showedOnboardView;
+    if (!showedOnboardView) showedOnboardView = @NO;
+    if (showedOnboardView.boolValue) return;
+
     if (!self.onboardView) {
-        UIView *window = [UIApplication sharedApplication].delegate.window;
-        
-        NSNumber *showedOnboardView = WGProfile.currentUser.showedOnboardView;
-        if (!showedOnboardView) showedOnboardView = @NO;
         self.onboardView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, window.frame.size.width, window.frame.size.height)];
         self.onboardView.image = [UIImage imageNamed:@"onboardingView"];
+        self.onboardView.contentMode = UIViewContentModeScaleToFill;
         self.onboardView.hidden = showedOnboardView.boolValue;
         [window addSubview:self.onboardView];
         UITapGestureRecognizer *singleFingerTap =
@@ -309,10 +312,11 @@ BOOL firstTimeLoading;
         [self.onboardView addGestureRecognizer:singleFingerTap];
     }
     self.onboardView.alpha = 1.0f;
+
 }
 
 - (void)hideOnboardView {
-    self.onboardView.alpha = 0.0f;
+    if (self.onboardView) self.onboardView.alpha = 0.0f;
 }
 
 - (void)handleSingleTap {
