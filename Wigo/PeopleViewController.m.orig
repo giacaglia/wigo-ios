@@ -719,6 +719,10 @@ viewForHeaderInSection:(NSInteger)section
     _user = user;
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text =  user.fullName;
+<<<<<<< HEAD
+=======
+    self.nameLabel.frame = CGRectMake(70, 10, 150, 20);
+>>>>>>> staging
     if (user.numMutualFriends &&
         user.numMutualFriends != (id)[NSNull null] &&
         user.numMutualFriends.floatValue >= 1) {
