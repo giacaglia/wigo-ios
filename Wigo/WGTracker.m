@@ -111,6 +111,8 @@ static NSString *sessionID;
     [eventDict setValue:event.name forKey:kObjectName];
     [eventDict setValue:event.numAttending forKey:KNumAttendingKey];
     if (event.owner) [eventDict setValue:event.owner.id forKey:kOwnerIDKey];
+    NSString *privacyString = event.isPrivate ? @"Private" : @"Public";
+    [eventDict setValue:privacyString forKey:kPrivacyKey];
     [mutDict setValue:eventDict forKey:kEventKey];
 }
 
