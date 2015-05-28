@@ -56,11 +56,13 @@ static NSString *analyticsString = @"https://blade-analytics.herokuapp.com/wigo2
 //Event keys
 #define kEventKey @"event"
 #define KNumAttendingKey @"num_attending"
+#define kOwnerIDKey @"owner_id"
 
 //Event Message keys
 #define kEventMesssageKey @"event_message"
 #define kMediaMimeTypeKey @"media_mime_type"
 #define kUpVotesKey @"up_votes"
+#define kUserIDKey @"user_id"
 
 #define kTypeKey @"type"
 #define kViewType @"view"

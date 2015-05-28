@@ -110,6 +110,7 @@ static NSString *sessionID;
     [eventDict setValue:event.id forKey:kObjectID];
     [eventDict setValue:event.name forKey:kObjectName];
     [eventDict setValue:event.numAttending forKey:KNumAttendingKey];
+    if (event.owner) [eventDict setValue:event.owner.id forKey:kOwnerIDKey];
     [mutDict setValue:eventDict forKey:kEventKey];
 }
 
@@ -119,6 +120,7 @@ static NSString *sessionID;
     [eventMsgDict setValue:eventMessage.id forKey:kObjectID];
     [eventMsgDict setValue:eventMessage.mediaMimeType forKey:kMediaMimeTypeKey];
     [eventMsgDict setValue:eventMessage.upVotes forKey:kUpVotesKey];
+    if (eventMessage.user) [eventMsgDict setValue:eventMessage.user.id forKey:kUserIDKey];
     [mutDict setValue:eventMsgDict forKey:kEventMesssageKey];
 }
 
