@@ -634,7 +634,6 @@
         }
         self.numberOfVotesLabel.text = [EventConversationViewController stringForLikes:[eventMessage.upVotes intValue]];
     }
-    
 }
 
 -(void) trashPressed {
