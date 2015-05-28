@@ -28,6 +28,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchMessages) name:@"fetchMessages" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
     self.messages = NetworkFetcher.defaultGetter.messages;
+    self.attendingEvent = [[WGEvent alloc] initWithJSON:@{@"id": @603565284483988736,
+                                    @"name": @"1 Day Until Wigo Summer"}];
     [self initializeTableOfChats];
     [self initializeNewChatView];
 }
@@ -232,8 +234,9 @@
     ChatCell *cell = [tableView dequeueReusableCellWithIdentifier:kChatCellName forIndexPath:indexPath];
     if (indexPath.section == kSectionEventChat) {
         cell.profileImageView.image = [UIImage imageNamed:@"wigoSystem"];
-        cell.nameLabel.text = WGProfile.currentUser.fullName;
-        cell.lastMessageLabel.text = WGProfile.currentUser.group.name;
+        cell.nameLabel.text = self.attendingEvent.name;
+        cell.lastMessageLabel.textColor = RGB(208, 208, 208);
+        cell.lastMessageLabel.text = @"Wigonna work";
         return cell;
     }
     if (indexPath.row == self.messages.count - 1) [self fetchNextPage];
@@ -268,8 +271,7 @@
     if (indexPath.section == kSectionEventChat) {
         GroupConversationViewController *groupChatVC = [GroupConversationViewController new];
         
-        groupChatVC.event = [[WGEvent alloc] initWithJSON:@{@"id": @603565284483988736,
-                                                            @"name": @"1 Day Until Wigo Summer"}];
+        groupChatVC.event = self.attendingEvent;
         [self.navigationController pushViewController:groupChatVC animated:YES];
         return;
     }
@@ -319,7 +321,7 @@
     self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width/2;
     [self.contentView addSubview:self.profileImageView];
     
-    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 15, 150, 20)];
+    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(85, 15, self.frame.size.width - 85 - 30 - 5, 20)];
     self.nameLabel.font = [FontProperties getSubtitleFont];
     [self.contentView addSubview:self.nameLabel];
     

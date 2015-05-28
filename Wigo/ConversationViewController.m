@@ -407,9 +407,7 @@ JSQMessagesBubbleImage *grayBubble;
     [self.messages getNextPage:^(WGCollection *collection, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.isFetching = NO;
-
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
@@ -421,8 +419,6 @@ JSQMessagesBubbleImage *grayBubble;
             [strongSelf.collectionView reloadData];
         });
     }];
-   
-    
 }
 
 - (void)updateLastMessagesRead:(WGMessage *)message {

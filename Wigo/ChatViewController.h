@@ -17,6 +17,7 @@
 @property (nonatomic, assign) BOOL isFetching;
 @property (nonatomic, strong) NSDate *lastMessageRead;
 @property (nonatomic, strong) UIView *emptyView;
+@property (nonatomic, strong) WGEvent *attendingEvent;
 @end
 
 

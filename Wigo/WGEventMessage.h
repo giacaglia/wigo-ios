@@ -9,6 +9,10 @@
 #import "WGObject.h"
 #import "WGUser.h"
 #import "JSQMessagesViewController/JSQMessages.h"
+#define kImageEventType @"image/jpeg"
+#define kVideoEventType @"video/mp4"
+#define kTextType @"text"
+
 
 @interface WGEventMessage : WGObject<JSQMessageData>
 

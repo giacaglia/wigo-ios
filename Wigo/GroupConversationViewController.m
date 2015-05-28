@@ -235,9 +235,8 @@ forBarMetrics:UIBarMetricsDefault];
 -(void) didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
     WGEventMessage *message = [[WGEventMessage alloc] init];
     message.message = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    message.created = date;
-//    message.toUser = self.user;
     message.user = WGProfile.currentUser;
+    message.mediaMimeType = kTextType;
     __weak typeof(self) weakSelf = self;
     [message create:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -308,8 +307,12 @@ forBarMetrics:UIBarMetricsDefault];
         __strong typeof(weakSelf) strongSelf = weakSelf;
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         strongSelf.isFetching = NO;
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        [collection reverse];
         strongSelf.messages = collection;
-        [strongSelf.messages reverse];
         strongSelf.showLoadEarlierMessagesHeader = (strongSelf.messages.nextPage != nil);
         [strongSelf.collectionView reloadData];
         [strongSelf scrollToBottomAnimated:YES];
@@ -320,6 +323,23 @@ forBarMetrics:UIBarMetricsDefault];
     if (!self.messages.nextPage) return;
     if (self.isFetching) return;
     self.isFetching = YES;
+    
+    __weak typeof(self) weakSelf = self;
+    [self.messages getNextPage:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.isFetching = NO;
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
+        }
+        [collection reverse];
+        [strongSelf.messages addObjectsFromCollectionToBeginning:collection notInCollection:self.messages];
+        strongSelf.messages.nextPage = collection.nextPage;
+        strongSelf.showLoadEarlierMessagesHeader = (strongSelf.messages.nextPage != nil);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [strongSelf.collectionView reloadData];
+        });
+    }];
 }
 
 @end

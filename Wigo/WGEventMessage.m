@@ -21,8 +21,6 @@
 #define kNumVotesKey @"num_votes"
 #define kMediaMimeType @"media_mime_type"
 
-#define kImageEventType @"image/jpeg"
-#define kVideoEventType @"video/mp4"
 
 
 #define kMetaEventMessagesProperties @"meta_event_messages_properties"
