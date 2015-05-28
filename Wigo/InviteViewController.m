@@ -497,14 +497,7 @@ heightForHeaderInSection:(NSInteger)section
 - (void)setUser:(WGUser *)user {
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.fullNameLabel.text = user.fullName;
-    if (user.isGoingOut.boolValue) {
-        if (user.eventAttending.name && !user.eventAttending.isPrivate) {
-            self.goingOutLabel.text = user.eventAttending.name;
-        } else {
-            self.goingOutLabel.text = @"Going Out";
-        }
-    }
-    else self.goingOutLabel.text = nil;
+    self.goingOutLabel.text = nil;
    
     if (user.isInvited.boolValue || WGProfile.tapAll) {
         [self.tapImageView setImage:[UIImage imageNamed:@"tapSelectedInvite"]];

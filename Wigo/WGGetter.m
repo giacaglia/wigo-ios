@@ -84,6 +84,11 @@
             [TabBarAuxiliar checkIndex:kIndexOfFriends forDate:lastUser];
         }
         [WGProfile setNumFriends:[jsonResponse objectForKey:@"num_friends"]];
+        if ([jsonResponse objectForKey:@"attending_event_id"] &&
+            [jsonResponse objectForKey:@"attending_event_id"] != [NSNull null]) {
+            WGEvent *attendingEvent = [[WGEvent alloc] initWithJSON:@{@"id": [jsonResponse objectForKey:@"attending_event_id"]}];
+            WGProfile.currentUser.eventAttending = attendingEvent;
+        }
         handler(YES, nil);
     }];
 }

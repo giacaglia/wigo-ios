@@ -182,4 +182,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property (nonatomic, strong) NSDictionary *dayMetaUserProperties;
 -(void) setDayMetaObject:(id)object forKey:(NSString *)key;
 -(id) dayMetaObjectForKey:(NSString *)key;
+
+#pragma mark - JSQMessageViewController
+@property (nonatomic, strong) UIImage *avatarImage;
 @end

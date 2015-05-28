@@ -608,10 +608,12 @@ static WGUser *currentUser = nil;
 -(UIImage *) avatarImage {
     if (!self.avatarView) {
         self.avatarView = [[UIImageView alloc] init];
-        [self.avatarView setImageWithURL:[self smallCoverImageURL] imageArea:[self smallCoverImageArea]];
+        self.avatarView.contentMode = UIViewContentModeScaleAspectFill;
+        [self.avatarView setSmallImageForUser:self completed:nil];
     }
     return self.avatarView.image;
 }
+
 
 -(UIImage *) avatarHighlightedImage {
     return nil;

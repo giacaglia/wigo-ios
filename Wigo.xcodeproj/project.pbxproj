@@ -451,7 +451,6 @@
 		E9CDC4671AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC4531AA4EF9900CD0336 /* OpenSans-SemiboldItalic.ttf */; };
 		E9CDC46D1AA51EB300CD0336 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC46C1AA51EB300CD0336 /* OpenSans-Regular.ttf */; };
 		E9CDC46E1AA51EB300CD0336 /* OpenSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E9CDC46C1AA51EB300CD0336 /* OpenSans-Regular.ttf */; };
-		E9D039C51A0986BA00DEF094 /* EventStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */; };
 		E9D039C81A09886A00DEF094 /* MediaScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* MediaScrollView.m */; };
 		E9D039C91A09886A00DEF094 /* MediaScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D039C71A09886A00DEF094 /* MediaScrollView.m */; };
 		E9D4F1681AD31EAA00478C78 /* GroupConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D4F1671AD31EAA00478C78 /* GroupConversationViewController.m */; };
@@ -486,7 +485,6 @@
 		FA2BC2071A68268700055F7C /* TopSchoolViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BC2051A68268700055F7C /* TopSchoolViewController.m */; };
 		FA2BC20A1A6826FE00055F7C /* TopSchool.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BC2091A6826FE00055F7C /* TopSchool.m */; };
 		FA2BC20B1A6826FE00055F7C /* TopSchool.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BC2091A6826FE00055F7C /* TopSchool.m */; };
-		FA2BE9BD19FAF06500CC0E5E /* EventStoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */; };
 		FA438EA719F1998A00AD74C2 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */; };
 		FA438EA919F19F2200AD74C2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA438EA819F19F2200AD74C2 /* AVFoundation.framework */; };
 		FA55260C1A1FCAFF00101AE7 /* AmbassadorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA55260B1A1FCAFF00101AE7 /* AmbassadorViewController.m */; };
@@ -980,8 +978,6 @@
 		FA2BC2051A68268700055F7C /* TopSchoolViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopSchoolViewController.m; sourceTree = "<group>"; };
 		FA2BC2081A6826FE00055F7C /* TopSchool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopSchool.h; sourceTree = "<group>"; };
 		FA2BC2091A6826FE00055F7C /* TopSchool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopSchool.m; sourceTree = "<group>"; };
-		FA2BE9BB19FAF06500CC0E5E /* EventStoryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventStoryViewController.h; sourceTree = "<group>"; };
-		FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventStoryViewController.m; sourceTree = "<group>"; };
 		FA438E4419F16F7700AD74C2 /* EventConversationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventConversationViewController.h; sourceTree = "<group>"; };
 		FA438EA619F1998A00AD74C2 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		FA438EA819F19F2200AD74C2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -1969,8 +1965,6 @@
 				45D9FBB31A7ED46600D08577 /* EventPeopleModalViewController.m */,
 				E9AEAE511A0190DB00BD77AF /* EventPeopleScrollView.h */,
 				E9AEAE521A0190DB00BD77AF /* EventPeopleScrollView.m */,
-				FA2BE9BB19FAF06500CC0E5E /* EventStoryViewController.h */,
-				FA2BE9BC19FAF06500CC0E5E /* EventStoryViewController.m */,
 				E9C340271A97986500AB069F /* HighlightsCollectionView.h */,
 				E9C340281A97986500AB069F /* HighlightsCollectionView.m */,
 				FA438E4419F16F7700AD74C2 /* EventConversationViewController.h */,
@@ -2436,7 +2430,6 @@
 				C12A110B19787BE700D53B1C /* SDWebImageManager.m in Sources */,
 				E96F07C419BA654600E858D7 /* GKImageCropViewController.m in Sources */,
 				C12A110C19787BE700D53B1C /* WGSpinnerView.m in Sources */,
-				E9D039C51A0986BA00DEF094 /* EventStoryViewController.m in Sources */,
 				45D9FABD1A781AFD00D08577 /* JSQMediaItem.m in Sources */,
 				E9096D5C1ADD5F1100386AC2 /* FSCalendarHeader.m in Sources */,
 				E9A8B6FE1ADC4B9D00C6901D /* WhereAreYouViewController.m in Sources */,
@@ -2737,7 +2730,6 @@
 				45D9FA9E1A781AFD00D08577 /* UIDevice+JSQMessages.m in Sources */,
 				45DF86941A5B0B5C00DB85AE /* WGAnalytics.m in Sources */,
 				E900C2591961B96000A01F50 /* SignNavigationViewController.m in Sources */,
-				FA2BE9BD19FAF06500CC0E5E /* EventStoryViewController.m in Sources */,
 				45DF86B01A5C5DEB00DB85AE /* AFSecurityPolicy.m in Sources */,
 				454409551A5241FA00BB3036 /* WGEvent.m in Sources */,
 				E9012AD11AFBEFCD007DC769 /* ReferalView.m in Sources */,

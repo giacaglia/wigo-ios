@@ -155,34 +155,14 @@
     [WGEvent createEventWithName:self.whereAreYouGoingTextField.text
                       andPrivate:_privateSwitchView.privacyTurnedOn
                       andHandler:^(WGEvent *object, NSError *error) {
-                          __strong typeof(weakSelf) strongSelf = weakSelf;
-                          [UIView animateWithDuration:0.2f animations:^{
-                              strongSelf.loadingIndicator.frame = CGRectMake(0, 0, strongSelf.loadingView.frame.size.width, strongSelf.loadingView.frame.size.height);
-                          } completion:^(BOOL finished) {
-                              if (finished) [strongSelf.loadingView removeFromSuperview];
-                              [strongSelf.navigationController popViewControllerAnimated:YES];
-//                                  [strongOfStrong removeProfileUserFromAnyOtherEvent];
-//                                  [strongOfStrong dismissKeyboard];
-//                                  
-//                                  WGProfile.currentUser.isGoingOut = @YES;
-//                                  WGProfile.currentUser.eventAttending = object;
-//                                  
-//                                  WGEventAttendee *attendee = [[WGEventAttendee alloc] initWithJSON:@{ @"user" : WGProfile.currentUser }];
-//                                  
-//                                  if ([strongOfStrong.allEvents containsObject:object]) {
-//                                      WGEvent *joinedEvent = (WGEvent *)[strongOfStrong.allEvents objectWithID:object.id];
-//                                      [joinedEvent.attendees insertObject:attendee atIndex:0];
-//                                  } else {
-//                                      if (object.attendees) {
-//                                          [object.attendees insertObject:attendee atIndex:0];
-//                                      } else {
-//                                          WGCollection *eventAttendees = [WGCollection serializeArray:@[ [attendee deserialize] ] andClass:[WGEventAttendee class]];
-//                                          object.attendees = eventAttendees;
-//                                      }
-//                                  }
-//                                  [strongOfStrong fetchEventsFirstPage];
-                          }];
-                      }];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [UIView animateWithDuration:0.2f animations:^{
+          strongSelf.loadingIndicator.frame = CGRectMake(0, 0, strongSelf.loadingView.frame.size.width, strongSelf.loadingView.frame.size.height);
+        } completion:^(BOOL finished) {
+          if (finished) [strongSelf.loadingView removeFromSuperview];
+          [strongSelf.navigationController popViewControllerAnimated:YES];
+        }];
+    }];
 }
 
 - (void)cancelCreateEvent {

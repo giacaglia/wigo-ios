@@ -17,73 +17,62 @@
 JSQMessagesBubbleImageFactory *bubbleFactory;
 JSQMessagesBubbleImage *orangeBubble;
 JSQMessagesBubbleImage *grayBubble;
-ProfileViewController *profileViewController;
 
 @implementation GroupConversationViewController
 
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        self.view.backgroundColor = UIColor.whiteColor;
-    }
-    return self;
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    self.view.backgroundColor = UIColor.whiteColor;
     [self initializeNotificationObservers];
     
     bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
-    orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor orangeColor]];
-    grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+    orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
+    grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[FontProperties getBlueColor]];
+    
     
     [self initializeLeftBarButton];
+    [self initializeBlueView];
     
     self.showLoadEarlierMessagesHeader = NO;
-    self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeZero;
-    self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
     
     self.automaticallyScrollsToMostRecentMessage = YES;
-    
-    UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 0.5)];
-    bottomLine.backgroundColor = RGB(180, 180, 180);
-    [self.view addSubview:bottomLine];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(textChanged:)
-                                                 name:UITextViewTextDidChangeNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    // Title setup
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:UIColor.whiteColor, NSFontAttributeName:[FontProperties getTitleFont]};
+    [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor]
+forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
-    self.navigationController.navigationBar.tintColor = UIColor.whiteColor;
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:UIColor.whiteColor}];
-    self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:UIColor.whiteColor forKey:NSForegroundColorAttributeName];
     
     self.title = self.event.name;
+    [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
+    self.blueBannerView.hidden = NO;
     
-    self.navigationController.navigationBar.barTintColor = [UIColor whiteColor];
-    self.navigationController.navigationBar.translucent = NO;
-    
+    [WGSpinnerView addDancingGToCenterView:self.view];
     [self fetchFirstPageMessages];
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor] forBarMetrics:UIBarMetricsDefault];
+    
+    [WGAnalytics tagEvent:@"Conversation View"];
+    [WGAnalytics tagView:@"conversation" withTargetUser:nil];
+}
+
+-(void) viewWillDisappear:(BOOL)animated {
+    self.blueBannerView.hidden = YES;
+}
+
+-(void) initializeBlueView {
+    self.blueBannerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 20)];
+    self.blueBannerView.backgroundColor = [FontProperties getBlueColor];
+    [self.navigationController.view addSubview:self.blueBannerView];
 }
 
 
@@ -124,7 +113,7 @@ ProfileViewController *profileViewController;
 
 - (void) initializeLeftBarButton {
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
-    [barBt setImage:[UIImage imageNamed:@"backIcon"] forState:UIControlStateNormal];
+    [barBt setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
     [barBt setTitle:@" Back" forState:UIControlStateNormal];
     [barBt setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
     barBt.titleLabel.font = [FontProperties getSubtitleFont];
@@ -137,18 +126,22 @@ ProfileViewController *profileViewController;
 
 
 - (id<JSQMessageData>)collectionView:(JSQMessagesCollectionView *)collectionView messageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return (WGMessage *)[self.messages objectAtIndex:indexPath.item];
+    return (WGEventMessage *)[self.messages objectAtIndex:indexPath.item];
 }
 
 - (id<JSQMessageAvatarImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView avatarImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return nil;
+    WGEventMessage *message = (WGEventMessage *)[self.messages objectAtIndex:indexPath.item];
+    UIImage *avatarImage = message.user.avatarImage;
+    avatarImage = [JSQMessagesAvatarImageFactory circularAvatarImage:avatarImage withDiameter:48];
+    JSQMessagesAvatarImage *jsqImage = [[JSQMessagesAvatarImage alloc] initWithAvatarImage:avatarImage highlightedImage:message.user.avatarImage placeholderImage:[UIImage new]];
+    return jsqImage;
 }
 
 - (id<JSQMessageBubbleImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView messageBubbleImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
+    WGEventMessage *message = (WGEventMessage *)[self.messages objectAtIndex:indexPath.item];
     
-    if ([message.senderId isEqualToString:self.senderId]) {
+    if ([message.user.id.stringValue isEqualToString:self.senderId]) {
         return grayBubble;
     }
     
@@ -157,11 +150,11 @@ ProfileViewController *profileViewController;
 
 - (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath {
     
-    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
+    WGEventMessage *message = (WGEventMessage *)[self.messages objectAtIndex:indexPath.item];
     if (indexPath.item == 0) {
         return [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.created];
     }
-    WGMessage *previousMessage = (WGMessage *)[self.messages objectAtIndex:indexPath.item - 1];
+    WGEventMessage *previousMessage = (WGEventMessage *)[self.messages objectAtIndex:indexPath.item - 1];
     if (previousMessage && [message.created timeIntervalSinceDate:previousMessage.created] > kTimeDifferenceToShowDate) {
         return [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.created];
     }
@@ -178,7 +171,7 @@ ProfileViewController *profileViewController;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return [self.messages count];
+    return self.messages.count;
 }
 
 - (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -187,31 +180,30 @@ ProfileViewController *profileViewController;
      */
     JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
     
-    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
+    WGEventMessage *message = (WGEventMessage *)[self.messages objectAtIndex:indexPath.item];
     
-    if (!message.isMediaMessage) {
-        
-        if ([message.senderId isEqualToString:self.senderId]) {
-            cell.textView.textColor = [UIColor blackColor];
-        }
-        else {
-            cell.textView.textColor = [UIColor whiteColor];
-        }
-        
-        cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,
-                                              NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle | NSUnderlinePatternSolid) };
+    if ([message.user.id.stringValue isEqualToString:self.senderId]) {
+        cell.textView.textColor = UIColor.whiteColor;
     }
+    else {
+        cell.textView.textColor = UIColor.blackColor;
+    }
+    
+    
+    cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,
+                                          NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle | NSUnderlinePatternSolid) };
+    
     
     return cell;
 }
 
 - (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
                    layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath {
-    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
+    WGEventMessage *message = (WGEventMessage *)[self.messages objectAtIndex:indexPath.item];
     if (indexPath.item == 0) {
         return kJSQMessagesCollectionViewCellLabelHeightDefault;
     }
-    WGMessage *previousMessage = (WGMessage *)[self.messages objectAtIndex:indexPath.item - 1];
+    WGEventMessage *previousMessage = (WGEventMessage *)[self.messages objectAtIndex:indexPath.item - 1];
     if (previousMessage && [message.created timeIntervalSinceDate:previousMessage.created] > kTimeDifferenceToShowDate) {
         return kJSQMessagesCollectionViewCellLabelHeightDefault;
     }
@@ -241,17 +233,16 @@ ProfileViewController *profileViewController;
 
 
 -(void) didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
-    WGMessage *message = [[WGMessage alloc] init];
+    WGEventMessage *message = [[WGEventMessage alloc] init];
     message.message = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     message.created = date;
 //    message.toUser = self.user;
-    message.user = [WGProfile currentUser];
+    message.user = WGProfile.currentUser;
     __weak typeof(self) weakSelf = self;
     [message create:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             [strongSelf.messages removeObject:message];
-            [[WGError sharedInstance] handleError:error actionType:WGActionPost retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionPost];
         }
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -270,50 +261,27 @@ ProfileViewController *profileViewController;
 
 - (void) initializeNotificationObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(addMessage:)
+                                             selector:@selector(fetchFirstPageMessages)
                                                  name:@"updateConversation"
+                                               object:nil];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(textChanged:)
+                                                 name:UITextViewTextDidChangeNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
                                                object:nil];
 }
 
-- (void)addMessage:(NSNotification *)notification {
-//    NSDictionary *aps = [notification.userInfo objectForKey:@"aps"];
-//    NSDictionary *alert = [aps objectForKey:@"alert"];
-//    if (![alert isKindOfClass:[NSDictionary class]]) {
-//        return;
-//    }
-//    NSString *locKeyString = [alert objectForKey:@"loc-key"];
-//    if (![locKeyString isEqualToString:@"M"]) {
-//        return;
-//    }
-//    NSArray *locArgs = [alert objectForKey:@"loc-args"];
-//    if ([locArgs count] < 2) {
-//        return;
-//    }
-    // NSString *fromFullName = locArgs[0];
-//    NSString *messageString = locArgs[1];
-//    
-//    NSNumber *messageID = [[notification userInfo] objectForKey:@"id"];
-//    
-//    NSDictionary *fromUser = [[notification userInfo] objectForKey:@"from_user"];
-//    if (![fromUser isKindOfClass:[NSDictionary class]]) {
-//        return;
-//    }
-//    NSNumber *fromUserID = [fromUser objectForKey:@"id"];
-    
-//    if (fromUserID && self.user.id && [fromUserID isEqualToNumber:self.user.id]) {
-//        WGMessage *message = [[WGMessage alloc] init];
-//        
-//        message.id = messageID;
-//        message.message = messageString;
-//        message.created = [NSDate dateInLocalTimezone];
-//        message.user = self.user;
-//        message.toUser = [WGProfile currentUser];
-//        
-//        [self.messages addObject:message];
-//        
-//        [self finishReceivingMessageAnimated:YES];
-//    }
-}
 
 - (void)initializeMessageForEmptyConversation {
     self.viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 90)];
@@ -332,10 +300,20 @@ ProfileViewController *profileViewController;
 # pragma mark - Network functions
 
 - (void)fetchFirstPageMessages {
-    self.isFetching = NO;
-//    
-//    [WGSpinnerView addDancingGToCenterView:self.view];
-//    __weak typeof(self) weakSelf = self;
+    if (self.isFetching) return;
+    self.isFetching = YES;
+
+    __weak typeof(self) weakSelf = self;
+    [self.event getMessages:^(WGCollection *collection, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+        strongSelf.isFetching = NO;
+        strongSelf.messages = collection;
+        [strongSelf.messages reverse];
+        strongSelf.showLoadEarlierMessagesHeader = (strongSelf.messages.nextPage != nil);
+        [strongSelf.collectionView reloadData];
+        [strongSelf scrollToBottomAnimated:YES];
+    }];
 }
 
 - (void)fetchMessages:(BOOL)scrollToBottom {

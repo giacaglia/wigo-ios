@@ -43,7 +43,7 @@ JSQMessagesBubbleImage *grayBubble;
     bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
     orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
     grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[FontProperties getBlueColor]];
-    
+    [self initializeNotificationObservers];
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
     [self initializeBlueView];
@@ -74,7 +74,6 @@ JSQMessagesBubbleImage *grayBubble;
 
     [WGAnalytics tagEvent:@"Conversation View"];
     [WGAnalytics tagView:@"conversation" withTargetUser:nil];
-    [self initializeNotificationObservers];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {

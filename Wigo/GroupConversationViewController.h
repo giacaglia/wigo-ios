@@ -19,6 +19,6 @@
 @property (nonatomic, strong) WGCollection *messages;
 @property (nonatomic, strong) UIView *viewForEmptyConversation;
 @property (nonatomic, assign) BOOL isFetching;
-
+@property (nonatomic, strong) UIView *blueBannerView;
 
 @end

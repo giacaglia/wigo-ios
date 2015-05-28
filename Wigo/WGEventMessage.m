@@ -24,6 +24,7 @@
 #define kImageEventType @"image/jpeg"
 #define kVideoEventType @"video/mp4"
 
+
 #define kMetaEventMessagesProperties @"meta_event_messages_properties"
 
 @implementation WGEventMessage
@@ -271,6 +272,32 @@
 
 -(void) setMetaEventMessageProperties:(NSDictionary *)metaEventMessageProperties {
     [[WGCache sharedCache] setObject:metaEventMessageProperties forKey:kEventMessagesKey];
+}
+
+#pragma mark JSQMessageData protocol
+
+- (NSString *)senderId {
+    return self.user.id.stringValue;
+}
+
+- (NSString *)senderDisplayName {
+    return self.user.fullName;
+}
+
+- (NSDate *)date {
+    return self.created;
+}
+
+- (BOOL)isMediaMessage {
+    return NO;
+}
+
+- (NSUInteger)hash {
+    return [self.id integerValue];
+}
+
+- (NSString *)text {
+    return self.message;
 }
 
 @end
