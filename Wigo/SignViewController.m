@@ -87,11 +87,11 @@
     if (![FBSDKAccessToken currentAccessToken]) return;
     [WGSpinnerView addDancingGToCenterView:self.view];
     self.accessToken = [FBSDKAccessToken currentAccessToken].tokenString;
-    [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
+    self.loginButton.enabled = NO;
     [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/" parameters:nil]
      startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
          [WGSpinnerView removeDancingGFromCenterView:self.view];
-         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
+         self.loginButton.enabled = YES;
          if (!error) {
              if (result[@"email"]) WGProfile.currentUser.email = result[@"email"];
              self.fbID = result[@"id"];
@@ -182,13 +182,12 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 - (void) loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
-    
 }
 
 - (void)handleAuthError:(NSError *)error {
     NSString *alertText;
     NSString *alertTitle;
-    if ([FBErrorUtility shouldNotifyUserForError:error] == YES){
+    if ([FBErrorUtility shouldNotifyUserForError:error] == YES) {
         // Error requires people using you app to make an action outside your app to recover
         alertTitle = @"Something went wrong";
         alertText = [FBErrorUtility userMessageForError:error];

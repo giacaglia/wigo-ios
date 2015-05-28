@@ -1587,18 +1587,19 @@ BOOL firstTimeLoading;
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.fetchingUserInfo = NO;
         
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-            return;
-        }
+     
         if (!strongSelf.secondTimeFetchingUserInfo) {
             strongSelf.secondTimeFetchingUserInfo = YES;
-            if ([WGProfile.currentUser.status isEqual:kStatusImported])
+            if (error || [WGProfile.currentUser.status isEqual:kStatusImported])
             {
                 [strongSelf showFlashScreen];
                 [strongSelf.signViewController reloadedUserInfo:NO andError:error];
                 return;
             }
+        }
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
+            return;
         }
         if ([WGProfile.currentUser.status isEqual:kStatusWaiting]) {
             [self presentViewController:[WaitListViewController new] animated:NO completion:nil];
