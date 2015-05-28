@@ -92,6 +92,7 @@
      startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
          [WGSpinnerView removeDancingGFromCenterView:self.view];
          self.loginButton.enabled = YES;
+         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
          if (!error) {
              if (result[@"email"]) WGProfile.currentUser.email = result[@"email"];
              self.fbID = result[@"id"];
