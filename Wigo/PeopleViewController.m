@@ -720,12 +720,13 @@ viewForHeaderInSection:(NSInteger)section
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text =  user.fullName;
     self.nameLabel.frame = CGRectMake(70, 10, 150, 20);
-    if (user.numMutualFriends && user.numMutualFriends != (id)[NSNull null]) {
-        if (user.numMutualFriends.floatValue >= 1) {
-            if (user.numMutualFriends.intValue == 1) self.mutualFriendsLabel.text = @"1 mutual friend";
-            else self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", user.numMutualFriends];
-        }
-
+    if (user.numMutualFriends &&
+        user.numMutualFriends != (id)[NSNull null] &&
+        user.numMutualFriends.floatValue >= 1) {
+        self.mutualFriendsLabel.hidden = NO;
+        self.nameLabel.frame = CGRectMake(70, 10, 150, 20);
+        if (user.numMutualFriends.intValue == 1) self.mutualFriendsLabel.text = @"1 mutual friend";
+        else self.mutualFriendsLabel.text = [NSString stringWithFormat:@"%@ mutual friends", user.numMutualFriends];
     }
     else {
         self.mutualFriendsLabel.hidden = YES;
