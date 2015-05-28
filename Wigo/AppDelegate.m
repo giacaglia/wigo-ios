@@ -142,6 +142,9 @@ NSDate *firstLoggedTime;
     }
     else if([tab isEqualToString:kWGTabChat]) {
         selectedClass = [ChatViewController class];
+        if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:nil];
+        }
     }
     else if([tab isEqualToString:kWGTabDiscover]) {
         selectedClass = [PeopleViewController class];
@@ -238,32 +241,11 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {}];
     
     if (application.applicationState == UIApplicationStateInactive) {
-        
         if ([[userInfo allKeys] containsObject:@"navigate"]) {
             [self handleNavigationForUserInfo:userInfo];
         }
     }
-    [UIApplication sharedApplication].applicationIconBadgeNumber = [[[userInfo objectForKey:@"aps"] objectForKey: @"badgecount"] intValue];
-
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
-    if (application.applicationState == UIApplicationStateActive) {
-        NSDictionary *aps = [userInfo objectForKey:@"aps"];
-        if ([aps isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *aps = [userInfo objectForKey:@"aps"];
-            if ([aps isKindOfClass:[NSDictionary class]]) {
-                NSDictionary *alert = [aps objectForKey:@"alert"];
-                if ([alert isKindOfClass:[NSDictionary class]]) {
-                    NSString *locKeyString = [alert objectForKey:@"loc-key"];
-                    if ([locKeyString isEqualToString:@"M"]) {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:userInfo];
-                    }
-                    
-                }
-            }
-        }
-    } else { // If it's was at the background or inactive
-    }
+    application.applicationIconBadgeNumber = [[[userInfo objectForKey:@"aps"] objectForKey: @"badgecount"] intValue];
 }
 
 - (void) handleNavigationForUserInfo:(NSDictionary *)userInfo {
@@ -273,19 +255,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
     [self navigate:navigateString];
 }
 
-- (BOOL)doesUserInfo:(NSDictionary *)userInfo hasString:(NSString *)checkString {
-    NSDictionary *aps = [userInfo objectForKey:@"aps"];
-    if ([aps isKindOfClass:[NSDictionary class]]) {
-        NSDictionary *alert = [aps objectForKey:@"alert"];
-        if ([alert isKindOfClass:[NSDictionary class]]) {
-            NSString *locKeyString = [alert objectForKey:@"loc-key"];
-            if ([locKeyString isEqualToString:checkString]) {
-                return YES;
-            }
-        }
-    }
-    return NO;
-}
 
 #pragma mark - Custom actions
 
@@ -293,28 +262,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 handleActionWithIdentifier:(NSString *)identifier
 forRemoteNotification:(NSDictionary *)userInfo
   completionHandler:(void (^)())completionHandler {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
-    if ([identifier isEqualToString: @"tap_with_diff_event"]) {
-        NSDictionary *event = [userInfo objectForKey:@"event"];
-        NSDictionary *aps = [userInfo objectForKey:@"aps"];
-        NSDictionary *alert = [aps objectForKey:@"alert"];
-        NSString *locKeyString = [alert objectForKey:@"loc-key"];
-        if ([locKeyString isEqualToString:@"T"]) {
-            if ([WGProfile currentUser].key) {
-                [WGProfile currentUser].isGoingOut = @YES;
-                WGEvent *attendingEvent = [WGEvent serialize:event];
-                [WGProfile currentUser].eventAttending = attendingEvent;
-                
-                [[WGProfile currentUser] goingToEvent:attendingEvent withHandler:^(BOOL success, NSError *error) {
-                    completionHandler();
-                }];
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
-                return;
-            }
-        }
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     completionHandler();
 }
 
