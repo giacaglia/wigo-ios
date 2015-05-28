@@ -556,7 +556,9 @@ viewForHeaderInSection:(NSInteger)section
 - (void)cleanupUsers {
     if (![self.currentTab isEqual:@2]) return;
     for (WGUser *user in self.users) {
-        if (user.isFriend.boolValue || user.friendRequest) {
+        if (user.state == FRIEND_USER_STATE ||
+            user.state == RECEIVED_REQUEST_USER_STATE ||
+            user.state == SENT_REQUEST_USER_STATE) {
             [self.users removeObject:user];
         }
     }
