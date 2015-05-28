@@ -1114,19 +1114,25 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (void) fetchUserInfo {
     if (!WGProfile.currentUser.key) return;
-    
+    self.user = WGProfile.currentUser;
+    self.imageScrollView.user = WGProfile.currentUser;
+    self.imageScrollView.user = WGProfile.currentUser;
+    self.pageControl.numberOfPages = WGProfile.currentUser.images.count;
+    _nameOfPersonLabel.text = [NSString stringWithFormat:@"%@, %@", self.user.fullName, self.user.age];
+    [self reloadViewForUserState];
+
     __weak typeof(self) weakSelf = self;
-    [WGProfile reload:^(BOOL success, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        strongSelf.user = WGProfile.currentUser;
-        strongSelf.numberOfFriendsLabel.text = WGProfile.numFriends.stringValue;
-        if (WGProfile.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
-        else strongSelf.friendsLabel.text = @"Friends";
-        strongSelf.imageScrollView.user = WGProfile.currentUser;
-        strongSelf.pageControl.numberOfPages = WGProfile.currentUser.images.count;
-        [strongSelf reloadViewForUserState];
-    }];
-    
+//    [WGProfile reload:^(BOOL success, NSError *error) {
+//        __strong typeof(weakSelf) strongSelf = weakSelf;
+//        strongSelf.user = WGProfile.currentUser;
+//        strongSelf.numberOfFriendsLabel.text = WGProfile.numFriends.stringValue;
+//        if (WGProfile.numFriends.intValue == 1) strongSelf.friendsLabel.text = @"Friend";
+//        else strongSelf.friendsLabel.text = @"Friends";
+//        strongSelf.imageScrollView.user = WGProfile.currentUser;
+//        strongSelf.pageControl.numberOfPages = WGProfile.currentUser.images.count;
+//        [strongSelf reloadViewForUserState];
+//    }];
+
     if (!WGProfile.numFriends) {
         __weak typeof(self) weakSelf = self;
         [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {

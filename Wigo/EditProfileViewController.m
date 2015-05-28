@@ -33,7 +33,7 @@ UIViewController *webViewController;
     
     _scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     _scrollView.showsVerticalScrollIndicator = NO;
-    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 50);
+    _scrollView.contentSize = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height + 400);
     _scrollView.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:_scrollView];
     
@@ -82,16 +82,16 @@ UIViewController *webViewController;
 
 - (void)saveDataAndGoBack {
     WGProfile.currentUser.privacy = _privacySwitch.on ? PRIVATE : PUBLIC;
-    if ([self.initialUserDict isEqual:WGProfile.currentUser.deserialize]) {
+//    if ([self.initialUserDict isEqual:WGProfile.currentUser.deserialize]) {
         [self dismissViewControllerAnimated:YES completion:nil];
-    }
-    else {
-        [WGSpinnerView showOrangeSpinnerAddedTo:self.view];
-        [WGProfile.currentUser save:^(BOOL success, NSError *error) {
-            [WGSpinnerView hideSpinnerForView:self.view];
-            [self dismissViewControllerAnimated:YES  completion: nil];
-        }];
-    }
+//    }
+//    else {
+//        [WGSpinnerView showOrangeSpinnerAddedTo:self.view];
+//        [WGProfile.currentUser save:^(BOOL success, NSError *error) {
+//            [WGSpinnerView hideSpinnerForView:self.view];
+//            [self dismissViewControllerAnimated:YES  completion: nil];
+//        }];
+//    }
 }
 
 
@@ -238,51 +238,92 @@ UIViewController *webViewController;
     line2View.backgroundColor = RGB(230, 230, 230);
     [_scrollView addSubview:line2View];
     
-    int initialPositionIcon;
-    if ([UIScreen mainScreen].bounds.size.height == 480) initialPositionIcon = line2View.frame.origin.y + 10;
-    else initialPositionIcon = [UIScreen mainScreen].bounds.size.height;
-    
-    UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, initialPositionIcon, 50, 50)];
-    iconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
-    [_scrollView addSubview:iconImageView];
-    
-    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, iconImageView.frame.size.height + iconImageView.frame.origin.y, self.view.frame.size.width, 25)];
-    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
-    NSString *versionString = [info objectForKey:@"CFBundleShortVersionString"];
-    versionLabel.text = [NSString stringWithFormat:@"Version %@", versionString];
-    versionLabel.font = [FontProperties getSmallFont];
-    versionLabel.textAlignment = NSTextAlignmentCenter;
-    [_scrollView addSubview:versionLabel];
-    
-    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, versionLabel.frame.origin.y + versionLabel.frame.size.height, self.view.frame.size.width, 25)];
-    builtInBostonLabel.text = @"Built in Boston";
-    builtInBostonLabel.font = [FontProperties getSmallFont];
-    builtInBostonLabel.textAlignment = NSTextAlignmentCenter;
-    [_scrollView addSubview:builtInBostonLabel];
-    
-    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, builtInBostonLabel.frame.origin.y + builtInBostonLabel.frame.size.height, self.view.frame.size.width, 25)];
-    NSString *gitCount = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitCount"];
-    NSString *gitHash = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitHash"];
-    gitCountLabel.text = [NSString stringWithFormat:@"Git Count %@, Git Hash %@", gitCount, gitHash];
-    gitCountLabel.font = [FontProperties getSmallPhotoFont];
-    gitCountLabel.textAlignment = NSTextAlignmentCenter;
-    [_scrollView addSubview:gitCountLabel];
-    
-    UILabel *debugLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, gitCountLabel.frame.origin.y + gitCountLabel.frame.size.height, self.view.frame.size.width, 25)];
-    NSString *debugString = @"";
-    
-#if defined(DEBUG)
-    debugString = @"Debug";
-#elif defined(DISTRIBUTION)
-    debugString = @"Distribution";
-#else
-    debugString = @"Release";
-#endif
-    
-    debugLabel.text = debugString;
-    debugLabel.font = [FontProperties getSmallPhotoFont];
-    debugLabel.textAlignment = NSTextAlignmentCenter;
-    [_scrollView addSubview:debugLabel];
+
+    int initialPositionIcon = [UIScreen mainScreen].bounds.size.height;
+    [self makeButtonForUser:@"Sarah Greiner" withIndex:0 atPosition:initialPositionIcon];
+    [self makeButtonForUser:@"Sammy Devier" withIndex:1 atPosition:(initialPositionIcon + 50)];
+    [self makeButtonForUser:@"Megan Henry" withIndex:2 atPosition:(initialPositionIcon + 100)];
+    [self makeButtonForUser:@"Allison Newman" withIndex:3 atPosition:(initialPositionIcon + 150)];
+    [self makeButtonForUser:@"Catherine McCall" withIndex:4 atPosition:(initialPositionIcon + 200)];
+    [self makeButtonForUser:@"Rebecca Bickford" withIndex:5 atPosition:(initialPositionIcon + 250)];
+    [self makeButtonForUser:@"Harrison Balder" withIndex:6 atPosition:(initialPositionIcon + 300)];
+
+//    UIImageView *iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2 - 25, initialPositionIcon, 50, 50)];
+//    iconImageView.image = [UIImage imageNamed:@"iconFlashScreen"];
+//    [_scrollView addSubview:iconImageView];
+//    
+//    UILabel *versionLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, iconImageView.frame.size.height + iconImageView.frame.origin.y, self.view.frame.size.width, 25)];
+//    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+//    NSString *versionString = [info objectForKey:@"CFBundleShortVersionString"];
+//    versionLabel.text = [NSString stringWithFormat:@"Version %@", versionString];
+//    versionLabel.font = [FontProperties getSmallFont];
+//    versionLabel.textAlignment = NSTextAlignmentCenter;
+//    [_scrollView addSubview:versionLabel];
+//    
+//    UILabel *builtInBostonLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, versionLabel.frame.origin.y + versionLabel.frame.size.height, self.view.frame.size.width, 25)];
+//    builtInBostonLabel.text = @"Built in Boston";
+//    builtInBostonLabel.font = [FontProperties getSmallFont];
+//    builtInBostonLabel.textAlignment = NSTextAlignmentCenter;
+//    [_scrollView addSubview:builtInBostonLabel];
+//    
+//    UILabel *gitCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, builtInBostonLabel.frame.origin.y + builtInBostonLabel.frame.size.height, self.view.frame.size.width, 25)];
+//    NSString *gitCount = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitCount"];
+//    NSString *gitHash = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GitHash"];
+//    gitCountLabel.text = [NSString stringWithFormat:@"Git Count %@, Git Hash %@", gitCount, gitHash];
+//    gitCountLabel.font = [FontProperties getSmallPhotoFont];
+//    gitCountLabel.textAlignment = NSTextAlignmentCenter;
+//    [_scrollView addSubview:gitCountLabel];
+//    
+//    UILabel *debugLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, gitCountLabel.frame.origin.y + gitCountLabel.frame.size.height, self.view.frame.size.width, 25)];
+//    NSString *debugString = @"";
+//    
+//#if defined(DEBUG)
+//    debugString = @"Debug";
+//#elif defined(DISTRIBUTION)
+//    debugString = @"Distribution";
+//#else
+//    debugString = @"Release";
+//#endif
+//    
+//    debugLabel.text = debugString;
+//    debugLabel.font = [FontProperties getSmallPhotoFont];
+//    debugLabel.textAlignment = NSTextAlignmentCenter;
+//    [_scrollView addSubview:debugLabel];
+}
+
+-(void)makeButtonForUser:(NSString *)fullName withIndex:(int)index atPosition:(int)position {
+    UIButton *firstUserButton = [[UIButton alloc] initWithFrame:CGRectMake(0, position, self.view.frame.size.width, 50)];
+    firstUserButton.layer.borderColor = UIColor.whiteColor.CGColor;
+    firstUserButton.layer.borderWidth = 1.0f;
+    firstUserButton.layer.cornerRadius = 1.0f;
+    firstUserButton.backgroundColor = [FontProperties getBlueColor];;
+    UILabel *firstUserLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, firstUserButton.frame.size.height)];
+    firstUserLabel.text = fullName;
+    firstUserLabel.font = [FontProperties getTitleFont];
+    firstUserLabel.textColor = UIColor.whiteColor;
+    firstUserLabel.textAlignment = NSTextAlignmentCenter;
+    [firstUserButton addSubview:firstUserLabel];
+    firstUserButton.tag = index;
+    [firstUserButton addTarget:self action:@selector(changeUserPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [_scrollView addSubview:firstUserButton];
+}
+
+- (void)changeUserPressed:(id)sender {
+    UIButton *buttonSender = (UIButton *)sender;
+    int tag = buttonSender.tag;
+    NSArray *keys = @[@"dce86914483d458997e3d1921d249432", @"fcf8a18ace694bf6a49ec83a9108f4a6",
+                      @"8bdebe50eadd4e36ac42742ce53d742c", @"b9fca9f1b6024880884a7f97623ad4b9",
+                      @"168f5584d0b04bfcb5fcbed961327348", @"d169208a0af34db1b6b226a476925c82",
+                      @"09cb75689ae046c691c2ccf71f6add52"];
+    NSString *key = (NSString *)[keys objectAtIndex:tag];
+    [WGProfile.currentUser setObject:key forKey:@"key"];
+    NSLog(@"key:%@", WGProfile.currentUser.key);
+    [[NSUserDefaults standardUserDefaults] setObject:key forKey:@"key"];
+//    [WGProfile.currentUser setKey:key];
+    [self performBlock:^{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } afterDelay:0.2f];
+
 }
 
 - (void)openPrivacy {
