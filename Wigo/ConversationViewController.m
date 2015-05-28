@@ -381,7 +381,6 @@ JSQMessagesBubbleImage *grayBubble;
         strongSelf.isFetching = NO;
 
         if (error) {
-            [[WGError sharedInstance] handleError:error actionType:WGActionLoad retryHandler:nil];
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
             return;
         }
