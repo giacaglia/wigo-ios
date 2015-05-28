@@ -1062,19 +1062,6 @@
     [panner setTranslation:CGPointZero inView:draggedView.superview];
 }
 
-#warning NEED TO ADD FOR PEEKING
-- (UIView *)copyOfProfileView:(UIView*)draggedView {
-//    ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
-//    [profileViewController setStateWithUser: self.user];
-//    profileViewController.user = self.user;
-//    profileViewController.view.backgroundColor = [UIColor clearColor];
-//    self.modalPresentationStyle = UIModalPresentationCurrentContext;
-//    [self presentModalViewController:profileViewController animated:YES];
-
-    return nil;
-}
-
-
 
 - (void) setIsActive:(BOOL)isActive {
     if (_isActive == isActive) {

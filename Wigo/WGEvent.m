@@ -248,7 +248,6 @@
 
 -(void) getMeta:(BoolResultBlock)handler {
     __weak typeof(self) weakSelf = self;
-    NSString *graphAPIURL;
     [WGApi get:[NSString stringWithFormat:@"events/%@/messages/meta/", self.id]
    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
        __strong typeof(weakSelf) strongSelf = weakSelf;

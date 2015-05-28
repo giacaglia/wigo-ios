@@ -62,6 +62,8 @@ JSQMessagesBubbleImage *grayBubble;
                                                   forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     self.blueBannerView.hidden = NO;
+    
+    [WGSpinnerView addDancingGToCenterView:self.view];
     [self fetchFirstPageMessages];
 }
 
@@ -295,7 +297,7 @@ JSQMessagesBubbleImage *grayBubble;
 
 - (void) initializeNotificationObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(addMessage:)
+                                             selector:@selector(fetchFirstPageMessages)
                                                  name:@"updateConversation"
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -373,7 +375,6 @@ JSQMessagesBubbleImage *grayBubble;
 - (void)fetchFirstPageMessages {
     self.isFetching = NO;
 
-    [WGSpinnerView addDancingGToCenterView:self.view];
     __weak typeof(self) weakSelf = self;
     [self.user getConversation:^(WGCollection *collection, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;

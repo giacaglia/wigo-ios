@@ -129,7 +129,6 @@
 
 @interface ImageCell : MediaCell
 @property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) UILabel *label;
 @end
 
 @interface VideoCell : MediaCell
@@ -159,6 +158,7 @@
                                             UIGestureRecognizerDelegate,
                                             UITextFieldDelegate,
                                             WGCameraViewControllerDelegate>
+
 @property (nonatomic, strong) UIView *overlayView;
 @property (nonatomic, weak) id <MediaScrollViewDelegate> mediaScrollDelegate;
 @property (nonatomic, strong) UIImagePickerController *controller;

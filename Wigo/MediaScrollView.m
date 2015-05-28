@@ -1464,15 +1464,15 @@
 //    self.photoController.showsCameraControls = NO;
     
     
-    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
-    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-    CGFloat cameraWidth = screenWidth;
-    CGFloat cameraHeight = floor((4/3.0f) * cameraWidth);
-    CGFloat scale = screenHeight / cameraHeight;
-    CGFloat delta = screenHeight - cameraHeight;
-    CGFloat yAdjust = delta / 2.0;
+//    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
+//    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+//    CGFloat cameraWidth = screenWidth;
+//    CGFloat cameraHeight = floor((4/3.0f) * cameraWidth);
+//    CGFloat scale = screenHeight / cameraHeight;
+//    CGFloat delta = screenHeight - cameraHeight;
+//    CGFloat yAdjust = delta / 2.0;
     
-    CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, yAdjust); //This slots the preview exactly in the middle of the screen
+//    CGAffineTransform translate = CGAffineTransformMakeTranslation(0.0, yAdjust); //This slots the preview exactly in the middle of the screen
     //self.controller.cameraViewTransform = CGAffineTransformScale(translate, scale, scale);
     
     self.photoController.mediaTypes = [NSArray arrayWithObjects:(NSString *)kUTTypeImage, nil];
