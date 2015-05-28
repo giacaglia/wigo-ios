@@ -276,29 +276,29 @@ ProfileViewController *profileViewController;
 }
 
 - (void)addMessage:(NSNotification *)notification {
-    NSDictionary *aps = [notification.userInfo objectForKey:@"aps"];
-    NSDictionary *alert = [aps objectForKey:@"alert"];
-    if (![alert isKindOfClass:[NSDictionary class]]) {
-        return;
-    }
-    NSString *locKeyString = [alert objectForKey:@"loc-key"];
-    if (![locKeyString isEqualToString:@"M"]) {
-        return;
-    }
-    NSArray *locArgs = [alert objectForKey:@"loc-args"];
-    if ([locArgs count] < 2) {
-        return;
-    }
+//    NSDictionary *aps = [notification.userInfo objectForKey:@"aps"];
+//    NSDictionary *alert = [aps objectForKey:@"alert"];
+//    if (![alert isKindOfClass:[NSDictionary class]]) {
+//        return;
+//    }
+//    NSString *locKeyString = [alert objectForKey:@"loc-key"];
+//    if (![locKeyString isEqualToString:@"M"]) {
+//        return;
+//    }
+//    NSArray *locArgs = [alert objectForKey:@"loc-args"];
+//    if ([locArgs count] < 2) {
+//        return;
+//    }
     // NSString *fromFullName = locArgs[0];
-    NSString *messageString = locArgs[1];
-    
-    NSNumber *messageID = [[notification userInfo] objectForKey:@"id"];
-    
-    NSDictionary *fromUser = [[notification userInfo] objectForKey:@"from_user"];
-    if (![fromUser isKindOfClass:[NSDictionary class]]) {
-        return;
-    }
-    NSNumber *fromUserID = [fromUser objectForKey:@"id"];
+//    NSString *messageString = locArgs[1];
+//    
+//    NSNumber *messageID = [[notification userInfo] objectForKey:@"id"];
+//    
+//    NSDictionary *fromUser = [[notification userInfo] objectForKey:@"from_user"];
+//    if (![fromUser isKindOfClass:[NSDictionary class]]) {
+//        return;
+//    }
+//    NSNumber *fromUserID = [fromUser objectForKey:@"id"];
     
 //    if (fromUserID && self.user.id && [fromUserID isEqualToNumber:self.user.id]) {
 //        WGMessage *message = [[WGMessage alloc] init];
