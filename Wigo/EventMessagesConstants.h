@@ -10,6 +10,7 @@
 
 @interface EventMessagesConstants : NSObject
 
+extern NSString *const kTextType;
 extern NSString *const kImageEventType;
 extern NSString *const kVideoEventType;
 extern NSString *const kMediaMimeTypeKey;

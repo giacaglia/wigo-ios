@@ -10,6 +10,7 @@
 
 @implementation EventMessagesConstants
 
+NSString *const kTextType = @"text";
 NSString *const kImageEventType = @"image/jpeg";
 NSString *const kVideoEventType = @"video/mp4";
 NSString *const kMediaMimeTypeKey = @"media_mime_type";
