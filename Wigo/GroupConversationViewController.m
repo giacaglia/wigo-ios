@@ -354,9 +354,11 @@ forBarMetrics:UIBarMetricsDefault];
     NSString *lastString = [text substringFromIndex: text.length - 1];
     if ([text rangeOfString:@"@"].location == NSNotFound) {
         self.position = nil;
+        self.tagTableView.hidden = YES;
         return;
     }
     if ([lastString isEqual:@"@"]) {
+        self.tagTableView.hidden = NO;
         self.position = [NSNumber numberWithUnsignedInteger:text.length];
         return;
     }
@@ -364,7 +366,9 @@ forBarMetrics:UIBarMetricsDefault];
         if (self.tagTableView.frame.origin.y == self.view.frame.size.height) {
             [UIView animateWithDuration:0.2f animations:^{
                 self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 120 - 40, self.view.frame.size.width, 120);
+
             }];
+
         }
         NSString *searchString = [text substringFromIndex: self.position.intValue];
         if (searchString.length > 0) [self searchText:searchString];
