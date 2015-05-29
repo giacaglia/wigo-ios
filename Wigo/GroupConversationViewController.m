@@ -82,9 +82,6 @@ forBarMetrics:UIBarMetricsDefault];
 }
 
 -(void) keyboardWillShow: (NSNotification *)notification {
-    NSDictionary* keyboardInfo = [notification userInfo];
-    NSValue* keyboardFrameEnd = [keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
-    self.positionOfKeyboard = [keyboardFrameEnd CGRectValue];
     if (self.viewForEmptyConversation) {
         [UIView
          animateWithDuration:0.5
@@ -92,6 +89,12 @@ forBarMetrics:UIBarMetricsDefault];
              self.viewForEmptyConversation.frame = CGRectMake(self.viewForEmptyConversation.frame.origin.x, self.viewForEmptyConversation.frame.origin.y / 2, self.viewForEmptyConversation.frame.size.width, self.viewForEmptyConversation.frame.size.height);
          }];
     }
+}
+
+-(void) keyboardDidShow: (NSNotification *)notification {
+    NSDictionary* keyboardInfo = [notification userInfo];
+    NSValue* keyboardFrameEnd = [keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
+    self.positionOfKeyboard = [keyboardFrameEnd CGRectValue];
 }
 
 -(void) keyboardWillHide: (NSNotification *)notification {
@@ -279,6 +282,11 @@ forBarMetrics:UIBarMetricsDefault];
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardDidShow:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
@@ -363,13 +371,7 @@ forBarMetrics:UIBarMetricsDefault];
         return;
     }
     if (self.position && text.length > self.position.intValue) {
-        if (self.tagTableView.frame.origin.y == self.view.frame.size.height) {
-            [UIView animateWithDuration:0.2f animations:^{
-                self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 120 - 40, self.view.frame.size.width, 120);
-
-            }];
-
-        }
+        self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 120 - 40, self.view.frame.size.width, 120);
         NSString *searchString = [text substringFromIndex: self.position.intValue];
         if (searchString.length > 0) [self searchText:searchString];
     }
