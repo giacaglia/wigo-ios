@@ -30,7 +30,6 @@ JSQMessagesBubbleImage *grayBubble;
     orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
     grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[FontProperties getBlueColor]];
     
-    
     [self initializeLeftBarButton];
     [self initializeBlueView];
     [self initializeTableView];
@@ -44,6 +43,7 @@ JSQMessagesBubbleImage *grayBubble;
 forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     
+    self.tags = [NSMutableArray new];
     self.title = self.event.name;
     [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor]
                                                   forBarMetrics:UIBarMetricsDefault];
@@ -260,6 +260,7 @@ forBarMetrics:UIBarMetricsDefault];
     self.inputToolbar.contentView.textView.text = @"";
     self.inputToolbar.contentView.rightBarButtonItem.enabled = NO;
     message.user = WGProfile.currentUser;
+    self.tags = [NSMutableArray new];
     [self.messages addObject:message];
     [self finishReceivingMessageAnimated:YES];
 }
@@ -371,7 +372,7 @@ forBarMetrics:UIBarMetricsDefault];
         return;
     }
     if (self.position && text.length > self.position.intValue) {
-        self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 120 - 40, self.view.frame.size.width, 120);
+        self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 3*[TagPeopleCell height] - 43, self.view.frame.size.width, 3*[TagPeopleCell height]);
         NSString *searchString = [text substringFromIndex: self.position.intValue];
         if (searchString.length > 0) [self searchText:searchString];
     }
@@ -380,6 +381,7 @@ forBarMetrics:UIBarMetricsDefault];
 
 
 - (void)searchText:(NSString *)searchString {
+    searchString = [searchString urlEncodeUsingEncoding:NSUTF8StringEncoding];
     __weak typeof(self) weakSelf = self;
     [WGUser searchUsers:searchString withHandler:^(NSURL *url, WGCollection *collection, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^(void) {
@@ -387,6 +389,15 @@ forBarMetrics:UIBarMetricsDefault];
             if (error) return;
             dispatch_async(dispatch_get_main_queue(), ^{
                 strongSelf.tagPeopleUsers = collection;
+                if (collection.count == 1) {
+                    self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - [TagPeopleCell height] - 43, self.view.frame.size.width, [TagPeopleCell height]);
+                }
+                else if (collection.count == 2) {
+                    self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 2*[TagPeopleCell height] - 43, self.view.frame.size.width, 2*[TagPeopleCell height]);
+                }
+                else {
+                    self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 3*[TagPeopleCell height] - 43, self.view.frame.size.width, 3*[TagPeopleCell height]);
+                }
                 [strongSelf.tagTableView reloadData];
                 [strongSelf.view bringSubviewToFront:strongSelf.tagTableView];
             });
@@ -427,7 +438,9 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (!user) return;
     [self.tags addObject:user.id];
     self.tagTableView.hidden = YES;
-    self.inputToolbar.contentView.textView.text = [NSString stringWithFormat:@"%@%@", self.inputToolbar.contentView.textView.text, user.fullName];
+    NSString *beforeString = [self.inputToolbar.contentView.textView.text substringToIndex: self.position.intValue];
+    self.position = nil;
+    self.inputToolbar.contentView.textView.text = [NSString stringWithFormat:@"%@%@", beforeString, user.fullName];
 }
 
 @end
@@ -449,7 +462,6 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)setup {
     self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TagPeopleCell height]);
     self.contentView.frame = self.frame;
-    self.contentView.backgroundColor = UIColor.whiteColor;
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
     self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 32, 32)];
