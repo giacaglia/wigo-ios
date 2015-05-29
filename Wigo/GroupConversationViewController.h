@@ -24,10 +24,11 @@
 #pragma mark - Tagging table view
 @property (nonatomic, strong) UITableView *tagTableView;
 @property (nonatomic, strong) WGCollection *tagPeopleUsers;
-@property (nonatomic, strong) NSMutableArray *tags;
-@property (nonatomic, strong) NSNumber *position;
-@property (nonatomic, assign) CGRect positionOfKeyboard;
 
+@property (nonatomic, assign) CGRect positionOfKeyboard;
+@property (nonatomic, strong) NSMutableArray *tagUserArray;
+@property (nonatomic, strong) NSNumber *position;
+@property (nonatomic, strong) NSMutableArray *positionArray;
 @end
 
 

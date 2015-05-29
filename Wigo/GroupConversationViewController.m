@@ -43,7 +43,8 @@ JSQMessagesBubbleImage *grayBubble;
 forBarMetrics:UIBarMetricsDefault];
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     
-    self.tags = [NSMutableArray new];
+    self.tagUserArray = [NSMutableArray new];
+    self.positionArray = [NSMutableArray new];
     self.title = self.event.name;
     [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor]
                                                   forBarMetrics:UIBarMetricsDefault];
@@ -260,7 +261,8 @@ forBarMetrics:UIBarMetricsDefault];
     self.inputToolbar.contentView.textView.text = @"";
     self.inputToolbar.contentView.rightBarButtonItem.enabled = NO;
     message.user = WGProfile.currentUser;
-    self.tags = [NSMutableArray new];
+    self.tagUserArray = [NSMutableArray new];
+    self.positionArray = [NSMutableArray new];
     [self.messages addObject:message];
     [self finishReceivingMessageAnimated:YES];
 }
@@ -356,6 +358,14 @@ forBarMetrics:UIBarMetricsDefault];
 
 #pragma mark - Tagging people
 
+- (BOOL)textView:(UITextView *)textView
+shouldChangeTextInRange:(NSRange)range
+ replacementText:(NSString *)text {
+//    if (range.length == 1)
+    NSLog(@"range: %lu, %lu", (unsigned long)range.location, (unsigned long)range.length);
+    return YES;
+}
+
 - (void)textViewDidChange:(UITextView *)textView {
     [super textViewDidChange:textView];
     NSString *text = textView.text;
@@ -369,10 +379,11 @@ forBarMetrics:UIBarMetricsDefault];
     if ([lastString isEqual:@"@"]) {
         self.tagTableView.hidden = NO;
         self.position = [NSNumber numberWithUnsignedInteger:text.length];
+        [self.positionArray addObject:self.position];
         return;
     }
     if (self.position && text.length > self.position.intValue) {
-        self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 3*[TagPeopleCell height] - 43, self.view.frame.size.width, 3*[TagPeopleCell height]);
+        self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 3*[TagPeopleCell height] - self.inputToolbar.frame.size.height, self.view.frame.size.width, 3*[TagPeopleCell height]);
         NSString *searchString = [text substringFromIndex: self.position.intValue];
         if (searchString.length > 0) [self searchText:searchString];
     }
@@ -390,16 +401,17 @@ forBarMetrics:UIBarMetricsDefault];
             dispatch_async(dispatch_get_main_queue(), ^{
                 strongSelf.tagPeopleUsers = collection;
                 if (collection.count == 1) {
-                    self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - [TagPeopleCell height] - 43, self.view.frame.size.width, [TagPeopleCell height]);
+                    strongSelf.tagTableView.frame = CGRectMake(0, strongSelf.positionOfKeyboard.origin.y - [TagPeopleCell height] - strongSelf.inputToolbar.frame.size.height, strongSelf.view.frame.size.width, [TagPeopleCell height]);
                 }
                 else if (collection.count == 2) {
-                    self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 2*[TagPeopleCell height] - 43, self.view.frame.size.width, 2*[TagPeopleCell height]);
+                    strongSelf.tagTableView.frame = CGRectMake(0, strongSelf.positionOfKeyboard.origin.y - 2*[TagPeopleCell height] - strongSelf.inputToolbar.frame.size.height, strongSelf.view.frame.size.width, 2*[TagPeopleCell height]);
                 }
                 else {
-                    self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 3*[TagPeopleCell height] - 43, self.view.frame.size.width, 3*[TagPeopleCell height]);
+                    strongSelf.tagTableView.frame = CGRectMake(0, strongSelf.positionOfKeyboard.origin.y - 3*[TagPeopleCell height] - strongSelf.inputToolbar.frame.size.height, strongSelf.view.frame.size.width, 3*[TagPeopleCell height]);
                 }
                 [strongSelf.tagTableView reloadData];
                 [strongSelf.view bringSubviewToFront:strongSelf.tagTableView];
+                [strongSelf scrollToBottomAnimated:YES];
             });
         });
     }];
@@ -437,7 +449,7 @@ forBarMetrics:UIBarMetricsDefault];
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     WGUser *user = (WGUser *)[self.tagPeopleUsers objectAtIndex:indexPath.row];
     if (!user) return;
-    [self.tags addObject:user.id];
+    [self.tagUserArray addObject:user];
     self.tagTableView.hidden = YES;
     NSString *beforeString = [self.inputToolbar.contentView.textView.text substringToIndex: self.position.intValue];
     self.position = nil;
