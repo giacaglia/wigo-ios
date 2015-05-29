@@ -25,6 +25,8 @@
 @property (nonatomic, strong) UITableView *tagTableView;
 @property (nonatomic, strong) WGCollection *tagPeopleUsers;
 @property (nonatomic, strong) NSMutableArray *tags;
+@property (nonatomic, strong) NSNumber *position;
+@property (nonatomic, assign) CGRect positionOfKeyboard;
 
 @end
 

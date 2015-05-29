@@ -82,6 +82,9 @@ forBarMetrics:UIBarMetricsDefault];
 }
 
 -(void) keyboardWillShow: (NSNotification *)notification {
+    NSDictionary* keyboardInfo = [notification userInfo];
+    NSValue* keyboardFrameEnd = [keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
+    self.positionOfKeyboard = [keyboardFrameEnd CGRectValue];
     if (self.viewForEmptyConversation) {
         [UIView
          animateWithDuration:0.5
@@ -349,11 +352,24 @@ forBarMetrics:UIBarMetricsDefault];
     NSString *text = textView.text;
     if (text.length == 0) return;
     NSString *lastString = [text substringFromIndex: text.length - 1];
-    if ([lastString isEqual:@"@"]) {
-        self.tagTableView.hidden = NO;
-        NSArray *arrayWithTwoStrings = [lastString componentsSeparatedByString:@"@"];
-        [self searchText:@"G"];
+    if ([text rangeOfString:@"@"].location == NSNotFound) {
+        self.position = nil;
+        return;
     }
+    if ([lastString isEqual:@"@"]) {
+        self.position = [NSNumber numberWithUnsignedInteger:text.length];
+        return;
+    }
+    if (self.position && text.length > self.position.intValue) {
+        if (self.tagTableView.frame.origin.y == self.view.frame.size.height) {
+            [UIView animateWithDuration:0.2f animations:^{
+                self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 120 - 40, self.view.frame.size.width, 120);
+            }];
+        }
+        NSString *searchString = [text substringFromIndex: self.position.intValue];
+        if (searchString.length > 0) [self searchText:searchString];
+    }
+    
 }
 
 
@@ -373,12 +389,11 @@ forBarMetrics:UIBarMetricsDefault];
 }
 
 -(void)initializeTableView {
-    self.tagTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 112)];
+    self.tagTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width, 112)];
     [self.tagTableView registerClass:[TagPeopleCell class] forCellReuseIdentifier:kTagPeopleCellName];
     self.tagTableView.delegate = self;
     self.tagTableView.dataSource = self;
     self.tagTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    self.tagTableView.hidden = YES;
     self.tagTableView.showsVerticalScrollIndicator = NO;
     [self.view addSubview:self.tagTableView];
 }
