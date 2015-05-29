@@ -32,8 +32,6 @@
                                     @"name": @"Wigo Supernova Launch Party @ Society on High"}];
     [self initializeTableOfChats];
     [self initializeNewChatView];
-    self.collectionUsers = [[WGCollection alloc] initWithType:[WGUser class]];
-    [self.collectionUsers addObject:WGProfile.currentUser];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
@@ -224,23 +222,23 @@
 #pragma mark - Tablew View Data Source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == kSectionEventChat) return 1;
+//    if (section == kSectionEventChat) return 1;
     return self.messages.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ChatCell *cell = [tableView dequeueReusableCellWithIdentifier:kChatCellName forIndexPath:indexPath];
-    if (indexPath.section == kSectionEventChat) {
-        [cell.profileImageView setSmallImageForUsers:self.collectionUsers];
-        cell.nameLabel.text = self.attendingEvent.name;
-        cell.lastMessageLabel.textColor = RGB(208, 208, 208);
-        cell.lastMessageLabel.text = @"Wigonna work";
-        return cell;
-    }
+//    if (indexPath.section == kSectionEventChat) {
+//        [cell.profileImageView setSmallImageForUsers:self.collectionUsers];
+//        cell.nameLabel.text = self.attendingEvent.name;
+//        cell.lastMessageLabel.textColor = RGB(208, 208, 208);
+//        cell.lastMessageLabel.text = @"Wigonna work";
+//        return cell;
+//    }
     if (indexPath.row == self.messages.count - 1) [self fetchNextPage];
     if (self.messages.count  == 0) return cell;
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.row];
@@ -255,8 +253,7 @@
         cell.lastMessageLabel.textColor = UIColor.blackColor;
         cell.orangeNewView.hidden = NO;
     }
-    if (indexPath.row == 2) [self.collectionUsers addObject:message.otherUser];
-    if (indexPath.row == 3) [self.collectionUsers addObject:message.otherUser];
+
     cell.message = message;
     return cell;
 }
@@ -272,13 +269,13 @@
 
 #pragma mark - Table View Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kSectionEventChat) {
-        GroupConversationViewController *groupChatVC = [GroupConversationViewController new];
-        
-        groupChatVC.event = self.attendingEvent;
-        [self.navigationController pushViewController:groupChatVC animated:YES];
-        return;
-    }
+//    if (indexPath.section == kSectionEventChat) {
+//        GroupConversationViewController *groupChatVC = [GroupConversationViewController new];
+//        
+//        groupChatVC.event = self.attendingEvent;
+//        [self.navigationController pushViewController:groupChatVC animated:YES];
+//        return;
+//    }
     if (self.messages.count == 0) return;
     
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];

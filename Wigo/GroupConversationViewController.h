@@ -24,6 +24,7 @@
 #pragma mark - Tagging table view
 @property (nonatomic, strong) UITableView *tagTableView;
 @property (nonatomic, strong) WGCollection *tagPeopleUsers;
+@property (nonatomic, strong) NSMutableArray *tags;
 
 @end
 

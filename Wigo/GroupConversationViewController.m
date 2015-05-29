@@ -351,6 +351,7 @@ forBarMetrics:UIBarMetricsDefault];
     NSString *lastString = [text substringFromIndex: text.length - 1];
     if ([lastString isEqual:@"@"]) {
         self.tagTableView.hidden = NO;
+        NSArray *arrayWithTwoStrings = [lastString componentsSeparatedByString:@"@"];
         [self searchText:@"G"];
     }
 }
@@ -399,7 +400,14 @@ forBarMetrics:UIBarMetricsDefault];
     return tagPeopleCell;
 }
 
-
+- (void)tableView:(UITableView *)tableView
+didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    WGUser *user = (WGUser *)[self.tagPeopleUsers objectAtIndex:indexPath.row];
+    if (!user) return;
+    [self.tags addObject:user.id];
+    self.tagTableView.hidden = YES;
+    self.inputToolbar.contentView.textView.text = [NSString stringWithFormat:@"%@%@", self.inputToolbar.contentView.textView.text, user.fullName];
+}
 
 @end
 
@@ -433,6 +441,7 @@ forBarMetrics:UIBarMetricsDefault];
     [self.contentView addSubview:self.profileImageView];
     
     self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 10, 150, 20)];
+    self.nameLabel.center = CGPointMake(self.nameLabel.center.x, self.center.y);
     self.nameLabel.font = [FontProperties lightFont:12.0f];
     self.nameLabel.textAlignment = NSTextAlignmentLeft;
     self.nameLabel.userInteractionEnabled = NO;
