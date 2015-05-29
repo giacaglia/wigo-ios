@@ -412,6 +412,7 @@ forBarMetrics:UIBarMetricsDefault];
     self.tagTableView.dataSource = self;
     self.tagTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.tagTableView.showsVerticalScrollIndicator = NO;
+    self.tagTableView.hidden = YES;
     [self.view addSubview:self.tagTableView];
 }
 

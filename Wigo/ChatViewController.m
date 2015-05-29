@@ -255,7 +255,8 @@
         cell.lastMessageLabel.textColor = UIColor.blackColor;
         cell.orangeNewView.hidden = NO;
     }
-
+    if (indexPath.row == 2) [self.collectionUsers addObject:message.otherUser];
+    if (indexPath.row == 3) [self.collectionUsers addObject:message.otherUser];
     cell.message = message;
     return cell;
 }
