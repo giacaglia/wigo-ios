@@ -282,9 +282,9 @@
     return self.user.fullName;
 }
 
-- (NSDate *)date {
-    return self.created;
-}
+//- (NSDate *)date {
+//    return self.created;
+//}
 
 - (BOOL)isMediaMessage {
     return NO;

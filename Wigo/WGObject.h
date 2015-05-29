@@ -27,6 +27,7 @@ typedef void (^BoolResultBlock)(BOOL success, NSError *error);
 @property NSString *className;
 
 @property NSNumber* id;
+@property NSDate *date;
 @property NSDate* created;
 
 -(id) init;

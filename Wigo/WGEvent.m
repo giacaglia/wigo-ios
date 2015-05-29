@@ -269,7 +269,7 @@
 -(void)addMetaInfo:(NSDictionary *)meta {
     NSDateFormatter *dateFormatter = [NSDateFormatter new];
     [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-    NSString *timeString = [dateFormatter stringFromDate:self.created];
+    NSString *timeString = [dateFormatter stringFromDate:self.date];
     NSDictionary *toDictionary = @{timeString: meta};
     NSDictionary *fromDictionary = [[WGCache sharedCache] objectForKey:kEventMessagesKey];
     NSMutableDictionary *resultingDictionary = [WGEvent addDictionary:fromDictionary

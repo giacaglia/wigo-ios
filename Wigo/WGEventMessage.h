@@ -12,7 +12,7 @@
 #import "JSQMessagesViewController/JSQMessages.h"
 
 
-@interface WGEventMessage : WGObject<JSQMessageData>
+@interface WGEventMessage : WGObject
 
 typedef void (^WGEventMessageResultBlock)(WGEventMessage *object, NSError *error);
 
