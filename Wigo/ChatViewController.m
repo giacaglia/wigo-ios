@@ -28,8 +28,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchMessages) name:@"fetchMessages" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
     self.messages = NetworkFetcher.defaultGetter.messages;
-    self.attendingEvent = [[WGEvent alloc] initWithJSON:@{@"id": @603565284483988736,
-                                    @"name": @"1 Day Until Wigo Summer"}];
+    self.attendingEvent = [[WGEvent alloc] initWithJSON:@{@"id": @604231511195609600,
+                                    @"name": @"Wigo Supernova Launch Party @ Society on High"}];
     [self initializeTableOfChats];
     [self initializeNewChatView];
 }
@@ -233,7 +233,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ChatCell *cell = [tableView dequeueReusableCellWithIdentifier:kChatCellName forIndexPath:indexPath];
 //    if (indexPath.section == kSectionEventChat) {
-//        cell.profileImageView.image = [UIImage imageNamed:@"wigoSystem"];
+//        [cell.profileImageView setSmallImageForUsers:self.collectionUsers];
 //        cell.nameLabel.text = self.attendingEvent.name;
 //        cell.lastMessageLabel.textColor = RGB(208, 208, 208);
 //        cell.lastMessageLabel.text = @"Wigonna work";
@@ -253,6 +253,7 @@
         cell.lastMessageLabel.textColor = UIColor.blackColor;
         cell.orangeNewView.hidden = NO;
     }
+
     cell.message = message;
     return cell;
 }

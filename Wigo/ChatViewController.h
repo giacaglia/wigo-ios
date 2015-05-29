@@ -18,6 +18,7 @@
 @property (nonatomic, strong) NSDate *lastMessageRead;
 @property (nonatomic, strong) UIView *emptyView;
 @property (nonatomic, strong) WGEvent *attendingEvent;
+@property (nonatomic, strong) WGCollection *collectionUsers;
 @end
 
 

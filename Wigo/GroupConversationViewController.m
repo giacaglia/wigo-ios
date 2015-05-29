@@ -235,10 +235,12 @@ forBarMetrics:UIBarMetricsDefault];
 -(void) didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
     WGEventMessage *message = [[WGEventMessage alloc] init];
     message.message = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    message.user = WGProfile.currentUser;
+    [message setObject:WGProfile.currentUser.id.stringValue forKey:@"user_id"];
+    [message setObject:self.event.id forKey:@"event"];
+    message.media = @"";
     message.mediaMimeType = kTextType;
     __weak typeof(self) weakSelf = self;
-    [message create:^(BOOL success, NSError *error) {
+    [message postEventMessage:^(BOOL success, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             [strongSelf.messages removeObject:message];
@@ -253,7 +255,7 @@ forBarMetrics:UIBarMetricsDefault];
     
     self.inputToolbar.contentView.textView.text = @"";
     self.inputToolbar.contentView.rightBarButtonItem.enabled = NO;
-    
+    message.user = WGProfile.currentUser;
     [self.messages addObject:message];
     [self finishReceivingMessageAnimated:YES];
 }
