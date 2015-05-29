@@ -20,7 +20,6 @@ JSQMessagesBubbleImage *grayBubble;
 
 @implementation GroupConversationViewController
 
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -34,9 +33,8 @@ JSQMessagesBubbleImage *grayBubble;
     
     [self initializeLeftBarButton];
     [self initializeBlueView];
-    
+    [self initializeTableView];
     self.showLoadEarlierMessagesHeader = NO;
-    
     self.automaticallyScrollsToMostRecentMessage = YES;
 }
 
@@ -342,6 +340,109 @@ forBarMetrics:UIBarMetricsDefault];
             [strongSelf.collectionView reloadData];
         });
     }];
+}
+
+#pragma mark - Tagging people
+
+- (void)textViewDidChange:(UITextView *)textView {
+    [super textViewDidChange:textView];
+    NSString *text = textView.text;
+    if (text.length == 0) return;
+    NSString *lastString = [text substringFromIndex: text.length - 1];
+    if ([lastString isEqual:@"@"]) {
+        self.tagTableView.hidden = NO;
+        [self searchText:@"G"];
+    }
+}
+
+
+- (void)searchText:(NSString *)searchString {
+    __weak typeof(self) weakSelf = self;
+    [WGUser searchUsers:searchString withHandler:^(NSURL *url, WGCollection *collection, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (error) return;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                strongSelf.tagPeopleUsers = collection;
+                [strongSelf.tagTableView reloadData];
+                [strongSelf.view bringSubviewToFront:strongSelf.tagTableView];
+            });
+        });
+    }];
+}
+
+-(void)initializeTableView {
+    self.tagTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 200, self.view.frame.size.width, 112)];
+    [self.tagTableView registerClass:[TagPeopleCell class] forCellReuseIdentifier:kTagPeopleCellName];
+    self.tagTableView.delegate = self;
+    self.tagTableView.dataSource = self;
+    self.tagTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.tagTableView.hidden = YES;
+    self.tagTableView.showsVerticalScrollIndicator = NO;
+    [self.view addSubview:self.tagTableView];
+}
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return (int)self.tagPeopleUsers.count;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    TagPeopleCell *tagPeopleCell = (TagPeopleCell *)[tableView dequeueReusableCellWithIdentifier:kTagPeopleCellName forIndexPath:indexPath];
+    WGUser *user = (WGUser *)[self.tagPeopleUsers objectAtIndex:indexPath.row];
+    if (!user) return tagPeopleCell;
+    tagPeopleCell.user = user;
+    return tagPeopleCell;
+}
+
+
+
+@end
+
+@implementation TagPeopleCell
+
++ (CGFloat) height {
+    return 50;
+}
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void)setup {
+    self.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [TagPeopleCell height]);
+    self.contentView.frame = self.frame;
+    self.contentView.backgroundColor = UIColor.whiteColor;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
+    self.profileImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 32, 32)];
+    self.profileImageView.center = CGPointMake(self.profileImageView.center.x, self.center.y);
+    self.profileImageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.profileImageView.clipsToBounds = YES;
+    self.profileImageView.layer.borderColor = UIColor.clearColor.CGColor;
+    self.profileImageView.layer.borderWidth = 1.0f;
+    self.profileImageView.layer.cornerRadius = self.profileImageView.frame.size.width/2;
+    [self.contentView addSubview:self.profileImageView];
+    
+    self.nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 10, 150, 20)];
+    self.nameLabel.font = [FontProperties lightFont:12.0f];
+    self.nameLabel.textAlignment = NSTextAlignmentLeft;
+    self.nameLabel.userInteractionEnabled = NO;
+    [self.contentView addSubview:self.nameLabel];
+}
+
+- (void)setUser:(WGUser *)user {
+    _user = user;
+    [self.profileImageView setSmallImageForUser:user completed:nil];
+    self.nameLabel.text =  user.fullName;
 }
 
 @end

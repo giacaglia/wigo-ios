@@ -11,14 +11,27 @@
 #import "WGEvent.h"
 
 @interface GroupConversationViewController : JSQMessagesViewController
-<JSQMessagesCollectionViewDataSource, JSQMessagesCollectionViewDelegateFlowLayout>
+<JSQMessagesCollectionViewDataSource, JSQMessagesCollectionViewDelegateFlowLayout,
+    UITableViewDataSource, UITableViewDelegate>
 
 @property (weak, nonatomic) UIBarButtonItem *sidebarButton;
-
 @property (nonatomic, strong) WGEvent *event;
 @property (nonatomic, strong) WGCollection *messages;
 @property (nonatomic, strong) UIView *viewForEmptyConversation;
 @property (nonatomic, assign) BOOL isFetching;
 @property (nonatomic, strong) UIView *blueBannerView;
 
+#pragma mark - Tagging table view
+@property (nonatomic, strong) UITableView *tagTableView;
+@property (nonatomic, strong) WGCollection *tagPeopleUsers;
+
+@end
+
+
+#define kTagPeopleCellName @"tagPeopleCellName"
+@interface TagPeopleCell : UITableViewCell
++ (CGFloat) height;
+@property (nonatomic, strong) UIImageView *profileImageView;
+@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) WGUser *user;
 @end
