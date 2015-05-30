@@ -13,6 +13,7 @@
 
 #define kIdKey @"id"
 #define kCreatedKey @"created"
+#define kDateKey @"date"
 
 @implementation WGObject
 
@@ -67,6 +68,15 @@
 -(NSDate *) created {
     return [NSDate serialize:[self objectForKey:kCreatedKey]];
 }
+
+-(void) setDate:(NSDate *)date {
+    [self setObject:[date deserialize] forKey:kDateKey];
+}
+
+-(NSDate *) date {
+    return [NSDate serialize:[self objectForKey:kDateKey]];
+}
+
 
 -(BOOL) isFetched {
     return self.id && [self.id intValue] > 0;
