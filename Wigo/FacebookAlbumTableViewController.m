@@ -71,7 +71,7 @@ NSMutableArray *coverAlbumArray;
          if (nonCleanAlbums.count == 0) [self requestReadPermissions];
          NSMutableArray *cleanAlbums = [NSMutableArray new];
          for (FBGraphObject *albumFBGraphObject in nonCleanAlbums) {
-             NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
+//             NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
 //             if ([nameFBAlbum isEqualToString:@"Profile Pictures"] ||  [nameFBAlbum isEqualToString:@"Instagram Photos"]) {
                  [cleanAlbums addObject:albumFBGraphObject];
                  [idAlbumArray addObject:[albumFBGraphObject objectForKey:@"id"]];
