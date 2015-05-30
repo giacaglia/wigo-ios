@@ -72,11 +72,11 @@ NSMutableArray *coverAlbumArray;
          NSMutableArray *cleanAlbums = [NSMutableArray new];
          for (FBGraphObject *albumFBGraphObject in nonCleanAlbums) {
              NSString *nameFBAlbum = [albumFBGraphObject objectForKey:@"name"];
-             if ([nameFBAlbum isEqualToString:@"Profile Pictures"] ||  [nameFBAlbum isEqualToString:@"Instagram Photos"]) {
+//             if ([nameFBAlbum isEqualToString:@"Profile Pictures"] ||  [nameFBAlbum isEqualToString:@"Instagram Photos"]) {
                  [cleanAlbums addObject:albumFBGraphObject];
                  [idAlbumArray addObject:[albumFBGraphObject objectForKey:@"id"]];
                  if ([albumFBGraphObject objectForKey:@"cover_photo"]) [coverIDArray addObject:[albumFBGraphObject objectForKey:@"cover_photo"]];
-             }
+//             }
          }
          _albumArray = [NSArray arrayWithArray:cleanAlbums];
          [self getAlbumDetails];
