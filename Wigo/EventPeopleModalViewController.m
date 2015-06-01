@@ -439,7 +439,6 @@ referenceSizeForFooterInSection:(NSInteger)section {
             withTargetUser:self.user];
     
     self.addFriendButton.hidden = YES;
-    self.addFriendButton.enabled = NO;
     self.user.friendRequest = kFriendRequestSent;
     [WGProfile.currentUser friendUser:self.user withHandler:^(BOOL success, NSError *error) {
         if (error) {
