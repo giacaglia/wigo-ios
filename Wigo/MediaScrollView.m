@@ -1004,7 +1004,7 @@
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:17.0f];
-    if (isiPhone5 || isiPhone4s) self.label.font = [FontProperties mediumFont:16.0f];
+    if (isiPhone5 || isiPhone4s) self.label.font = [FontProperties mediumFont:15.0f];
     self.label.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
     self.label.textAlignment = NSTextAlignmentCenter;
     self.label.textColor = [UIColor whiteColor];
@@ -1358,6 +1358,7 @@
     
     self.label = [[UILabel alloc] initWithFrame:CGRectMake(0, 370, self.frame.size.width, 40)];
     self.label.font = [FontProperties mediumFont:17.0f];
+    if (isiPhone5 || isiPhone4s) self.label.font = [FontProperties mediumFont:15.0f];
     self.label.backgroundColor = RGBAlpha(0, 0, 0, 0.7f);
     self.label.textAlignment = NSTextAlignmentCenter;
     self.label.textColor = [UIColor whiteColor];

@@ -539,7 +539,7 @@ viewForHeaderInSection:(NSInteger)section
 
 #pragma mark - Network functions
 - (void)fetchFirstPageSuggestions {
-    WGCollection *users =NetworkFetcher.defaultGetter.suggestions;
+    WGCollection *users = NetworkFetcher.defaultGetter.suggestions;
     [self cleanupUsers: users];
     self.users = users;
     [self.tableViewOfPeople reloadData];
