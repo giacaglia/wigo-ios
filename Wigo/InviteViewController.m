@@ -234,15 +234,17 @@
     WGProfile.tapAll = YES;
     TapAllCell *tapAllCell = (TapAllCell *)[self.invitePeopleTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kSectionTapAllCell]];
     tapAllCell.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
+    [self.invitePeopleTableView reloadData];
     __weak typeof(self) weakSelf = self;
     [WGProfile.currentUser tapAllUsersToEvent:event
                                   withHandler:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = self;
         if (error) {
+            WGProfile.tapAll = NO;
+            [strongSelf.invitePeopleTableView reloadData];
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        [strongSelf.invitePeopleTableView reloadData];
     }];
     
 }
