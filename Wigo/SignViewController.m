@@ -285,6 +285,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     currentInstallation[@"wigo_id"] = WGProfile.currentUser.id;
     [currentInstallation saveInBackground];
     
+    
     if (self.pushed) return;
     self.pushed = YES;
     if ([WGProfile.currentUser.status isEqual:kStatusWaiting]) {
@@ -391,6 +392,10 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        [self presentAlertView];
+        return;
+    }
     [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:kPushNotificationKey];
     
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
