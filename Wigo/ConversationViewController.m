@@ -51,7 +51,6 @@ JSQMessagesBubbleImage *grayBubble;
     self.showLoadEarlierMessagesHeader = NO;
     self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeZero;
     self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
-    
     self.automaticallyScrollsToMostRecentMessage = YES;
 }
 
@@ -90,8 +89,6 @@ JSQMessagesBubbleImage *grayBubble;
 
 -(void) textChanged:(id)sender {
     if ([self.inputToolbar.contentView.textView.text hasSuffix:@"\n"] && self.inputToolbar.contentView.rightBarButtonItem.enabled) {
-        [self.inputToolbar.contentView.textView resignFirstResponder];
-        [self.inputToolbar.delegate messagesInputToolbar:self.inputToolbar didPressRightBarButton:nil];
     }
 }
 
@@ -428,7 +425,6 @@ JSQMessagesBubbleImage *grayBubble;
         WGProfile.currentUser.lastMessageRead = message.created;
     }
 }
-
 
 
 @end
