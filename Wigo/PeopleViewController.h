@@ -26,6 +26,7 @@
 @property (nonatomic, strong) WGCollection *suggestions;
 @property (nonatomic, strong) WGCollection *filteredUsers;
 @property (nonatomic, strong) WGCollection *friendRequestUsers;
+@property (nonatomic, assign) BOOL isSearching;
 @property (nonatomic, assign) BOOL fetching;
 @property (nonatomic, strong) NSDate *lastUserRead;
 @property (nonatomic, strong) UISearchBar *searchBar;

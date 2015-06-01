@@ -311,6 +311,7 @@ NSIndexPath *userIndex;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == kSectionFollowPeople && [self.currentTab isEqual:@2]) {
+        if (self.isSearching) return 0;
         int hasNext = 0;
         if (self.friendRequestUsers.nextPage != nil) hasNext = 1;
         return self.friendRequestUsers.count + hasNext;
@@ -391,6 +392,7 @@ NSIndexPath *userIndex;
 heightForHeaderInSection:(NSInteger)section
 {
     if ([self.currentTab isEqual:@2]) {
+        if (section == 0 && self.isSearching) return 0;
         if (section == 0 && self.friendRequestUsers.count == 0) return 0;
         return 30.0f;
     }
@@ -631,6 +633,7 @@ viewForHeaderInSection:(NSInteger)section
                 afterDelay:0.3
      cancelPreviousRequest:YES];
     } else {
+        self.isSearching = NO;
         self.users = NetworkFetcher.defaultGetter.suggestions;
         [self.tableViewOfPeople reloadData];
     }
@@ -659,6 +662,7 @@ viewForHeaderInSection:(NSInteger)section
             NSArray *separateArray = [url.absoluteString componentsSeparatedByString:@"="];
             NSString *searchedString = (NSString *)separateArray.lastObject;
             if ([searchedString isEqual:[strongSelf.searchBar.text urlEncodeUsingEncoding:NSUTF8StringEncoding]]) {
+                strongSelf.isSearching = YES;
                 strongSelf.users = collection;
                 [strongSelf.tableViewOfPeople reloadData];
             }
