@@ -136,9 +136,20 @@ static NSString * kWGEventLikesCellIdentifier = @"WGEventLikesCellIdentifier";
                  withHandler:^(WGCollection *collection, NSError *error) {
                      self.likeUsers = collection;
                      [self.tableView reloadData];
-                     self.numberOfVotesLabel.text = [EventConversationViewController stringForLikes:self.likeUsers.count];
+                     self.numberOfVotesLabel.text = [EventConversationViewController stringForLikes:self.likeUsers.total.intValue];
                      [self hideLoadingIndicator];
              }];
+}
+
+- (void) getNextPage {
+    if (self.isFetching || !self.likeUsers.nextPage) return;
+    self.isFetching = YES;
+    __weak typeof(self) weakSelf = self;
+    [self.likeUsers addNextPage:^(BOOL success, NSError *error) {
+        weakSelf.isFetching = NO;
+        if (error) return;
+        [weakSelf.tableView reloadData];
+    }];
 }
 
 
@@ -162,7 +173,7 @@ static NSString * kWGEventLikesCellIdentifier = @"WGEventLikesCellIdentifier";
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    if(self.likeUsers.count <= indexPath.row) {
+    if (self.likeUsers.count <= indexPath.row) {
         return [[UITableViewCell alloc] init];
     }
     WGUser *user = (WGUser *)[self.likeUsers objectAtIndex:indexPath.row];
@@ -171,7 +182,7 @@ static NSString * kWGEventLikesCellIdentifier = @"WGEventLikesCellIdentifier";
     }
     
     WGEventLikesTableCell *likesCell = (WGEventLikesTableCell *)[tableView dequeueReusableCellWithIdentifier:kWGEventLikesCellIdentifier];
-    
+    if (indexPath.row == self.likeUsers.count - 1 || indexPath.row == self.likeUsers.count - 5) [self getNextPage];
     [likesCell setUser:user];
     likesCell.selectionStyle = UITableViewCellSelectionStyleNone;
     

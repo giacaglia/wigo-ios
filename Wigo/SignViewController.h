@@ -27,5 +27,6 @@
 @property (nonatomic, strong) NSString *fbID;
 @property (nonatomic, strong) NSString *profilePic;
 @property (nonatomic, strong) NSString *accessToken;
+@property (nonatomic, strong) NSString *expirationAccessToken;
 @property (nonatomic, strong) NSDictionary *properties;
 @end

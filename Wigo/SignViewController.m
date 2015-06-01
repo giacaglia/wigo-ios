@@ -87,6 +87,9 @@
     if (![FBSDKAccessToken currentAccessToken]) return;
     [WGSpinnerView addDancingGToCenterView:self.view];
     self.accessToken = [FBSDKAccessToken currentAccessToken].tokenString;
+    NSDate *expirationDate = [FBSDKAccessToken currentAccessToken].expirationDate;
+    NSTimeInterval expirationInterval = [expirationDate timeIntervalSinceNow];
+    self.expirationAccessToken = [NSString stringWithFormat:@"%f", expirationInterval];
     self.loginButton.enabled = NO;
     [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/" parameters:nil]
      startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {

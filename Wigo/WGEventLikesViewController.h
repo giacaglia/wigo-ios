@@ -18,6 +18,7 @@
 
 @property (nonatomic) UITableView *tableView;
 @property (nonatomic) UILabel *numberOfVotesLabel;
+@property (nonatomic, assign) BOOL isFetching;
 
 - (void)getLikesForEvent:(WGEvent *)event eventMessage:(WGEventMessage *)eventMessage;
 
