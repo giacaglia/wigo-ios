@@ -259,7 +259,6 @@
         @try {
             WGCollection *objects = [WGCollection serializeResponse:jsonResponse andClass:strongSelf.type];
             [strongSelf addObjectsFromCollection:objects notInCollection:strongSelf];
-            strongSelf.hasNextPage = objects.hasNextPage;
             strongSelf.nextPage = objects.nextPage;
         }
         @catch (NSException *exception) {

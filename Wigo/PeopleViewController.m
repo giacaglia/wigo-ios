@@ -573,8 +573,7 @@ viewForHeaderInSection:(NSInteger)section
 }
 
 - (void)fetchNextPage {
-    if (!self.users) return;
-    if (!self.users.nextPage) return;
+    if (self.fetching || !self.users || !self.users.nextPage) return;
     self.fetching = YES;
     __weak typeof(self) weakSelf = self;
     [self.users getNextPage:^(WGCollection *collection, NSError *error) {
@@ -583,6 +582,7 @@ viewForHeaderInSection:(NSInteger)section
         if (error) return;
         if ([strongSelf.currentTab isEqual:@2]) [strongSelf cleanupUsers:collection];
         [self.users addObjectsFromCollection:collection];
+        self.users.nextPage = collection.nextPage;
         [strongSelf.tableViewOfPeople reloadData];
     }];
 }
