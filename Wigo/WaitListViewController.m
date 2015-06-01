@@ -74,6 +74,10 @@
     pplAheadLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:pplAheadLabel];
     
+    UIButton *sharebutton = [[UIButton alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 70 - 69 - 25, self.view.frame.size.width, 70 + 69 + 25)];
+    [sharebutton addTarget:self action:@selector(shareNowPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:sharebutton];
+    
     UILabel *skipLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 70 - 69 - 25, self.view.frame.size.width, 25)];
     skipLabel.text = @"Or... Skip the line!";
     skipLabel.font = [FontProperties mediumFont:18.0f];
