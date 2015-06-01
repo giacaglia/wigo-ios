@@ -631,7 +631,10 @@ BOOL blockShown;
 
 
 - (void)friendsPressed {
-    [self.navigationController pushViewController:[[PeopleViewController alloc] initWithUser:self.user andTab:@3] animated:YES];
+    PeopleViewController *peopleVC = [[PeopleViewController alloc] initWithUser:self.user];
+    if (!self.showStatusBarOnDismiss) peopleVC.currentTab = @2;
+    peopleVC.currentTab = @4;
+    [self.navigationController pushViewController:peopleVC animated:YES];
 }
 
 - (void)chatPressed {

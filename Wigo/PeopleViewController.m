@@ -66,7 +66,7 @@ NSIndexPath *userIndex;
         [WGAnalytics tagEvent:@"People Suggestions View"];
         [WGAnalytics tagView:@"school_people" withTargetUser:self.user];
     }
-    else if ([self.currentTab isEqualToNumber:@3]) {
+    else {
         [WGAnalytics tagEvent:@"People Friends' View"];
         [WGAnalytics tagView:@"friends" withTargetUser:self.user];
     }
@@ -208,6 +208,9 @@ NSIndexPath *userIndex;
         self.tableViewOfPeople.tableHeaderView = headerView;
         self.tableViewOfPeople.contentOffset = CGPointMake(0, 50);
     }
+    else if ([self.currentTab isEqual:@4]) {
+        self.tableViewOfPeople.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    }
     else {
         self.tableViewOfPeople.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
     }
@@ -282,7 +285,7 @@ NSIndexPath *userIndex;
         [self fetchFirstPageSuggestions];
         [self fetchFirstPageFriendRequests];
     }
-    else if ([self.currentTab isEqualToNumber:@3]) {
+    else {
         [self fetchFirstPageFriends];
     }
 }
@@ -297,7 +300,7 @@ NSIndexPath *userIndex;
             }
             return [TablePersonCell height];
         }
-        else if ([self.currentTab isEqualToNumber:@3]) return [TablePersonCell height];
+        else return [TablePersonCell height];
     }
     return [TablePersonCell height];
 }
