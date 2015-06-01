@@ -19,6 +19,7 @@ dispatch_queue_t postQueue;
 #define kWigoApiVersionKey @"X-Wigo-API-Version"
 #define kWigoDeviceKey @"X-Wigo-Device"
 #define kWigoUserKey @"X-Wigo-User-Key"
+#define kPeekGroupKey @"X-Wigo-Group-ID"
 #define kGeoLocationKey @"Geolocation"
 
 #define kContentLengthKey @"Content-Length"
@@ -342,6 +343,7 @@ withParameters:(id)parameters
     [serializer setValue:kWigoApiVersion forHTTPHeaderField:kWigoApiVersionKey];
     [serializer setValue:kDeviceType forHTTPHeaderField:kWigoDeviceKey];
     [serializer setValue:kContentType forHTTPHeaderField:kContentTypeKey];
+    if (WGProfile.peekingGroupID) [serializer setValue:WGProfile.peekingGroupID.stringValue forHTTPHeaderField:kPeekGroupKey];
     if ([LocationPrimer shouldFetchEvents]) [serializer setValue:WGApi.getGeoVal forHTTPHeaderField:kGeoLocationKey];
     if (!shouldPassKey) {
         [serializer setValue:kWigoApiKey forHTTPHeaderField:kWigoApiKeyKey];

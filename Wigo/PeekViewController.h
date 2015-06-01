@@ -10,8 +10,9 @@
 #import "Delegate.h"
 
 @interface PeekViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
-@property (nonatomic, strong) NSArray *schoolSections;
 @property (nonatomic, strong) id<PlacesDelegate> placesDelegate;
+@property (nonatomic, strong) WGCollection *groups;
+@property (nonatomic, assign) BOOL isFetching;
 @end
 
 @interface SchoolCell : UITableViewCell

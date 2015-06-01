@@ -27,7 +27,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.schoolSections = [NSArray new];
     self.view.backgroundColor = RGB(100, 173, 215);
     [self initializeTitleView];
     [self initializeTableView];
@@ -71,47 +70,27 @@
 
 
 -  (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return self.schoolSections.count;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView
  numberOfRowsInSection:(NSInteger)section {
-    NSDictionary *sectionDictionary = [self.schoolSections objectAtIndex:section];
-    NSArray *arrayOfSchools = [sectionDictionary objectForKey:@"schools"];
-    return [arrayOfSchools count];
+    return self.groups.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     SchoolCell *myCell = [tableView dequeueReusableCellWithIdentifier:kSchoolCellName];
-    NSDictionary *sectionDictionary = [self.schoolSections objectAtIndex:indexPath.section];
-    NSArray *arrayOfSchools = [sectionDictionary objectForKey:@"schools"];
-    NSDictionary *schoolDictionary = [arrayOfSchools objectAtIndex:indexPath.row];
-    myCell.schoolLabel.text = [schoolDictionary objectForKey:@"name"];
+    if (indexPath.row == self.groups.count - 5 || indexPath.row == self.groups.count - 1) [self fetchNextPage];
+    WGGroup *group = (WGGroup *)[self.groups objectAtIndex:indexPath.row];
+    myCell.schoolLabel.text = group.name;
     return myCell;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView
-heightForHeaderInSection:(NSInteger)section {
-    return 59;
-}
-
-- (UIView *)tableView:(UITableView *)tableView
-viewForHeaderInSection:(NSInteger)section {
-    SchoolHeaderCell *schoolHeaderCell = [tableView dequeueReusableHeaderFooterViewWithIdentifier:kHeaderSchoolCellName];
-    NSDictionary *sectionDictionary = [self.schoolSections objectAtIndex:section];
-    schoolHeaderCell.headerTitleLabel.text =  [sectionDictionary objectForKey:@"title"];
-    return schoolHeaderCell;
 }
 
 - (void)tableView:(UITableView *)tableView
 didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSDictionary *sectionDictionary = [self.schoolSections objectAtIndex:indexPath.section];
-    NSArray *arrayOfSchools = [sectionDictionary objectForKey:@"schools"];
-    NSDictionary *schoolDictionary = [arrayOfSchools objectAtIndex:indexPath.row];
-    NSNumber *groupID = [schoolDictionary objectForKey:@"id"];
-    NSString *groupName = [schoolDictionary objectForKey:@"name"];
-    [self.placesDelegate setGroupID:groupID andGroupName:groupName];
+    WGGroup *group = (WGGroup *)[self.groups objectAtIndex:indexPath.row];
+    [self.placesDelegate setGroupID:group.id andGroupName:group.name];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -121,10 +100,35 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [WGApi get:@"groups/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-        if (!error) {
-            strongSelf.schoolSections = [jsonResponse objectForKey:@"sections"];
-            [strongSelf.schoolsTableView reloadData];
+        if (error) return;
+        
+        NSError *dataError;
+        WGCollection *objects;
+        @try {
+            objects = [WGCollection serializeResponse:jsonResponse andClass:[WGGroup class]];
         }
+        @catch (NSException *exception) {
+            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+            
+            dataError = [NSError errorWithDomain: @"WGEvent" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+        }
+        @finally {
+            strongSelf.groups = objects;
+            [strongSelf.schoolsTableView reloadData];
+            return;
+        }
+    }];
+}
+
+- (void)fetchNextPage {
+    if (self.isFetching || !self.groups.nextPage) return;
+    self.isFetching = YES;
+    __weak typeof(self) weakSelf = self;
+    [self.groups addNextPage:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.isFetching = NO;
+        if (error) return;
+        [strongSelf.schoolsTableView reloadData];
     }];
 }
 
