@@ -27,6 +27,8 @@ typedef void (^WGMessageResultBlock)(WGMessage *object, NSError *error);
 
 -(void) sendMessage:(WGMessageResultBlock)handler;
 -(void) deleteConversation:(BoolResultBlock)handler;
--(void) readConversation:(BoolResultBlock)handler;
+
+#pragma mark - Meta Message Properties
+@property NSDictionary * metaMessageProperties;
 
 @end

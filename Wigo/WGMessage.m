@@ -7,12 +7,14 @@
 //
 
 #import "WGMessage.h"
+#import "WGCache.h"
 
 #define kToUserKey @"to_user"
 #define kUserKey @"user"
 #define kMessageKey @"message"
 #define kIsReadKey @"is_read"
 #define kExpiredKey @"expired"
+#define kMessagesKey @"messages"
 
 @implementation WGMessage
 
@@ -54,14 +56,6 @@
     return [self objectForKey:kMessageKey];
 }
 
--(void) setIsRead:(NSNumber *)isRead {
-    [self setObject:isRead forKey:kIsReadKey];
-}
-
--(NSNumber *) isRead {
-    return [self objectForKey:kIsReadKey];
-}
-
 -(void) setExpired:(NSNumber *)expired {
     [self setObject:expired forKey:kExpiredKey];
 }
@@ -71,7 +65,7 @@
 }
 
 -(WGUser *) otherUser {
-    if ([self.user isCurrentUser]) {
+    if (self.user.isCurrentUser) {
         return self.toUser;
     }
     return self.user;
@@ -93,27 +87,6 @@
     return [self objectForKey:kToUserKey];
 }
 
-+(void) get:(WGCollectionResultBlock)handler {
-    [WGApi get:@"messages/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (error) {
-            handler(nil, error);
-            return;
-        }
-        NSError *dataError;
-        WGCollection *objects;
-        @try {
-            objects = [WGCollection serializeResponse:jsonResponse andClass:[self class]];
-        }
-        @catch (NSException *exception) {
-            NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
-            
-            dataError = [NSError errorWithDomain: @"WGMessage" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
-        }
-        @finally {
-            handler(objects, dataError);
-        }
-    }];
-}
 
 +(void) getConversations:(WGCollectionResultBlock)handler {
     [WGApi get:@"conversations/" withHandler:^(NSDictionary *jsonResponse, NSError *error) {
@@ -167,18 +140,69 @@
     
 }
 
--(void) readConversation:(BoolResultBlock)handler {
-    NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", self.toUser.id];
-    
-    NSDictionary *options = @{ @"read": @YES };
-    
-    [WGApi post:queryString withParameters:options andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (error) {
-            handler(NO, error);
-            return;
+#pragma mark - Meta Message Properties
+
+-(void) setIsRead:(NSNumber *)isRead {
+    [self setObject:isRead forKey:kIsReadKey];
+}
+
+-(NSNumber *) isRead {
+    return [self objectForKey:kIsReadKey];
+}
+
+-(void) setMetaObject:(id)object forKey:(NSString *)key {
+    if (!self.otherUser.id) return;
+    NSDictionary *metaMessageProperties = self.metaMessageProperties;
+    if (!metaMessageProperties) metaMessageProperties = [NSDictionary new];
+    NSMutableDictionary *mutFriendsMetaDict = [NSMutableDictionary dictionaryWithDictionary:metaMessageProperties];
+    if (!mutFriendsMetaDict) mutFriendsMetaDict = [NSMutableDictionary new];
+    if ([mutFriendsMetaDict.allKeys containsObject:self.dayString]) {
+        NSMutableDictionary *eventMessagesDict = [NSMutableDictionary dictionaryWithDictionary:[mutFriendsMetaDict objectForKey:self.dayString]];
+        if (!eventMessagesDict) eventMessagesDict = [NSMutableDictionary new];
+        if ([eventMessagesDict.allKeys containsObject:self.otherUser.id.stringValue]) {
+            NSMutableDictionary *metaEventMsg = [NSMutableDictionary dictionaryWithDictionary:[eventMessagesDict objectForKey:self.otherUser.id.stringValue]];
+            if (!metaEventMsg) metaEventMsg = [NSMutableDictionary dictionaryWithDictionary:@{key: object}];
+            else [metaEventMsg setObject:object forKey:key];
+            [eventMessagesDict setObject:metaEventMsg forKey:self.otherUser.id.stringValue];
         }
-        handler(YES, error);
-    }];
+        else {
+            [eventMessagesDict setObject:@{key: object} forKey:self.otherUser.id.stringValue];
+        }
+        [mutFriendsMetaDict setObject:eventMessagesDict forKey:self.dayString];
+    }
+    else {
+        [mutFriendsMetaDict setObject:@{self.otherUser.id.stringValue: @{key: object}} forKey:self.dayString];
+    }
+    self.metaMessageProperties = mutFriendsMetaDict;
+}
+
+-(id) metaObjectForKey:(NSString *)key {
+    if (!self.otherUser.id) return nil;
+    NSDictionary *metaProperties = self.metaMessageProperties;
+    if (!metaProperties) return nil;
+    if ([metaProperties.allKeys containsObject:self.dayString]) {
+        NSDictionary *eventMessagesDict = [metaProperties objectForKey:self.dayString];
+        if ([eventMessagesDict.allKeys containsObject:self.otherUser.id.stringValue]) {
+            NSDictionary *metaDict = [eventMessagesDict objectForKey:self.otherUser.id.stringValue];
+            if ([metaDict.allKeys containsObject:key]) return [metaDict objectForKey:key];
+        }
+    }
+    
+    return nil;
+}
+
+-(NSString *) dayString {
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    return [dateFormatter stringFromDate:self.created];
+}
+
+-(NSDictionary *) metaMessageProperties {
+    return [[WGCache sharedCache] objectForKey:kMessagesKey];
+}
+
+-(void) setMetaMessageProperties:(NSDictionary *)metaMessageProperties {
+    [[WGCache sharedCache] setObject:metaMessageProperties forKey:kMessagesKey];
 }
 
 #pragma mark JSQMessageData protocol

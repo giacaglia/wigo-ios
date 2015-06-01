@@ -1554,20 +1554,6 @@ withParameters:@{ @"invited_id" : user.id }
     }];
 }
 
--(void) readConversation:(BoolResultBlock)handler {
-    NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", self.id];
-    
-    NSDictionary *options = @{ @"read": @YES };
-    
-    [WGApi post:queryString withParameters:options andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-        if (error) {
-            handler(NO, error);
-            return;
-        }
-        handler(YES, error);
-    }];
-}
-
 -(void) deleteConversation:(BoolResultBlock)handler {
     NSString *queryString = [NSString stringWithFormat:@"conversations/%@/", self.id];
     

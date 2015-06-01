@@ -206,7 +206,7 @@ JSQMessagesBubbleImage *grayBubble;
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
     
     if (!message.isMediaMessage) {
-        
+
         if ([message.senderId isEqualToString:self.senderId]) {
             cell.textView.textColor = UIColor.whiteColor;
         }
@@ -429,19 +429,6 @@ JSQMessagesBubbleImage *grayBubble;
     }
 }
 
-#pragma mark - UITextField Delegate 
-
-- (void)textViewDidChange:(UITextView *)textView {
-    [super textViewDidChange:textView];
-//    NSArray *arrayStrings = [textView.text componentsSeparatedByString:@" "];
-//    NSString *string = (NSString *)arrayStrings.lastObject;
-//    if (string.length == 0) return;
-//    if ([[string substringWithRange:NSMakeRange(0, 1)] isEqual:@"@"]) {
-//        NSString *text = [string substringWithRange:NSMakeRange(1, string.length - 1)];
-//        WGCollection *usersFromText = [WGUserParser usersFromText:text];
-//        NSLog(@"tagged: %@", text);
-//    }
-}
 
 
 @end

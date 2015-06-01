@@ -267,7 +267,6 @@
     return [[WGCache sharedCache] objectForKey:kEventMessagesKey];
 }
 
-
 -(void) setMetaEventMessageProperties:(NSDictionary *)metaEventMessageProperties {
     [[WGCache sharedCache] setObject:metaEventMessageProperties forKey:kEventMessagesKey];
 }

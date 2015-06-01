@@ -376,8 +376,12 @@ NSIndexPath *userIndex;
     if ([self.currentTab isEqual:@2]
         && indexPath.section == kSectionFollowPeople &&
         indexPath.row == self.friendRequestUsers.count) {
-        [self.friendRequestUsers addNextPage:nil];
-        [self.tableViewOfPeople reloadData];
+        __weak typeof(self) weakSelf = self;
+        [self.friendRequestUsers addNextPage:^(BOOL success, NSError *error) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (error) return;
+            [strongSelf.tableViewOfPeople reloadData];
+        }];
     }
     return;
 }
