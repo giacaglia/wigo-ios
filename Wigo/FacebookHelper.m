@@ -52,11 +52,33 @@
             return ([school[@"type"] isEqual:@"College"]);
         }]];
         if (filteredArray.count > 0) {
-            FBGraphObject *firstSchool = [filteredArray objectAtIndex:0];
-            return [[firstSchool objectForKey:@"school"] objectForKey:@"name"];
+            FBGraphObject *mostRecentSchool = [FacebookHelper getMostRecentSchoolFromArrayOfSchools:filteredArray];
+            return [[mostRecentSchool objectForKey:@"school"] objectForKey:@"name"];
         }
     }
     return nil;
+}
+
++(FBGraphObject *)getMostRecentSchoolFromArrayOfSchools:(NSArray *)arrayOfSchools {
+    if (arrayOfSchools.count == 0) return nil;
+    int mostRecentInt = 0;
+    FBGraphObject *mostRecentSchool;
+    for (FBGraphObject *school in arrayOfSchools) {
+        if ([school objectForKey:@"year"] && [[school objectForKey:@"year"] objectForKey:@"name"]) {
+            NSString *yearString = [[school objectForKey:@"year"] objectForKey:@"name"];
+            NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+            f.numberStyle = NSNumberFormatterDecimalStyle;
+            NSNumber *yearNumber = [f numberFromString:yearString];
+            if (yearNumber.intValue > mostRecentInt) {
+                mostRecentSchool = school;
+                mostRecentInt = yearNumber.intValue;
+            }
+        }
+    }
+    if (!mostRecentSchool) {
+        return [arrayOfSchools objectAtIndex:0];
+    }
+    else return mostRecentSchool;
 }
 
 + (NSString *)nameOFWorkFromUser:(id<FBGraphUser>)fbGraphUser {
