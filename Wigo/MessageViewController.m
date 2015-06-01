@@ -40,6 +40,12 @@
 
 }
 
+-(void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    CGRect frame =  self.navigationController.navigationBar.frame;
+    self.navigationController.navigationBar.frame =  CGRectMake(frame.origin.x, 20, frame.size.width, frame.size.height);
+}
+
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [WGAnalytics tagEvent:@"New Chat View"];

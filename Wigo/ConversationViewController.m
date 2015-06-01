@@ -57,6 +57,8 @@ JSQMessagesBubbleImage *grayBubble;
 
 -(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    CGRect frame =  self.navigationController.navigationBar.frame;
+    self.navigationController.navigationBar.frame =  CGRectMake(frame.origin.x, 20, frame.size.width, frame.size.height);
     self.title = self.user.fullName;
     [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor]
                                                   forBarMetrics:UIBarMetricsDefault];
