@@ -142,9 +142,6 @@ NSDate *firstLoggedTime;
     }
     else if([tab isEqualToString:kWGTabChat]) {
         selectedClass = [ChatViewController class];
-        if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:nil];
-        }
     }
     else if([tab isEqualToString:kWGTabDiscover]) {
         selectedClass = [PeopleViewController class];
@@ -239,7 +236,9 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
     [NetworkFetcher.defaultGetter fetchMetaWithHandler:^(BOOL success, NSError *error) {}];
-    
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateConversation" object:nil userInfo:nil];
+    }
     if (application.applicationState == UIApplicationStateInactive) {
         if ([[userInfo allKeys] containsObject:@"navigate"]) {
             [self handleNavigationForUserInfo:userInfo];
