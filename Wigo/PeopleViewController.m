@@ -85,7 +85,7 @@ NSIndexPath *userIndex;
     if (!didProfileSegue) {
         [NetworkFetcher.defaultGetter fetchFriendsIdsWithHandler:^(BOOL success, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
-            [strongSelf cleanupUsers];
+            [strongSelf cleanupUsers:strongSelf.users];
             [strongSelf.tableViewOfPeople reloadData];
         }];
 
@@ -539,9 +539,10 @@ viewForHeaderInSection:(NSInteger)section
 
 #pragma mark - Network functions
 - (void)fetchFirstPageSuggestions {
-    self.users = NetworkFetcher.defaultGetter.suggestions;
+    WGCollection *users =NetworkFetcher.defaultGetter.suggestions;
+    [self cleanupUsers: users];
+    self.users = users;
     [self.tableViewOfPeople reloadData];
-    [self cleanupUsers];
     if (self.fetching) return;
     self.fetching = YES;
     __weak typeof(self) weakSelf = self;
@@ -551,22 +552,22 @@ viewForHeaderInSection:(NSInteger)section
         [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
         strongSelf.fetching = NO;
         if (error) return;
+        [strongSelf cleanupUsers:collection];
         NetworkFetcher.defaultGetter.suggestions = collection;
         strongSelf.users = collection;
-        [strongSelf cleanupUsers];
         dispatch_async(dispatch_get_main_queue(), ^(void) {
             [strongSelf.tableViewOfPeople reloadData];
         });
     }];
 }
 
-- (void)cleanupUsers {
+- (void)cleanupUsers:(WGCollection *)users {
     if (![self.currentTab isEqual:@2]) return;
-    for (WGUser *user in self.users) {
+    for (WGUser *user in users) {
         if (user.state == FRIEND_USER_STATE ||
             user.state == RECEIVED_REQUEST_USER_STATE ||
             user.state == SENT_REQUEST_USER_STATE) {
-            [self.users removeObject:user];
+            [users removeObject:user];
         }
     }
 }
@@ -576,11 +577,12 @@ viewForHeaderInSection:(NSInteger)section
     if (!self.users.nextPage) return;
     self.fetching = YES;
     __weak typeof(self) weakSelf = self;
-    [self.users addNextPage:^(BOOL success, NSError *error) {
+    [self.users getNextPage:^(WGCollection *collection, NSError *error) {
         __strong typeof(self) strongSelf = weakSelf;
-        if (error) return;
         strongSelf.fetching = NO;
-        if ([strongSelf.currentTab isEqual:@2]) [strongSelf cleanupUsers];
+        if (error) return;
+        if ([strongSelf.currentTab isEqual:@2]) [strongSelf cleanupUsers:collection];
+        [self.users addObjectsFromCollection:collection];
         [strongSelf.tableViewOfPeople reloadData];
     }];
 }
