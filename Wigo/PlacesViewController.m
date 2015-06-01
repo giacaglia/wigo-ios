@@ -708,45 +708,23 @@ BOOL firstTimeLoading;
 -(UITableViewCell *)tableView:(UITableView *)tableView
         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
-        if (indexPath.row == self.events.count &&
-            [self shouldShowAggregatePrivateEvents] == 1) {
-            EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
-            cell.highlightsCollectionView.event = nil;
-            cell.highlightsCollectionView.eventMessages = nil;
-            [cell.highlightsCollectionView reloadData];
-            cell.placesDelegate = self;
-            if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
-            cell.loadingView.hidden = YES;
-            cell.placesDelegate = self;
-            cell.eventPeopleScrollView.rowOfEvent = (int)indexPath.row;
-            cell.eventPeopleScrollView.isPeeking = [self isPeeking];
-            cell.eventPeopleScrollView.hidden = NO;
-            cell.privacyLockButton.tag = indexPath.row;
-            [cell.privacyLockButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
-            cell.event = self.aggregateEvent;
-            cell.eventPeopleScrollView.groupID = self.groupNumberID;
-            cell.eventPeopleScrollView.placesDelegate = self;
-            cell.placesDelegate = self;
-            if (![self.eventOffsetDictionary objectForKey:[self.aggregateEvent.id stringValue]]) {
-                cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
-            }
-            return cell;
-        }
-        if (indexPath.row == self.events.count && [self shouldShowAggregatePrivateEvents] == 0) {
-            EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
-            cell.highlightsCollectionView.event = nil;
-            cell.highlightsCollectionView.eventMessages = nil;
-            [cell.highlightsCollectionView reloadData];
-            cell.placesDelegate = self;
-            if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
-            cell.loadingView.hidden = YES;
-            cell.placesDelegate = self;
-            cell.eventPeopleScrollView.rowOfEvent = (int)indexPath.row;
-            cell.eventPeopleScrollView.isPeeking = [self isPeeking];
-            cell.eventPeopleScrollView.hidden = NO;
-            cell.privacyLockButton.tag = indexPath.row;
-            [cell.privacyLockButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
+        if (self.events.count > 0 && indexPath.row == self.events.count - 1)  {
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
+        }
+        if (indexPath.row == self.events.count) {
+            EventCell *cell = [tableView dequeueReusableCellWithIdentifier:kEventCellName forIndexPath:indexPath];
+            cell.highlightsCollectionView.event = nil;
+            cell.highlightsCollectionView.eventMessages = nil;
+            [cell.highlightsCollectionView reloadData];
+            cell.placesDelegate = self;
+            if (cell.loadingView.isAnimating) [cell.loadingView stopAnimating];
+            cell.loadingView.hidden = YES;
+            cell.placesDelegate = self;
+            cell.eventPeopleScrollView.rowOfEvent = (int)indexPath.row;
+            cell.eventPeopleScrollView.isPeeking = [self isPeeking];
+            cell.eventPeopleScrollView.hidden = NO;
+            cell.privacyLockButton.tag = indexPath.row;
+            [cell.privacyLockButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
             cell.loadingView.hidden = NO;
             [cell.loadingView startAnimating];
             cell.eventNameLabel.text = nil;

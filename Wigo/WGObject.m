@@ -76,6 +76,8 @@
 -(NSDate *) date {
     return [NSDate serialize:[self objectForKey:kDateKey]];
 }
+
+
 -(BOOL) isFetched {
     return self.id && [self.id intValue] > 0;
 }

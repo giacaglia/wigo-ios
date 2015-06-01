@@ -652,7 +652,7 @@ viewForHeaderInSection:(NSInteger)section
             }
             NSArray *separateArray = [url.absoluteString componentsSeparatedByString:@"="];
             NSString *searchedString = (NSString *)separateArray.lastObject;
-            if ([searchedString isEqual:strongSelf.searchBar.text]) {
+            if ([searchedString isEqual:[strongSelf.searchBar.text urlEncodeUsingEncoding:NSUTF8StringEncoding]]) {
                 strongSelf.users = collection;
                 [strongSelf.tableViewOfPeople reloadData];
             }

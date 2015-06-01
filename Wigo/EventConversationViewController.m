@@ -150,11 +150,8 @@
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (collectionView == self.facesCollectionView) {
         self.currentDraggingView = self.facesCollectionView;
-        if (indexPath == self.currentActiveCell) {
-            
+        if ([indexPath isEqual:self.currentActiveCell]) {
             [self showCurrentFaceProfile];
-            
-            
         }
         NSString *isPeekingString = (self.isPeeking) ? @"Yes" : @"No";
         [WGAnalytics tagEvent:@"Event Conversation Face Tapped" withDetails: @{@"isPeeking": isPeekingString}];

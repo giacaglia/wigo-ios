@@ -383,7 +383,7 @@ BOOL blockShown;
     _locationImgView.image = [UIImage imageNamed:@"locationIcon"];
     [_headerButtonView addSubview:_locationImgView];
     
-    _locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 9, 0.75*self.view.frame.size.width - 30, 14)];
+    _locationLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 6, 0.75*self.view.frame.size.width - 30, 20)];
     _locationLabel.text = self.user.group.name;
     _locationLabel.font = [FontProperties mediumFont:12.0f];
     _locationLabel.textAlignment = NSTextAlignmentLeft;
@@ -487,7 +487,7 @@ BOOL blockShown;
         numberOfProperties -= 1;
     }
     if (numberOfProperties == 1) {
-        CGAffineTransform scaleTrans  = CGAffineTransformMakeScale(2.0f, 2.0f);
+        CGAffineTransform scaleTrans  = CGAffineTransformMakeScale(2.0f, 2.1f);
         CGAffineTransform leftToRightTrans  = CGAffineTransformMakeTranslation(5.0f, 2.0f);
         CGAffineTransform transl = CGAffineTransformConcat(scaleTrans, leftToRightTrans);
         _workLabel.textColor = RGB(170, 170, 170);
