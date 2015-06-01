@@ -143,11 +143,11 @@
 #pragma mark - Meta Message Properties
 
 -(void) setIsRead:(NSNumber *)isRead {
-    [self setObject:isRead forKey:kIsReadKey];
+    [self setMetaObject:isRead forKey:kIsReadKey];
 }
 
 -(NSNumber *) isRead {
-    return [self objectForKey:kIsReadKey];
+    return [self metaObjectForKey:kIsReadKey];
 }
 
 -(void) setMetaObject:(id)object forKey:(NSString *)key {
@@ -156,22 +156,14 @@
     if (!metaMessageProperties) metaMessageProperties = [NSDictionary new];
     NSMutableDictionary *mutFriendsMetaDict = [NSMutableDictionary dictionaryWithDictionary:metaMessageProperties];
     if (!mutFriendsMetaDict) mutFriendsMetaDict = [NSMutableDictionary new];
-    if ([mutFriendsMetaDict.allKeys containsObject:self.dayString]) {
-        NSMutableDictionary *eventMessagesDict = [NSMutableDictionary dictionaryWithDictionary:[mutFriendsMetaDict objectForKey:self.dayString]];
-        if (!eventMessagesDict) eventMessagesDict = [NSMutableDictionary new];
-        if ([eventMessagesDict.allKeys containsObject:self.otherUser.id.stringValue]) {
-            NSMutableDictionary *metaEventMsg = [NSMutableDictionary dictionaryWithDictionary:[eventMessagesDict objectForKey:self.otherUser.id.stringValue]];
-            if (!metaEventMsg) metaEventMsg = [NSMutableDictionary dictionaryWithDictionary:@{key: object}];
-            else [metaEventMsg setObject:object forKey:key];
-            [eventMessagesDict setObject:metaEventMsg forKey:self.otherUser.id.stringValue];
-        }
-        else {
-            [eventMessagesDict setObject:@{key: object} forKey:self.otherUser.id.stringValue];
-        }
-        [mutFriendsMetaDict setObject:eventMessagesDict forKey:self.dayString];
+    if ([mutFriendsMetaDict.allKeys containsObject:self.otherUser.id.stringValue]) {
+        NSMutableDictionary *metaEventMsg = [NSMutableDictionary dictionaryWithDictionary:[mutFriendsMetaDict objectForKey:self.otherUser.id.stringValue]];
+        if (!metaEventMsg) metaEventMsg = [NSMutableDictionary dictionaryWithDictionary:@{key: object}];
+        else [metaEventMsg setObject:object forKey:key];
+        [mutFriendsMetaDict setObject:metaEventMsg forKey:self.otherUser.id.stringValue];
     }
     else {
-        [mutFriendsMetaDict setObject:@{self.otherUser.id.stringValue: @{key: object}} forKey:self.dayString];
+        [mutFriendsMetaDict setObject:@{key: object} forKey:self.otherUser.id.stringValue];
     }
     self.metaMessageProperties = mutFriendsMetaDict;
 }
@@ -180,22 +172,13 @@
     if (!self.otherUser.id) return nil;
     NSDictionary *metaProperties = self.metaMessageProperties;
     if (!metaProperties) return nil;
-    if ([metaProperties.allKeys containsObject:self.dayString]) {
-        NSDictionary *eventMessagesDict = [metaProperties objectForKey:self.dayString];
-        if ([eventMessagesDict.allKeys containsObject:self.otherUser.id.stringValue]) {
-            NSDictionary *metaDict = [eventMessagesDict objectForKey:self.otherUser.id.stringValue];
-            if ([metaDict.allKeys containsObject:key]) return [metaDict objectForKey:key];
-        }
+    if ([metaProperties.allKeys containsObject:self.otherUser.id.stringValue]) {
+        NSDictionary *metaDict = [metaProperties objectForKey:self.otherUser.id.stringValue];
+        if ([metaDict.allKeys containsObject:key]) return [metaDict objectForKey:key];
     }
-    
     return nil;
 }
 
--(NSString *) dayString {
-    NSDateFormatter *dateFormatter = [NSDateFormatter new];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
-    return [dateFormatter stringFromDate:self.created];
-}
 
 -(NSDictionary *) metaMessageProperties {
     return [[WGCache sharedCache] objectForKey:kMessagesKey];

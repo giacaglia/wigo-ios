@@ -244,15 +244,15 @@
     if (indexPath.row == self.messages.count - 1) [self fetchNextPage];
     if (self.messages.count  == 0) return cell;
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.row];
+    
+    
     if (WGProfile.currentUser.lastMessageRead &&
         ([message.created compare:WGProfile.currentUser.lastMessageRead] == NSOrderedAscending ||
         [message.created compare:WGProfile.currentUser.lastMessageRead] == NSOrderedSame)
         ) {
-        cell.lastMessageLabel.textColor = RGB(208, 208, 208);
         cell.orangeNewView.hidden = YES;
     }
     else {
-        cell.lastMessageLabel.textColor = UIColor.blackColor;
         cell.orangeNewView.hidden = NO;
     }
     if (indexPath.row == 2) [self.collectionUsers addObject:message.otherUser];
@@ -355,6 +355,8 @@
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text = user.fullName;
     self.lastMessageLabel.text = message.message;
+    if (message.isRead) self.lastMessageLabel.textColor = RGB(208, 208, 208);
+    else self.lastMessageLabel.textColor = UIColor.blackColor;
 }
 
 @end
