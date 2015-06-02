@@ -87,9 +87,9 @@
     if (![FBSDKAccessToken currentAccessToken]) return;
     [WGSpinnerView addDancingGToCenterView:self.view];
     self.accessToken = [FBSDKAccessToken currentAccessToken].tokenString;
-    NSDate *expirationDate = [FBSDKAccessToken currentAccessToken].expirationDate;
-    NSTimeInterval expirationInterval = [expirationDate timeIntervalSinceNow];
-    self.expirationAccessToken = [NSString stringWithFormat:@"%f", expirationInterval];
+//    NSDate *expirationDate = [FBSDKAccessToken currentAccessToken].expirationDate;
+//    NSTimeInterval expirationInterval = [expirationDate timeIntervalSinceNow];
+//    self.expirationAccessToken = [NSString stringWithFormat:@"%f", expirationInterval];
     self.loginButton.enabled = NO;
     [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/" parameters:nil]
      startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
@@ -248,7 +248,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     [Crashlytics setUserIdentifier:self.fbID];
     WGProfile.currentUser.facebookId = self.fbID;
     WGProfile.currentUser.facebookAccessToken = self.accessToken;
-    WGProfile.currentUser.expirationAccessToken = self.expirationAccessToken;
     [WGSpinnerView addDancingGToCenterView:self.view];
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     if (self.isFetching) return;
