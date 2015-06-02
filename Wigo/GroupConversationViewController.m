@@ -381,6 +381,8 @@ shouldChangeTextInRange:(NSRange)range
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
+    NSLog(@"users: %@", self.tagUserArray);
+    NSLog(@"indeces: %@", self.positionArray);
     [super textViewDidChange:textView];
     NSString *text = textView.text;
     if (text.length == 0) return;

@@ -16,6 +16,8 @@
 #define kReadDateKey @"read_date"
 #define kExpiredKey @"expired"
 #define kMessagesKey @"messages"
+#define kPropertiesKey @"properties"
+#define kTaggedUsersKey @"tagged_users"
 
 @implementation WGMessage
 
@@ -94,6 +96,28 @@
 
 -(WGUser *) toUser {
     return [self objectForKey:kToUserKey];
+}
+
+-(void)setProperties:(NSDictionary *)properties {
+    [self setObject:properties forKey:kPropertiesKey];
+}
+
+-(NSDictionary *)properties {
+    return [self objectForKey:kPropertiesKey];
+}
+
+-(void)setTaggedUsers:(NSArray *)taggedUsers {
+    NSMutableDictionary *mutProperties = [NSMutableDictionary dictionaryWithDictionary:self.properties];
+    if (!mutProperties) mutProperties = [NSMutableDictionary new];
+    [mutProperties setObject:taggedUsers forKey:kTaggedUsersKey];
+    [self setObject:mutProperties forKey:kPropertiesKey];
+}
+
+-(NSArray *)taggedUsers {
+    NSDictionary *properties = self.properties;
+    if (!properties) return [NSArray new];
+    return [properties objectForKey:kTaggedUsersKey];
+//    [self objectForKey:kTaggedUsersKey];
 }
 
 

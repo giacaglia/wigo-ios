@@ -20,6 +20,8 @@ typedef void (^WGMessageResultBlock)(WGMessage *object, NSError *error);
 @property NSNumber *isRead;
 @property NSNumber *expired;
 @property NSDate *readDate;
+@property NSDictionary *properties;
+@property NSArray *taggedUsers;
 
 -(WGUser *) otherUser;
 

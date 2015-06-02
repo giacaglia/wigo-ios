@@ -171,20 +171,16 @@
             NSString *thumbnailURL = [eventMessage objectForKey:@"thumbnail"];
             __weak ImageCell *weakCell = myCell;
             if (![thumbnailURL isKindOfClass:[NSNull class]]) {
-                NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, thumbnailURL]];
-                [myCell.imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                         NSURL *realURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
-                        NSLog(@"image URL: %@", realURL.absoluteString);
-                        [weakCell.spinner startAnimating];
-                        [weakCell.imageView setImageWithURL:realURL
-                                           placeholderImage:image
-                                                  completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
-                                                      NSLog(@"image size: %@", NSStringFromCGSize(image.size));
-                                                    [weakCell.spinner stopAnimating];
-                                                }];
-                    });
-                }];
+//                NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, thumbnailURL]];
+//                [myCell.imageView setImageWithURL:imageURL completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                 NSURL *realURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, contentURL]];
+                [myCell.spinner startAnimating];
+                [myCell.imageView setImageWithURL:realURL
+                                   placeholderImage:[UIImage new]
+                                          completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {
+                                            [weakCell.spinner stopAnimating];
+                                        }];
+//                }];
             }
         }
         
