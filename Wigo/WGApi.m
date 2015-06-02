@@ -392,7 +392,7 @@ withParameters:(id)parameters
     }];
 }
 
-+(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName thumbnailData:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(UploadVideoResultBlock) handler {
++(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName stillImageData:(NSData *)stillImageData stillImageName:(NSString *)stillImageName andHandler:(UploadVideoResultBlock) handler {
     [WGApi get:[NSString stringWithFormat: @"uploads/videos/?filename=%@", fileName] withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             handler(jsonResponse, nil, nil, nil, error);
@@ -401,14 +401,14 @@ withParameters:(id)parameters
         
         NSError *dataError = nil;
         NSString *videoAction;
-        NSString *thumbnailAction;
+        NSString *stillImageAction;
         NSMutableDictionary *videoFields;
-        NSMutableDictionary *thumbnailFields;
+        NSMutableDictionary *stillImageFields;
         NSDictionary *videoDictionary;
-        NSDictionary *thumbnailDictionary;
+        NSDictionary *stillImageDictionary;
         @try {
             videoDictionary = [jsonResponse objectForKey:kVideoKey];
-            thumbnailDictionary = [jsonResponse objectForKey:@"image"];
+            stillImageDictionary = [jsonResponse objectForKey:@"image"];
             
             videoAction = [videoDictionary objectForKey:kActionKey];
             videoFields = [[NSMutableDictionary alloc] init];
@@ -416,10 +416,10 @@ withParameters:(id)parameters
                 [videoFields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
             }
             
-            thumbnailAction = [thumbnailDictionary objectForKey:kActionKey];
-            thumbnailFields = [[NSMutableDictionary alloc] init];
-            for (NSDictionary *field in [thumbnailDictionary objectForKey:kFieldsKey]) {
-                [thumbnailFields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
+            stillImageAction = [stillImageDictionary objectForKey:kActionKey];
+            stillImageFields = [[NSMutableDictionary alloc] init];
+            for (NSDictionary *field in [stillImageDictionary objectForKey:kFieldsKey]) {
+                [stillImageFields setObject:[field objectForKey:kValueKey] forKey:[field objectForKey:kNameKey]];
             }
         }
         @catch (NSException *exception) {
@@ -429,16 +429,16 @@ withParameters:(id)parameters
         }
         @finally {
             if (dataError) {
-                handler(jsonResponse, nil, videoFields, thumbnailFields, dataError);
+                handler(jsonResponse, nil, videoFields, stillImageFields, dataError);
                 return;
             }
             [WGApi upload:videoAction fields:videoFields file:fileData fileName:fileName andHandler:^(NSDictionary *jsonResponse, NSError *error) {
                 if (error) {
-                    handler(jsonResponse, nil, videoFields, thumbnailFields, error);
+                    handler(jsonResponse, nil, videoFields, stillImageFields, error);
                     return;
                 }
-                [WGApi upload:thumbnailAction fields:thumbnailFields file:thumbnailData fileName:thumbnailName andHandler:^(NSDictionary *jsonResponse2, NSError *error) {
-                    handler(jsonResponse, jsonResponse2, videoFields, thumbnailFields, error);
+                [WGApi upload:stillImageAction fields:stillImageFields file:stillImageData fileName:stillImageName andHandler:^(NSDictionary *jsonResponse2, NSError *error) {
+                    handler(jsonResponse, jsonResponse2, videoFields, stillImageFields, error);
                 }];
             }];
         }

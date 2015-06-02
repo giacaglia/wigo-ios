@@ -55,7 +55,7 @@ andHandler:(ApiResultBlock)handler;
 
 +(void) uploadPhoto:(NSData *)fileData withFileName:(NSString *)fileName andHandler:(UploadResultBlock) handler;
 
-+(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName thumbnailData:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(UploadVideoResultBlock) handler;
++(void) uploadVideo:(NSData *)fileData withFileName:(NSString *)fileName stillImageData:(NSData *)stillImageData stillImageName:(NSString *)stillImageName andHandler:(UploadVideoResultBlock) handler;
 
 +(void) startup:(WGStartupResult)handler;
 

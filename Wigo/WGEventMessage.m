@@ -20,6 +20,7 @@
 #define kVoteKey @"voted"
 #define kNumVotesKey @"num_votes"
 #define kMediaMimeType @"media_mime_type"
+#define kStillImageKey @"image"
 
 
 
@@ -95,6 +96,14 @@
     return [self objectForKey:kThumbnailKey];
 }
 
+- (void) setStillImage:(NSString *)stillImage {
+    [self setObject:stillImage forKey:kStillImageKey];
+}
+
+- (NSString *) stillImage {
+    return [self objectForKey:kStillImageKey];
+}
+
 -(void) setEventOwner:(NSNumber *)eventOwner {
     [self setObject:eventOwner forKey:kEventOwnerKey];
 }
@@ -159,8 +168,8 @@
 
 }
 
--(void) addVideo:(NSData *)fileData withName:(NSString *)filename thumbnail:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(WGEventMessageResultBlock) handler {
-    [WGApi uploadVideo:fileData withFileName:filename thumbnailData:thumbnailData thumbnailName:thumbnailName andHandler:^(NSDictionary *jsonResponseVideo, NSDictionary *jsonResponseThumbnail, NSDictionary *videoFields, NSDictionary *thumbnailFields, NSError *error) {
+-(void) addVideo:(NSData *)fileData withName:(NSString *)filename stillImage:(NSData *)stillImageData stillImageName:(NSString *)stillImageName andHandler:(WGEventMessageResultBlock) handler {
+    [WGApi uploadVideo:fileData withFileName:filename stillImageData:stillImageData stillImageName:stillImageName andHandler:^(NSDictionary *jsonResponseVideo, NSDictionary *jsonResponseStillImage, NSDictionary *videoFields, NSDictionary *stillImageFields, NSError *error) {
         if (error) {
             handler(nil, error);
             return;
@@ -169,7 +178,7 @@
         @try {
             self.media = [videoFields objectForKey:@"key"];
             self.mediaMimeType = kVideoEventType;
-            self.thumbnail = [thumbnailFields objectForKey:@"key"];
+            self.stillImage = [stillImageFields objectForKey:@"key"];
         }
         @catch (NSException *exception) {
             NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];

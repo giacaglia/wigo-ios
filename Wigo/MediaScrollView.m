@@ -23,6 +23,7 @@
 #define kThumbnailDataKey @"thumbnailData"
 #define kThumbnailImageKey @"thumbnailImage"
 
+
 #define kVideoMetaDataCurrentThumbImage     @"current_thumb_image"
 #define kVideoMetaDataCurrentTime           @"current_time"
 
@@ -204,7 +205,12 @@
 
         myCell.videoStartTime = nil;
         NSString *thumbnailURL = [eventMessage objectForKey:@"thumbnail"];
-        if (![thumbnailURL isKindOfClass:[NSNull class]]) {
+        
+        if(!thumbnailURL) {
+            thumbnailURL = eventMessage.stillImage;
+        }
+        
+        if (thumbnailURL && ![thumbnailURL isKindOfClass:[NSNull class]]) {
             NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://%@/%@", [WGProfile currentUser].cdnPrefix, thumbnailURL]];
             [myCell.thumbnailImageView setImageWithURL:imageURL];
             //[myCell.thumbnailImageView2 setImageWithURL:imageURL];
@@ -441,7 +447,7 @@
                          @"event": self.event.id,
                          kMediaMimeTypeKey: type,
                          kThumbnailDataKey: thumbnailFileData,
-                         @"thumbnail": thumbnailFilename
+                         @"image": thumbnailFilename
                          };
         originalFileURL = info[UIImagePickerControllerMediaURL];
     }
@@ -615,7 +621,7 @@
                        atEvent:nil             // how do we get the current event
                andEventMessage: nil];
         NSData *thumbnailData = [options objectForKey:kThumbnailDataKey];
-        NSString *thumnailFileName = [options objectForKey:@"thumbnail"];
+        NSString *thumnailFileName = [options objectForKey:@"image"];
         NSMutableDictionary *mutableOptions = [NSMutableDictionary dictionaryWithDictionary:options];
         [mutableOptions removeObjectForKey:kThumbnailDataKey];
         options = mutableOptions;
@@ -624,7 +630,7 @@
         
         NSLog(@"video data length: %d", (int)fileData.length);
         
-        [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumnailFileName andHandler:^(WGEventMessage *object, NSError *error) {
+        [newEventMessage addVideo:fileData withName:filename stillImage:thumbnailData stillImageName:thumnailFileName andHandler:^(WGEventMessage *object, NSError *error) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             strongSelf.error = error;
             strongSelf.object = object;
@@ -819,9 +825,10 @@
     andThumnailName:(NSString *)thumbnailFilename
          andOptions:(NSDictionary *)options
 {
+    
     WGEventMessage *newEventMessage = [WGEventMessage serialize:options];
     __weak typeof(self) weakSelf = self;
-    [newEventMessage addVideo:fileData withName:filename thumbnail:thumbnailData thumbnailName:thumbnailFilename andHandler:^(WGEventMessage *object, NSError *error) {
+    [newEventMessage addVideo:fileData withName:filename stillImage:thumbnailData stillImageName:thumbnailFilename andHandler:^(WGEventMessage *object, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
             [strongSelf.eventConversationDelegate showErrorMessage];

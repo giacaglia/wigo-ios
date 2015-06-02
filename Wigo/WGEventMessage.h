@@ -25,13 +25,16 @@ typedef void (^WGEventMessageResultBlock)(WGEventMessage *object, NSError *error
 @property NSString *media;
 @property NSString *mediaMimeType;
 
+// (uncompressed still image for videos)
+@property NSString *stillImage;
+
 
 - (void)postEventMessage:(BoolResultBlock)handler;
 +(WGEventMessage *)serialize:(NSDictionary *)json;
 
 -(void) addPhoto:(NSData *)fileData withName:(NSString *)filename andHandler:(WGEventMessageResultBlock)handler;
 
--(void) addVideo:(NSData *)fileData withName:(NSString *)filename thumbnail:(NSData *)thumbnailData thumbnailName:(NSString *)thumbnailName andHandler:(WGEventMessageResultBlock) handler;
+-(void) addVideo:(NSData *)fileData withName:(NSString *)filename stillImage:(NSData *)stillImageData stillImageName:(NSString *)stillImageName andHandler:(WGEventMessageResultBlock) handler;
 
 -(void) vote:(BOOL)upVote forEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler;
 
