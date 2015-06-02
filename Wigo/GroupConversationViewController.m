@@ -361,8 +361,10 @@ forBarMetrics:UIBarMetricsDefault];
 - (BOOL)textView:(UITextView *)textView
 shouldChangeTextInRange:(NSRange)range
  replacementText:(NSString *)text {
-//    if (range.length == 1)
-    NSLog(@"range: %lu, %lu", (unsigned long)range.location, (unsigned long)range.length);
+    if (range.length) {
+        NSLog(@"text: %@", text);
+        NSLog(@"range: %lu, %lu", (unsigned long)range.location, (unsigned long)range.length);
+    }
     return YES;
 }
 

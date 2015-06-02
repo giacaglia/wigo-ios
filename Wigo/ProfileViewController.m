@@ -197,8 +197,6 @@ BOOL blockShown;
     [self reloadViewForUserState];
     
     if ([self.user isEqual:WGProfile.currentUser]) {
-        // TODO: Refetch notifications
-        self.notifications = NetworkFetcher.defaultGetter.notifications;
         [self fetchFirstPageNotifications];
         [self updateBadge];
     }
