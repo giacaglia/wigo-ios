@@ -27,7 +27,7 @@
 @property BOOL videoEnabled;
 @property BOOL crossEventPhotosEnabled;
 @property BOOL youAreInCharge;
-
+@property NSString *expirationAccessToken;
 
 +(NSNumber *)numFriends;
 +(void)setNumFriends:(NSNumber *)numFriends;

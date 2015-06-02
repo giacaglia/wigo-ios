@@ -31,6 +31,7 @@
 #define kCDNPrefix @"cdnPrefix"
 #define kShowedOnboardView @"showedOnboardView"
 #define kFacebookAccessTokenKey @"facebook_access_token"
+#define kExpirationAccessTokenKey @"facebook_access_token_expires"
 #define kAccessToken @"accessToken"
 #define kFacebookIdKey @"facebook_id"
 #define kLastNotificationReadKey @"last_notification_read"
@@ -149,6 +150,14 @@ static BOOL isLocal = YES;
         return [self objectForKey:kAccessToken];
     }
     return [[NSUserDefaults standardUserDefaults] objectForKey:kFacebookAccessTokenKey];
+}
+
+-(void) setExpirationAccessToken:(NSString *)expirationAccessToken {
+    [self setObject:expirationAccessToken forKey:kExpirationAccessTokenKey];
+}
+
+-(NSString *)expirationAccessToken {
+    return [self objectForKey:kExpirationAccessTokenKey];
 }
 
 -(void) setAwsKey:(NSString *)awsKey {
@@ -383,6 +392,7 @@ static BOOL isLocal = YES;
     NSMutableDictionary *parameters = [[NSMutableDictionary alloc] init];
     [parameters setObject:self.facebookId forKey:kFacebookIdKey];
     [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
+    if (self.expirationAccessToken) [parameters setObject:self.expirationAccessToken forKey:kExpirationAccessTokenKey];
     if (self.email) {
         [parameters setObject:self.email forKey:kEmailKey];
     }

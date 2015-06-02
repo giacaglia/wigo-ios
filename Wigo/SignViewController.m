@@ -248,6 +248,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     [Crashlytics setUserIdentifier:self.fbID];
     WGProfile.currentUser.facebookId = self.fbID;
     WGProfile.currentUser.facebookAccessToken = self.accessToken;
+    WGProfile.currentUser.expirationAccessToken = self.expirationAccessToken;
     [WGSpinnerView addDancingGToCenterView:self.view];
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     if (self.isFetching) return;
