@@ -361,9 +361,21 @@ forBarMetrics:UIBarMetricsDefault];
 - (BOOL)textView:(UITextView *)textView
 shouldChangeTextInRange:(NSRange)range
  replacementText:(NSString *)text {
-    if (range.length) {
-        NSLog(@"text: %@", text);
-        NSLog(@"range: %lu, %lu", (unsigned long)range.location, (unsigned long)range.length);
+    if (self.positionArray.count == 0) return YES;
+    int lastPosition = ((NSNumber *)[self.positionArray lastObject]).intValue;
+    WGUser *lastUser = (WGUser *)[self.tagUserArray lastObject];
+    if (range.length == 1) {
+        if (range.location >= lastPosition && range.location < lastPosition + lastUser.firstName.length) {
+            self.tagTableView.hidden = NO;
+            self.position = [NSNumber numberWithInt:lastPosition];
+            [self.tagUserArray removeLastObject];
+        }
+        if (range.location < lastPosition) {
+            self.position = nil;
+            [self.positionArray removeLastObject];
+            self.tagTableView.hidden = YES;
+            return YES;
+        }
     }
     return YES;
 }
