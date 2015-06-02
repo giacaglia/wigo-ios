@@ -246,7 +246,6 @@
     if (self.messages.count  == 0) return cell;
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.row];
     
-    
     if (WGProfile.currentUser.lastMessageRead &&
         ([message.created compare:WGProfile.currentUser.lastMessageRead] == NSOrderedAscending ||
         [message.created compare:WGProfile.currentUser.lastMessageRead] == NSOrderedSame)
@@ -283,7 +282,7 @@
     if (self.messages.count == 0) return;
     
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
-    message.isRead = @YES;
+    message.readDate = message.created;
     WGUser *user = message.otherUser;
     [self.navigationController pushViewController:[[ConversationViewController alloc] initWithUser:user] animated:YES];
 }
@@ -356,8 +355,13 @@
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text = user.fullName;
     self.lastMessageLabel.text = message.message;
-    if (message.isRead) self.lastMessageLabel.textColor = RGB(208, 208, 208);
-    else self.lastMessageLabel.textColor = UIColor.blackColor;
+    if (!message.readDate) message.readDate = [NSDate date];
+    if ([message.readDate compare:message.created] == NSOrderedAscending) {
+        self.lastMessageLabel.textColor = UIColor.blackColor;
+    }
+    else {
+        self.lastMessageLabel.textColor = RGB(208, 208, 208);
+    }
 }
 
 @end

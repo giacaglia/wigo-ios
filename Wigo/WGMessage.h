@@ -19,6 +19,7 @@ typedef void (^WGMessageResultBlock)(WGMessage *object, NSError *error);
 @property NSString *message;
 @property NSNumber *isRead;
 @property NSNumber *expired;
+@property NSDate *readDate;
 
 -(WGUser *) otherUser;
 

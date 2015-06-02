@@ -13,6 +13,7 @@
 #define kUserKey @"user"
 #define kMessageKey @"message"
 #define kIsReadKey @"is_read"
+#define kReadDateKey @"read_date"
 #define kExpiredKey @"expired"
 #define kMessagesKey @"messages"
 
@@ -62,6 +63,14 @@
 
 -(NSNumber *) expired {
     return [self objectForKey:kExpiredKey];
+}
+
+-(void) setIsRead:(NSNumber *)isRead {
+    [self setObject:isRead forKey:kIsReadKey];
+}
+
+-(NSNumber *) isRead {
+    return [self objectForKey:kIsReadKey];
 }
 
 -(WGUser *) otherUser {
@@ -142,12 +151,12 @@
 
 #pragma mark - Meta Message Properties
 
--(void) setIsRead:(NSNumber *)isRead {
-    [self setMetaObject:isRead forKey:kIsReadKey];
+-(void) setReadDate:(NSDate *)readDate {
+    [self setMetaObject:readDate forKey:kReadDateKey];
 }
 
--(NSNumber *) isRead {
-    return [self metaObjectForKey:kIsReadKey];
+-(NSDate *)readDate {
+    return [self metaObjectForKey:kReadDateKey];
 }
 
 -(void) setMetaObject:(id)object forKey:(NSString *)key {
