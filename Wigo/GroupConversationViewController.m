@@ -361,11 +361,12 @@ forBarMetrics:UIBarMetricsDefault];
 - (BOOL)textView:(UITextView *)textView
 shouldChangeTextInRange:(NSRange)range
  replacementText:(NSString *)text {
-    if (self.positionArray.count == 0) return YES;
-    int lastPosition = ((NSNumber *)[self.positionArray lastObject]).intValue;
-    WGUser *lastUser = (WGUser *)[self.tagUserArray lastObject];
+    // if deleted
     if (range.length == 1) {
-        if (range.location >= lastPosition && range.location < lastPosition + lastUser.firstName.length) {
+        if (self.positionArray.count == 0) return YES;
+        int lastPosition = ((NSNumber *)self.positionArray.lastObject).intValue;
+        WGUser *lastUser = (WGUser *)self.tagUserArray.lastObject;
+        if (range.location == lastPosition + lastUser.firstName.length - 1) {
             self.tagTableView.hidden = NO;
             self.position = [NSNumber numberWithInt:lastPosition];
             [self.tagUserArray removeLastObject];
@@ -375,6 +376,21 @@ shouldChangeTextInRange:(NSRange)range
             [self.positionArray removeLastObject];
             self.tagTableView.hidden = YES;
             return YES;
+        }
+    }
+    else { // if added
+        NSString *newText = [NSString stringWithFormat:@"%@%@", textView.text, text];
+        if (newText.length == 0) return YES;
+        NSString *lastString = [newText substringFromIndex: newText.length - 1];
+        if ([lastString isEqual:@"@"]) {
+            self.tagTableView.hidden = NO;
+            self.position = [NSNumber numberWithUnsignedInteger:text.length];
+            [self.positionArray addObject:self.position];
+            return YES;
+        }
+        if (self.position && text.length > self.position.intValue) {
+            NSString *searchString = [text substringFromIndex: self.position.intValue];
+            if (searchString.length > 0) [self searchText:searchString];
         }
     }
     return YES;
@@ -387,11 +403,6 @@ shouldChangeTextInRange:(NSRange)range
     NSString *text = textView.text;
     if (text.length == 0) return;
     NSString *lastString = [text substringFromIndex: text.length - 1];
-    if ([text rangeOfString:@"@"].location == NSNotFound) {
-        self.position = nil;
-        self.tagTableView.hidden = YES;
-        return;
-    }
     if ([lastString isEqual:@"@"]) {
         self.tagTableView.hidden = NO;
         self.position = [NSNumber numberWithUnsignedInteger:text.length];
@@ -399,11 +410,9 @@ shouldChangeTextInRange:(NSRange)range
         return;
     }
     if (self.position && text.length > self.position.intValue) {
-        self.tagTableView.frame = CGRectMake(0, self.positionOfKeyboard.origin.y - 3*[TagPeopleCell height] - self.inputToolbar.frame.size.height, self.view.frame.size.width, 3*[TagPeopleCell height]);
         NSString *searchString = [text substringFromIndex: self.position.intValue];
         if (searchString.length > 0) [self searchText:searchString];
     }
-    
 }
 
 
