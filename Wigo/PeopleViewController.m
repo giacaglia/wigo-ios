@@ -81,14 +81,8 @@ NSIndexPath *userIndex;
     [super viewDidAppear:animated];
     self.navigationItem.titleView.tintColor = UIColor.whiteColor;
     self.title = self.user.firstName;
-    __weak typeof(self) weakSelf = self;
     if (!didProfileSegue) {
-        [NetworkFetcher.defaultGetter fetchFriendsIdsWithHandler:^(BOOL success, NSError *error) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            [strongSelf cleanupUsers:strongSelf.users];
-            [strongSelf.tableViewOfPeople reloadData];
-        }];
-
+        [NetworkFetcher.defaultGetter fetchFriendsIds];
     }
     
     [self initializeTitleView];
