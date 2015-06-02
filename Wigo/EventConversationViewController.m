@@ -607,20 +607,17 @@
                                               self.upvoteImageView.transform = CGAffineTransformIdentity;
 
                                           } completion:^(BOOL finished) {
-                                              [self updateNumberOfVotes:YES];
+                                              [self updateNumberOfVotesForMessage:eventMessage];
                                           }];
                      }];
 }
 
-- (void)updateNumberOfVotes:(BOOL)upvoteBool {
-    NSInteger page = [self getPageForScrollView:self.mediaScrollView toLeft:YES];
-    WGEventMessage *eventMessage = (WGEventMessage *)[self.eventMessages objectAtIndex:page];
-
-    NSNumber *votedUpNumber = [eventMessage objectForKey:@"vote"];
+- (void)updateNumberOfVotesForMessage:(WGEventMessage *)eventMessage {
+    NSNumber *votedUpNumber = eventMessage.vote;
     if (!votedUpNumber) {
         eventMessage.vote = @1;
-        eventMessage.upVotes = @([eventMessage.upVotes intValue] + 1);
-        [eventMessage vote:upvoteBool forEvent:self.event withHandler:^(BOOL success, NSError *error) {
+        eventMessage.upVotes = @(eventMessage.upVotes.intValue + 1);
+        [eventMessage voteForEvent:self.event withHandler:^(BOOL success, NSError *error) {
             if (error) {
                 [[WGError sharedInstance] logError:error forAction:WGActionPost];
             }

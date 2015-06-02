@@ -36,7 +36,7 @@ typedef void (^WGEventMessageResultBlock)(WGEventMessage *object, NSError *error
 
 -(void) addVideo:(NSData *)fileData withName:(NSString *)filename stillImage:(NSData *)stillImageData stillImageName:(NSString *)stillImageName andHandler:(WGEventMessageResultBlock) handler;
 
--(void) vote:(BOOL)upVote forEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler;
+-(void) voteForEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler;
 
 // Properties saved in the client
 @property NSNumber *isRead;

@@ -273,6 +273,7 @@ JSQMessagesBubbleImage *grayBubble;
              andTargetUser:self.user
                    atEvent:nil
            andEventMessage: nil];
+    message.readDate = message.created;
     [message sendMessage:^(WGMessage *newMessage, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionPost];

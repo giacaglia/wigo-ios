@@ -191,7 +191,7 @@
     }];
 }
 
--(void) vote:(BOOL)upVote forEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler {
+-(void) voteForEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler {
     [WGApi post:[NSString stringWithFormat:@"events/%@/messages/%@/votes/", event.id, self.id]
     withHandler:^(NSDictionary *jsonResponse, NSError *error) {
         handler(error == nil, error);
