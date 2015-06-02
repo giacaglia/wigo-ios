@@ -947,32 +947,11 @@ didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kNotificationsSection && self.user.isCurrentUser) {
         
         WGNotification *notification = (WGNotification *)[self.notifications objectAtIndex:indexPath.row];
-        WGUser *user = notification.fromUser;
+        NSString *navigate = notification.parameters[@"navigate"];
         
-        if ([notification.type isEqualToString:@"follow"] ||
-            [notification.type isEqualToString:@"follow.accepted"] ||
-            [notification.type isEqualToString:@"facebook.follow"] ||
-            [notification.type isEqualToString:@"friend.joined"] ||
-            [notification.type isEqualToString:@"friend.request"] ||
-            [notification.type isEqualToString:@"friend.accept"]) {
-            
-            [self presentUser:user];
-        }
-        else if([notification.type isEqualToString:@"tap"] ||
-                [notification.type isEqualToString:@"invite"] ||
-                [notification.type isEqualToString:@"eventmessage.vote"] ||
-                [notification.type isEqualToString:@"eventmessage.post"]) {
-            
-            [(AppDelegate *)[UIApplication sharedApplication].delegate
-             navigate:notification.parameters[@"navigate"]];
-            
-        }
-        else if (user.state != SENT_REQUEST_USER_STATE &&
-                 user.state != RECEIVED_REQUEST_USER_STATE &&
-                 user.state != NOT_FRIEND_STATE) {
-            if (![user.eventAttending.id isEqual:notification.eventID]) return;
-            if (user.eventAttending) [self presentEvent:user.eventAttending];
-            else [self presentUser:user];
+        if(navigate && [navigate isKindOfClass:[NSString class]]) {
+                [(AppDelegate *)[UIApplication sharedApplication].delegate
+                 navigate:navigate];
         }
     }
     else if (indexPath.section == kInstagramSection ) {
