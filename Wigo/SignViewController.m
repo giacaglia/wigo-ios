@@ -85,15 +85,12 @@
 
 - (void)fetchTokensFromFacebook {
     if (![FBSDKAccessToken currentAccessToken]) return;
-    [WGSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGOverlayToCenterView:self.view withColor:RGBAlpha(255, 255, 255, 0.7f)];
     self.accessToken = [FBSDKAccessToken currentAccessToken].tokenString;
-//    NSDate *expirationDate = [FBSDKAccessToken currentAccessToken].expirationDate;
-//    NSTimeInterval expirationInterval = [expirationDate timeIntervalSinceNow];
-//    self.expirationAccessToken = [NSString stringWithFormat:@"%f", expirationInterval];
     self.loginButton.enabled = NO;
     [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/" parameters:nil]
      startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-         [WGSpinnerView removeDancingGFromCenterView:self.view];
+         [WGSpinnerView removeDancingGOverlayFromCenterView:self.view];
          self.loginButton.enabled = YES;
          [[UIApplication sharedApplication] endIgnoringInteractionEvents];
          if (!error) {
@@ -248,7 +245,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     [Crashlytics setUserIdentifier:self.fbID];
     WGProfile.currentUser.facebookId = self.fbID;
     WGProfile.currentUser.facebookAccessToken = self.accessToken;
-    [WGSpinnerView addDancingGToCenterView:self.view];
+    [WGSpinnerView addDancingGOverlayToCenterView:self.view withColor:RGBAlpha(255, 255, 255, 0.7f)];
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     if (self.isFetching) return;
     self.isFetching = YES;
@@ -257,7 +254,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.isFetching = NO;
         [[UIApplication sharedApplication] endIgnoringInteractionEvents];
-        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
+        [WGSpinnerView removeDancingGOverlayFromCenterView:strongSelf.view];
         if (error) {
             if ([error.localizedDescription isEqual:@"Request failed: not found (404)"]) {
                 [[UIApplication sharedApplication] beginIgnoringInteractionEvents];

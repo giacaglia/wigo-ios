@@ -273,13 +273,13 @@
 
 #pragma mark - Table View Delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if (indexPath.section == kSectionEventChat) {
-//        GroupConversationViewController *groupChatVC = [GroupConversationViewController new];
-//        
-//        groupChatVC.event = self.attendingEvent;
-//        [self.navigationController pushViewController:groupChatVC animated:YES];
-//        return;
-//    }
+    if (indexPath.section == kSectionEventChat) {
+        GroupConversationViewController *groupChatVC = [GroupConversationViewController new];
+        
+        groupChatVC.event = self.attendingEvent;
+        [self.navigationController pushViewController:groupChatVC animated:YES];
+        return;
+    }
     if (self.messages.count == 0) return;
     
     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
