@@ -483,7 +483,7 @@ referenceSizeForFooterInSection:(NSInteger)section {
         dispatch_async(dispatch_get_main_queue(), ^{
             __strong typeof(weakSelf) strongSelf = weakSelf;
             __strong WGUser* strongUser = weakUser;
-            [strongSelf.imgView setImageWithURL:strongUser.coverImageURL placeholderImage:image imageArea:strongUser.coverImageArea completed:nil];
+            [strongSelf.imgView setImageWithURL:strongUser.coverImageURL placeholderImage:image imageArea:strongUser.coverImageArea completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType) {}];
         });
         
     }];
