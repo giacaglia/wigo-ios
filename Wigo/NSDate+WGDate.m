@@ -119,6 +119,19 @@
     [comp1 year]  == [comp2 year];
 }
 
+- (NSDate *)noonOfDateInLocalTimeZone {
+    
+    NSCalendar* calendar = [NSCalendar currentCalendar];
+    
+    unsigned unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit |  NSDayCalendarUnit;
+    NSDateComponents* comps = [calendar components:unitFlags fromDate:self];
+    [comps setHour:12];
+    [comps setMinute:0];
+    [comps setSecond:0];
+    
+    return [calendar dateFromComponents:comps];
+}
+
 - (BOOL) isNextDayWithDate:(NSDate*)date {
     NSCalendar* calendar = [NSCalendar currentCalendar];
     

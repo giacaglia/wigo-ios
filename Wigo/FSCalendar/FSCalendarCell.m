@@ -59,6 +59,8 @@
         _eventLayer.path = [UIBezierPath bezierPathWithOvalInRect:_eventLayer.bounds].CGPath;
         _eventLayer.hidden = YES;
         [self.contentView.layer addSublayer:_eventLayer];
+        
+        self.validDate = YES;
     }
     return self;
 }
@@ -177,6 +179,9 @@
         return dictionary[@(FSCalendarCellStatePlaceholder)];
     }
     if (self.isPlaceholder) {
+        return dictionary[@(FSCalendarCellStatePlaceholder)];
+    }
+    if (!self.validDate) {
         return dictionary[@(FSCalendarCellStatePlaceholder)];
     }
     if (self.isWeekend && [[dictionary allKeys] containsObject:@(FSCalendarCellStateWeekend)]) {

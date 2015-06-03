@@ -54,6 +54,8 @@ typedef NS_OPTIONS(NSInteger, FSCalendarCellState) {
 
 @interface FSCalendar : UIView<UIAppearance>
 
+@property (copy,   nonatomic) NSDate *maxDate;
+
 @property (weak,   nonatomic) IBOutlet    FSCalendarHeader     *header;
 @property (weak,   nonatomic) IBOutlet id<FSCalendarDelegate>   delegate;
 @property (weak,   nonatomic) IBOutlet id<FSCalendarDataSource> dataSource;

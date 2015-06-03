@@ -83,6 +83,12 @@
     return self;
 }
 
+- (void)setMaxDate:(NSDate *)maxDate {
+    _maxDate = maxDate;
+    _maximumDate = maxDate;
+    [self reloadData];
+}
+
 - (void)initialize
 {
     _titleFont        = [UIFont systemFontOfSize:15];
@@ -225,6 +231,7 @@
     cell.date               = [self dateForIndexPath:indexPath];
     cell.subtitle           = [self subtitleForDate:cell.date];
     cell.hasEvent           = [self hasEventForDate:cell.date];
+    cell.validDate          = ([cell.date compare:self.maxDate] != NSOrderedDescending);
     [cell configureCell];
     return cell;
 }
@@ -246,6 +253,7 @@
 {
     FSCalendarCell *cell = (FSCalendarCell *)[collectionView cellForItemAtIndexPath:indexPath];
     if ([cell.date compare:[NSDate date]] == NSOrderedAscending) return NO;
+    if ([cell.date compare:self.maxDate] == NSOrderedDescending) return NO;
     return [self shouldSelectDate:cell.date] && ![[collectionView indexPathsForSelectedItems] containsObject:indexPath];
 }
 

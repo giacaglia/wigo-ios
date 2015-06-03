@@ -49,5 +49,5 @@ typedef void (^WGEventResultBlock)(WGEvent *object, NSError *error);
                           toDictionary:(NSDictionary *)toDictionary;
 +(void) getAggregateStatsWithHandler:(WGAggregateStats)handler;
 +(void) getWithGroupNumber:(NSNumber *)groupNumber andHandler:(WGCollectionResultBlock)handler;
-+(void) createEventWithName:(NSString *)name andPrivate:(BOOL)isPrivate andHandler:(WGEventResultBlock)handler;
++(void)createEventWithName:(NSString *)name andPrivate:(BOOL)isPrivate andDate:(NSDate *)date andHandler:(WGEventResultBlock)handler;
 @end

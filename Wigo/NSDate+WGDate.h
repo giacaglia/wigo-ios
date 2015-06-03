@@ -28,4 +28,7 @@
 
 +(NSString *) nowStringUTC;
 -(NSString *)timeAgo;
+
+- (NSDate *)noonOfDateInLocalTimeZone;
+
 @end

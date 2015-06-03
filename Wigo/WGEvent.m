@@ -464,12 +464,26 @@
     }];
 }
 
-+(void)createEventWithName:(NSString *)name andPrivate:(BOOL)isPrivate andHandler:(WGEventResultBlock)handler {
++(void)createEventWithName:(NSString *)name andPrivate:(BOOL)isPrivate andDate:(NSDate *)date andHandler:(WGEventResultBlock)handler {
     NSString *privacy = isPrivate ? @"private" : @"public";
-    [WGApi post:@"events/" withParameters:@{ @"name" : name,
-                                             @"attendees_limit" : @10 ,
-                                             kPrivacyKey: privacy
-                                             }
+    
+    NSDictionary *parameters;
+    if(date) {
+        NSString *dateString = [date deserialize];
+        parameters = @{ @"name" : name,
+                        @"attendees_limit" : @10 ,
+                        @"date" : dateString,
+                        kPrivacyKey: privacy
+                        };
+    }
+    else {
+        parameters = @{ @"name" : name,
+                        @"attendees_limit" : @10 ,
+                        kPrivacyKey: privacy
+                        };
+    }
+    
+    [WGApi post:@"events/" withParameters:parameters
         andHandler:^(NSDictionary *jsonResponse, NSError *error) {
             
         if (error) {

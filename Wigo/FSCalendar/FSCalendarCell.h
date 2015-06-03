@@ -30,6 +30,7 @@
 @property (assign, nonatomic) BOOL                hasEvent;
 
 @property (readonly, getter = isPlaceholder)      BOOL placeholder;
+@property (assign, nonatomic) BOOL                validDate;
 
 - (void)showAnimation;
 - (void)hideAnimation;

@@ -82,26 +82,29 @@
         self.eventDetails.frame = CGRectMake(0, 64 + 75, [UIScreen mainScreen].bounds.size.width, 30);
     }
     
-//    self.wgSwitchView = [[WGSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 90, 240, 40)];
-//    self.wgSwitchView.firstString = @"Today";
-//    self.wgSwitchView.secondString = @"Future";
-//    self.wgSwitchView.movingImageView.image = [UIImage imageNamed:@"calendarIcon"];
-//    self.wgSwitchView.switchDelegate = self;
-//    self.wgSwitchView.backgroundColor = UIColor.whiteColor;
-//    [self.eventDetails addSubview:self.wgSwitchView];
-//    
-//    self.fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 170, self.view.frame.size.width, 250)];
-//    self.fsCalendar.flow = FSCalendarFlowHorizontal;
-//    self.fsCalendar.hidden = YES;
-//    self.fsCalendar.delegate = self;
-//    self.fsCalendar.backgroundColor = UIColor.whiteColor;
-//    [self.eventDetails addSubview:self.fsCalendar];
-//    
-//    self.fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 140, self.view.frame.size.width, 30)];
-//    self.fsCalendar.header = self.fsCalendarHeader;
-//    self.fsCalendarHeader.hidden = YES;
-//    self.fsCalendarHeader.backgroundColor = UIColor.whiteColor;
-//    [self.eventDetails addSubview:self.fsCalendarHeader];
+    self.wgSwitchView = [[WGSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 90, 240, 40)];
+    self.wgSwitchView.firstString = @"Today";
+    self.wgSwitchView.secondString = @"Future";
+    self.wgSwitchView.movingImageView.image = [UIImage imageNamed:@"calendarIcon"];
+    self.wgSwitchView.switchDelegate = self;
+    self.wgSwitchView.backgroundColor = UIColor.whiteColor;
+    [self.eventDetails addSubview:self.wgSwitchView];
+    
+    self.fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 170, self.view.frame.size.width, 250)];
+    self.fsCalendar.flow = FSCalendarFlowHorizontal;
+    self.fsCalendar.hidden = YES;
+    self.fsCalendar.delegate = self;
+    self.fsCalendar.backgroundColor = UIColor.whiteColor;
+    [self.eventDetails addSubview:self.fsCalendar];
+    
+    NSInteger maxDaysOut = 9;
+    self.fsCalendar.maxDate = [[NSDate date] dateByAddingTimeInterval:60.0*60.0*24.0*maxDaysOut];
+    
+    self.fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 140, self.view.frame.size.width, 30)];
+    self.fsCalendar.header = self.fsCalendarHeader;
+    self.fsCalendarHeader.hidden = YES;
+    self.fsCalendarHeader.backgroundColor = UIColor.whiteColor;
+    [self.eventDetails addSubview:self.fsCalendarHeader];
 
     //    [UIView animateWithDuration: 0.2 animations:^{
     //        self.tabBarController.navigationItem.titleView.alpha = 0.0f;
@@ -150,10 +153,20 @@
     WGProfile.currentUser.youAreInCharge = NO;
     self.whereAreYouGoingTextField.enabled = NO;
     self.tabBarController.navigationItem.rightBarButtonItem.enabled = NO;
+    
+    NSDate *eventDate = nil;
+    if(_wgSwitchView.privacyTurnedOn) {
+        eventDate = self.fsCalendar.selectedDate;
+    }
+    
+    // convert to noon in local time zone
+    eventDate = [eventDate noonOfDateInLocalTimeZone];
+    
     [self addLoadingIndicator];
     __weak typeof(self) weakSelf = self;
     [WGEvent createEventWithName:self.whereAreYouGoingTextField.text
                       andPrivate:_privateSwitchView.privacyTurnedOn
+                         andDate:eventDate
                       andHandler:^(WGEvent *object, NSError *error) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         [UIView animateWithDuration:0.2f animations:^{
@@ -221,7 +234,8 @@
     }
 }
 
-#pragma mark - FSCalendar Delegate 
+#pragma mark - FSCalendar Delegate
+
 - (void)calendar:(FSCalendar *)calendar didSelectDate:(NSDate *)date {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"EE, MMMM dd"];
