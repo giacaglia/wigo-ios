@@ -83,6 +83,7 @@
 - (void)initializeTableInvite {
     self.invitePeopleTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64)];
     [self.invitePeopleTableView registerClass:[TapCell class] forCellReuseIdentifier:kTapCellName];
+    [self.invitePeopleTableView registerClass:[TapCell class] forCellReuseIdentifier:kTapNearbyFriendsCellName];
     [self.invitePeopleTableView registerClass:[TapAllCell class] forCellReuseIdentifier:kTapAllName];
     [self.invitePeopleTableView registerClass:[FollowCell class] forCellReuseIdentifier:kFollowCellName];
     self.invitePeopleTableView.dataSource = self;
@@ -100,10 +101,7 @@
 #pragma mark - Tablew View Data Source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kSectionTapAllCell) {
-        return [TapCell height];
-    }
-    else if (indexPath.section == kSectionTapCell) {
+    if (indexPath.section == kSectionTapCell) {
         return [TapCell height];
     }
     return [FollowCell height];
@@ -118,8 +116,8 @@
     if (self.isSearching) {
         return self.presentedUsers.count;
     }
-    if (section == kSectionTapAllCell) {
-        return 1;
+    else if (section == kSectionNearbyFriends) {
+        return MIN(5, self.presentedUsers.count);
     }
     else if (section == kSectionTapCell) {
         return MIN(5, self.presentedUsers.count);
@@ -138,10 +136,6 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.isSearching) {
         TapCell *cell = (TapCell*)[tableView dequeueReusableCellWithIdentifier:kTapCellName forIndexPath:indexPath];
-        cell.fullNameLabel.text = nil;
-        cell.profileImageView.image = nil;
-        cell.goingOutLabel.text = nil;
-        cell.tapImageView.image = nil;
         
         if (self.presentedUsers.count == 0) return cell;
         int tag = (int)indexPath.row;
@@ -160,20 +154,9 @@
         [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
         return cell;
     }
-    if (indexPath.section == kSectionTapAllCell) {
-        TapAllCell *tapAllCell = (TapAllCell *)[tableView dequeueReusableCellWithIdentifier:kTapAllName forIndexPath:indexPath];
-        [tapAllCell.aroundTapButton addTarget:self action:@selector(tapAllPressed) forControlEvents:UIControlEventTouchUpInside];
-        return tapAllCell;
-    }
     else if (indexPath.section == kSectionTapCell ) {
         TapCell *cell = (TapCell*)[tableView dequeueReusableCellWithIdentifier:kTapCellName forIndexPath:indexPath];
-        cell.fullNameLabel.text = nil;
-        cell.profileImageView.image = nil;
-        cell.goingOutLabel.text = nil;
-        cell.tapImageView.image = nil;
-        
         int tag = (int)indexPath.row;
-        
         if (self.presentedUsers.count == 0) return cell;
         if (tag >= self.presentedUsers.count) return cell;
         
@@ -187,13 +170,27 @@
         cell.aroundTapButton.tag = tag;
         return cell;
     }
+    else if (indexPath.section == kSectionNearbyFriends) {
+        TapCell *cell = (TapCell*)[tableView dequeueReusableCellWithIdentifier:kTapNearbyFriendsCellName forIndexPath:indexPath];
+        if (self.presentedUsers.count == 0) return cell;
+        int tag = (int)indexPath.row + 5;
+        if (tag >= self.presentedUsers.count) return cell;
+        
+        WGUser *user = (WGUser *)[self.presentedUsers objectAtIndex:tag];
+        if (tag == self.presentedUsers.count - 5 || tag == self.presentedUsers.count - 1) {
+            [self getNextPage];
+        }
+        if (!user) return cell;
+        cell.user = user;
+        [cell.aroundTapButton removeTarget:nil
+                                    action:NULL
+                          forControlEvents:UIControlEventAllEvents];
+        [cell.aroundTapButton addTarget:self action:@selector(tapPressed:) forControlEvents:UIControlEventTouchUpInside];
+        cell.aroundTapButton.tag = tag;
+        return cell;
+    }
     else if (indexPath.section == kSectionAllFriends) {
         TapCell *cell = (TapCell*)[tableView dequeueReusableCellWithIdentifier:kTapCellName forIndexPath:indexPath];
-        cell.fullNameLabel.text = nil;
-        cell.profileImageView.image = nil;
-        cell.goingOutLabel.text = nil;
-        cell.tapImageView.image = nil;
-        
         if (self.presentedUsers.count == 0) return cell;
         int tag = (int)indexPath.row + 5;
         if (tag >= self.presentedUsers.count) return cell;
@@ -229,23 +226,23 @@
 }
 
 - (void)tapAllPressed {
-    if (WGProfile.tapAll) return;
-    
-    WGProfile.tapAll = YES;
-    TapAllCell *tapAllCell = (TapAllCell *)[self.invitePeopleTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kSectionTapAllCell]];
-    tapAllCell.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
-    [self.invitePeopleTableView reloadData];
-    __weak typeof(self) weakSelf = self;
-    [WGProfile.currentUser tapAllUsersToEvent:event
-                                  withHandler:^(BOOL success, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = self;
-        if (error) {
-            WGProfile.tapAll = NO;
-            [strongSelf.invitePeopleTableView reloadData];
-            [[WGError sharedInstance] logError:error forAction:WGActionSave];
-            return;
-        }
-    }];
+//    if (WGProfile.tapAll) return;
+//    
+//    WGProfile.tapAll = YES;
+//    TapAllCell *tapAllCell = (TapAllCell *)[self.invitePeopleTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kSectionTapAllCell]];
+//    tapAllCell.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
+//    [self.invitePeopleTableView reloadData];
+//    __weak typeof(self) weakSelf = self;
+//    [WGProfile.currentUser tapAllUsersToEvent:event
+//                                  withHandler:^(BOOL success, NSError *error) {
+//        __strong typeof(weakSelf) strongSelf = self;
+//        if (error) {
+//            WGProfile.tapAll = NO;
+//            [strongSelf.invitePeopleTableView reloadData];
+//            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+//            return;
+//        }
+//    }];
     
 }
 
@@ -270,6 +267,9 @@
     if (section == kSectionTapCell) {
         headerLabel.text = @"Best Friends";
     }
+    else if (section == kSectionNearbyFriends) {
+        headerLabel.text = @"Nearby Friends";
+    }
     else if (section == kSectionAllFriends) {
         headerLabel.text = @"All Friends";
     }
@@ -284,6 +284,9 @@
 heightForHeaderInSection:(NSInteger)section
 {
     if (section == kSectionTapCell) {
+        return 30.0f;
+    }
+    if (section == kSectionNearbyFriends) {
         return 30.0f;
     }
     if (section == kSectionAllFriends) {
@@ -632,6 +635,7 @@ heightForHeaderInSection:(NSInteger)section
 
 - (void)setUser:(WGUser *)user {
     _user = user;
+    [self.profileImageView cancelCurrentImageLoad];
     [self.profileImageView setSmallImageForUser:user completed:nil];
     self.nameLabel.text =  user.fullName;
     [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"] forState:UIControlStateNormal];
