@@ -436,16 +436,10 @@ static BOOL isLocal = YES;
     [parameters setObject:self.facebookId forKey:kFacebookIdKey];
     [parameters setObject:self.facebookAccessToken forKey:kFacebookAccessTokenKey];
     if (self.email) [parameters setObject:self.email forKey:kEmailKey];
-    
-    if (self.firstName) {
-        [parameters setObject:self.firstName forKey:kFirstNameKey];
-    }
-    if (self.lastName) {
-        [parameters setObject:self.lastName forKey:kLastNameKey];
-    }
-    if (self.gender) {
-        [parameters setObject:self.genderName forKey:kGenderKey];
-    }
+    if (self.firstName) [parameters setObject:self.firstName forKey:kFirstNameKey];
+    if (self.lastName) [parameters setObject:self.lastName forKey:kLastNameKey];
+    if (self.gender) [parameters setObject:self.genderName forKey:kGenderKey];
+    if (self.properties) [parameters setObject:self.properties forKey:kPropertiesKey];
     [WGApi post:@"register" withParameters:parameters andHandler:^(NSDictionary *jsonResponse, NSError *error) {
         if (error) {
             NSMutableDictionary *newInfo = [[NSMutableDictionary alloc] initWithDictionary:error.userInfo];

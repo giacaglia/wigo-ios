@@ -128,8 +128,6 @@
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
-        WGProfile.currentUser.properties = strongSelf.properties;
-        [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
         [TabBarAuxiliar clearOutAllNotifications];
         [strongSelf presentPushNotification];
     }];
