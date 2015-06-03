@@ -131,6 +131,8 @@
 		45F74FF51A5E3F9100A5170F /* WGFollow.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF41A5E3F9100A5170F /* WGFollow.m */; };
 		885E0DA61B0B849700EF499F /* PhotoSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 885E0DA51B0B849700EF499F /* PhotoSettingsViewController.m */; };
 		885E0DA71B0B849700EF499F /* PhotoSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 885E0DA51B0B849700EF499F /* PhotoSettingsViewController.m */; };
+		9C1FD84E1B1EA86F0070005B /* WGDateSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C1FD84D1B1EA86F0070005B /* WGDateSelectionView.m */; };
+		9C1FD84F1B1EA86F0070005B /* WGDateSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C1FD84D1B1EA86F0070005B /* WGDateSelectionView.m */; };
 		9C531A671AF16BDF0004F264 /* WGCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F01AE98E4200180958 /* WGCameraViewController.m */; };
 		9C9D66F11AE98E4200180958 /* WGCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F01AE98E4200180958 /* WGCameraViewController.m */; };
 		9C9D66F41AEAE94300180958 /* UIImage+Rotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F31AEAE94300180958 /* UIImage+Rotation.m */; };
@@ -692,6 +694,8 @@
 		45F74FF41A5E3F9100A5170F /* WGFollow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGFollow.m; sourceTree = "<group>"; };
 		885E0DA41B0B849700EF499F /* PhotoSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoSettingsViewController.h; sourceTree = "<group>"; };
 		885E0DA51B0B849700EF499F /* PhotoSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoSettingsViewController.m; sourceTree = "<group>"; };
+		9C1FD84C1B1EA86F0070005B /* WGDateSelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGDateSelectionView.h; sourceTree = "<group>"; };
+		9C1FD84D1B1EA86F0070005B /* WGDateSelectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGDateSelectionView.m; sourceTree = "<group>"; };
 		9C9D66EF1AE98E4200180958 /* WGCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGCameraViewController.h; sourceTree = "<group>"; };
 		9C9D66F01AE98E4200180958 /* WGCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGCameraViewController.m; sourceTree = "<group>"; };
 		9C9D66F21AEAE94300180958 /* UIImage+Rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Rotation.h"; sourceTree = "<group>"; };
@@ -1747,6 +1751,8 @@
 				E9C5CE391AB0EFFB0044745B /* OverlayViewController.m */,
 				E9A7659D1AC5D23A00F7C016 /* LabelSwitch.h */,
 				E9A7659E1AC5D23A00F7C016 /* LabelSwitch.m */,
+				9C1FD84C1B1EA86F0070005B /* WGDateSelectionView.h */,
+				9C1FD84D1B1EA86F0070005B /* WGDateSelectionView.m */,
 			);
 			name = Places;
 			sourceTree = "<group>";
@@ -2432,6 +2438,7 @@
 				C12A110C19787BE700D53B1C /* WGSpinnerView.m in Sources */,
 				45D9FABD1A781AFD00D08577 /* JSQMediaItem.m in Sources */,
 				E9096D5C1ADD5F1100386AC2 /* FSCalendarHeader.m in Sources */,
+				9C1FD84F1B1EA86F0070005B /* WGDateSelectionView.m in Sources */,
 				E9A8B6FE1ADC4B9D00C6901D /* WhereAreYouViewController.m in Sources */,
 				45D9FAB91A781AFD00D08577 /* JSQMessagesCollectionViewLayoutAttributes.m in Sources */,
 				45D9FAE31A781AFD00D08577 /* JSQMessagesToolbarContentView.m in Sources */,
@@ -2618,6 +2625,7 @@
 				45D9FAE61A781AFD00D08577 /* JSQMessagesTypingIndicatorFooterView.m in Sources */,
 				4563F5211A3F3C6900F8C9C4 /* WGCollection.m in Sources */,
 				45D9FA9A1A781AFD00D08577 /* NSString+JSQMessages.m in Sources */,
+				9C1FD84E1B1EA86F0070005B /* WGDateSelectionView.m in Sources */,
 				45DF86AC1A5C5DEB00DB85AE /* AFHTTPRequestOperation.m in Sources */,
 				45D9FAB81A781AFD00D08577 /* JSQMessagesCollectionViewLayoutAttributes.m in Sources */,
 				9C9D66F41AEAE94300180958 /* UIImage+Rotation.m in Sources */,

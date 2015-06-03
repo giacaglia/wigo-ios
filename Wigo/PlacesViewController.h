@@ -15,6 +15,8 @@
 #import "BaseViewController.h"
 #import "Globals.h"
 
+@class WGDateSelectionView;
+
 @interface PlacesViewController : BaseViewController
     <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate,
     UIGestureRecognizerDelegate, PlacesDelegate, CLLocationManagerDelegate,
@@ -42,6 +44,7 @@
 @property (nonatomic, assign) BOOL doNotReloadOffsets;
 @property (nonatomic, assign) CGPoint pointNow;
 @property (nonatomic, assign) BOOL spinnerAtCenter;
+@property (nonatomic, strong) WGDateSelectionView *datesView;
 
 @property (nonatomic, strong) LabelSwitch *labelSwitch;
 @property (nonatomic, strong) UIView *toggleView;
@@ -54,6 +57,9 @@
 @property (nonatomic, strong) UIView *emptyFriendsView;
 @property (nonatomic, strong) UIImageView *onboardView;
 @property (nonatomic, strong) UIView *emptyLocalView;
+
+@property (nonatomic, readonly) BOOL isShowingFutureEvents;
+
 @end
 
 #import "EventPeopleScrollView.h"
