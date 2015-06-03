@@ -43,7 +43,7 @@
 typedef void (^BoolResultUpdateBlock)(BOOL success, BOOL didUpdate, NSError *error);
                                 
                                 
-@interface PlacesViewController ()
+@interface PlacesViewController () <WGDateSelectionDelegate>
 // Events By Days
 @property (nonatomic, strong) NSMutableArray *pastDays;
 @property (nonatomic) BOOL showingFutureEvents;
@@ -88,6 +88,8 @@ BOOL firstTimeLoading;
     
     self.futureEventsButton = [[UIBarButtonItem alloc] init];
     self.futureEventsButton.customView = calButton;
+    
+    self.showingFutureEvents = NO;
     
     [self initializeWhereView];
     [TabBarAuxiliar startTabBarItems];
@@ -436,6 +438,7 @@ BOOL firstTimeLoading;
     CGRect tableBounds = self.placesTableView.bounds;
     
     if(self.showingFutureEvents) {
+        [self updateDatesView];
         self.datesView.frame = CGRectMake(tableFrame.origin.x,
                                           tableFrame.origin.y-100.0-fminf(0.0, tableBounds.origin.y),
                                           tableFrame.size.width,
@@ -580,6 +583,7 @@ BOOL firstTimeLoading;
                                                                            self.view.frame.size.width,
                                                                            [WGDateSelectionView height])
                                            collectionViewLayout:[WGHorizontalDatesFlowLayout new]];
+    self.datesView.delegate = self;
     
     self.datesView.startDate = [NSDate date];
     self.datesView.backgroundColor = [UIColor whiteColor];
@@ -694,11 +698,29 @@ BOOL firstTimeLoading;
         [self.placesTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]
                                     atScrollPosition:UITableViewScrollPositionTop animated:NO];
     }
+}
+
+- (void)scrollToDate:(NSDate *)date {
     
 }
 
 - (BOOL)isShowingFutureEvents {
     return self.showingFutureEvents;
+}
+
+- (void)updateDatesView {
+    
+    if(self.isShowingFutureEvents) {
+        if (self.pastDays.count > 0) {
+            NSString *earliestDateString = [self.pastDays lastObject];
+            [self.datesView updateWithStartDate:earliestDateString events:self.oldEvents.objects];
+            
+        }
+        else {
+            [self.datesView setStartDate:[NSDate date]];
+        }
+    }
+    
 }
 
 #pragma mark - Where Are You Going? View and Delegate
@@ -719,13 +741,20 @@ BOOL firstTimeLoading;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-   if (self.pastDays.count > 0) {
-        //[Today section] [Highlighs section] (really just space for a header) + pastDays sections
-//        return 1 + 1;
+    
+    [self updateDatesView];
+    
+    if(self.showingFutureEvents) {
+        
+    }
+    else if (self.pastDays.count > 0) {
+        // [Today section] [Highlighs section] (really just space for a header) + pastDays sections
+        // return 1 + 1;
         return 1 + 1 + self.pastDays.count;
     }
     //[Today section]
     return 1;
+
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -1240,6 +1269,12 @@ BOOL firstTimeLoading;
 
 - (void)reloadTable {
     [self.placesTableView reloadData];
+}
+
+#pragma mark WGDateSelectionViewDelegate methods
+
+- (void)didSelectDate:(NSDate *)date {
+    [self scrollToDate:date];
 }
 
 #pragma mark WGViewController methods

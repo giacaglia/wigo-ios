@@ -8,14 +8,16 @@
 
 #import "WGDateSelectionView.h"
 #import "FontProperties.h"
-
+#import "NSDate+WGDate.h"
+#import "WGEvent.h"
 
 NSString * const WGDateSelectionCellIdentifier = @"WGDateSelectionCell";
 
 @interface WGDateSelectionView ()
 
 @property (nonatomic) NSInteger numberOfDates;
-@property (nonatomic) NSArray *dates;
+
+@property (nonatomic) NSDictionary *eventsByDate;
 
 @end
 
@@ -29,6 +31,8 @@ NSString * const WGDateSelectionCellIdentifier = @"WGDateSelectionCell";
         
         [self registerClass:[WGDateSelectionCell class] forCellWithReuseIdentifier:WGDateSelectionCellIdentifier];
         self.numberOfDates = 10;
+        
+        self.eventsByDate = [NSDictionary dictionary];
         
     }
     return self;
@@ -47,7 +51,41 @@ NSString * const WGDateSelectionCellIdentifier = @"WGDateSelectionCell";
         d = [d dateByAddingTimeInterval:(60.0*60.0*24.0)];
     }
     self.dates = [NSArray arrayWithArray:newDates];
+}
+
+- (void)setDates:(NSArray *)dates {
+    _dates = dates;
+}
+
+- (void)updateWithStartDate:(NSString *)date events:(NSArray *)events {
     
+    NSTimeInterval oneDay = 60.0*60.0*24.0;
+    
+    NSDate *d = [NSDate serialize:date];
+    self.startDate = d;
+    
+    NSMutableDictionary *newEventsDict = [NSMutableDictionary dictionary];
+    
+    for(WGEvent *event in events) {
+        
+        for(int i = 0; i < self.numberOfDates; i++) {
+            
+            NSDate *curDate = self.dates[i];
+            
+            // event date is before/equal to current date,
+            // and after current date - 24h
+            
+            if(([event.expires compare:curDate] != NSOrderedDescending) &&
+               ([[event.expires dateByAddingTimeInterval:oneDay] compare:curDate] == NSOrderedDescending)) {
+                if(!newEventsDict[curDate]) {
+                    
+                    newEventsDict[curDate] = [NSMutableArray array];
+                }
+                [newEventsDict[curDate] addObject:event];
+            }
+        }
+    }
+    self.eventsByDate = [NSDictionary dictionaryWithDictionary:newEventsDict];
     [self reloadData];
 }
 
@@ -60,18 +98,36 @@ NSString * const WGDateSelectionCellIdentifier = @"WGDateSelectionCell";
 #pragma mark UICollectionViewDataSource methods
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.dates.count;
+    return self.eventsByDate.allKeys.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     WGDateSelectionCell *dateCell = (WGDateSelectionCell *)[collectionView dequeueReusableCellWithReuseIdentifier:WGDateSelectionCellIdentifier forIndexPath:indexPath];
     
-    dateCell.date = self.dates[indexPath.row];
+    NSDate *date = self.dates[indexPath.row];
+    dateCell.date = date;
+    
+    if(self.eventsByDate[date] &&
+       [self.eventsByDate[date] count] > 0) {
+        dateCell.hasEvent = YES;
+    }
+    
     return dateCell;
 }
 
 #pragma mark UICollectionViewDelegate methods
+
+
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
+    if(self.eventsByDate.allKeys.count > indexPath.row) {
+        NSDate *selectedDate = self.eventsByDate.allKeys[indexPath.row];
+        if(self.dateSelectionDelegate && [self.dateSelectionDelegate respondsToSelector:@selector(didSelectDate:)]) {
+            [self.dateSelectionDelegate didSelectDate:selectedDate];
+        }
+    }
+}
 
 
 @end
@@ -198,10 +254,17 @@ NSString * const WGDateSelectionCellIdentifier = @"WGDateSelectionCell";
                                                                 color:borderColor
                                                              drawMode:kCGPathStroke];
     
-    self.indicatorView.frame = CGRectMake(0, 0, 8.0, 8.0);
-    self.indicatorView.image = [WGDateSelectionCell ovalWithFrame:self.contentView.bounds
-                                                              color:indicatorColor
-                                                           drawMode:kCGPathFill];
+    if(self.hasEvent) {
+        self.indicatorView.frame = CGRectMake(0, 0, 8.0, 8.0);
+        self.indicatorView.image = [WGDateSelectionCell ovalWithFrame:self.contentView.bounds
+                                                                  color:indicatorColor
+                                                               drawMode:kCGPathFill];
+        self.indicatorView.hidden= NO;
+    }
+    else {
+        self.indicatorView.hidden= YES;
+    }
+    
     [self.dayLabel sizeToFit];
     [self.dateLabel sizeToFit];
     self.dayLabel.textColor = textColor;
@@ -268,6 +331,7 @@ NSString * const WGDateSelectionCellIdentifier = @"WGDateSelectionCell";
     self.itemSize = CGSizeMake([WGDateSelectionCell height], [WGDateSelectionCell height]);
     self.minimumLineSpacing = 15.0;
     self.minimumInteritemSpacing = 15.0;
+    self.sectionInset = UIEdgeInsetsMake(0.0, 15.0, 0.0, 0.0);
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
 }
 
