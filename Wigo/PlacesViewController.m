@@ -29,6 +29,7 @@
 #import "ReferalView.h"
 #import "WaitListViewController.h"
 #import "AppDelegate.h"
+#import "WGDateSelectionView.h"
 
 #define kEventCellName @"EventCell"
 #define kOneLineEventCellName @"OneLineEventCell"
@@ -45,6 +46,10 @@ typedef void (^BoolResultUpdateBlock)(BOOL success, BOOL didUpdate, NSError *err
 @interface PlacesViewController ()
 // Events By Days
 @property (nonatomic, strong) NSMutableArray *pastDays;
+@property (nonatomic) BOOL showingFutureEvents;
+@property (nonatomic) UIBarButtonItem *futureEventsButton;
+
+@property (nonatomic) UIView *datesStatusBarOverlay;
 
 @end
 BOOL firstTimeLoading;
@@ -72,6 +77,17 @@ BOOL firstTimeLoading;
     UITabBarController *tab = self.tabBarController;
     ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
     profileVc.user = [WGUser new];
+    
+    
+    UIButton *calButton = [[UIButton alloc] init];
+    [calButton setImage:[UIImage imageNamed:@"calendar"] forState:UIControlStateNormal];
+    [calButton addTarget:self
+                  action:@selector(toggleShowFutureEvents:)
+        forControlEvents:UIControlEventTouchUpInside];
+    [calButton sizeToFit];
+    
+    self.futureEventsButton = [[UIBarButtonItem alloc] init];
+    self.futureEventsButton.customView = calButton;
     
     [self initializeWhereView];
     [TabBarAuxiliar startTabBarItems];
@@ -192,9 +208,7 @@ BOOL firstTimeLoading;
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:UIColor.whiteColor}];
     self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:UIColor.whiteColor forKey:NSForegroundColorAttributeName];
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
-    self.tabBarController.navigationItem.rightBarButtonItem = nil;
-   
-    
+    self.tabBarController.navigationItem.rightBarButtonItem = self.futureEventsButton;
     self.tabBarController.navigationItem.titleView = self.toggleView;
     if (self.bostonLabel) return;
     
@@ -226,6 +240,7 @@ BOOL firstTimeLoading;
     [self.toggleView addSubview:self.friendsButton];
     self.tabBarController.navigationItem.titleView = self.toggleView;
     self.isLocal = self.isLocal;
+    
 }
 
 - (void)initializeEmptyView {
@@ -402,6 +417,96 @@ BOOL firstTimeLoading;
     [self fetchEventsFirstPageWithHandler:handler];
 }
 
+- (void)toggleShowFutureEvents:(id)sender {
+    [self setShowFutureEvents:!self.showingFutureEvents
+                   completion:^(BOOL success, NSError *error) {
+                       
+                   }];
+}
+
+- (void)setShowFutureEvents:(BOOL)showFutureEvents completion:(BoolResultBlock)handler {
+    
+    if(self.showingFutureEvents == showFutureEvents) {
+        return;
+    }
+    
+    self.showingFutureEvents = showFutureEvents;
+    
+    CGRect tableFrame = self.placesTableView.frame;
+    CGRect tableBounds = self.placesTableView.bounds;
+    
+    if(self.showingFutureEvents) {
+        self.datesView.frame = CGRectMake(tableFrame.origin.x,
+                                          tableFrame.origin.y-100.0-fminf(0.0, tableBounds.origin.y),
+                                          tableFrame.size.width,
+                                          100);
+        self.datesView.hidden = NO;
+        [self.view addSubview:self.datesView];
+        
+        self.datesStatusBarOverlay.frame = CGRectMake(0,
+                                                      0,
+                                                      self.datesView.frame.size.width,
+                                                      55.0);
+        self.datesStatusBarOverlay.hidden = NO;
+        [self.datesView addSubview:self.datesStatusBarOverlay];
+        
+        
+        
+        [UIView animateWithDuration:0.2
+                         animations:^{
+                             
+                             self.placesTableView.frame = CGRectMake(tableFrame.origin.x,
+                                                                     tableFrame.origin.y+100.0,
+                                                                     tableFrame.size.width,
+                                                                     tableFrame.size.height-100.0);
+                             
+                             self.datesView.frame = CGRectMake(tableFrame.origin.x,
+                                                               tableFrame.origin.y-fminf(0.0, tableBounds.origin.y),
+                                                               tableFrame.size.width,
+                                                               100.0);
+                             
+                             CGRect r = self.datesStatusBarOverlay.frame;
+                             r.size.height = 0.0;
+                             self.datesStatusBarOverlay.frame = r;
+                             
+                         }
+                         completion:^(BOOL finished) {
+                             self.datesStatusBarOverlay.hidden = YES;
+                         }];
+    }
+    else {
+        
+        self.datesStatusBarOverlay.frame = CGRectMake(0,
+                                                      0,
+                                                      self.datesView.frame.size.width,
+                                                      0);
+        self.datesStatusBarOverlay.hidden = NO;
+        [self.datesView addSubview:self.datesStatusBarOverlay];
+        
+        [UIView animateWithDuration:0.2
+                         animations:^{
+                             CGRect datesFrame = self.datesView.frame;
+                             self.datesView.frame = CGRectMake(datesFrame.origin.x,
+                                                               datesFrame.origin.y-100.0,
+                                                               datesFrame.size.width,
+                                                               100.0);
+                             
+                             self.placesTableView.frame = CGRectMake(tableFrame.origin.x,
+                                                                     tableFrame.origin.y-100.0,
+                                                                     tableFrame.size.width,
+                                                                     tableFrame.size.height+100.0);
+                             
+                             CGRect r = self.datesStatusBarOverlay.frame;
+                             r.size.height = 55.0;
+                             self.datesStatusBarOverlay.frame = r;
+                             
+                         }
+                         completion:^(BOOL finished) {
+                             self.datesView.hidden = YES;
+                         }];
+    }
+}
+
 -(void) initializeFlashScreen {
     if (firstTimeLoading) return;
     firstTimeLoading = YES;
@@ -469,6 +574,21 @@ BOOL firstTimeLoading;
 //    self.labelSwitch = [[LabelSwitch alloc] initWithFrame:CGRectMake(0, 64, [UIScreen mainScreen].bounds.size.width, [LabelSwitch height])];
 //    [self.view bringSubviewToFront:self.labelSwitch];
 //    [self.view addSubview:self.labelSwitch];
+    
+    self.datesView = [[WGDateSelectionView alloc] initWithFrame:CGRectMake(0,
+                                                                           0,
+                                                                           self.view.frame.size.width,
+                                                                           [WGDateSelectionView height])
+                                           collectionViewLayout:[WGHorizontalDatesFlowLayout new]];
+    
+    self.datesView.startDate = [NSDate date];
+    self.datesView.backgroundColor = [UIColor whiteColor];
+    
+    // hack to get around translucent status bar
+    self.datesStatusBarOverlay = [[UIView alloc] init];
+    self.datesStatusBarOverlay.backgroundColor = [FontProperties getBlueColor];
+    self.datesStatusBarOverlay.hidden = YES;
+    [self.datesView addSubview:self.datesStatusBarOverlay];
 }
 
 - (void)showEvent:(WGEvent *)event {
@@ -575,6 +695,10 @@ BOOL firstTimeLoading;
                                     atScrollPosition:UITableViewScrollPositionTop animated:NO];
     }
     
+}
+
+- (BOOL)isShowingFutureEvents {
+    return self.showingFutureEvents;
 }
 
 #pragma mark - Where Are You Going? View and Delegate
@@ -920,6 +1044,21 @@ BOOL firstTimeLoading;
             eventCell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
         }
         [eventCell.eventPeopleScrollView saveScrollPosition];
+    }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [super scrollViewDidScroll:scrollView];
+    
+    if(self.showingFutureEvents) {
+        
+        // tie the dates view y-origin to the navigation bar top-origin
+        
+        CGRect navbarFrameInViewFrame = [self.view convertRect:self.navigationController.navigationBar.frame
+                                                      fromView:self.navigationController.view];
+        CGRect datesFrame = self.datesView.frame;
+        datesFrame.origin.y = CGRectGetMaxY(navbarFrameInViewFrame);
+        self.datesView.frame = datesFrame;
     }
 }
 
