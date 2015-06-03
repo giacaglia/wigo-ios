@@ -43,7 +43,7 @@
     blueBannerView.backgroundColor = [FontProperties getBlueColor];
     [self.view addSubview:blueBannerView];
     
-    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 80)];
+    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width - 90, 80)];
     self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Hawaiian Night @ Grey Lady, 77 Delancey St" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
     self.whereAreYouGoingTextField.font = [FontProperties openSansRegular:18.0f];
     self.whereAreYouGoingTextField.textAlignment = NSTextAlignmentCenter;
@@ -58,8 +58,30 @@
     [self.view addSubview:self.whereAreYouGoingTextField];
     [self.whereAreYouGoingTextField becomeFirstResponder];
     
+    UIButton *whiteTimeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, 64, 90, 80)];
+    whiteTimeButton.backgroundColor = UIColor.whiteColor;
+    [whiteTimeButton addTarget:self action:@selector(timePressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:whiteTimeButton];
+    
+    self.clockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(45 - 17, 10, 35, 35)];
+    self.clockImageView.image = [UIImage imageNamed:@"clockImage"];
+    [whiteTimeButton addSubview:self.clockImageView];
+    
+    self.startTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 50, 90, 15)];
+    self.startTimeLabel.text = @"Set start time?";
+    self.startTimeLabel.font = [FontProperties mediumFont:12.0f];
+    self.startTimeLabel.textColor = RGB(178, 178, 178);
+    self.startTimeLabel.textAlignment = NSTextAlignmentCenter;
+    [whiteTimeButton addSubview:self.startTimeLabel];
+    
     self.eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 64 + 90, [UIScreen mainScreen].bounds.size.width, self.view.frame.size.height - 64 - 90)];
     [self.view addSubview:self.eventDetails];
+    
+    self.datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, self.eventDetails.frame.size.height - 250
+                                                                     , self.view.frame.size.width, 250)];
+    self.datePicker.hidden = YES;
+    self.datePicker.datePickerMode = UIDatePickerModeTime;
+    [self.eventDetails addSubview:self.datePicker];
     
     self.privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 10, 240, 40)];
     [self.eventDetails addSubview:self.privateSwitchView];
@@ -105,28 +127,11 @@
     self.fsCalendarHeader.hidden = YES;
     self.fsCalendarHeader.backgroundColor = UIColor.whiteColor;
     [self.eventDetails addSubview:self.fsCalendarHeader];
+}
 
-    //    [UIView animateWithDuration: 0.2 animations:^{
-    //        self.tabBarController.navigationItem.titleView.alpha = 0.0f;
-    //        self.tabBarController.navigationItem.leftBarButtonItem.customView.alpha = 0.0f;
-    //        self.tabBarController.navigationItem.rightBarButtonItem.customView.alpha = 0.0f;
-    //
-    //        [self.whereAreYouGoingTextField becomeFirstResponder];
-    //        _whereAreYouGoingView.transform = CGAffineTransformMakeTranslation(0, 50);
-    //        _whereAreYouGoingView.alpha = 1.0f;
-    //
-    //    } completion:^(BOOL finished) {
-    //
-    //        [self.tabBarController.navigationItem setLeftBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Cancel" style: UIBarButtonItemStylePlain target: self action: @selector(cancelledAddEventTapped)] animated: NO];
-    //
-    //        [self.tabBarController.navigationItem setRightBarButtonItem: [[UIBarButtonItem alloc] initWithTitle: @"Create" style: UIBarButtonItemStylePlain target: self action: @selector(createPressed)] animated: NO];
-    //
-    //        [self.tabBarController.navigationItem.leftBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 1.0f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
-    //
-    //        [self.tabBarController.navigationItem.rightBarButtonItem setTitleTextAttributes: @{NSForegroundColorAttributeName: [[UIColor whiteColor] colorWithAlphaComponent: 0.5f], NSFontAttributeName: [FontProperties mediumFont: 18.0f]} forState: UIControlStateNormal];
-    //
-    //        self.placesTableView.userInteractionEnabled = NO;
-    //    }];
+- (void)timePressed {
+    self.datePicker.hidden = NO;
+    [self.whereAreYouGoingTextField endEditing:YES];
 }
 
 - (void)initializeNavigationItem {

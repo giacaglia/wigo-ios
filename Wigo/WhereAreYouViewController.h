@@ -24,4 +24,9 @@
 @property (nonatomic, strong) UIView *loadingIndicator;
 @property (nonatomic, strong) FSCalendar *fsCalendar;
 @property (nonatomic, strong) FSCalendarHeader *fsCalendarHeader;
+@property (nonatomic, strong) UIImageView *clockImageView;
+@property (nonatomic, strong) UILabel *startTimeLabel;
+@property (nonatomic, strong) UIDatePicker *datePicker;
+@property (nonatomic, strong) UILabel *startsAtLabel;
+@property (nonatomic, strong) UILabel *realStartTimeLabel;
 @end
