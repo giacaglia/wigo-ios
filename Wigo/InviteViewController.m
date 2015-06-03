@@ -117,7 +117,7 @@
         return self.presentedUsers.count;
     }
     else if (section == kSectionNearbyFriends) {
-        return MIN(5, self.presentedUsers.count);
+        return 1 + MIN(5, self.presentedUsers.count);
     }
     else if (section == kSectionTapCell) {
         return MIN(5, self.presentedUsers.count);
@@ -171,6 +171,12 @@
         return cell;
     }
     else if (indexPath.section == kSectionNearbyFriends) {
+        if (indexPath.row == 0) {
+            TapAllCell *tapAllCell = (TapAllCell *)[tableView dequeueReusableCellWithIdentifier:kTapAllName forIndexPath:indexPath];
+            [tapAllCell.aroundTapButton addTarget:self action:@selector(tapAllPressed) forControlEvents:UIControlEventTouchUpInside];
+            return tapAllCell;
+        }
+        indexPath = [NSIndexPath indexPathForRow:(indexPath.row - 1) inSection:indexPath.section];
         TapCell *cell = (TapCell*)[tableView dequeueReusableCellWithIdentifier:kTapNearbyFriendsCellName forIndexPath:indexPath];
         if (self.presentedUsers.count == 0) return cell;
         int tag = (int)indexPath.row + 5;
@@ -226,23 +232,23 @@
 }
 
 - (void)tapAllPressed {
-//    if (WGProfile.tapAll) return;
-//    
-//    WGProfile.tapAll = YES;
-//    TapAllCell *tapAllCell = (TapAllCell *)[self.invitePeopleTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kSectionTapAllCell]];
-//    tapAllCell.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
-//    [self.invitePeopleTableView reloadData];
-//    __weak typeof(self) weakSelf = self;
-//    [WGProfile.currentUser tapAllUsersToEvent:event
-//                                  withHandler:^(BOOL success, NSError *error) {
-//        __strong typeof(weakSelf) strongSelf = self;
-//        if (error) {
-//            WGProfile.tapAll = NO;
-//            [strongSelf.invitePeopleTableView reloadData];
-//            [[WGError sharedInstance] logError:error forAction:WGActionSave];
-//            return;
-//        }
-//    }];
+    if (WGProfile.tapAll) return;
+    
+    WGProfile.tapAll = YES;
+    TapAllCell *tapAllCell = (TapAllCell *)[self.invitePeopleTableView cellForRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:kSectionNearbyFriends]];
+    tapAllCell.tapImageView.image = [UIImage imageNamed:@"tapSelectedInvite"];
+    [self.invitePeopleTableView reloadData];
+    __weak typeof(self) weakSelf = self;
+    [WGProfile.currentUser tapAllUsersToEvent:event
+                                  withHandler:^(BOOL success, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = self;
+        if (error) {
+            WGProfile.tapAll = NO;
+            [strongSelf.invitePeopleTableView reloadData];
+            [[WGError sharedInstance] logError:error forAction:WGActionSave];
+            return;
+        }
+    }];
     
 }
 
@@ -577,7 +583,7 @@ heightForHeaderInSection:(NSInteger)section
     self.tapAllLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.tapAllLabel.textColor = UIColor.blackColor;
     self.tapAllLabel.font = [FontProperties lightFont:18.0f];
-    self.tapAllLabel.text = @"Invite All Friends";
+    self.tapAllLabel.text = @"Invite All\nNearby Friends";
     [self.aroundTapButton addSubview:self.tapAllLabel];
     
     self.tapImageView = [[UIImageView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width - 15 - 15 - 25, [TapAllCell height] / 2 - 15, 30, 30)];
