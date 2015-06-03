@@ -100,8 +100,7 @@ NSDate *firstLoggedTime;
         return;
     }
     
-    NSDictionary *navigationDict = [WGNavigateParser dictionaryFromString:navigateString];
-    navigationDict = [WGNavigateParser userInfoFromString:navigateString];
+    NSDictionary *navigationDict = [WGNavigateParser userInfoFromString:navigateString];
     
     NSString *presentedView = navigationDict[kNameOfObjectKey];
     NSString *rootString = navigationDict[kRootObjetKey];
