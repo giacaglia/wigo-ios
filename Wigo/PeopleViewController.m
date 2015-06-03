@@ -81,9 +81,6 @@ NSIndexPath *userIndex;
     [super viewDidAppear:animated];
     self.navigationItem.titleView.tintColor = UIColor.whiteColor;
     self.title = self.user.firstName;
-    if (!didProfileSegue) {
-        [NetworkFetcher.defaultGetter fetchFriendsIds];
-    }
     
     [self initializeTitleView];
     [self initializeRightBarButton];
