@@ -469,14 +469,14 @@ viewForHeaderInSection:(NSInteger)section
     [WGAnalytics tagAction:@"friend_request_reject" atView:@"discover"
              andTargetUser:user atEvent:nil andEventMessage:nil];
     user.isFriend = @NO;
-    user.friendRequest = kFriendRequestReceived;
+    user.friendRequest = @"";
     [WGProfile.currentUser rejectFriendRequestForUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
         user.isFriend = @NO;
-        user.friendRequest = kFriendRequestReceived;
+        user.friendRequest = @"";
     }];
     [self.friendRequestUsers replaceObjectAtIndex:buttonSender.tag withObject:user];
     [self.tableViewOfPeople reloadData];
@@ -486,14 +486,14 @@ viewForHeaderInSection:(NSInteger)section
     UIButton *buttonSender = (UIButton *)sender;
     WGUser *user = (WGUser *)[self.users objectAtIndex:buttonSender.tag];
     user.isFriend = @NO;
-    user.friendRequest = kFriendRequestReceived;
+    user.friendRequest = @"";
     [WGProfile.currentUser rejectFriendRequestForUser:user withHandler:^(BOOL success, NSError *error) {
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionSave];
             return;
         }
         user.isFriend = @NO;
-        user.friendRequest = kFriendRequestReceived;
+        user.friendRequest = @"";
     }];
     [self.friendRequestUsers replaceObjectAtIndex:buttonSender.tag withObject:user];
     [self.tableViewOfPeople reloadData];
@@ -893,24 +893,23 @@ viewForHeaderInSection:(NSInteger)section
     self.rejectButton.hidden = YES;
     self.followPersonButton.hidden = YES;
 
-    if (user.state == RECEIVED_REQUEST_USER_STATE) {
-        self.acceptButton.hidden = NO;
-        self.rejectButton.hidden = NO;
-        return;
-    }
-    if (!user.isFriend.boolValue) {
-        [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"]
-                                           forState:UIControlStateNormal];
-        self.followPersonButton.hidden = NO;
-        return;
-    }
-    if (user.isFriend.boolValue) {
+    if (user.state == FRIEND_USER_STATE) {
         [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followedPersonIcon"]
                                            forState:UIControlStateNormal];
         self.followPersonButton.hidden = NO;
         return;
     }
-    
+    if (user.state == RECEIVED_REQUEST_USER_STATE) {
+        self.acceptButton.hidden = NO;
+        self.rejectButton.hidden = NO;
+        return;
+    }
+    if (user.state == NOT_FRIEND_STATE) {
+        [self.followPersonButton setBackgroundImage:[UIImage imageNamed:@"followPersonIcon"]
+                                           forState:UIControlStateNormal];
+        self.followPersonButton.hidden = NO;
+        return;
+    }
 }
 
 @end

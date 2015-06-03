@@ -1739,7 +1739,6 @@ BOOL firstTimeLoading;
         __strong typeof(weakSelf) strongSelf = weakSelf;
         strongSelf.fetchingUserInfo = NO;
         
-     
         if (!strongSelf.secondTimeFetchingUserInfo) {
             strongSelf.secondTimeFetchingUserInfo = YES;
             if (error || [WGProfile.currentUser.status isEqual:kStatusImported])

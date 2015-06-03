@@ -616,7 +616,7 @@ BOOL blockShown;
     [WGAnalytics tagAction:@"friend_request_reject" atView:@"profile"
              andTargetUser:self.user atEvent:nil andEventMessage:nil];
     self.user.isFriend = @NO;
-    self.user.friendRequest = kFriendRequestReceived;
+    self.user.friendRequest = @"";
     [WGProfile.currentUser rejectFriendRequestForUser:self.user withHandler:^(BOOL success, NSError *error) {}];
     [self reloadViewForUserState];
 }

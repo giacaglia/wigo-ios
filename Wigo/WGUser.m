@@ -737,6 +737,7 @@ static WGUser *currentUser = nil;
 }
 
 -(void) setFriendRequest:(NSString *)friendRequest {
+    [self setObject:friendRequest forKey:kFriendRequestKey];
     [self setMetaObject:friendRequest forKey:kFriendRequestKey];
 }
 
