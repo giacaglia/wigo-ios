@@ -30,5 +30,5 @@
 -(NSString *)timeAgo;
 
 - (NSDate *)noonOfDateInLocalTimeZone;
-
++ (NSInteger)daysBetweenDate:(NSDate*)fromDateTime andDate:(NSDate*)toDateTime;
 @end

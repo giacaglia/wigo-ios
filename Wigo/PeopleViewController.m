@@ -13,6 +13,8 @@
 #import "UIImageCrop.h"
 #import "MobileContactsViewController.h"
 #import <FBSDKShareKit/FBSDKShareKit.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#define kLastTimeAskedForToken @"facebook_token"
 
 @interface PeopleViewController () <FBSDKAppInviteDialogDelegate>
 @end
@@ -84,6 +86,7 @@ NSIndexPath *userIndex;
     
     [self initializeTitleView];
     [self initializeRightBarButton];
+    [self updateFacebookToken];
 }
 
 -(void) viewWillDisappear:(BOOL)animated {
@@ -139,6 +142,32 @@ NSIndexPath *userIndex;
     else {
         self.navigationItem.rightBarButtonItem = nil;
     }
+}
+
+-(void) updateFacebookToken {
+    NSDate *lastTimeAskedForToken;
+
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kLastTimeAskedForToken]) {
+        lastTimeAskedForToken = [[NSUserDefaults standardUserDefaults] objectForKey:kLastTimeAskedForToken];
+    }
+    NSInteger days;
+    if (lastTimeAskedForToken) {
+        NSDate *nowDate = [NSDate date];
+        days = [NSDate daysBetweenDate:lastTimeAskedForToken andDate:nowDate];
+    }
+    else  {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastTimeAskedForToken];
+        days = 1;
+    }
+    if (days <= 0) return;
+    
+    if (![FBSDKAccessToken currentAccessToken])  {
+    
+    }
+    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/" parameters:nil]
+     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+         if (error) return;
+     }];
 }
 
 - (void) goBack {
