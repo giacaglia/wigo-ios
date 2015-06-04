@@ -43,8 +43,12 @@
     blueBannerView.backgroundColor = [FontProperties getBlueColor];
     [self.view addSubview:blueBannerView];
     
-    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 64, self.view.frame.size.width - 90 - 10, 80)];
-    self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Hawaiian Night @ Grey Lady, 77 Delancey St" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
+    UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width, 80)];
+    backgroundView.backgroundColor = UIColor.whiteColor;
+    [self.view addSubview:backgroundView];
+    
+    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 80 - 10, 80)];
+    self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Hawaiian Night @ Grey Lady" attributes:@{NSForegroundColorAttributeName:RGB(178, 178, 178)}];
     self.whereAreYouGoingTextField.font = [FontProperties openSansRegular:18.0f];
     self.whereAreYouGoingTextField.textAlignment = NSTextAlignmentCenter;
     self.whereAreYouGoingTextField.textColor = [FontProperties getBlueColor];
@@ -55,26 +59,30 @@
                                    action:@selector(textFieldDidChange:)
                          forControlEvents:UIControlEventEditingChanged];
     self.whereAreYouGoingTextField.backgroundColor = UIColor.whiteColor;
-    [self.view addSubview:self.whereAreYouGoingTextField];
+    [backgroundView addSubview:self.whereAreYouGoingTextField];
     [self.whereAreYouGoingTextField becomeFirstResponder];
     
-    UIButton *whiteTimeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 90, 64, 90, 80)];
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(self.whereAreYouGoingTextField.frame.size.width - 1, 10, 1, self.whereAreYouGoingTextField.frame.size.height - 20)];
+    lineView.backgroundColor = RGB(216, 216, 216);
+    [self.whereAreYouGoingTextField addSubview:lineView];
+    
+    UIButton *whiteTimeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 80, 80)];
     whiteTimeButton.backgroundColor = UIColor.whiteColor;
     [whiteTimeButton addTarget:self action:@selector(timePressed) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:whiteTimeButton];
+    [backgroundView addSubview:whiteTimeButton];
     
-    self.clockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(45 - 15, 15, 30, 30)];
+    self.clockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(40 - 12.5, 15, 25, 25)];
     self.clockImageView.image = [UIImage imageNamed:@"clockImage"];
     [whiteTimeButton addSubview:self.clockImageView];
     
-    self.startTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 45, 90, 15)];
+    self.startTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 45, 80, 15)];
     self.startTimeLabel.text = @"Set start time?";
-    self.startTimeLabel.font = [FontProperties mediumFont:11.0f];
+    self.startTimeLabel.font = [FontProperties mediumFont:10.0f];
     self.startTimeLabel.textColor = RGB(178, 178, 178);
     self.startTimeLabel.textAlignment = NSTextAlignmentCenter;
     [whiteTimeButton addSubview:self.startTimeLabel];
     
-    self.startsAtLabel = [[UILabel alloc] initWithFrame:CGRectMake(45 - 20, 15, 40, 20)];
+    self.startsAtLabel = [[UILabel alloc] initWithFrame:CGRectMake(40 - 20, 20, 40, 20)];
     self.startsAtLabel.text = @"Starts at";
     self.startsAtLabel.textAlignment = NSTextAlignmentCenter;
     self.startsAtLabel.textColor = RGB(178, 178, 178);
@@ -82,7 +90,7 @@
     self.startsAtLabel.hidden = YES;
     [whiteTimeButton addSubview:self.startsAtLabel];
     
-    self.realStartTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, 90, 10)];
+    self.realStartTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, 80, 10)];
     self.realStartTimeLabel.textAlignment = NSTextAlignmentCenter;
     self.realStartTimeLabel.textColor = [FontProperties getBlueColor];
     self.realStartTimeLabel.font = [FontProperties mediumFont:13.0f];
@@ -92,9 +100,37 @@
     self.eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 64 + 90, [UIScreen mainScreen].bounds.size.width, self.view.frame.size.height - 64 - 90)];
     [self.view addSubview:self.eventDetails];
     
+    self.datePickerHeader = [[UIView alloc] initWithFrame:CGRectMake(0, self.eventDetails.frame.size.height - 216 - 40, self.view.frame.size.width, 40)];
+    self.datePickerHeader.hidden = YES;
+    [self.eventDetails addSubview:self.datePickerHeader];
+    
+    UIView *topLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.eventDetails.frame.size.width, 0.5)];
+    topLineView.backgroundColor = RGB(151, 151, 151);
+    [self.datePickerHeader addSubview:topLineView];
+    
+    UIButton *cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 70, 40)];
+    [cancelButton addTarget:self action:@selector(cancelPressed) forControlEvents:UIControlEventTouchUpInside];
+    [cancelButton setTitleColor:RGB(170, 170, 170) forState:UIControlStateNormal];
+    [cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+    cancelButton.titleLabel.font = [FontProperties mediumFont:14.0f];
+    [self.datePickerHeader addSubview:cancelButton];
+    
+    UILabel *selectTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 40)];
+    selectTimeLabel.text = @"Select Time";
+    selectTimeLabel.textAlignment = NSTextAlignmentCenter;
+    [self.datePickerHeader addSubview:selectTimeLabel];
+    
+    UIButton *doneButton = [[UIButton alloc] initWithFrame:CGRectMake(self.datePickerHeader.frame.size.width - 70, 0, 70, 40)];
+    [doneButton addTarget:self action:@selector(donePressed) forControlEvents:UIControlEventTouchUpInside];
+    [doneButton setTitle:@"Done" forState:UIControlStateNormal];
+    [doneButton setTitleColor:UIColor.blackColor forState:UIControlStateNormal];
+    doneButton.titleLabel.font = [FontProperties mediumFont:14.0f];
+    [self.datePickerHeader addSubview:doneButton];
+    
     self.datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, self.eventDetails.frame.size.height - 216
                                                                      , self.view.frame.size.width, 216)];
     self.datePicker.hidden = YES;
+    self.datePicker.backgroundColor = UIColor.whiteColor;
     self.datePicker.datePickerMode = UIDatePickerModeTime;
     [self.datePicker addTarget:self action:@selector(changedTime) forControlEvents:UIControlEventValueChanged];
     [self.eventDetails addSubview:self.datePicker];
@@ -145,10 +181,26 @@
     [self.eventDetails addSubview:self.fsCalendarHeader];
 }
 
+- (void)cancelPressed {
+    self.clockImageView.hidden = NO;
+    self.startTimeLabel.hidden = NO;
+    self.datePickerHeader.hidden = YES;
+    self.datePicker.hidden = YES;
+    self.startsAtLabel.hidden = YES;
+    self.realStartTimeLabel.hidden = YES;
+    [self.whereAreYouGoingTextField endEditing:YES];
+}
+
+- (void)donePressed {
+    self.datePickerHeader.hidden = YES;
+    self.datePicker.hidden = YES;
+}
+
 - (void)timePressed {
-    self.datePicker.hidden = NO;
     self.clockImageView.hidden = YES;
     self.startTimeLabel.hidden = YES;
+    self.datePickerHeader.hidden = NO;
+    self.datePicker.hidden = NO;
     self.startsAtLabel.hidden = NO;
     self.realStartTimeLabel.hidden = NO;
     [self.whereAreYouGoingTextField endEditing:YES];

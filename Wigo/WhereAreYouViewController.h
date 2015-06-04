@@ -24,9 +24,12 @@
 @property (nonatomic, strong) UIView *loadingIndicator;
 @property (nonatomic, strong) FSCalendar *fsCalendar;
 @property (nonatomic, strong) FSCalendarHeader *fsCalendarHeader;
+
+// Setting time
 @property (nonatomic, strong) UIImageView *clockImageView;
 @property (nonatomic, strong) UILabel *startTimeLabel;
 @property (nonatomic, strong) UIDatePicker *datePicker;
 @property (nonatomic, strong) UILabel *startsAtLabel;
 @property (nonatomic, strong) UILabel *realStartTimeLabel;
+@property (nonatomic, strong) UIView *datePickerHeader;
 @end
