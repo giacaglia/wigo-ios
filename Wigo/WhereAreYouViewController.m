@@ -43,7 +43,7 @@
     blueBannerView.backgroundColor = [FontProperties getBlueColor];
     [self.view addSubview:blueBannerView];
     
-    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 64, self.view.frame.size.width - 90, 80)];
+    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 64, self.view.frame.size.width - 90 - 10, 80)];
     self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Hawaiian Night @ Grey Lady, 77 Delancey St" attributes:@{NSForegroundColorAttributeName:RGBAlpha(122, 193, 226, 0.5)}];
     self.whereAreYouGoingTextField.font = [FontProperties openSansRegular:18.0f];
     self.whereAreYouGoingTextField.textAlignment = NSTextAlignmentCenter;
@@ -63,24 +63,40 @@
     [whiteTimeButton addTarget:self action:@selector(timePressed) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:whiteTimeButton];
     
-    self.clockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(45 - 17, 10, 35, 35)];
+    self.clockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(45 - 15, 15, 30, 30)];
     self.clockImageView.image = [UIImage imageNamed:@"clockImage"];
     [whiteTimeButton addSubview:self.clockImageView];
     
-    self.startTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 50, 90, 15)];
+    self.startTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 45, 90, 15)];
     self.startTimeLabel.text = @"Set start time?";
-    self.startTimeLabel.font = [FontProperties mediumFont:12.0f];
+    self.startTimeLabel.font = [FontProperties mediumFont:11.0f];
     self.startTimeLabel.textColor = RGB(178, 178, 178);
     self.startTimeLabel.textAlignment = NSTextAlignmentCenter;
     [whiteTimeButton addSubview:self.startTimeLabel];
     
+    self.startsAtLabel = [[UILabel alloc] initWithFrame:CGRectMake(45 - 20, 15, 40, 20)];
+    self.startsAtLabel.text = @"Starts at";
+    self.startsAtLabel.textAlignment = NSTextAlignmentCenter;
+    self.startsAtLabel.textColor = RGB(178, 178, 178);
+    self.startsAtLabel.font = [FontProperties mediumFont:11.0f];
+    self.startsAtLabel.hidden = YES;
+    [whiteTimeButton addSubview:self.startsAtLabel];
+    
+    self.realStartTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 35, 90, 10)];
+    self.realStartTimeLabel.textAlignment = NSTextAlignmentCenter;
+    self.realStartTimeLabel.textColor = [FontProperties getBlueColor];
+    self.realStartTimeLabel.font = [FontProperties mediumFont:13.0f];
+    self.realStartTimeLabel.hidden = YES;
+    [whiteTimeButton addSubview:self.realStartTimeLabel];
+    
     self.eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 64 + 90, [UIScreen mainScreen].bounds.size.width, self.view.frame.size.height - 64 - 90)];
     [self.view addSubview:self.eventDetails];
     
-    self.datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, self.eventDetails.frame.size.height - 250
-                                                                     , self.view.frame.size.width, 250)];
+    self.datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, self.eventDetails.frame.size.height - 216
+                                                                     , self.view.frame.size.width, 216)];
     self.datePicker.hidden = YES;
     self.datePicker.datePickerMode = UIDatePickerModeTime;
+    [self.datePicker addTarget:self action:@selector(changedTime) forControlEvents:UIControlEventValueChanged];
     [self.eventDetails addSubview:self.datePicker];
     
     self.privateSwitchView = [[PrivateSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 10, 240, 40)];
@@ -131,7 +147,17 @@
 
 - (void)timePressed {
     self.datePicker.hidden = NO;
+    self.clockImageView.hidden = YES;
+    self.startTimeLabel.hidden = YES;
+    self.startsAtLabel.hidden = NO;
+    self.realStartTimeLabel.hidden = NO;
     [self.whereAreYouGoingTextField endEditing:YES];
+}
+
+-(void)changedTime {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"hh:mm a"];
+    self.realStartTimeLabel.text  = [formatter stringFromDate:self.datePicker.date];
 }
 
 - (void)initializeNavigationItem {
