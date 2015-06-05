@@ -115,7 +115,6 @@
     self.fetchingProfilePictures = NO;
     [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
     [WGSpinnerView addDancingGToCenterView:self.view];
-    self.properties = WGProfile.currentUser.properties;
     __weak typeof(self) weakSelf = self;
     if (self.isSigningUp) return;
     self.isSigningUp = YES;
