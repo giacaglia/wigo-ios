@@ -119,6 +119,7 @@
     self.tableViewOfPeople.backgroundColor = UIColor.whiteColor;
     self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableViewOfPeople.showsVerticalScrollIndicator = NO;
+    self.tableViewOfPeople.showsHorizontalScrollIndicator = NO;
     [self.tableViewOfPeople registerClass:[ChatCell class] forCellReuseIdentifier:kChatCellName];
     self.tableViewOfPeople.contentOffset = CGPointMake(0, -44.0f);
     [self.view addSubview:self.tableViewOfPeople];
@@ -185,6 +186,7 @@
                 for(int i = 0; i < self.messages.count; i++) {
                     WGMessage *message = (WGMessage *)[self.messages objectAtIndex:i];
                     WGUser *user = message.otherUser;
+                    message.readDate = message.created;
                     if([user.id integerValue] == [userId integerValue]) {
                         chatUser = user;
                     }

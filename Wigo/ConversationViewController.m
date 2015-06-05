@@ -88,10 +88,6 @@ JSQMessagesBubbleImage *grayBubble;
     [self.navigationController.view addSubview:self.blueBannerView];
 }
 
--(void) textChanged:(id)sender {
-    if ([self.inputToolbar.contentView.textView.text hasSuffix:@"\n"] && self.inputToolbar.contentView.rightBarButtonItem.enabled) {
-    }
-}
 
 -(void) keyboardWillShow:(NSNotification *)notification {
     if (!self.viewForEmptyConversation) return;
@@ -309,11 +305,6 @@ JSQMessagesBubbleImage *grayBubble;
                                              selector:@selector(keyboardWillHide:)
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(textChanged:)
-                                                 name:UITextViewTextDidChangeNotification
-                                               object:nil];
 }
 
 - (void)addMessage:(NSNotification *)notification {
@@ -391,8 +382,9 @@ JSQMessagesBubbleImage *grayBubble;
             strongSelf.viewForEmptyConversation.hidden = NO;
         } else {
             strongSelf.viewForEmptyConversation.hidden = YES;
+            WGMessage *message = (WGMessage *)[strongSelf.messages objectAtIndex:(strongSelf.messages.count - 1)];
+            message.readDate = message.created;
         }
-        
         strongSelf.showLoadEarlierMessagesHeader = (strongSelf.messages.nextPage != nil);
         [strongSelf.collectionView reloadData];
         [strongSelf scrollToBottomAnimated:YES];
