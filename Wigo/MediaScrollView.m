@@ -310,6 +310,7 @@
         // if we've scrolled to a new cell, ensure the previous video player has stopped
         
         if(page != self.currentVideoIndex) {
+            [self.lastVideoCell.moviePlayer stop];
             [self.currentVideoCell.moviePlayer stop];
         }
         
