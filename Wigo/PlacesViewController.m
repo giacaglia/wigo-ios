@@ -1761,11 +1761,11 @@ BOOL firstTimeLoading;
         UITabBarController *tab = self.tabBarController;
         ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
         profileVc.user = WGProfile.currentUser;
+        [strongSelf registerForPushes];
     }];
 }
 
 -(void)registerForPushes {
-    
     UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
     UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes  categories:nil];
     [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
