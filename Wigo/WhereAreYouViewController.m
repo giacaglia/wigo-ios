@@ -47,7 +47,8 @@
     backgroundView.backgroundColor = UIColor.whiteColor;
     [self.view addSubview:backgroundView];
     
-    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 80 - 10, 80)];
+//    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(10, 0, self.view.frame.size.width - 80 - 10, 80)];
+    self.whereAreYouGoingTextField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
     self.whereAreYouGoingTextField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:@"Hawaiian Night @ Grey Lady" attributes:@{NSForegroundColorAttributeName:RGB(178, 178, 178)}];
     self.whereAreYouGoingTextField.font = [FontProperties openSansRegular:18.0f];
     self.whereAreYouGoingTextField.textAlignment = NSTextAlignmentCenter;
@@ -62,40 +63,40 @@
     [backgroundView addSubview:self.whereAreYouGoingTextField];
     [self.whereAreYouGoingTextField becomeFirstResponder];
     
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(self.whereAreYouGoingTextField.frame.size.width - 1, 10, 1, self.whereAreYouGoingTextField.frame.size.height - 20)];
-    lineView.backgroundColor = RGB(216, 216, 216);
-    [self.whereAreYouGoingTextField addSubview:lineView];
+//    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(self.whereAreYouGoingTextField.frame.size.width - 1, 10, 1, self.whereAreYouGoingTextField.frame.size.height - 20)];
+//    lineView.backgroundColor = RGB(216, 216, 216);
+//    [self.whereAreYouGoingTextField addSubview:lineView];
     
-    UIButton *whiteTimeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 80, 80)];
-    whiteTimeButton.backgroundColor = UIColor.whiteColor;
-    [whiteTimeButton addTarget:self action:@selector(timePressed) forControlEvents:UIControlEventTouchUpInside];
-    [backgroundView addSubview:whiteTimeButton];
-    
-    self.clockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(40 - 12.5, 15, 25, 25)];
-    self.clockImageView.image = [UIImage imageNamed:@"clockImage"];
-    [whiteTimeButton addSubview:self.clockImageView];
-    
-    self.startTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 45, 80, 15)];
-    self.startTimeLabel.text = @"Set start time?";
-    self.startTimeLabel.font = [FontProperties mediumFont:10.0f];
-    self.startTimeLabel.textColor = RGB(178, 178, 178);
-    self.startTimeLabel.textAlignment = NSTextAlignmentCenter;
-    [whiteTimeButton addSubview:self.startTimeLabel];
-    
-    self.startsAtLabel = [[UILabel alloc] initWithFrame:CGRectMake(40 - 20, 20, 40, 20)];
-    self.startsAtLabel.text = @"Starts at";
-    self.startsAtLabel.textAlignment = NSTextAlignmentCenter;
-    self.startsAtLabel.textColor = RGB(178, 178, 178);
-    self.startsAtLabel.font = [FontProperties mediumFont:11.0f];
-    self.startsAtLabel.hidden = YES;
-    [whiteTimeButton addSubview:self.startsAtLabel];
-    
-    self.realStartTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, 80, 10)];
-    self.realStartTimeLabel.textAlignment = NSTextAlignmentCenter;
-    self.realStartTimeLabel.textColor = [FontProperties getBlueColor];
-    self.realStartTimeLabel.font = [FontProperties mediumFont:13.0f];
-    self.realStartTimeLabel.hidden = YES;
-    [whiteTimeButton addSubview:self.realStartTimeLabel];
+//    UIButton *whiteTimeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 80, 0, 80, 80)];
+//    whiteTimeButton.backgroundColor = UIColor.whiteColor;
+//    [whiteTimeButton addTarget:self action:@selector(timePressed) forControlEvents:UIControlEventTouchUpInside];
+//    [backgroundView addSubview:whiteTimeButton];
+//    
+//    self.clockImageView = [[UIImageView alloc] initWithFrame:CGRectMake(40 - 12.5, 15, 25, 25)];
+//    self.clockImageView.image = [UIImage imageNamed:@"clockImage"];
+//    [whiteTimeButton addSubview:self.clockImageView];
+//    
+//    self.startTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 45, 80, 15)];
+//    self.startTimeLabel.text = @"Set start time?";
+//    self.startTimeLabel.font = [FontProperties mediumFont:10.0f];
+//    self.startTimeLabel.textColor = RGB(178, 178, 178);
+//    self.startTimeLabel.textAlignment = NSTextAlignmentCenter;
+//    [whiteTimeButton addSubview:self.startTimeLabel];
+//    
+//    self.startsAtLabel = [[UILabel alloc] initWithFrame:CGRectMake(40 - 20, 20, 40, 20)];
+//    self.startsAtLabel.text = @"Starts at";
+//    self.startsAtLabel.textAlignment = NSTextAlignmentCenter;
+//    self.startsAtLabel.textColor = RGB(178, 178, 178);
+//    self.startsAtLabel.font = [FontProperties mediumFont:11.0f];
+//    self.startsAtLabel.hidden = YES;
+//    [whiteTimeButton addSubview:self.startsAtLabel];
+//    
+//    self.realStartTimeLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, 80, 10)];
+//    self.realStartTimeLabel.textAlignment = NSTextAlignmentCenter;
+//    self.realStartTimeLabel.textColor = [FontProperties getBlueColor];
+//    self.realStartTimeLabel.font = [FontProperties mediumFont:13.0f];
+//    self.realStartTimeLabel.hidden = YES;
+//    [whiteTimeButton addSubview:self.realStartTimeLabel];
     
     self.eventDetails = [[UIView alloc] initWithFrame:CGRectMake(0, 64 + 90, [UIScreen mainScreen].bounds.size.width, self.view.frame.size.height - 64 - 90)];
     [self.view addSubview:self.eventDetails];
@@ -156,29 +157,29 @@
         self.eventDetails.frame = CGRectMake(0, 64 + 75, [UIScreen mainScreen].bounds.size.width, 30);
     }
     
-    self.wgSwitchView = [[WGSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 90, 240, 40)];
-    self.wgSwitchView.firstString = @"Today";
-    self.wgSwitchView.secondString = @"Future";
-    self.wgSwitchView.movingImageView.image = [UIImage imageNamed:@"calendarIcon"];
-    self.wgSwitchView.switchDelegate = self;
-    self.wgSwitchView.backgroundColor = UIColor.whiteColor;
-    [self.eventDetails addSubview:self.wgSwitchView];
-    
-    self.fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 170, self.view.frame.size.width, 250)];
-    self.fsCalendar.flow = FSCalendarFlowHorizontal;
-    self.fsCalendar.hidden = YES;
-    self.fsCalendar.delegate = self;
-    self.fsCalendar.backgroundColor = UIColor.whiteColor;
-    [self.eventDetails addSubview:self.fsCalendar];
-    
-    NSInteger maxDaysOut = 9;
-    self.fsCalendar.maxDate = [[NSDate date] dateByAddingTimeInterval:60.0*60.0*24.0*maxDaysOut];
-    
-    self.fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 140, self.view.frame.size.width, 30)];
-    self.fsCalendar.header = self.fsCalendarHeader;
-    self.fsCalendarHeader.hidden = YES;
-    self.fsCalendarHeader.backgroundColor = UIColor.whiteColor;
-    [self.eventDetails addSubview:self.fsCalendarHeader];
+//    self.wgSwitchView = [[WGSwitchView alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width/2 - 120, 90, 240, 40)];
+//    self.wgSwitchView.firstString = @"Today";
+//    self.wgSwitchView.secondString = @"Future";
+//    self.wgSwitchView.movingImageView.image = [UIImage imageNamed:@"calendarIcon"];
+//    self.wgSwitchView.switchDelegate = self;
+//    self.wgSwitchView.backgroundColor = UIColor.whiteColor;
+//    [self.eventDetails addSubview:self.wgSwitchView];
+//    
+//    self.fsCalendar = [[FSCalendar alloc] initWithFrame:CGRectMake(0, 170, self.view.frame.size.width, 250)];
+//    self.fsCalendar.flow = FSCalendarFlowHorizontal;
+//    self.fsCalendar.hidden = YES;
+//    self.fsCalendar.delegate = self;
+//    self.fsCalendar.backgroundColor = UIColor.whiteColor;
+//    [self.eventDetails addSubview:self.fsCalendar];
+//    
+//    NSInteger maxDaysOut = 9;
+//    self.fsCalendar.maxDate = [[NSDate date] dateByAddingTimeInterval:60.0*60.0*24.0*maxDaysOut];
+//    
+//    self.fsCalendarHeader = [[FSCalendarHeader alloc] initWithFrame:CGRectMake(0, 140, self.view.frame.size.width, 30)];
+//    self.fsCalendar.header = self.fsCalendarHeader;
+//    self.fsCalendarHeader.hidden = YES;
+//    self.fsCalendarHeader.backgroundColor = UIColor.whiteColor;
+//    [self.eventDetails addSubview:self.fsCalendarHeader];
 }
 
 - (void)cancelPressed {

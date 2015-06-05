@@ -79,15 +79,15 @@ BOOL firstTimeLoading;
     profileVc.user = [WGUser new];
     
     
-    UIButton *calButton = [[UIButton alloc] init];
-    [calButton setImage:[UIImage imageNamed:@"calendar"] forState:UIControlStateNormal];
-    [calButton addTarget:self
-                  action:@selector(toggleShowFutureEvents:)
-        forControlEvents:UIControlEventTouchUpInside];
-    [calButton sizeToFit];
-    
-    self.futureEventsButton = [[UIBarButtonItem alloc] init];
-    self.futureEventsButton.customView = calButton;
+//    UIButton *calButton = [[UIButton alloc] init];
+//    [calButton setImage:[UIImage imageNamed:@"calendar"] forState:UIControlStateNormal];
+//    [calButton addTarget:self
+//                  action:@selector(toggleShowFutureEvents:)
+//        forControlEvents:UIControlEventTouchUpInside];
+//    [calButton sizeToFit];
+//    
+//    self.futureEventsButton = [[UIBarButtonItem alloc] init];
+//    self.futureEventsButton.customView = calButton;
     
     self.showingFutureEvents = NO;
     
@@ -210,7 +210,8 @@ BOOL firstTimeLoading;
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:UIColor.whiteColor}];
     self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObject:UIColor.whiteColor forKey:NSForegroundColorAttributeName];
     self.tabBarController.navigationItem.leftBarButtonItem = nil;
-    self.tabBarController.navigationItem.rightBarButtonItem = self.futureEventsButton;
+    self.tabBarController.navigationItem.rightBarButtonItem = nil;
+//    self.tabBarController.navigationItem.rightBarButtonItem = self.futureEventsButton;
     self.tabBarController.navigationItem.titleView = self.toggleView;
     if (self.bostonLabel) return;
     
