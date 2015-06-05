@@ -1147,6 +1147,7 @@ BOOL firstTimeLoading;
 - (void)showConversationForEvent:(WGEvent *)event
                withEventMessages:(WGCollection *)eventMessages
                          atIndex:(int)index {
+    self.shouldReloadEvents = NO;
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     EventConversationViewController *conversationViewController = [sb instantiateViewControllerWithIdentifier: @"EventConversationViewController"];
     conversationViewController.event = event;
