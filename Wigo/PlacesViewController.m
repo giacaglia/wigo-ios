@@ -1506,7 +1506,7 @@ BOOL firstTimeLoading;
         }
         
         for (WGEvent *event in strongSelf.oldEvents) {
-            NSString *eventDate = [[event expires] deserialize];
+            NSString *eventDate = event.date.deserialize;
             if ([strongSelf.pastDays indexOfObject: eventDate] == NSNotFound) {
                 [strongSelf.pastDays addObject: eventDate];
                 [strongSelf.dayToEventObjArray setObject: [[NSMutableArray alloc] init] forKey: eventDate];
@@ -2129,13 +2129,13 @@ BOOL firstTimeLoading;
 
 - (void)setEvent:(WGEvent *)event {
     _event = event;
-    self.eventNameLabel.text = event.name;
+    self.eventNameLabel.text = _event.name;
     self.highlightsCollectionView.event = _event;
-    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ went (%@)", _event.numAttending, [event.created timeAgo]];
+    self.numberOfPeopleGoingLabel.text = [NSString stringWithFormat:@"%@ went (%@)", _event.numAttending, _event.date.timeAgo];
     self.eventPeopleScrollView.event = _event;
  
     dispatch_async(dispatch_get_main_queue(), ^{
-        if ([event isEvent2Lines]) {
+        if (event.isEvent2Lines) {
             self.eventNameLabel.frame = CGRectMake(15, 3, self.frame.size.width - 40, 50);
             self.numberOfPeopleGoingLabel.frame = CGRectMake(15, 53, self.frame.size.width, 20);
             self.lineView.frame = CGRectMake(15, 72 + 10, 85, 0.5);
