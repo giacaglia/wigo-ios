@@ -613,21 +613,20 @@
 }
 
 - (void)updateNumberOfVotesForMessage:(WGEventMessage *)eventMessage {
-    NSNumber *votedUpNumber = eventMessage.vote;
-    if (!votedUpNumber) {
-        eventMessage.vote = @1;
-        eventMessage.upVotes = @(eventMessage.upVotes.intValue + 1);
-        [eventMessage voteForEvent:self.event withHandler:^(BOOL success, NSError *error) {
-            if (error) {
-                [[WGError sharedInstance] logError:error forAction:WGActionPost];
-            }
-        }];
-        
-        if(eventMessage.upVotes.intValue > 0) {
-            self.voteInfoButton.hidden = NO;
+    if ([ eventMessage.vote isEqual:@1]) return;
+    eventMessage.vote = @1;
+    eventMessage.upVotes = @(eventMessage.upVotes.intValue + 1);
+    [eventMessage voteForEvent:self.event withHandler:^(BOOL success, NSError *error) {
+        if (error) {
+            [[WGError sharedInstance] logError:error forAction:WGActionPost];
         }
-        self.numberOfVotesLabel.text = [EventConversationViewController stringForLikes:[eventMessage.upVotes intValue]];
+    }];
+    
+    if(eventMessage.upVotes.intValue > 0) {
+        self.voteInfoButton.hidden = NO;
     }
+    self.numberOfVotesLabel.text = [EventConversationViewController stringForLikes:[eventMessage.upVotes intValue]];
+    
 }
 
 -(void) trashPressed {
