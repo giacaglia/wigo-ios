@@ -79,6 +79,7 @@ JSQMessagesBubbleImage *grayBubble;
 
 -(void) viewWillDisappear:(BOOL)animated {
     self.blueBannerView.hidden = YES;
+    WGProfile.currentUser.lastMessageRead = [NSDate date];
 }
 
 -(void) initializeBlueView {
@@ -280,7 +281,7 @@ JSQMessagesBubbleImage *grayBubble;
             return;
         }
         dispatch_async(dispatch_get_main_queue(), ^{
-            WGProfile.currentUser.lastMessageRead = newMessage.created;
+            newMessage.readDate = newMessage.created;
         });
     }];
     
