@@ -306,6 +306,13 @@
     
     if ((int)page < [self.pageViews count]) {
         
+        
+        // if we've scrolled to a new cell, ensure the previous video player has stopped
+        
+        if(page != self.currentVideoIndex) {
+            [self.currentVideoCell.moviePlayer stop];
+        }
+        
         id currentCell = [self.pageViews objectAtIndex:page];
         if([currentCell isKindOfClass:[VideoCell class]]) {
             
