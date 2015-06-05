@@ -251,7 +251,7 @@
     [WGApi get:[NSString stringWithFormat:@"events/%@/messages/meta/", self.id]
    withHandler:^(NSDictionary *jsonResponse, NSError *error) {
        __strong typeof(weakSelf) strongSelf = weakSelf;
-       if (error) {
+       if (error || jsonResponse == nil) {
            handler(NO, error);
            return;
        }

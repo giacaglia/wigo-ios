@@ -25,11 +25,9 @@
 @end
 
 #define kTapAllName @"tapAllName"
-//#define kSectionTapAllCell 0
+#define kSectionTapAllCell 0
 #define kTapCellName @"tapCellName"
-#define kSectionTapCell 0
-#define kTapNearbyFriendsCellName @"tapNearbyCellName"
-#define kSectionNearbyFriends 1
+#define kSectionTapCell 1
 #define kAllFriendsCellName @"allFriendsCellName"
 #define kSectionAllFriends 2
 #define kFollowCellName @"followCellName"
