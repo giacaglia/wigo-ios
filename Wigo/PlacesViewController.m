@@ -1110,6 +1110,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)presentUserAferModalView:(WGUser *)user forEvent:(WGEvent *)event withDelegate:(UIViewController *)vc {
+    self.shouldReloadEvents = NO;
     ProfileViewController *profileViewController = [self.storyboard instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     profileViewController.cardsDelegate = (EventPeopleModalViewController *)vc;
     profileViewController.user = user;
