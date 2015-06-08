@@ -862,7 +862,9 @@ BOOL firstTimeLoading;
 -(UITableViewCell *)tableView:(UITableView *)tableView
         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kTodaySection) {
-        if (self.events.count > 0 && indexPath.row == self.events.count - 1)  {
+        if (self.events.count > 0 &&
+            (indexPath.row == self.events.count - 1 ||
+            indexPath.row == self.events.count - 2))  {
             [self fetchEventsWithHandler:^(BOOL success, NSError *error) {}];
         }
         if (indexPath.row == self.events.count) {
@@ -1769,10 +1771,34 @@ BOOL firstTimeLoading;
 }
 
 -(void)registerForPushes {
-    UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:userNotificationTypes  categories:nil];
-    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        UIUserNotificationCategory *category = [self registerActions];
+        NSSet *categories = [NSSet setWithObjects:category, nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:categories]];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+    } else {
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+         (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+    }
+#else
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+#endif
+}
+
+- (UIMutableUserNotificationCategory*)registerActions {
+    UIMutableUserNotificationAction* acceptLeadAction = [[UIMutableUserNotificationAction alloc] init];
+    acceptLeadAction.identifier = @"tap_with_diff_event";
+    acceptLeadAction.title = @"Go Here";
+    acceptLeadAction.activationMode = UIUserNotificationActivationModeForeground;
+    acceptLeadAction.destructive = false;
+    acceptLeadAction.authenticationRequired = false;
+    
+    UIMutableUserNotificationCategory* category = [[UIMutableUserNotificationCategory alloc] init];
+    category.identifier = @"tap_with_diff_event";
+    [category setActions:@[acceptLeadAction] forContext: UIUserNotificationActionContextDefault];
+    return category;
 }
 
 
