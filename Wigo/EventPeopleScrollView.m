@@ -148,8 +148,7 @@
 
 
 - (void)fetchEventAttendeesAsynchronous {
-    if (self.fetchingEventAttendees) return;
-    if (!self.event.attendees.nextPage) return;
+    if (self.fetchingEventAttendees || !self.event.attendees.nextPage) return;
     self.fetchingEventAttendees = YES;
     __weak typeof(self) weakSelf = self;
     [self.event.attendees addNextPage:^(BOOL success, NSError *error) {
