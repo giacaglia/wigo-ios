@@ -88,6 +88,7 @@
 - (void)dealloc {
     NSLog(@"releasing media scroll view");
     
+    [self.sharedMoviePlayer stop];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -310,9 +311,10 @@
         // if we've scrolled to a new cell, ensure the previous video player has stopped
         
         if(page != self.currentVideoIndex) {
-            [self.lastVideoCell.moviePlayer stop];
-            [self.currentVideoCell.moviePlayer stop];
+            [self.sharedMoviePlayer stop];
         }
+        
+//        NSLog(@"shared video player load/playback state: %d / %d", (int)self.sharedMoviePlayer.loadState, (int)self.sharedMoviePlayer.playbackState);
         
         id currentCell = [self.pageViews objectAtIndex:page];
         if([currentCell isKindOfClass:[VideoCell class]]) {
