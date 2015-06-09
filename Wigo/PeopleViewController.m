@@ -14,6 +14,7 @@
 #import "MobileContactsViewController.h"
 #import <FBSDKShareKit/FBSDKShareKit.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import "SignViewController.h"
 #define kLastTimeAskedForToken @"facebook_token"
 
 @interface PeopleViewController () <FBSDKAppInviteDialogDelegate>
@@ -161,13 +162,18 @@ NSIndexPath *userIndex;
     }
     if (days <= 0) return;
     
-    if (![FBSDKAccessToken currentAccessToken])  {
-    
-    }
-    [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me/" parameters:nil]
-     startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-         if (error) return;
-     }];
+    [FBSDKAccessToken refreshCurrentAccessToken:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+        if (error && error.userInfo) {
+            if ([error.userInfo objectForKey:FBSDKGraphRequestErrorGraphErrorCode]) {
+                NSInteger errorCode = [error.userInfo[FBSDKGraphRequestErrorGraphErrorCode] integerValue];
+                if (errorCode == 190 || errorCode == 102) {
+                    [self presentViewController:[SignViewController new] animated:YES completion:nil];
+                    return;
+                }
+            }
+          
+        }
+    }];
 }
 
 - (void) goBack {

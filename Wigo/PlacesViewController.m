@@ -1752,6 +1752,9 @@ BOOL firstTimeLoading;
                 [strongSelf.signViewController reloadedUserInfo:NO andError:error];
                 return;
             }
+            else {
+                [strongSelf registerForPushes];
+            }
         }
         if (error) {
             [[WGError sharedInstance] logError:error forAction:WGActionLoad];
@@ -1766,7 +1769,6 @@ BOOL firstTimeLoading;
         UITabBarController *tab = self.tabBarController;
         ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
         profileVc.user = WGProfile.currentUser;
-        [strongSelf registerForPushes];
     }];
 }
 
