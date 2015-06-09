@@ -14,6 +14,7 @@
 #import "MobileContactsViewController.h"
 #import <FBSDKShareKit/FBSDKShareKit.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "SignViewController.h"
 #define kLastTimeAskedForToken @"facebook_token"
 
@@ -166,7 +167,9 @@ NSIndexPath *userIndex;
         if (error && error.userInfo) {
             if ([error.userInfo objectForKey:FBSDKGraphRequestErrorGraphErrorCode]) {
                 NSInteger errorCode = [error.userInfo[FBSDKGraphRequestErrorGraphErrorCode] integerValue];
-                if (errorCode == 190 || errorCode == 102) {
+                if (errorCode == 190 || errorCode == 102 || errorCode == 2500) {
+                    FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
+                    [loginManager logOut];
                     [self presentViewController:[SignViewController new] animated:YES completion:nil];
                     return;
                 }
