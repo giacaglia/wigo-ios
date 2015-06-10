@@ -888,7 +888,6 @@ BOOL firstTimeLoading;
             cell.privacyLockImageView.hidden = YES;
             cell.eventPeopleScrollView.hidden = YES;
             cell.highlightsCollectionView.placesDelegate = self;
-            cell.highlightsCollectionView.isPeeking = [self isPeeking];
             return cell;
         }
         WGEvent *event = [self getEventAtIndexPath:indexPath];
@@ -903,7 +902,6 @@ BOOL firstTimeLoading;
             cell.privacyLockButton.tag = indexPath.row;
             [cell.privacyLockButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
             cell.highlightsCollectionView.placesDelegate = self;
-            cell.highlightsCollectionView.isPeeking = [self isPeeking];
             if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
                 cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
             }
@@ -923,7 +921,6 @@ BOOL firstTimeLoading;
             cell.privacyLockButton.tag = indexPath.row;
             [cell.privacyLockButton addTarget:self action:@selector(privacyPressed:) forControlEvents:UIControlEventTouchUpInside];
             cell.highlightsCollectionView.placesDelegate = self;
-            cell.highlightsCollectionView.isPeeking = [self isPeeking];
             if (![self.eventOffsetDictionary objectForKey:[event.id stringValue]]) {
                 cell.eventPeopleScrollView.contentOffset = CGPointMake(0, 0);
             }

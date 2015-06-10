@@ -65,7 +65,6 @@
 
 - (void)collectionView:(UICollectionView *)collectionView
 didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == kAddPhotoSection && self.isPeeking) return;
     if (self.event.isExpired.boolValue) {
         [self.placesDelegate showConversationForEvent:self.event
                                     withEventMessages:self.event.messages
@@ -114,8 +113,6 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == kAddPhotoSection) {
         AddPhotoCell *addPhotoCell = [collectionView dequeueReusableCellWithReuseIdentifier:kAddPhotoCellName forIndexPath: indexPath];
-        if (self.isPeeking) addPhotoCell.alpha = 0.7f;
-        else addPhotoCell.alpha = 1.0f;
         return addPhotoCell;
     }
     HighlightCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:kHighlightCellName forIndexPath: indexPath];
