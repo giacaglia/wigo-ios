@@ -174,7 +174,10 @@ NSIndexPath *userIndex;
                     return;
                 }
             }
-          
+        }
+        else {
+            [WGProfile.currentUser setObject:FBSDKAccessToken.currentAccessToken.tokenString forKey:@"facebook_token"];
+            [WGProfile.currentUser save:^(BOOL success, NSError *error) {}];
         }
     }];
 }
