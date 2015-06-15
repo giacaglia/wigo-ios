@@ -237,12 +237,10 @@ NSIndexPath *userIndex;
         self.tableViewOfPeople.tableHeaderView = headerView;
         self.tableViewOfPeople.contentOffset = CGPointMake(0, 50);
     }
-    else if ([self.currentTab isEqual:@4]) {
-        self.tableViewOfPeople.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-    }
     else {
         self.tableViewOfPeople.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
     }
+    
     [self.view addSubview:self.tableViewOfPeople];
 }
 

@@ -76,8 +76,7 @@ BOOL firstTimeLoading;
     _isLocal = YES;
     UITabBarController *tab = self.tabBarController;
     ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
-    profileVc.user = [WGUser new];
-    
+    profileVc.user = [WGUser new];    
     
 //    UIButton *calButton = [[UIButton alloc] init];
 //    [calButton setImage:[UIImage imageNamed:@"calendar"] forState:UIControlStateNormal];
