@@ -396,6 +396,7 @@ BOOL firstTimeLoading;
 }
 
 - (void)setIsLocal:(BOOL)isLocal completion:(BoolResultBlock)handler {
+    self.fetchingEventAttendees = NO;
     WGProfile.isLocal = isLocal;
     _isLocal = isLocal;
     if (isLocal) {
