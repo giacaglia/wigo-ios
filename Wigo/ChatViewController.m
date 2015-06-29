@@ -114,7 +114,8 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
 - (void)initializeTableOfChats {
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.atlasListViewController = [ATLConversationListViewController conversationListViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
-    self.atlasListViewController.tableView.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20);
+    self.atlasListViewController.tableView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
+    self.atlasListViewController.view.backgroundColor = UIColor.whiteColor;
     self.atlasListViewController.displaysAvatarItem = YES;
     self.atlasListViewController.delegate = self;
     self.atlasListViewController.dataSource = self;
@@ -137,7 +138,8 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
 
 #pragma mark - ATLConversationListViewControllerDelegate
 
-- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController didSelectConversation:(LYRConversation *)conversation
+- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController
+                 didSelectConversation:(LYRConversation *)conversation
 {
     [self presentControllerWithConversation:conversation];
 }
@@ -186,7 +188,8 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
     return firstNamesString;
 }
 
-- (id<ATLAvatarItem>)conversationListViewController:(ATLConversationListViewController *)conversationListViewController avatarItemForConversation:(LYRConversation *)conversation {
+- (id<ATLAvatarItem>)conversationListViewController:(ATLConversationListViewController *)conversationListViewController
+                          avatarItemForConversation:(LYRConversation *)conversation {
     NSMutableSet *participantIdentifiers = [conversation.participants mutableCopy];
     [participantIdentifiers minusSet:[NSSet setWithObject:LayerHelper.defaultLyrClient.authenticatedUserID]];
     if (participantIdentifiers.count == 0) return WGProfile.currentUser;
@@ -196,7 +199,7 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
             return user;
         }
     }
-    return nil;
+    return WGProfile.currentUser;
 }
 
 - (id<ATLParticipant>)conversationViewController:(ATLConversationViewController *)conversationViewController
@@ -225,7 +228,18 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
 - (void)presentControllerWithConversation:(LYRConversation *)conversation
 {
     ConversationViewController *conversationViewController = [ConversationViewController conversationViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
+    NSMutableSet *participantIdentifiers = [conversation.participants mutableCopy];
+    [participantIdentifiers minusSet:[NSSet setWithObject:LayerHelper.defaultLyrClient.authenticatedUserID]];
+    WGUser *returnedUser;
+    if (participantIdentifiers.count == 0) returnedUser = WGProfile.currentUser;
+    for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
+        WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
+        if ([participantIdentifiers containsObject:user.id.stringValue]) {
+            returnedUser = user;
+        }
+    }
     conversationViewController.conversation = conversation;
+    conversationViewController.user = returnedUser;
     [self.navigationController pushViewController:conversationViewController animated:YES];
 }
 
