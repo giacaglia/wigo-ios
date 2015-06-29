@@ -12,7 +12,7 @@
 #import "Atlas.h"
 
 @interface ChatViewController : BaseViewController
-        <ATLConversationViewControllerDataSource, ATLConversationViewControllerDelegate, UITableViewDelegate, WGViewController>
+        <ATLConversationViewControllerDataSource, ATLConversationViewControllerDelegate, WGViewController>
 @property (nonatomic, strong) UITableView *tableViewOfPeople;
 @property (nonatomic, strong) WGCollection *messages;
 @property (nonatomic, assign) BOOL isFetching;

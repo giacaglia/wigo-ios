@@ -118,7 +118,8 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
     self.atlasListViewController.displaysAvatarItem = YES;
     self.atlasListViewController.delegate = self;
     self.atlasListViewController.dataSource = self;
-    [self.view addSubview:self.atlasListViewController.tableView];
+    [self addChildViewController:self.atlasListViewController];
+    [self.view addSubview:self.atlasListViewController.view];
 }
 
 #pragma mark WGViewController methods
