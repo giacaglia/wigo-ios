@@ -59,7 +59,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSString* image;
 @property NSDate* modified;
 
-@property NSString* lastName;
+@property (nonatomic, strong) NSString* lastName;
 @property NSNumber* isGoingOut;
 @property NSDate* lastMessageRead;
 @property NSDate* lastNotificationRead;
@@ -77,7 +77,7 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 @property NSArray* arrayTooltipTracked;
 @property NSDictionary* events;
 
-@property NSString* firstName;
+@property (nonatomic, strong) NSString* firstName;
 @property (nonatomic, assign) Gender gender;
 @property NSString* email;
 @property NSString* facebookId;
@@ -172,7 +172,6 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 -(void) block:(WGUser *)user withType:(NSString *)type andHandler:(BoolResultBlock)handler;
 -(void) goingOut:(BoolResultBlock)handler;
 -(void) goingToEvent:(WGEvent *)event withHandler:(BoolResultBlock)handler;
--(void) readConversation:(BoolResultBlock)handler;
 -(void) deleteConversation:(BoolResultBlock)handler;
 -(void) getConversation:(WGCollectionResultBlock)handler;
 -(void) refetchUserWithGroup:(NSNumber *)groupID andHandler:(BoolResultBlock)handler;

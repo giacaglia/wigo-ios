@@ -199,7 +199,26 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
         }
     }
     return nil;
-    
+}
+
+- (id<ATLParticipant>)conversationViewController:(ATLConversationViewController *)conversationViewController
+                        participantForIdentifier:(NSString *)participantIdentifier {
+    for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
+        WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
+        if ([participantIdentifier isEqualToString:user.id.stringValue]) {
+            return user;
+        }
+    }
+    return nil;
+}
+
+- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController
+                  attributedStringForDisplayOfDate:(NSDate *)date {
+    return [[NSAttributedString alloc] initWithString:@"2 weeks ago"];
+}
+
+- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController attributedStringForDisplayOfRecipientStatus:(NSDictionary *)recipientStatus {
+    return [[NSAttributedString alloc] initWithString:@"read"];
 }
 
 #pragma mark - Conversation Selection

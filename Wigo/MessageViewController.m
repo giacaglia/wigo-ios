@@ -201,6 +201,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     LYRConversation *conversation = [LayerHelper.defaultLyrClient newConversationWithParticipants:[NSSet setWithObjects:user.id.stringValue, nil] options:nil error:&error];
     ConversationViewController * conversationViewController = [ConversationViewController conversationViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
     conversationViewController.conversation = conversation;;
+    conversationViewController.user = user;
     [self.navigationController pushViewController:conversationViewController animated:YES];
 }
 
