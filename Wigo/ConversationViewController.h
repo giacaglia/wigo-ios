@@ -9,15 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "Delegate.h"
 #import "WGUser.h"
+#import <LayerKit/LayerKit.h>
+#import "Atlas.h"
 
-@interface ConversationViewController : JSQMessagesViewController <JSQMessagesCollectionViewDataSource, JSQMessagesCollectionViewDelegateFlowLayout>
+@interface ConversationViewController : ATLConversationViewController <ATLConversationViewControllerDataSource, ATLConversationViewControllerDelegate>
 
 @property (weak, nonatomic) UIBarButtonItem *sidebarButton;
 - (id)initWithUser: (WGUser *)user;
-@property (nonatomic, strong) WGCollection *messages;
+@property (nonatomic, strong) LYRConversation *conversation;
+@property (nonatomic, strong) NSOrderedSet *messages;
 @property (nonatomic, strong) UIView *viewForEmptyConversation;
 @property (nonatomic, assign) BOOL isFetching;
 @property (nonatomic, assign) BOOL hideNavBar;
 @property (nonatomic, strong) UIView *blueBannerView;
+@property (nonatomic, strong) WGUser *user;
 
 @end

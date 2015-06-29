@@ -18,6 +18,8 @@
 @property (nonatomic,strong) NSString *chatIdToOpen;
 @end
 
+NSString *const ATLMConversationMetadataNameKey = @"conversationName";
+
 
 @implementation ChatViewController
 
@@ -28,8 +30,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchMessages) name:@"fetchMessages" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scrollUp) name:@"scrollUp" object:nil];
     self.messages = NetworkFetcher.defaultGetter.messages;
-    self.attendingEvent = [[WGEvent alloc] initWithJSON:@{@"id": @604231511195609600,
-                                    @"name": @"Wigo Supernova Launch Party @ Society on High"}];
+//    self.attendingEvent = [[WGEvent alloc] initWithJSON:@{@"id": @604231511195609600,
+//                                    @"name": @"Wigo Supernova Launch Party @ Society on High"}];
     [self initializeTableOfChats];
     [self initializeNewChatView];
     self.collectionUsers = [[WGCollection alloc] initWithType:[WGUser class]];
@@ -39,8 +41,8 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.lastMessageRead = WGProfile.currentUser.lastMessageRead;
-    if (!self.messages) [WGSpinnerView addDancingGToCenterView:self.view];
-    [self fetchMessages];
+//    if (!self.messages) [WGSpinnerView addDancingGToCenterView:self.view];
+//    [self fetchMessages];
     [self initializeTitleView];
     [self initializeRightBarButtonItem];
 }
@@ -113,16 +115,12 @@
 
 - (void)initializeTableOfChats {
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.tableViewOfPeople = [[UITableView alloc] initWithFrame:CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20 - 44)];
-    self.tableViewOfPeople.delegate = self;
-    self.tableViewOfPeople.dataSource = self;
-    self.tableViewOfPeople.backgroundColor = UIColor.whiteColor;
-    self.tableViewOfPeople.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
-    self.tableViewOfPeople.showsVerticalScrollIndicator = NO;
-    self.tableViewOfPeople.showsHorizontalScrollIndicator = NO;
-    [self.tableViewOfPeople registerClass:[ChatCell class] forCellReuseIdentifier:kChatCellName];
-    self.tableViewOfPeople.contentOffset = CGPointMake(0, -44.0f);
-    [self.view addSubview:self.tableViewOfPeople];
+    self.atlasListViewController = [ATLConversationListViewController conversationListViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
+    self.atlasListViewController.tableView.frame = CGRectMake(0, 20, self.view.frame.size.width, self.view.frame.size.height - 20);
+    self.atlasListViewController.displaysAvatarItem = YES;
+    self.atlasListViewController.delegate = self;
+    self.atlasListViewController.dataSource = self;
+    [self.view addSubview:self.atlasListViewController.tableView];
     [self addRefreshToTableView];
 }
 
@@ -137,6 +135,82 @@
             self.chatIdToOpen = chatId;
         }
     }
+}
+
+#pragma mark - ATLConversationListViewControllerDelegate
+
+- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController didSelectConversation:(LYRConversation *)conversation
+{
+    [self presentControllerWithConversation:conversation];
+}
+
+- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController didDeleteConversation:(LYRConversation *)conversation deletionMode:(LYRDeletionMode)deletionMode
+{
+    NSLog(@"Conversation Successfully Deleted");
+}
+
+- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController didFailDeletingConversation:(LYRConversation *)conversation deletionMode:(LYRDeletionMode)deletionMode error:(NSError *)error
+{
+    NSLog(@"Conversation Deletion Failed with Error: %@", error);
+}
+
+
+- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController didSearchForText:(NSString *)searchText completion:(void (^)(NSSet *))completion
+{
+    completion([NSSet new]);
+    //    [self.participantDataSource participantsMatchingSearchText:searchText completion:^(NSSet *participants) {
+    //        completion(participants);
+    //    }];
+}
+
+#pragma mark - ATLConversationListViewControllerDataSource
+
+- (NSString *)conversationListViewController:(ATLConversationListViewController *)conversationListViewController titleForConversation:(LYRConversation *)conversation
+{
+    // If we have a Conversation name in metadata, return it.
+    NSString *conversationTitle = conversation.metadata[ATLMConversationMetadataNameKey];
+    if (conversationTitle.length) {
+        return conversationTitle;
+    }
+    
+    NSMutableSet *participantIdentifiers = [conversation.participants mutableCopy];
+    [participantIdentifiers minusSet:[NSSet setWithObject:LayerHelper.defaultLyrClient.authenticatedUserID]];
+    if (participantIdentifiers.count == 0) return @"Personal Conversation";
+    NSMutableArray *firstNames = [NSMutableArray new];
+    for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
+        WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
+        if ([participantIdentifiers containsObject:user.id.stringValue]) {
+            [firstNames addObject:user.firstName];
+        }
+    }
+    NSString *firstNamesString = [firstNames componentsJoinedByString:@", "];
+    if (firstNamesString.length == 0) return WGProfile.currentUser.firstName;
+    return firstNamesString;
+}
+
+- (id<ATLAvatarItem>)conversationListViewController:(ATLConversationListViewController *)conversationListViewController avatarItemForConversation:(LYRConversation *)conversation {
+    NSMutableSet *participantIdentifiers = [conversation.participants mutableCopy];
+    [participantIdentifiers minusSet:[NSSet setWithObject:LayerHelper.defaultLyrClient.authenticatedUserID]];
+    if (participantIdentifiers.count == 0) return WGProfile.currentUser;
+    for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
+        WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
+        if ([participantIdentifiers containsObject:user.id.stringValue]) {
+            return user;
+        }
+    }
+    return nil;
+    
+}
+
+#pragma mark - Conversation Selection
+
+// The following method handles presenting the correct `ATLMConversationViewController`, regardeless of the current state of the navigation stack.
+- (void)presentControllerWithConversation:(LYRConversation *)conversation
+{
+    
+//    ConversationViewController *conversationViewController = [ConversationViewController conversationViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
+//    conversationViewController.conversation = conversation;
+//    [self.navigationController pushViewController:conversationViewController animated:YES];
 }
 
 #pragma mark - RefreshTableView 
@@ -222,81 +296,6 @@
     }];
 }
 
-
-#pragma mark - Tablew View Data Source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//    return 2;
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    if (section == kSectionEventChat) return 1;
-    return self.messages.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ChatCell *cell = [tableView dequeueReusableCellWithIdentifier:kChatCellName forIndexPath:indexPath];
-//    if (indexPath.section == kSectionEventChat) {
-//        [cell.profileImageView setSmallImageForUsers:self.collectionUsers];
-//        cell.nameLabel.text = self.attendingEvent.name;
-//        cell.lastMessageLabel.textColor = RGB(208, 208, 208);
-//        cell.lastMessageLabel.text = @"Wigonna work";
-//        return cell;
-//    }
-    if (indexPath.row == self.messages.count - 1) [self fetchNextPage];
-    if (self.messages.count  == 0) return cell;
-    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.row];
-    
-    if (WGProfile.currentUser.lastMessageRead &&
-        ([message.created compare:WGProfile.currentUser.lastMessageRead] == NSOrderedAscending ||
-        [message.created compare:WGProfile.currentUser.lastMessageRead] == NSOrderedSame)
-        ) {
-        cell.orangeNewView.hidden = YES;
-    }
-    else {
-        cell.orangeNewView.hidden = NO;
-    }
-    if (indexPath.row == 2) [self.collectionUsers addObject:message.otherUser];
-    if (indexPath.row == 3) [self.collectionUsers addObject:message.otherUser];
-    cell.message = message;
-    return cell;
-}
-
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return [ChatCell height];
-}
-
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
-}
-
-#pragma mark - Table View Delegate
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if (indexPath.section == kSectionEventChat) {
-//        GroupConversationViewController *groupChatVC = [GroupConversationViewController new];
-//        
-//        groupChatVC.event = self.attendingEvent;
-//        [self.navigationController pushViewController:groupChatVC animated:YES];
-//        return;
-//    }
-    if (self.messages.count == 0) return;
-    
-    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
-    message.readDate = message.created;
-    WGUser *user = message.otherUser;
-    [self.navigationController pushViewController:[[ConversationViewController alloc] initWithUser:user] animated:YES];
-}
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        WGMessage *message = (WGMessage *)[self.messages objectAtIndex:[indexPath row]];
-        [self deleteConversationAsynchronusly:message];
-        [self.messages removeObjectAtIndex:[indexPath row]];
-        [tableView reloadData];
-    }
-}
 
 @end
 

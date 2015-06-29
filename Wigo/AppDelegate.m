@@ -23,6 +23,7 @@
 #import "ProfileViewController.h"
 #import "NetworkFetcher.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import "LayerHelper.h"
 
 #define kImageQuality @"quality"
 #define kImageMultiple @"multiple"
@@ -68,6 +69,7 @@ NSDate *firstLoggedTime;
     [self logFirstTimeLoading];
     [WGI openedTheApp];
     
+    [LayerHelper.defaultLyrClient connectWithCompletion:^(BOOL success, NSError *error) {}];
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                     didFinishLaunchingWithOptions:launchOptions];
 }

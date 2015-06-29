@@ -35,6 +35,7 @@
 #import "WGFollow.h"
 #import "NetworkFetcher.h"
 #import "TabBarAuxiliar.h"
+#import "LayerHelper.h"
 
 #if !defined(StringOrEmpty)
 #define StringOrEmpty(A)  ({ __typeof__(A) __a = (A); __a ? __a : @""; })

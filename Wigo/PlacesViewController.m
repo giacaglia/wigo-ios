@@ -31,6 +31,7 @@
 #import "AppDelegate.h"
 #import "WGDateSelectionView.h"
 
+
 #define kEventCellName @"EventCell"
 #define kOneLineEventCellName @"OneLineEventCell"
 #define kTwoLineEventCellName @"TwoLineEventCell"
@@ -426,6 +427,21 @@ BOOL firstTimeLoading;
                        
                    }];
 }
+
+-(void)authenticateUser {
+    [LayerHelper.defaultLyrClient requestAuthenticationNonceWithCompletion:^(NSString *nonce, NSError *error) {
+        if (error) return;
+        [WGApi post:@"vendor/layer/token" withArguments:@{} andParameters:@{@"nonce": nonce}  andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+            NSString *authentication = jsonResponse[@"token"];
+            [LayerHelper.defaultLyrClient authenticateWithIdentityToken:authentication completion:^(NSString *authenticatedUserID, NSError *error) {
+                if (authenticatedUserID) {
+                    NSLog(@"Authenticated as User: %@", authenticatedUserID);
+                }
+            }];
+        }];
+    }];
+}
+
 
 - (void)setShowFutureEvents:(BOOL)showFutureEvents completion:(BoolResultBlock)handler {
     
@@ -1766,6 +1782,7 @@ BOOL firstTimeLoading;
         UITabBarController *tab = self.tabBarController;
         ProfileViewController *profileVc = (ProfileViewController *)[tab.viewControllers objectAtIndex:4];
         profileVc.user = WGProfile.currentUser;
+        [strongSelf authenticateUser];
     }];
 }
 

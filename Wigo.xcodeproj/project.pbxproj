@@ -243,6 +243,8 @@
 		88F4C8E11B419852003794B3 /* plus@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88F4C8BB1B419852003794B3 /* plus@3x.png */; };
 		88F4C8E41B419B55003794B3 /* LayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88F4C8E31B419B55003794B3 /* LayerKit.framework */; };
 		88F4C8E51B419B55003794B3 /* LayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88F4C8E31B419B55003794B3 /* LayerKit.framework */; };
+		88F4C8E81B41A137003794B3 /* LayerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F4C8E71B41A137003794B3 /* LayerHelper.m */; };
+		88F4C8E91B41A137003794B3 /* LayerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F4C8E71B41A137003794B3 /* LayerHelper.m */; };
 		9C1FD84E1B1EA86F0070005B /* WGDateSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C1FD84D1B1EA86F0070005B /* WGDateSelectionView.m */; };
 		9C1FD84F1B1EA86F0070005B /* WGDateSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C1FD84D1B1EA86F0070005B /* WGDateSelectionView.m */; };
 		9C531A671AF16BDF0004F264 /* WGCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C9D66F01AE98E4200180958 /* WGCameraViewController.m */; };
@@ -901,6 +903,8 @@
 		88F4C8BA1B419852003794B3 /* plus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "plus@2x.png"; sourceTree = "<group>"; };
 		88F4C8BB1B419852003794B3 /* plus@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "plus@3x.png"; sourceTree = "<group>"; };
 		88F4C8E31B419B55003794B3 /* LayerKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = LayerKit.framework; sourceTree = "<group>"; };
+		88F4C8E61B41A136003794B3 /* LayerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayerHelper.h; sourceTree = "<group>"; };
+		88F4C8E71B41A137003794B3 /* LayerHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LayerHelper.m; sourceTree = "<group>"; };
 		9C1FD84C1B1EA86F0070005B /* WGDateSelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGDateSelectionView.h; sourceTree = "<group>"; };
 		9C1FD84D1B1EA86F0070005B /* WGDateSelectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGDateSelectionView.m; sourceTree = "<group>"; };
 		9C9D66EF1AE98E4200180958 /* WGCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGCameraViewController.h; sourceTree = "<group>"; };
@@ -2042,6 +2046,8 @@
 				E9681C6D194F7C2B00182E0E /* Font */,
 				E9CD47151948E41A00AEA17D /* ViewExtensions */,
 				C12A11021978788000D53B1C /* Categories */,
+				88F4C8E61B41A136003794B3 /* LayerHelper.h */,
+				88F4C8E71B41A137003794B3 /* LayerHelper.m */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -2983,6 +2989,7 @@
 				45D9FAAB1A781AFD00D08577 /* JSQMessagesAvatarImageFactory.m in Sources */,
 				C12A113419787BE700D53B1C /* ChatViewController.m in Sources */,
 				88F4C86D1B41983F003794B3 /* ATLTypingIndicatorViewController.m in Sources */,
+				88F4C8E91B41A137003794B3 /* LayerHelper.m in Sources */,
 				E9ACCA2519C4CBFB00F3EB20 /* MobileContactsViewController.m in Sources */,
 				C14AB1BE1A8017670011C4E5 /* UIImage+Resize.m in Sources */,
 				C12A113519787BE700D53B1C /* UIButton+WebCache.m in Sources */,
@@ -3053,6 +3060,7 @@
 				E900C2C01961EADE00A01F50 /* UIImage+MultiFormat.m in Sources */,
 				45DF86B31A5C5DEB00DB85AE /* AFURLResponseSerialization.m in Sources */,
 				454409581A537F1C00BB3036 /* WGMessage.m in Sources */,
+				88F4C8E81B41A137003794B3 /* LayerHelper.m in Sources */,
 				E921D6221923967D00361247 /* main.m in Sources */,
 				E9A765931AC2005A00F7C016 /* WGI.m in Sources */,
 				E9096D5F1ADD5F1100386AC2 /* NSDate+FSExtension.m in Sources */,

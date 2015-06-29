@@ -10,18 +10,7 @@
 #import "Globals.h"
 #import "UIButtonAligned.h"
 #import "ProfileViewController.h"
-#import "WGUserParser.h"
 #define kTimeDifferenceToShowDate 1800 // 30 minutes
-
-@interface ConversationViewController ()
-
-@property WGUser *user;
-
-@end
-
-JSQMessagesBubbleImageFactory *bubbleFactory;
-JSQMessagesBubbleImage *orangeBubble;
-JSQMessagesBubbleImage *grayBubble;
 
 @implementation ConversationViewController
 
@@ -37,21 +26,13 @@ JSQMessagesBubbleImage *grayBubble;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.dataSource = self;
+    self.delegate = self;
     self.view.backgroundColor = UIColor.whiteColor;
-    [self initializeMessageForEmptyConversation];
     
-    bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
-    orangeBubble = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
-    grayBubble = [bubbleFactory outgoingMessagesBubbleImageWithColor:[FontProperties getBlueColor]];
-    [self initializeNotificationObservers];
     [self initializeLeftBarButton];
     [self initializeRightBarButton];
     [self initializeBlueView];
-    
-    self.showLoadEarlierMessagesHeader = NO;
-    self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeZero;
-    self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
-    self.automaticallyScrollsToMostRecentMessage = YES;
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -64,15 +45,13 @@ JSQMessagesBubbleImage *grayBubble;
     self.navigationController.navigationBar.barTintColor = UIColor.whiteColor;
     self.blueBannerView.hidden = NO;
     
-    [WGSpinnerView addDancingGToCenterView:self.view];
-    [self fetchFirstPageMessages];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
     [self.navigationController.navigationBar setBackgroundImage:[[FontProperties getBlueColor] imageFromColor] forBarMetrics:UIBarMetricsDefault];
-
+    
     [WGAnalytics tagEvent:@"Conversation View"];
     [WGAnalytics tagView:@"conversation" withTargetUser:nil];
 }
@@ -109,14 +88,6 @@ JSQMessagesBubbleImage *grayBubble;
      }];
 }
 
-- (NSString *)senderDisplayName {
-    return WGProfile.currentUser.fullName;
-}
-
-- (NSString *)senderId {
-    return [NSString stringWithFormat:@"%@", WGProfile.currentUser.id];
-}
-
 - (void) initializeLeftBarButton {
     UIButtonAligned *barBt = [[UIButtonAligned alloc] initWithFrame:CGRectMake(0, 0, 65, 44) andType:@0];
     [barBt setImage:[UIImage imageNamed:@"whiteBackIcon"] forState:UIControlStateNormal];
@@ -127,7 +98,6 @@ JSQMessagesBubbleImage *grayBubble;
     UIBarButtonItem *barItem =  [[UIBarButtonItem alloc]init];
     [barItem setCustomView:barBt];
     self.navigationItem.leftBarButtonItem = barItem;
-    self.inputToolbar.contentView.leftBarButtonItem = nil;
 }
 
 - (void) initializeRightBarButton {
@@ -146,108 +116,10 @@ JSQMessagesBubbleImage *grayBubble;
     self.navigationItem.rightBarButtonItem = profileBarButton;
 }
 
-- (id<JSQMessageData>)collectionView:(JSQMessagesCollectionView *)collectionView messageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return (WGMessage *)[self.messages objectAtIndex:indexPath.item];
-}
-
-- (id<JSQMessageAvatarImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView avatarImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return nil;
-}
-
-- (id<JSQMessageBubbleImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView messageBubbleImageDataForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
-    
-    if ([message.senderId isEqualToString:self.senderId]) {
-        return grayBubble;
-    }
-    
-    return orangeBubble;
-}
-
-- (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath {
-    
-    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
-    if (indexPath.item == 0) {
-        return [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.created];
-    }
-    WGMessage *previousMessage = (WGMessage *)[self.messages objectAtIndex:indexPath.item - 1];
-    if (previousMessage && [message.created timeIntervalSinceDate:previousMessage.created] > kTimeDifferenceToShowDate) {
-        return [[JSQMessagesTimestampFormatter sharedFormatter] attributedTimestampForDate:message.created];
-    }
-    
-    return nil;
-}
-
-- (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForMessageBubbleTopLabelAtIndexPath:(NSIndexPath *)indexPath {
-    return nil;
-}
-
-- (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForCellBottomLabelAtIndexPath:(NSIndexPath *)indexPath {
-    return nil;
-}
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return self.messages.count;
-}
-
-- (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    /**
-     *  Override point for customizing cells
-     */
-    JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
-    
-    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
-    
-    if (!message.isMediaMessage) {
-
-        if ([message.senderId isEqualToString:self.senderId]) {
-            cell.textView.textColor = UIColor.whiteColor;
-        }
-        else {
-            cell.textView.textColor = UIColor.blackColor;
-        }
-        
-        cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,
-                                              NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle | NSUnderlinePatternSolid) };
-    }
-    
-    return cell;
-}
-
-- (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
-                   layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath {
-    WGMessage *message = (WGMessage *)[self.messages objectAtIndex:indexPath.item];
-    if (indexPath.item == 0) {
-        return kJSQMessagesCollectionViewCellLabelHeightDefault;
-    }
-    WGMessage *previousMessage = (WGMessage *)[self.messages objectAtIndex:indexPath.item - 1];
-    if (previousMessage && [message.created timeIntervalSinceDate:previousMessage.created] > kTimeDifferenceToShowDate) {
-        return kJSQMessagesCollectionViewCellLabelHeightDefault;
-    }
-    
-    return 0.0f;
-}
-
-- (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
-                   layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForMessageBubbleTopLabelAtIndexPath:(NSIndexPath *)indexPath {
-    return 0.0f;
-}
-
-- (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
-                   layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForCellBottomLabelAtIndexPath:(NSIndexPath *)indexPath {
-    return 0.0f;
-}
-
-- (void)collectionView:(JSQMessagesCollectionView *)collectionView
-                header:(JSQMessagesLoadEarlierHeaderView *)headerView didTapLoadEarlierMessagesButton:(UIButton *)sender {
-    
-    [self fetchMessages:NO];
-}
 
 - (void) goBack {
     self.navigationController.navigationBarHidden = self.hideNavBar;
-
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -255,169 +127,222 @@ JSQMessagesBubbleImage *grayBubble;
     ProfileViewController* profileViewController = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier: @"ProfileViewController"];
     self.user.isFriend = @YES;
     profileViewController.user = self.user;
-        
+    
     [self.navigationController pushViewController:profileViewController animated:YES];
 }
 
--(void) didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date {
-    WGMessage *message = [[WGMessage alloc] init];
-    message.message = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    message.created = date;
-    message.toUser = self.user;
-    message.user = WGProfile.currentUser;
-    [WGAnalytics tagAction:@"message_sent"
-                    atView:@"conversation"
-             andTargetUser:self.user
-                   atEvent:nil
-           andEventMessage: nil];
-    message.readDate = message.created;
-    [message sendMessage:^(WGMessage *newMessage, NSError *error) {
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionPost];
-            return;
+
+#pragma mark - ATLConversationViewControllerDataSource
+
+typedef NS_ENUM(NSInteger, ATLMDateProximity) {
+    ATLMDateProximityToday,
+    ATLMDateProximityYesterday,
+    ATLMDateProximityWeek,
+    ATLMDateProximityYear,
+    ATLMDateProximityOther,
+};
+
+static ATLMDateProximity ATLMProximityToDate(NSDate *date)
+{
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDate *now = [NSDate date];
+    NSCalendarUnit calendarUnits = NSEraCalendarUnit | NSYearCalendarUnit | NSWeekOfMonthCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit;
+    NSDateComponents *dateComponents = [calendar components:calendarUnits fromDate:date];
+    NSDateComponents *todayComponents = [calendar components:calendarUnits fromDate:now];
+    if (dateComponents.day == todayComponents.day &&
+        dateComponents.month == todayComponents.month &&
+        dateComponents.year == todayComponents.year &&
+        dateComponents.era == todayComponents.era) {
+        return ATLMDateProximityToday;
+    }
+    
+    NSDateComponents *componentsToYesterday = [NSDateComponents new];
+    componentsToYesterday.day = -1;
+    NSDate *yesterday = [calendar dateByAddingComponents:componentsToYesterday toDate:now options:0];
+    NSDateComponents *yesterdayComponents = [calendar components:calendarUnits fromDate:yesterday];
+    if (dateComponents.day == yesterdayComponents.day &&
+        dateComponents.month == yesterdayComponents.month &&
+        dateComponents.year == yesterdayComponents.year &&
+        dateComponents.era == yesterdayComponents.era) {
+        return ATLMDateProximityYesterday;
+    }
+    
+    if (dateComponents.weekOfMonth == todayComponents.weekOfMonth &&
+        dateComponents.month == todayComponents.month &&
+        dateComponents.year == todayComponents.year &&
+        dateComponents.era == todayComponents.era) {
+        return ATLMDateProximityWeek;
+    }
+    
+    if (dateComponents.year == todayComponents.year &&
+        dateComponents.era == todayComponents.era) {
+        return ATLMDateProximityYear;
+    }
+    
+    return ATLMDateProximityOther;
+}
+
+static NSDateFormatter *ATLMShortTimeFormatter()
+{
+    static NSDateFormatter *dateFormatter;
+    if (!dateFormatter) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.timeStyle = NSDateFormatterShortStyle;
+    }
+    return dateFormatter;
+}
+
+static NSDateFormatter *ATLMDayOfWeekDateFormatter()
+{
+    static NSDateFormatter *dateFormatter;
+    if (!dateFormatter) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.dateFormat = @"EEEE"; // Tuesday
+    }
+    return dateFormatter;
+}
+
+static NSDateFormatter *ATLMRelativeDateFormatter()
+{
+    static NSDateFormatter *dateFormatter;
+    if (!dateFormatter) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.dateStyle = NSDateFormatterMediumStyle;
+        dateFormatter.doesRelativeDateFormatting = YES;
+    }
+    return dateFormatter;
+}
+
+static NSDateFormatter *ATLMThisYearDateFormatter()
+{
+    static NSDateFormatter *dateFormatter;
+    if (!dateFormatter) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.dateFormat = @"E, MMM dd,"; // Sat, Nov 29,
+    }
+    return dateFormatter;
+}
+
+static NSDateFormatter *ATLMDefaultDateFormatter()
+{
+    static NSDateFormatter *dateFormatter;
+    if (!dateFormatter) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.dateFormat = @"MMM dd, yyyy,"; // Nov 29, 2013,
+    }
+    return dateFormatter;
+}
+
+- (id<ATLParticipant>)conversationViewController:(ATLConversationViewController *)conversationViewController participantForIdentifier:(NSString *)participantIdentifier
+{
+    if (participantIdentifier) {
+        for (WGUser *user in NetworkFetcher.defaultGetter.allUsers) {
+            if ([participantIdentifier isEqual:user.id.stringValue]) {
+                return user;
+            }
         }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            newMessage.readDate = newMessage.created;
-        });
-    }];
-    
-    [self updateLastMessagesRead:message];
-    self.viewForEmptyConversation.alpha = 0.0f;
-    
-    self.inputToolbar.contentView.textView.text = @"";
-    self.inputToolbar.contentView.rightBarButtonItem.enabled = NO;
-    message.id = [NSNumber numberWithInt:(arc4random() % 500000) + 1];
-    [self.messages addObject:message];
-    [self finishReceivingMessageAnimated:YES];
+    }
+    return nil;
 }
 
-- (void) initializeNotificationObservers {
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(fetchFirstPageMessages)
-                                                 name:@"updateConversation"
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
+
+- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController attributedStringForDisplayOfDate:(NSDate *)date {
+    NSDateFormatter *dateFormatter;
+    ATLMDateProximity dateProximity = ATLMProximityToDate(date);
+    switch (dateProximity) {
+        case ATLMDateProximityToday:
+        case ATLMDateProximityYesterday:
+            dateFormatter = ATLMRelativeDateFormatter();
+            break;
+        case ATLMDateProximityWeek:
+            dateFormatter = ATLMDayOfWeekDateFormatter();
+            break;
+        case ATLMDateProximityYear:
+            dateFormatter = ATLMThisYearDateFormatter();
+            break;
+        case ATLMDateProximityOther:
+            dateFormatter = ATLMDefaultDateFormatter();
+            break;
+    }
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
+    NSString *dateString = [dateFormatter stringFromDate:date];
+    NSString *timeString = [ATLMShortTimeFormatter() stringFromDate:date];
+    
+    NSMutableAttributedString *dateAttributedString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@", dateString, timeString]];
+    [dateAttributedString addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(0, dateAttributedString.length)];
+    [dateAttributedString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:11] range:NSMakeRange(0, dateAttributedString.length)];
+    [dateAttributedString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:11] range:NSMakeRange(0, dateString.length)];
+    return dateAttributedString;
 }
 
-- (void)addMessage:(NSNotification *)notification {
-    NSDictionary *aps = [notification.userInfo objectForKey:@"aps"];
-    NSDictionary *alert = [aps objectForKey:@"alert"];
-    if (![alert isKindOfClass:[NSDictionary class]]) {
-        return;
+- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController attributedStringForDisplayOfRecipientStatus:(NSDictionary *)recipientStatus {
+    NSMutableDictionary *mutableRecipientStatus = [recipientStatus mutableCopy];
+    if ([mutableRecipientStatus valueForKey:LayerHelper.defaultLyrClient.authenticatedUserID]) {
+        [mutableRecipientStatus removeObjectForKey:LayerHelper.defaultLyrClient.authenticatedUserID];
     }
-    NSString *locKeyString = [alert objectForKey:@"loc-key"];
-    if (![locKeyString isEqualToString:@"M"]) {
-        return;
-    }
-    NSArray *locArgs = [alert objectForKey:@"loc-args"];
-    if ([locArgs count] < 2) {
-        return;
-    }
-    // NSString *fromFullName = locArgs[0];
-    NSString *messageString = locArgs[1];
     
-    NSNumber *messageID = [[notification userInfo] objectForKey:@"id"];
-    
-    NSDictionary *fromUser = [[notification userInfo] objectForKey:@"from_user"];
-    if (![fromUser isKindOfClass:[NSDictionary class]]) {
-        return;
-    }
-    NSNumber *fromUserID = [fromUser objectForKey:@"id"];
-    
-    if (fromUserID && self.user.id && [fromUserID isEqualToNumber:self.user.id]) {
-        WGMessage *message = [[WGMessage alloc] init];
-        
-        message.id = messageID;
-        message.message = messageString;
-        message.created = [NSDate dateInLocalTimezone];
-        message.user = self.user;
-        message.toUser = [WGProfile currentUser];
-        
-        [self.messages addObject:message];
-        
-        [self finishReceivingMessageAnimated:YES];
-    }
-}
-
-- (void)initializeMessageForEmptyConversation {
-    self.viewForEmptyConversation = [[UIView alloc] initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, 90)];
-    self.viewForEmptyConversation.center = CGPointMake(self.viewForEmptyConversation.center.x, self.view.center.y);
-    [self.view addSubview:self.viewForEmptyConversation];
-    
-    UILabel *startANewChat = [[UILabel alloc] initWithFrame:CGRectMake(0, 0 , [UIScreen mainScreen].bounds.size.width, 30)];
-    startANewChat.text = @"Start a new chat today";
-    startANewChat.textColor = UIColor.grayColor;
-    startANewChat.textAlignment = NSTextAlignmentCenter;
-    startANewChat.font = [FontProperties getBigButtonFont];
-    self.viewForEmptyConversation.hidden = YES;
-    [self.viewForEmptyConversation addSubview:startANewChat];
-}
-
-# pragma mark - Network functions
-
-- (void)fetchFirstPageMessages {
-    self.isFetching = NO;
-
-    __weak typeof(self) weakSelf = self;
-    [self.user getConversation:^(WGCollection *collection, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        [WGSpinnerView removeDancingGFromCenterView:strongSelf.view];
-        strongSelf.isFetching = NO;
-
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-            return;
+    NSString *statusString = [NSString new];
+    if (mutableRecipientStatus.count > 1) {
+        __block NSUInteger readCount = 0;
+        __block BOOL delivered = NO;
+        __block BOOL sent = NO;
+        __block BOOL pending = NO;
+        [mutableRecipientStatus enumerateKeysAndObjectsUsingBlock:^(NSString *userID, NSNumber *statusNumber, BOOL *stop) {
+            LYRRecipientStatus status = statusNumber.integerValue;
+            switch (status) {
+                case LYRRecipientStatusInvalid:
+                    break;
+                case LYRRecipientStatusPending:
+                    pending = YES;
+                    break;
+                case LYRRecipientStatusSent:
+                    sent = YES;
+                    break;
+                case LYRRecipientStatusDelivered:
+                    delivered = YES;
+                    break;
+                case LYRRecipientStatusRead:
+                    NSLog(@"Read");
+                    readCount += 1;
+                    break;
+            }
+        }];
+        if (readCount) {
+            NSString *participantString = readCount > 1 ? @"Participants" : @"Participant";
+            statusString = [NSString stringWithFormat:@"Read by %lu %@", (unsigned long)readCount, participantString];
+        } else if (pending) {
+            statusString = @"Pending";
+        }else if (delivered) {
+            statusString = @"Delivered";
+        } else if (sent) {
+            statusString = @"Sent";
         }
-        [collection reverse];
-        strongSelf.messages = collection;
-        if (strongSelf.messages.count == 0) {
-            strongSelf.viewForEmptyConversation.hidden = NO;
-        } else {
-            strongSelf.viewForEmptyConversation.hidden = YES;
-            WGMessage *message = (WGMessage *)[strongSelf.messages objectAtIndex:(strongSelf.messages.count - 1)];
-            message.readDate = message.created;
-        }
-        strongSelf.showLoadEarlierMessagesHeader = (strongSelf.messages.nextPage != nil);
-        [strongSelf.collectionView reloadData];
-        [strongSelf scrollToBottomAnimated:YES];
-    }];
-}
-
-- (void)fetchMessages:(BOOL)scrollToBottom {
-    if (!self.messages.nextPage) return;
-    if (self.isFetching) return;
-    self.isFetching = YES;
-    
-    __weak typeof(self) weakSelf = self;
-    [self.messages getNextPage:^(WGCollection *collection, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        strongSelf.isFetching = NO;
-        if (error) {
-            [[WGError sharedInstance] logError:error forAction:WGActionLoad];
-            return;
-        }
-        [collection reverse];
-        [strongSelf.messages addObjectsFromCollectionToBeginning:collection notInCollection:self.messages];
-        strongSelf.messages.nextPage = collection.nextPage;
-        strongSelf.showLoadEarlierMessagesHeader = (strongSelf.messages.nextPage != nil);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [strongSelf.collectionView reloadData];
-        });
-    }];
-}
-
-- (void)updateLastMessagesRead:(WGMessage *)message {
-    if ([message.date compare:WGProfile.currentUser.lastMessageRead] == NSOrderedDescending) {
-        WGProfile.currentUser.lastMessageRead = message.created;
+    } else {
+        __block NSString *blockStatusString = [NSString new];
+        [mutableRecipientStatus enumerateKeysAndObjectsUsingBlock:^(NSString *userID, NSNumber *statusNumber, BOOL *stop) {
+            if ([userID isEqualToString:LayerHelper.defaultLyrClient.authenticatedUserID]) return;
+            LYRRecipientStatus status = statusNumber.integerValue;
+            switch (status) {
+                case LYRRecipientStatusInvalid:
+                    blockStatusString = @"Not Sent";
+                    break;
+                case LYRRecipientStatusPending:
+                    blockStatusString = @"Pending";
+                    break;
+                case LYRRecipientStatusSent:
+                    blockStatusString = @"Sent";
+                    break;
+                case LYRRecipientStatusDelivered:
+                    blockStatusString = @"Delivered";
+                    break;
+                case LYRRecipientStatusRead:
+                    blockStatusString = @"Read";
+                    break;
+            }
+        }];
+        statusString = blockStatusString;
     }
+    return [[NSAttributedString alloc] initWithString:statusString attributes:@{NSFontAttributeName : [UIFont boldSystemFontOfSize:11]}];
 }
 
 

@@ -10,6 +10,7 @@
 #import "WGCollection.h"
 #import "WGGroup.h"
 #import "JSQMessagesViewController/JSQMessages.h"
+#import "Atlas.h"
 
 #define kFriendRequestSent @"sent"
 #define kFriendRequestReceived @"received"
@@ -43,7 +44,7 @@ typedef enum State {
     RECEIVED_REQUEST_USER_STATE
 } State;
 
-@interface WGUser : WGObject <JSQMessageAvatarImageDataSource>
+@interface WGUser : WGObject <JSQMessageAvatarImageDataSource, ATLParticipant>
 
 typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 

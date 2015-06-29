@@ -605,22 +605,31 @@ static WGUser *currentUser = nil;
     return [self coverImageURL];
 }
 
--(UIImage *) avatarImage {
-    if (!self.avatarView) {
-        self.avatarView = [[UIImageView alloc] init];
-        self.avatarView.contentMode = UIViewContentModeScaleAspectFill;
-        [self.avatarView setSmallImageForUser:self completed:nil];
-    }
-    return self.avatarView.image;
+#pragma mark - ATLParticipant protocol
+
+-(NSURL *)avatarImageURL {
+    return self.smallCoverImageURL;
+}
+
+- (NSString *)avatarInitials {
+    NSString *firstLetter;
+    NSString *lastNameFirstLetter;
+    if (self.firstName) firstLetter = [self.firstName substringToIndex:1];
+    if (self.lastName) lastNameFirstLetter = [self.lastName substringToIndex:1];
+    return [NSString stringWithFormat:@"%@%@", firstLetter, lastNameFirstLetter];
+}
+
+-(UIImage *) avatarPlaceholderImage {
+    return [UIImage imageNamed:@"grayIcon"];
+}
+
+-(NSString *)participantIdentifier {
+    return self.id.stringValue;
 }
 
 
 -(UIImage *) avatarHighlightedImage {
     return nil;
-}
-
--(UIImage *) avatarPlaceholderImage {
-    return [UIImage imageNamed:@"grayIcon"];
 }
 
 -(NSArray *) imagesArea {

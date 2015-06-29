@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "Globals.h"
 #import "BaseViewController.h"
+#import "Atlas.h"
 
-
-@interface ChatViewController : BaseViewController <UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, WGViewController>
+@interface ChatViewController : BaseViewController
+        <ATLConversationViewControllerDataSource, ATLConversationViewControllerDelegate, UITableViewDelegate, WGViewController>
 @property (nonatomic, strong) UITableView *tableViewOfPeople;
 @property (nonatomic, strong) WGCollection *messages;
 @property (nonatomic, assign) BOOL isFetching;
@@ -19,6 +20,9 @@
 @property (nonatomic, strong) UIView *emptyView;
 @property (nonatomic, strong) WGEvent *attendingEvent;
 @property (nonatomic, strong) WGCollection *collectionUsers;
+
+@property (nonatomic, strong) NSOrderedSet *conversations;
+@property (nonatomic, strong) ATLConversationListViewController *atlasListViewController;
 @end
 
 
