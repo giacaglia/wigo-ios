@@ -11,8 +11,6 @@
 #import "MessageViewController.h"
 #import "ConversationViewController.h"
 #import "UIButtonAligned.h"
-#import "GroupConversationViewController.h"
-
 
 @interface ChatViewController ()
 @property (nonatomic,strong) NSString *chatIdToOpen;
@@ -121,7 +119,6 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
     self.atlasListViewController.delegate = self;
     self.atlasListViewController.dataSource = self;
     [self.view addSubview:self.atlasListViewController.tableView];
-    [self addRefreshToTableView];
 }
 
 #pragma mark WGViewController methods
@@ -226,10 +223,9 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
 // The following method handles presenting the correct `ATLMConversationViewController`, regardeless of the current state of the navigation stack.
 - (void)presentControllerWithConversation:(LYRConversation *)conversation
 {
-    
-//    ConversationViewController *conversationViewController = [ConversationViewController conversationViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
-//    conversationViewController.conversation = conversation;
-//    [self.navigationController pushViewController:conversationViewController animated:YES];
+    ConversationViewController *conversationViewController = [ConversationViewController conversationViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
+    conversationViewController.conversation = conversation;
+    [self.navigationController pushViewController:conversationViewController animated:YES];
 }
 
 #pragma mark - RefreshTableView 
