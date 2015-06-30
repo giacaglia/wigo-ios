@@ -26,8 +26,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.dataSource = self;
-    self.delegate = self;
+//    self.dataSource = self;
+//    self.delegate = self;
     self.view.backgroundColor = UIColor.whiteColor;
     
     [self initializeLeftBarButton];
@@ -233,47 +233,47 @@ static NSDateFormatter *ATLMDefaultDateFormatter()
     return dateFormatter;
 }
 
-- (id<ATLParticipant>)conversationViewController:(ATLConversationViewController *)conversationViewController participantForIdentifier:(NSString *)participantIdentifier
-{
-    if (participantIdentifier) {
-        for (WGUser *user in NetworkFetcher.defaultGetter.allUsers) {
-            if ([participantIdentifier isEqual:user.id.stringValue]) {
-                return user;
-            }
-        }
-    }
-    return nil;
-}
-
-
-- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController attributedStringForDisplayOfDate:(NSDate *)date {
-    NSDateFormatter *dateFormatter;
-    ATLMDateProximity dateProximity = ATLMProximityToDate(date);
-    switch (dateProximity) {
-        case ATLMDateProximityToday:
-        case ATLMDateProximityYesterday:
-            dateFormatter = ATLMRelativeDateFormatter();
-            break;
-        case ATLMDateProximityWeek:
-            dateFormatter = ATLMDayOfWeekDateFormatter();
-            break;
-        case ATLMDateProximityYear:
-            dateFormatter = ATLMThisYearDateFormatter();
-            break;
-        case ATLMDateProximityOther:
-            dateFormatter = ATLMDefaultDateFormatter();
-            break;
-    }
-    
-    NSString *dateString = [dateFormatter stringFromDate:date];
-    NSString *timeString = [ATLMShortTimeFormatter() stringFromDate:date];
-    
-    NSMutableAttributedString *dateAttributedString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@", dateString, timeString]];
-    [dateAttributedString addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(0, dateAttributedString.length)];
-    [dateAttributedString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:11] range:NSMakeRange(0, dateAttributedString.length)];
-    [dateAttributedString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:11] range:NSMakeRange(0, dateString.length)];
-    return dateAttributedString;
-}
+//- (id<ATLParticipant>)conversationViewController:(ATLConversationViewController *)conversationViewController participantForIdentifier:(NSString *)participantIdentifier
+//{
+//    if (participantIdentifier) {
+//        for (WGUser *user in NetworkFetcher.defaultGetter.allUsers) {
+//            if ([participantIdentifier isEqual:user.id.stringValue]) {
+//                return user;
+//            }
+//        }
+//    }
+//    return nil;
+//}
+//
+//
+//- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController attributedStringForDisplayOfDate:(NSDate *)date {
+//    NSDateFormatter *dateFormatter;
+//    ATLMDateProximity dateProximity = ATLMProximityToDate(date);
+//    switch (dateProximity) {
+//        case ATLMDateProximityToday:
+//        case ATLMDateProximityYesterday:
+//            dateFormatter = ATLMRelativeDateFormatter();
+//            break;
+//        case ATLMDateProximityWeek:
+//            dateFormatter = ATLMDayOfWeekDateFormatter();
+//            break;
+//        case ATLMDateProximityYear:
+//            dateFormatter = ATLMThisYearDateFormatter();
+//            break;
+//        case ATLMDateProximityOther:
+//            dateFormatter = ATLMDefaultDateFormatter();
+//            break;
+//    }
+//    
+//    NSString *dateString = [dateFormatter stringFromDate:date];
+//    NSString *timeString = [ATLMShortTimeFormatter() stringFromDate:date];
+//    
+//    NSMutableAttributedString *dateAttributedString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@", dateString, timeString]];
+//    [dateAttributedString addAttribute:NSForegroundColorAttributeName value:[UIColor grayColor] range:NSMakeRange(0, dateAttributedString.length)];
+//    [dateAttributedString addAttribute:NSFontAttributeName value:[UIFont systemFontOfSize:11] range:NSMakeRange(0, dateAttributedString.length)];
+//    [dateAttributedString addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:11] range:NSMakeRange(0, dateString.length)];
+//    return dateAttributedString;
+//}
 
 //- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController attributedStringForDisplayOfRecipientStatus:(NSDictionary *)recipientStatus {
 //    NSMutableDictionary *mutableRecipientStatus = [recipientStatus mutableCopy];

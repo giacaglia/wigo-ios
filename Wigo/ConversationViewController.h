@@ -10,9 +10,9 @@
 #import "Delegate.h"
 #import "WGUser.h"
 #import <LayerKit/LayerKit.h>
-#import "Atlas.h"
+//#import "Atlas.h"
 
-@interface ConversationViewController : ATLConversationViewController <ATLConversationViewControllerDataSource, ATLConversationViewControllerDelegate>
+@interface ConversationViewController : UIViewController
 
 @property (weak, nonatomic) UIBarButtonItem *sidebarButton;
 - (id)initWithUser: (WGUser *)user;
