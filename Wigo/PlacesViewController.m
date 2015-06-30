@@ -429,17 +429,17 @@ BOOL firstTimeLoading;
 }
 
 -(void)authenticateUser {
-    [LayerHelper.defaultLyrClient requestAuthenticationNonceWithCompletion:^(NSString *nonce, NSError *error) {
-        if (error) return;
-        [WGApi post:@"vendor/layer/token" withArguments:@{} andParameters:@{@"nonce": nonce}  andHandler:^(NSDictionary *jsonResponse, NSError *error) {
-            NSString *authentication = jsonResponse[@"token"];
-            [LayerHelper.defaultLyrClient authenticateWithIdentityToken:authentication completion:^(NSString *authenticatedUserID, NSError *error) {
-                if (authenticatedUserID) {
-                    NSLog(@"Authenticated as User: %@", authenticatedUserID);
-                }
-            }];
-        }];
-    }];
+//    [LayerHelper.defaultLyrClient requestAuthenticationNonceWithCompletion:^(NSString *nonce, NSError *error) {
+//        if (error) return;
+//        [WGApi post:@"vendor/layer/token" withArguments:@{} andParameters:@{@"nonce": nonce}  andHandler:^(NSDictionary *jsonResponse, NSError *error) {
+//            NSString *authentication = jsonResponse[@"token"];
+//            [LayerHelper.defaultLyrClient authenticateWithIdentityToken:authentication completion:^(NSString *authenticatedUserID, NSError *error) {
+//                if (authenticatedUserID) {
+//                    NSLog(@"Authenticated as User: %@", authenticatedUserID);
+//                }
+//            }];
+//        }];
+//    }];
 }
 
 

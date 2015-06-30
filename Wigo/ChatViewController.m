@@ -113,14 +113,14 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
 
 - (void)initializeTableOfChats {
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.atlasListViewController = [ATLConversationListViewController conversationListViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
-    self.atlasListViewController.tableView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 58);
-    self.atlasListViewController.view.backgroundColor = UIColor.whiteColor;
-    self.atlasListViewController.displaysAvatarItem = YES;
-    self.atlasListViewController.delegate = self;
-    self.atlasListViewController.dataSource = self;
-    [self addChildViewController:self.atlasListViewController];
-    [self.view addSubview:self.atlasListViewController.view];
+//    self.atlasListViewController = [ATLConversationListViewController conversationListViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
+//    self.atlasListViewController.tableView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 58);
+//    self.atlasListViewController.view.backgroundColor = UIColor.whiteColor;
+//    self.atlasListViewController.displaysAvatarItem = YES;
+//    self.atlasListViewController.delegate = self;
+//    self.atlasListViewController.dataSource = self;
+//    [self addChildViewController:self.atlasListViewController];
+//    [self.view addSubview:self.atlasListViewController.view];
 }
 
 #pragma mark WGViewController methods
