@@ -131,6 +131,8 @@
 		45F74FF51A5E3F9100A5170F /* WGFollow.m in Sources */ = {isa = PBXBuildFile; fileRef = 45F74FF41A5E3F9100A5170F /* WGFollow.m */; };
 		885E0DA61B0B849700EF499F /* PhotoSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 885E0DA51B0B849700EF499F /* PhotoSettingsViewController.m */; };
 		885E0DA71B0B849700EF499F /* PhotoSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 885E0DA51B0B849700EF499F /* PhotoSettingsViewController.m */; };
+		88E4A5B81B42E4A600938360 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88E4A5B71B42E4A600938360 /* Fabric.framework */; };
+		88E4A5B91B42E4A600938360 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88E4A5B71B42E4A600938360 /* Fabric.framework */; };
 		88F4C8601B41983F003794B3 /* Atlas.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F4C80F1B41983F003794B3 /* Atlas.m */; };
 		88F4C8611B41983F003794B3 /* Atlas.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F4C80F1B41983F003794B3 /* Atlas.m */; };
 		88F4C8621B41983F003794B3 /* ATLAddressBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F4C8121B41983F003794B3 /* ATLAddressBarViewController.m */; };
@@ -806,6 +808,7 @@
 		45F74FF41A5E3F9100A5170F /* WGFollow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WGFollow.m; sourceTree = "<group>"; };
 		885E0DA41B0B849700EF499F /* PhotoSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoSettingsViewController.h; sourceTree = "<group>"; };
 		885E0DA51B0B849700EF499F /* PhotoSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoSettingsViewController.m; sourceTree = "<group>"; };
+		88E4A5B71B42E4A600938360 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		88F4C80E1B41983F003794B3 /* Atlas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atlas.h; sourceTree = "<group>"; };
 		88F4C80F1B41983F003794B3 /* Atlas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Atlas.m; sourceTree = "<group>"; };
 		88F4C8111B41983F003794B3 /* ATLAddressBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATLAddressBarViewController.h; sourceTree = "<group>"; };
@@ -1241,6 +1244,7 @@
 				E9A31E461980AB25008A711B /* AdSupport.framework in Frameworks */,
 				E998C25C19C9F7FB0012BF51 /* Parse.framework in Frameworks */,
 				C12A113E19787BE700D53B1C /* SystemConfiguration.framework in Frameworks */,
+				88E4A5B91B42E4A600938360 /* Fabric.framework in Frameworks */,
 				C12A113F19787BE700D53B1C /* Crashlytics.framework in Frameworks */,
 				E9012AB61AF91173007DC769 /* FBSDKLoginKit.framework in Frameworks */,
 				C12A114019787BE700D53B1C /* Security.framework in Frameworks */,
@@ -1277,6 +1281,7 @@
 				E9798F9A19901EC700A97AE9 /* Social.framework in Frameworks */,
 				E9A31E4A1980ABB5008A711B /* AdSupport.framework in Frameworks */,
 				E9A31E491980ABAF008A711B /* libsqlite3.dylib in Frameworks */,
+				88E4A5B81B42E4A600938360 /* Fabric.framework in Frameworks */,
 				E998C25B19C9F7FB0012BF51 /* Parse.framework in Frameworks */,
 				E9012AB51AF91173007DC769 /* FBSDKLoginKit.framework in Frameworks */,
 				E9D906DF19255DCD00E39FC8 /* SystemConfiguration.framework in Frameworks */,
@@ -1938,6 +1943,7 @@
 				E9D906D819255DB400E39FC8 /* QuartzCore.framework */,
 				E9D906D619255DAB00E39FC8 /* MobileCoreServices.framework */,
 				E9D906D419255DA200E39FC8 /* libz.dylib */,
+				88E4A5B71B42E4A600938360 /* Fabric.framework */,
 				E9D906D219255D9A00E39FC8 /* CoreLocation.framework */,
 				E9D906D019255D8B00E39FC8 /* CFNetwork.framework */,
 				E9D906CE19255D8200E39FC8 /* AudioToolbox.framework */,
