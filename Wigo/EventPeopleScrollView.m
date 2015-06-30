@@ -68,17 +68,6 @@
 }
 
 - (void)chooseUser:(id)sender {
-//    UIButton *buttonSender = (UIButton *)sender;
-//    int tag = (int)buttonSender.tag;
-//    WGEventAttendee *attendee = (WGEventAttendee *)[self.event.attendees objectAtIndex:tag];
-//    // self.eventOffset = self.contentOffset.x;
-//    if (self.userSelectDelegate) {
-//        [self.userSelectDelegate showUser: attendee.user];
-//    } else {
-//        [self.placesDelegate.eventOffsetDictionary setValue:[NSNumber numberWithInt:self.contentOffset.x]
-//                                                     forKey:[self.event.id stringValue]];
-//        [self.placesDelegate showUser:attendee.user];
-//    }
     UIButton *buttonSender = (UIButton *)sender;
     int tag = (int)buttonSender.tag;
     UIImage* imageOfUnderlyingView = [[UIApplication sharedApplication].keyWindow convertViewToImage];
@@ -190,7 +179,9 @@
     scrollCell.imgViewLabel.hidden = YES;
     scrollCell.imgView.layer.borderColor = UIColor.clearColor.CGColor;
     if (indexPath.section == kInviteSection) {
-        if (self.event.attendees.count == 0) return scrollCell;
+        if (self.event.attendees.count == 0) {
+           return scrollCell;
+        }
         if ([[self.event.attendees objectAtIndex:0] isEqual:WGProfile.currentUser]) {
             scrollCell.profileNameLabel.text = nil;
             scrollCell.imgView.image  = nil;

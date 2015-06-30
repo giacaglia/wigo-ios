@@ -114,7 +114,7 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
 - (void)initializeTableOfChats {
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.atlasListViewController = [ATLConversationListViewController conversationListViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
-    self.atlasListViewController.tableView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
+    self.atlasListViewController.tableView.frame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 58);
     self.atlasListViewController.view.backgroundColor = UIColor.whiteColor;
     self.atlasListViewController.displaysAvatarItem = YES;
     self.atlasListViewController.delegate = self;
@@ -177,12 +177,25 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
     [participantIdentifiers minusSet:[NSSet setWithObject:LayerHelper.defaultLyrClient.authenticatedUserID]];
     if (participantIdentifiers.count == 0) return @"Personal Conversation";
     NSMutableArray *firstNames = [NSMutableArray new];
-    for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
-        WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
-        if ([participantIdentifiers containsObject:user.id.stringValue]) {
-            [firstNames addObject:user.firstName];
+    for (NSString *participantID in participantIdentifiers) {
+        BOOL found = NO;
+        for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
+            WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
+            if ([participantID isEqualToString:user.id.stringValue]) {
+                [firstNames addObject:user.firstName];
+                found = YES;
+            }
+        }
+        if (!found) {
+            WGUser *user = [[WGUser alloc] initWithJSON:@{@"id": participantID}];
+            [user getFullUser:^(BOOL success, NSError *error) {
+                if (![NetworkFetcher.defaultGetter.allUsers containsObject:user]) {
+                    [NetworkFetcher.defaultGetter.allUsers addObject:user];
+                }
+            }];
         }
     }
+    
     NSString *firstNamesString = [firstNames componentsJoinedByString:@", "];
     if (firstNamesString.length == 0) return WGProfile.currentUser.firstName;
     return firstNamesString;

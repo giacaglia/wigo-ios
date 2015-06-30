@@ -1137,6 +1137,28 @@ static WGUser *currentUser = nil;
     }];
 }
 
+- (void)getFullUser:(BoolResultBlock)handler {
+    [WGApi get:[NSString stringWithFormat:@"users/%@/", self.id]
+   withHandler:^(NSDictionary *jsonResponse, NSError *error) {
+       if (error) {
+           handler(NO, error);
+           return;
+       }
+       NSError *dataError;
+       @try {
+           self.parameters = [[[jsonResponse objectForKey:@"objects"] objectAtIndex:0] mutableCopy];
+       }
+       @catch (NSException *exception) {
+           NSString *message = [NSString stringWithFormat: @"Exception: %@", exception];
+           dataError = [NSError errorWithDomain: @"WGUser" code: 0 userInfo: @{NSLocalizedDescriptionKey : message }];
+
+       }
+       @finally {
+           handler(YES, dataError);
+       }
+    }];
+}
+
 - (void)getFriends:(WGCollectionResultBlock)handler {
     [WGApi get:[NSString stringWithFormat:@"users/%@/friends/", self.id]
    withHandler:^(NSDictionary *jsonResponse, NSError *error) {

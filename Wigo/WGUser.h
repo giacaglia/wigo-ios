@@ -147,6 +147,8 @@ typedef void (^WGUserResultBlock)(WGUser *object, NSError *error);
 +(void) getInvites:(WGCollectionResultBlock)handler;
 +(void) searchInvites:(NSString *)query withHandler:(WGCollectionResultBlock)handler;
 
+
+-(void) getFullUser:(BoolResultBlock)handler;
 -(void) getFriends:(WGCollectionResultBlock)handler;
 -(void) getFriendRequests:(WGCollectionResultBlock)handler;
 -(void) getNumMutualFriends:(WGNumResultBlock)handler;

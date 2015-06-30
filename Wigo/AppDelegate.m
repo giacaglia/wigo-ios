@@ -306,7 +306,7 @@ forRemoteNotification:(NSDictionary *)userInfo
 }
 
 - (void)reloadAllData {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchMessages" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchEvents" object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"fetchUserInfo" object:nil];
     [self logFirstTimeLoading];
