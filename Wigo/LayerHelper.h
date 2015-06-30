@@ -7,9 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <LayerKit/LayerKit.h>
 
 @interface LayerHelper : NSObject
-+ (LYRClient *)defaultLyrClient;
+//+ (LYRClient *)defaultLyrClient;
 
 @end

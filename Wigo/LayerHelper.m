@@ -7,15 +7,15 @@
 //
 
 #import "LayerHelper.h"
-static LYRClient *lyrClient;
-
+//static LYRClient *lyrClient;
+//
 @implementation LayerHelper
-+ (LYRClient *)defaultLyrClient {
-    if (lyrClient == nil) {
-        NSUUID *appID = [[NSUUID alloc] initWithUUIDString:@"9b835338-1432-11e5-ac34-5fe9000000fb"];
-        lyrClient = [LYRClient clientWithAppID:appID];
-    }
-    return lyrClient;
-}
+//+ (LYRClient *)defaultLyrClient {
+//    if (lyrClient == nil) {
+//        NSUUID *appID = [[NSUUID alloc] initWithUUIDString:@"9b835338-1432-11e5-ac34-5fe9000000fb"];
+//        lyrClient = [LYRClient clientWithAppID:appID];
+//    }
+//    return lyrClient;
+//}
 
 @end

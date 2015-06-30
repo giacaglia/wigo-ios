@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Delegate.h"
 #import "WGUser.h"
-#import <LayerKit/LayerKit.h>
+//#import <LayerKit/LayerKit.h>
 //#import "Atlas.h"
 
 @interface ConversationViewController : UIViewController
