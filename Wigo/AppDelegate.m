@@ -68,7 +68,7 @@ NSDate *firstLoggedTime;
     [self logFirstTimeLoading];
     [WGI openedTheApp];
     
-    [LayerHelper.defaultLyrClient connectWithCompletion:^(BOOL success, NSError *error) {}];
+//    [LayerHelper.defaultLyrClient connectWithCompletion:^(BOOL success, NSError *error) {}];
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                     didFinishLaunchingWithOptions:launchOptions];
 }

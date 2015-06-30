@@ -15,8 +15,6 @@
 + (UIFont *)openSansRegular:(float)fontSize;
 + (UIFont *)openSansSemibold:(float)fontSize;
 + (UIFont *)openSansBold:(float)fontSize;
-+ (UIFont *)montserratRegular:(float)fontSize;
-+ (UIFont *)montserratBold:(float)fontSize;
 + (UIFont *)numericLightFont:(float)fontSize;
 + (UIFont *)lightFont:(float)fontSize;
 + (UIFont *)scLightFont:(float)fontSize;

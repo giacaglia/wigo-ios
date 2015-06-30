@@ -24,14 +24,6 @@
     return [UIFont fontWithName:@"OpenSans-Bold" size:fontSize];
 }
 
-+ (UIFont *)montserratRegular:(float)fontSize {
-    return [UIFont fontWithName:@"Montserrat" size:fontSize];
-}
-
-+ (UIFont *)montserratBold:(float)fontSize {
-    return [UIFont fontWithName:@"Montserrat-Bold" size:fontSize];
-}
-
 + (UIFont *)numericLightFont:(float)fontSize {
     return [UIFont fontWithName:@"WhitneyNumeric-Light" size:fontSize];
 }
