@@ -275,75 +275,75 @@ static NSDateFormatter *ATLMDefaultDateFormatter()
     return dateAttributedString;
 }
 
-- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController attributedStringForDisplayOfRecipientStatus:(NSDictionary *)recipientStatus {
-    NSMutableDictionary *mutableRecipientStatus = [recipientStatus mutableCopy];
-    if ([mutableRecipientStatus valueForKey:LayerHelper.defaultLyrClient.authenticatedUserID]) {
-        [mutableRecipientStatus removeObjectForKey:LayerHelper.defaultLyrClient.authenticatedUserID];
-    }
-    
-    NSString *statusString = [NSString new];
-    if (mutableRecipientStatus.count > 1) {
-        __block NSUInteger readCount = 0;
-        __block BOOL delivered = NO;
-        __block BOOL sent = NO;
-        __block BOOL pending = NO;
-        [mutableRecipientStatus enumerateKeysAndObjectsUsingBlock:^(NSString *userID, NSNumber *statusNumber, BOOL *stop) {
-            LYRRecipientStatus status = statusNumber.integerValue;
-            switch (status) {
-                case LYRRecipientStatusInvalid:
-                    break;
-                case LYRRecipientStatusPending:
-                    pending = YES;
-                    break;
-                case LYRRecipientStatusSent:
-                    sent = YES;
-                    break;
-                case LYRRecipientStatusDelivered:
-                    delivered = YES;
-                    break;
-                case LYRRecipientStatusRead:
-                    NSLog(@"Read");
-                    readCount += 1;
-                    break;
-            }
-        }];
-        if (readCount) {
-            NSString *participantString = readCount > 1 ? @"Participants" : @"Participant";
-            statusString = [NSString stringWithFormat:@"Read by %lu %@", (unsigned long)readCount, participantString];
-        } else if (pending) {
-            statusString = @"Pending";
-        }else if (delivered) {
-            statusString = @"Delivered";
-        } else if (sent) {
-            statusString = @"Sent";
-        }
-    } else {
-        __block NSString *blockStatusString = [NSString new];
-        [mutableRecipientStatus enumerateKeysAndObjectsUsingBlock:^(NSString *userID, NSNumber *statusNumber, BOOL *stop) {
-            if ([userID isEqualToString:LayerHelper.defaultLyrClient.authenticatedUserID]) return;
-            LYRRecipientStatus status = statusNumber.integerValue;
-            switch (status) {
-                case LYRRecipientStatusInvalid:
-                    blockStatusString = @"Not Sent";
-                    break;
-                case LYRRecipientStatusPending:
-                    blockStatusString = @"Pending";
-                    break;
-                case LYRRecipientStatusSent:
-                    blockStatusString = @"Sent";
-                    break;
-                case LYRRecipientStatusDelivered:
-                    blockStatusString = @"Delivered";
-                    break;
-                case LYRRecipientStatusRead:
-                    blockStatusString = @"Read";
-                    break;
-            }
-        }];
-        statusString = blockStatusString;
-    }
-    return [[NSAttributedString alloc] initWithString:statusString attributes:@{NSFontAttributeName : [UIFont boldSystemFontOfSize:11]}];
-}
+//- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController attributedStringForDisplayOfRecipientStatus:(NSDictionary *)recipientStatus {
+//    NSMutableDictionary *mutableRecipientStatus = [recipientStatus mutableCopy];
+//    if ([mutableRecipientStatus valueForKey:LayerHelper.defaultLyrClient.authenticatedUserID]) {
+//        [mutableRecipientStatus removeObjectForKey:LayerHelper.defaultLyrClient.authenticatedUserID];
+//    }
+//    
+//    NSString *statusString = [NSString new];
+//    if (mutableRecipientStatus.count > 1) {
+//        __block NSUInteger readCount = 0;
+//        __block BOOL delivered = NO;
+//        __block BOOL sent = NO;
+//        __block BOOL pending = NO;
+//        [mutableRecipientStatus enumerateKeysAndObjectsUsingBlock:^(NSString *userID, NSNumber *statusNumber, BOOL *stop) {
+//            LYRRecipientStatus status = statusNumber.integerValue;
+//            switch (status) {
+//                case LYRRecipientStatusInvalid:
+//                    break;
+//                case LYRRecipientStatusPending:
+//                    pending = YES;
+//                    break;
+//                case LYRRecipientStatusSent:
+//                    sent = YES;
+//                    break;
+//                case LYRRecipientStatusDelivered:
+//                    delivered = YES;
+//                    break;
+//                case LYRRecipientStatusRead:
+//                    NSLog(@"Read");
+//                    readCount += 1;
+//                    break;
+//            }
+//        }];
+//        if (readCount) {
+//            NSString *participantString = readCount > 1 ? @"Participants" : @"Participant";
+//            statusString = [NSString stringWithFormat:@"Read by %lu %@", (unsigned long)readCount, participantString];
+//        } else if (pending) {
+//            statusString = @"Pending";
+//        }else if (delivered) {
+//            statusString = @"Delivered";
+//        } else if (sent) {
+//            statusString = @"Sent";
+//        }
+//    } else {
+//        __block NSString *blockStatusString = [NSString new];
+//        [mutableRecipientStatus enumerateKeysAndObjectsUsingBlock:^(NSString *userID, NSNumber *statusNumber, BOOL *stop) {
+//            if ([userID isEqualToString:LayerHelper.defaultLyrClient.authenticatedUserID]) return;
+//            LYRRecipientStatus status = statusNumber.integerValue;
+//            switch (status) {
+//                case LYRRecipientStatusInvalid:
+//                    blockStatusString = @"Not Sent";
+//                    break;
+//                case LYRRecipientStatusPending:
+//                    blockStatusString = @"Pending";
+//                    break;
+//                case LYRRecipientStatusSent:
+//                    blockStatusString = @"Sent";
+//                    break;
+//                case LYRRecipientStatusDelivered:
+//                    blockStatusString = @"Delivered";
+//                    break;
+//                case LYRRecipientStatusRead:
+//                    blockStatusString = @"Read";
+//                    break;
+//            }
+//        }];
+//        statusString = blockStatusString;
+//    }
+//    return [[NSAttributedString alloc] initWithString:statusString attributes:@{NSFontAttributeName : [UIFont boldSystemFontOfSize:11]}];
+//}
 
 
 @end

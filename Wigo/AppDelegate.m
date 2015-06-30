@@ -23,7 +23,7 @@
 #import "ProfileViewController.h"
 #import "NetworkFetcher.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import "LayerHelper.h"
+//#import "LayerHelper.h"
 
 #define kImageQuality @"quality"
 #define kImageMultiple @"multiple"

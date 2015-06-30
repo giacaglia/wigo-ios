@@ -136,125 +136,125 @@ NSString *const ATLMConversationMetadataNameKey = @"conversationName";
     }
 }
 
-#pragma mark - ATLConversationListViewControllerDelegate
-
-- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController
-                 didSelectConversation:(LYRConversation *)conversation
-{
-    [self presentControllerWithConversation:conversation];
-}
-
-- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController didDeleteConversation:(LYRConversation *)conversation deletionMode:(LYRDeletionMode)deletionMode
-{
-    NSLog(@"Conversation Successfully Deleted");
-}
-
-- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController didFailDeletingConversation:(LYRConversation *)conversation deletionMode:(LYRDeletionMode)deletionMode error:(NSError *)error
-{
-    NSLog(@"Conversation Deletion Failed with Error: %@", error);
-}
-
-
-- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController didSearchForText:(NSString *)searchText completion:(void (^)(NSSet *))completion
-{
-    completion([NSSet new]);
-    //    [self.participantDataSource participantsMatchingSearchText:searchText completion:^(NSSet *participants) {
-    //        completion(participants);
-    //    }];
-}
+//#pragma mark - ATLConversationListViewControllerDelegate
+//
+//- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController
+//                 didSelectConversation:(LYRConversation *)conversation
+//{
+//    [self presentControllerWithConversation:conversation];
+//}
+//
+//- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController didDeleteConversation:(LYRConversation *)conversation deletionMode:(LYRDeletionMode)deletionMode
+//{
+//    NSLog(@"Conversation Successfully Deleted");
+//}
+//
+//- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController didFailDeletingConversation:(LYRConversation *)conversation deletionMode:(LYRDeletionMode)deletionMode error:(NSError *)error
+//{
+//    NSLog(@"Conversation Deletion Failed with Error: %@", error);
+//}
+//
+//
+//- (void)conversationListViewController:(ATLConversationListViewController *)conversationListViewController didSearchForText:(NSString *)searchText completion:(void (^)(NSSet *))completion
+//{
+//    completion([NSSet new]);
+//    //    [self.participantDataSource participantsMatchingSearchText:searchText completion:^(NSSet *participants) {
+//    //        completion(participants);
+//    //    }];
+//}
 
 #pragma mark - ATLConversationListViewControllerDataSource
 
-- (NSString *)conversationListViewController:(ATLConversationListViewController *)conversationListViewController titleForConversation:(LYRConversation *)conversation
-{
-    // If we have a Conversation name in metadata, return it.
-    NSString *conversationTitle = conversation.metadata[ATLMConversationMetadataNameKey];
-    if (conversationTitle.length) {
-        return conversationTitle;
-    }
-    
-    NSMutableSet *participantIdentifiers = [conversation.participants mutableCopy];
-    [participantIdentifiers minusSet:[NSSet setWithObject:LayerHelper.defaultLyrClient.authenticatedUserID]];
-    if (participantIdentifiers.count == 0) return @"Personal Conversation";
-    NSMutableArray *firstNames = [NSMutableArray new];
-    for (NSString *participantID in participantIdentifiers) {
-        BOOL found = NO;
-        for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
-            WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
-            if ([participantID isEqualToString:user.id.stringValue]) {
-                [firstNames addObject:user.firstName];
-                found = YES;
-            }
-        }
-        if (!found) {
-            WGUser *user = [[WGUser alloc] initWithJSON:@{@"id": participantID}];
-            [user getFullUser:^(BOOL success, NSError *error) {
-                if (![NetworkFetcher.defaultGetter.allUsers containsObject:user]) {
-                    [NetworkFetcher.defaultGetter.allUsers addObject:user];
-                }
-            }];
-        }
-    }
-    
-    NSString *firstNamesString = [firstNames componentsJoinedByString:@", "];
-    if (firstNamesString.length == 0) return WGProfile.currentUser.firstName;
-    return firstNamesString;
-}
-
-- (id<ATLAvatarItem>)conversationListViewController:(ATLConversationListViewController *)conversationListViewController
-                          avatarItemForConversation:(LYRConversation *)conversation {
-    NSMutableSet *participantIdentifiers = [conversation.participants mutableCopy];
-    [participantIdentifiers minusSet:[NSSet setWithObject:LayerHelper.defaultLyrClient.authenticatedUserID]];
-    if (participantIdentifiers.count == 0) return WGProfile.currentUser;
-    for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
-        WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
-        if ([participantIdentifiers containsObject:user.id.stringValue]) {
-            return user;
-        }
-    }
-    return WGProfile.currentUser;
-}
-
-- (id<ATLParticipant>)conversationViewController:(ATLConversationViewController *)conversationViewController
-                        participantForIdentifier:(NSString *)participantIdentifier {
-    for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
-        WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
-        if ([participantIdentifier isEqualToString:user.id.stringValue]) {
-            return user;
-        }
-    }
-    return nil;
-}
-
-- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController
-                  attributedStringForDisplayOfDate:(NSDate *)date {
-    return [[NSAttributedString alloc] initWithString:@"2 weeks ago"];
-}
-
-- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController attributedStringForDisplayOfRecipientStatus:(NSDictionary *)recipientStatus {
-    return [[NSAttributedString alloc] initWithString:@"read"];
-}
-
-#pragma mark - Conversation Selection
-
-// The following method handles presenting the correct `ATLMConversationViewController`, regardeless of the current state of the navigation stack.
-- (void)presentControllerWithConversation:(LYRConversation *)conversation
-{
-    ConversationViewController *conversationViewController = [ConversationViewController conversationViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
-    NSMutableSet *participantIdentifiers = [conversation.participants mutableCopy];
-    [participantIdentifiers minusSet:[NSSet setWithObject:LayerHelper.defaultLyrClient.authenticatedUserID]];
-    WGUser *returnedUser;
-    if (participantIdentifiers.count == 0) returnedUser = WGProfile.currentUser;
-    for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
-        WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
-        if ([participantIdentifiers containsObject:user.id.stringValue]) {
-            returnedUser = user;
-        }
-    }
-    conversationViewController.conversation = conversation;
-    conversationViewController.user = returnedUser;
-    [self.navigationController pushViewController:conversationViewController animated:YES];
-}
+//- (NSString *)conversationListViewController:(ATLConversationListViewController *)conversationListViewController titleForConversation:(LYRConversation *)conversation
+//{
+//    // If we have a Conversation name in metadata, return it.
+//    NSString *conversationTitle = conversation.metadata[ATLMConversationMetadataNameKey];
+//    if (conversationTitle.length) {
+//        return conversationTitle;
+//    }
+//    
+//    NSMutableSet *participantIdentifiers = [conversation.participants mutableCopy];
+//    [participantIdentifiers minusSet:[NSSet setWithObject:LayerHelper.defaultLyrClient.authenticatedUserID]];
+//    if (participantIdentifiers.count == 0) return @"Personal Conversation";
+//    NSMutableArray *firstNames = [NSMutableArray new];
+//    for (NSString *participantID in participantIdentifiers) {
+//        BOOL found = NO;
+//        for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
+//            WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
+//            if ([participantID isEqualToString:user.id.stringValue]) {
+//                [firstNames addObject:user.firstName];
+//                found = YES;
+//            }
+//        }
+//        if (!found) {
+//            WGUser *user = [[WGUser alloc] initWithJSON:@{@"id": participantID}];
+//            [user getFullUser:^(BOOL success, NSError *error) {
+//                if (![NetworkFetcher.defaultGetter.allUsers containsObject:user]) {
+//                    [NetworkFetcher.defaultGetter.allUsers addObject:user];
+//                }
+//            }];
+//        }
+//    }
+//    
+//    NSString *firstNamesString = [firstNames componentsJoinedByString:@", "];
+//    if (firstNamesString.length == 0) return WGProfile.currentUser.firstName;
+//    return firstNamesString;
+//}
+//
+//- (id<ATLAvatarItem>)conversationListViewController:(ATLConversationListViewController *)conversationListViewController
+//                          avatarItemForConversation:(LYRConversation *)conversation {
+//    NSMutableSet *participantIdentifiers = [conversation.participants mutableCopy];
+//    [participantIdentifiers minusSet:[NSSet setWithObject:LayerHelper.defaultLyrClient.authenticatedUserID]];
+//    if (participantIdentifiers.count == 0) return WGProfile.currentUser;
+//    for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
+//        WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
+//        if ([participantIdentifiers containsObject:user.id.stringValue]) {
+//            return user;
+//        }
+//    }
+//    return WGProfile.currentUser;
+//}
+//
+//- (id<ATLParticipant>)conversationViewController:(ATLConversationViewController *)conversationViewController
+//                        participantForIdentifier:(NSString *)participantIdentifier {
+//    for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
+//        WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
+//        if ([participantIdentifier isEqualToString:user.id.stringValue]) {
+//            return user;
+//        }
+//    }
+//    return nil;
+//}
+//
+//- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController
+//                  attributedStringForDisplayOfDate:(NSDate *)date {
+//    return [[NSAttributedString alloc] initWithString:@"2 weeks ago"];
+//}
+//
+//- (NSAttributedString *)conversationViewController:(ATLConversationViewController *)conversationViewController attributedStringForDisplayOfRecipientStatus:(NSDictionary *)recipientStatus {
+//    return [[NSAttributedString alloc] initWithString:@"read"];
+//}
+//
+//#pragma mark - Conversation Selection
+//
+//// The following method handles presenting the correct `ATLMConversationViewController`, regardeless of the current state of the navigation stack.
+//- (void)presentControllerWithConversation:(LYRConversation *)conversation
+//{
+//    ConversationViewController *conversationViewController = [ConversationViewController conversationViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
+//    NSMutableSet *participantIdentifiers = [conversation.participants mutableCopy];
+//    [participantIdentifiers minusSet:[NSSet setWithObject:LayerHelper.defaultLyrClient.authenticatedUserID]];
+//    WGUser *returnedUser;
+//    if (participantIdentifiers.count == 0) returnedUser = WGProfile.currentUser;
+//    for (int i = 0; i < NetworkFetcher.defaultGetter.allUsers.count; i++) {
+//        WGUser *user = (WGUser *)[NetworkFetcher.defaultGetter.allUsers objectAtIndex:i];
+//        if ([participantIdentifiers containsObject:user.id.stringValue]) {
+//            returnedUser = user;
+//        }
+//    }
+//    conversationViewController.conversation = conversation;
+//    conversationViewController.user = returnedUser;
+//    [self.navigationController pushViewController:conversationViewController animated:YES];
+//}
 
 #pragma mark - RefreshTableView 
 

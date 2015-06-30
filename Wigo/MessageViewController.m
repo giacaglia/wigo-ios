@@ -197,12 +197,12 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     WGUser *user = [self getUserAtIndex:indexPath];
     if (!user) return;
-    NSError *error = nil;
-    LYRConversation *conversation = [LayerHelper.defaultLyrClient newConversationWithParticipants:[NSSet setWithObjects:user.id.stringValue, nil] options:nil error:&error];
-    ConversationViewController * conversationViewController = [ConversationViewController conversationViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
-    conversationViewController.conversation = conversation;;
-    conversationViewController.user = user;
-    [self.navigationController pushViewController:conversationViewController animated:YES];
+//    NSError *error = nil;
+//    LYRConversation *conversation = [LayerHelper.defaultLyrClient newConversationWithParticipants:[NSSet setWithObjects:user.id.stringValue, nil] options:nil error:&error];
+//    ConversationViewController * conversationViewController = [ConversationViewController conversationViewControllerWithLayerClient:LayerHelper.defaultLyrClient];
+//    conversationViewController.conversation = conversation;;
+//    conversationViewController.user = user;
+//    [self.navigationController pushViewController:conversationViewController animated:YES];
 }
 
 - (WGUser *)getUserAtIndex:(NSIndexPath *)indexPath {
