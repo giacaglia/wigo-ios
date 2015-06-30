@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import <QuartzCore/QuartzCore.h>
 #import <Parse/Parse.h>
+#import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import "FontProperties.h"
 #import "GAI.h"
@@ -48,7 +49,8 @@ NSDate *firstLoggedTime;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"canFetchAppStartup"];
-    [Crashlytics startWithAPIKey:@"c08b20670e125cf177b5a6e7bb70d6b4e9b75c27"];
+
+    [Fabric with:@[CrashlyticsKit]];
 
     if (WGProfile.currentUser.googleAnalyticsEnabled.boolValue) {
         [self initializeGoogleAnalytics];
@@ -63,8 +65,6 @@ NSDate *firstLoggedTime;
     
     self.notificationDictionary = [NSMutableDictionary dictionaryWithDictionary:launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey]];
     
-    // Override point for customization after application launch.
-
     [self addNotificationHandlers];
     [self logFirstTimeLoading];
     [WGI openedTheApp];

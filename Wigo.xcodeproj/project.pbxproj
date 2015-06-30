@@ -2748,7 +2748,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Crashlytics.framework/run c08b20670e125cf177b5a6e7bb70d6b4e9b75c27 52f350418a2dbeb5ce538ff885523386379c5314ce4ac5d1d5d1307a36c872af";
+			shellScript = "./Fabric.framework/run c08b20670e125cf177b5a6e7bb70d6b4e9b75c27 52f350418a2dbeb5ce538ff885523386379c5314ce4ac5d1d5d1307a36c872af";
 		};
 		C18AC294198451530056957B /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2788,7 +2788,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Crashlytics.framework/run c08b20670e125cf177b5a6e7bb70d6b4e9b75c27 52f350418a2dbeb5ce538ff885523386379c5314ce4ac5d1d5d1307a36c872af";
+			shellScript = "./Fabric.framework/run c08b20670e125cf177b5a6e7bb70d6b4e9b75c27 52f350418a2dbeb5ce538ff885523386379c5314ce4ac5d1d5d1307a36c872af";
 		};
 /* End PBXShellScriptBuildPhase section */
 

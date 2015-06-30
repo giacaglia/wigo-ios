@@ -41,6 +41,20 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>4.0.3</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>c08b20670e125cf177b5a6e7bb70d6b4e9b75c27</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>FacebookAppID</key>
 	<string>${FACEBOOK_APPID}</string>
 	<key>FacebookDisplayName</key>
@@ -51,6 +65,8 @@
 	<string>00000000</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Events will be presented based on your location</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>WhitneyNumeric-Light.ttf</string>
@@ -98,7 +114,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Events will be presented based on your location</string>
 </dict>
 </plist>
