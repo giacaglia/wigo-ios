@@ -10,7 +10,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import <Parse/Parse.h>
 #import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
 #import "FontProperties.h"
 #import "GAI.h"
 #import "PopViewController.h"
