@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 #import <Crashlytics/Crashlytics.h>
-#import "JSQMessagesViewController/JSQMessages.h"
 #import "UIImageView+ImageArea.h"
 
 #import "FontProperties.h"
