@@ -243,8 +243,6 @@
 		88F4C8DF1B419852003794B3 /* plus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88F4C8BA1B419852003794B3 /* plus@2x.png */; };
 		88F4C8E01B419852003794B3 /* plus@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88F4C8BB1B419852003794B3 /* plus@3x.png */; };
 		88F4C8E11B419852003794B3 /* plus@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 88F4C8BB1B419852003794B3 /* plus@3x.png */; };
-		88F4C8E41B419B55003794B3 /* LayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88F4C8E31B419B55003794B3 /* LayerKit.framework */; };
-		88F4C8E51B419B55003794B3 /* LayerKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88F4C8E31B419B55003794B3 /* LayerKit.framework */; };
 		88F4C8E81B41A137003794B3 /* LayerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F4C8E71B41A137003794B3 /* LayerHelper.m */; };
 		88F4C8E91B41A137003794B3 /* LayerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 88F4C8E71B41A137003794B3 /* LayerHelper.m */; };
 		9C1FD84E1B1EA86F0070005B /* WGDateSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C1FD84D1B1EA86F0070005B /* WGDateSelectionView.m */; };
@@ -901,7 +899,6 @@
 		88F4C8B91B419852003794B3 /* plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plus.png; sourceTree = "<group>"; };
 		88F4C8BA1B419852003794B3 /* plus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "plus@2x.png"; sourceTree = "<group>"; };
 		88F4C8BB1B419852003794B3 /* plus@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "plus@3x.png"; sourceTree = "<group>"; };
-		88F4C8E31B419B55003794B3 /* LayerKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = LayerKit.framework; sourceTree = "<group>"; };
 		88F4C8E61B41A136003794B3 /* LayerHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayerHelper.h; sourceTree = "<group>"; };
 		88F4C8E71B41A137003794B3 /* LayerHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LayerHelper.m; sourceTree = "<group>"; };
 		9C1FD84C1B1EA86F0070005B /* WGDateSelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WGDateSelectionView.h; sourceTree = "<group>"; };
@@ -1246,7 +1243,6 @@
 				C12A114219787BE700D53B1C /* MobileCoreServices.framework in Frameworks */,
 				C12A114319787BE700D53B1C /* libz.dylib in Frameworks */,
 				C12A114619787BE700D53B1C /* CFNetwork.framework in Frameworks */,
-				88F4C8E51B419B55003794B3 /* LayerKit.framework in Frameworks */,
 				C12A114719787BE700D53B1C /* AudioToolbox.framework in Frameworks */,
 				C12A114819787BE700D53B1C /* MapKit.framework in Frameworks */,
 				C12A114919787BE700D53B1C /* CoreGraphics.framework in Frameworks */,
@@ -1283,7 +1279,6 @@
 				E9D906D919255DB400E39FC8 /* QuartzCore.framework in Frameworks */,
 				E9F7995519D4C762001D5BFC /* libGoogleAnalyticsServices.a in Frameworks */,
 				E9D906D719255DAB00E39FC8 /* MobileCoreServices.framework in Frameworks */,
-				88F4C8E41B419B55003794B3 /* LayerKit.framework in Frameworks */,
 				E9D906D519255DA200E39FC8 /* libz.dylib in Frameworks */,
 				E9D906D119255D8B00E39FC8 /* CFNetwork.framework in Frameworks */,
 				E9D906CF19255D8200E39FC8 /* AudioToolbox.framework in Frameworks */,
@@ -1745,14 +1740,6 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
-		88F4C8E21B419B55003794B3 /* LayerKit.embeddedframework */ = {
-			isa = PBXGroup;
-			children = (
-				88F4C8E31B419B55003794B3 /* LayerKit.framework */,
-			);
-			path = LayerKit.embeddedframework;
-			sourceTree = "<group>";
-		};
 		C12A11021978788000D53B1C /* Categories */ = {
 			isa = PBXGroup;
 			children = (
@@ -1912,7 +1899,6 @@
 		E921D6141923967D00361247 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				88F4C8E21B419B55003794B3 /* LayerKit.embeddedframework */,
 				E9012AB41AF91173007DC769 /* FBSDKLoginKit.framework */,
 				E9012AB11AF91169007DC769 /* FBSDKCoreKit.framework */,
 				E9012AAE1AF91160007DC769 /* FBSDKShareKit.framework */,
