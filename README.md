@@ -1,7 +1,8 @@
 wigo-ios
 ========
 
-![Alt text](/Images/Highlights.jpg?raw=true "Highlights")
+<img src="/Images/Highlights.jpg" width="20">
+
 
 Notes on setting up the auto-builder.
 
